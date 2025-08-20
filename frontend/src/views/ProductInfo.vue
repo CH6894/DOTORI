@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Header />
     <main class="product-detail-container">
       <!-- 로딩 상태 -->
       <div v-if="loading" class="loading-container">
@@ -54,7 +53,6 @@
         <button @click="goBack" class="back-btn">이전 페이지로</button>
       </div>
     </main>
-    <Footer />
   </div>
 </template>
 
@@ -103,9 +101,9 @@ const fetchProductDetail = async () => {
       currentPrice: '20,000원',
       type: 'new', // 기본은 미개봉 상품
       images: [
-        '/images/예시1.jpg',
-         '/images/예시1.jpg',
-         '/images/예시1.jpg',
+        '/img/예시1.jpg',
+         '/img/예시1.jpg',
+         '/img/예시1.jpg',
       ],
       description: '세가에서 출시한 귀멸의 칼날 피규어입니다.'
     }
@@ -148,7 +146,7 @@ const fetchUsedItems = async () => {
         originalPrice: 25000,
         condition: 'excellent',
         createdAt: new Date(),
-        images: ['/images/예시1.jpg', '/images/test.jpg'],
+        images: ['/img/예시1.jpg', '/img/test.jpg'],
         conditionDetails: '박스 외관 미세한 눌림, 내용물 완벽'
       },
       {
@@ -159,7 +157,7 @@ const fetchUsedItems = async () => {
         originalPrice: 25000,
         condition: 'excellent',
         createdAt: new Date(Date.now() - 86400000),
-        images: ['/images/used002.jpg'],
+        images: ['/img/used002.jpg'],
         conditionDetails: '흠집 전무'
       },
       {
@@ -170,7 +168,7 @@ const fetchUsedItems = async () => {
         originalPrice: 25000,
         condition: 'poor',
         createdAt: new Date(Date.now() - 172800000),
-        images: ['/images/used003.jpg'],
+        images: ['/img/used003.jpg'],
         conditionDetails: '더러움 아주 더러움 세상에서 이것보다 더 더러운 것은 없을거임'
       },
       {
@@ -181,7 +179,7 @@ const fetchUsedItems = async () => {
         originalPrice: 25000,
         condition: 'good',
         createdAt: new Date(Date.now() - 259200000),
-        images: ['/images/used004.jpg'],
+        images: ['/img/used004.jpg'],
         conditionDetails: '미세한 스크래치, 기능상 문제없음'
       },
       {
@@ -192,7 +190,7 @@ const fetchUsedItems = async () => {
         originalPrice: 25000,
         condition: 'fair',
         createdAt: new Date(Date.now() - 345600000),
-        images: ['/images/used005.jpg'],
+        images: ['/img/used005.jpg'],
         conditionDetails: '사용감 있으나 정상 작동'
       },
       {
@@ -203,7 +201,7 @@ const fetchUsedItems = async () => {
         originalPrice: 25000,
         condition: 'good',
         createdAt: new Date(Date.now() - 432000000),
-        images: ['/images/used006.jpg'],
+        images: ['/img/used006.jpg'],
         conditionDetails: '약간의 기스, 전체적으로 양호'
       }
     ]
@@ -219,12 +217,12 @@ const fetchRecommendedProducts = async () => {
     
     // 임시 데이터 (DB 연동 시 삭제)
     recommendedProducts.value = [
-      { id: 1, title: '추천상품1', image: '/images/rec1.jpg', price: '15,000원' },
-      { id: 2, title: '추천상품2', image: '/images/rec2.jpg', price: '18,000원' },
-      { id: 3, title: '추천상품3', image: '/images/rec3.jpg', price: '22,000원' },
-      { id: 4, title: '추천상품4', image: '/images/rec4.jpg', price: '25,000원' },
-      { id: 4, title: '추천상품5', image: '/images/rec4.jpg', price: '25,000원' },
-     { id: 4, title: '추천상품', image: '/images/rec4.jpg', price: '25,000원' },
+      { id: 1, title: '추천상품1', image: '/img/rec1.jpg', price: '15,000원' },
+      { id: 2, title: '추천상품2', image: '/img/rec2.jpg', price: '18,000원' },
+      { id: 3, title: '추천상품3', image: '/img/rec3.jpg', price: '22,000원' },
+      { id: 4, title: '추천상품4', image: '/img/rec4.jpg', price: '25,000원' },
+      { id: 4, title: '추천상품5', image: '/img/rec4.jpg', price: '25,000원' },
+     { id: 4, title: '추천상품', image: '/img/rec4.jpg', price: '25,000원' },
     ]
   } catch (error) {
     console.error('추천 상품 로드 실패:', error)
@@ -238,12 +236,12 @@ const fetchRelatedProducts = async () => {
     
     // 임시 데이터 (DB 연동 시 삭제)
     relatedProducts.value = [
-      { id: 1, title: '함께본상품1', image: '/images/test.jpg', price: '20,000원' },
-      { id: 2, title: '함께본상품2', image: '/images/rel2.jpg', price: '25,000원' },
-      { id: 3, title: '함께본상품3', image: '/images/rel3.jpg', price: '18,000원' },
-      { id: 4, title: '함께본상품4', image: '/images/rel4.jpg', price: '35,000원' },
-      { id: 5, title: '함께본상품1', image: '/images/test.jpg', price: '20,000원' },
-      { id: 6, title: '함께본상품1', image: '/images/test.jpg', price: '20,000원' },
+      { id: 1, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
+      { id: 2, title: '함께본상품2', image: '/img/rel2.jpg', price: '25,000원' },
+      { id: 3, title: '함께본상품3', image: '/img/rel3.jpg', price: '18,000원' },
+      { id: 4, title: '함께본상품4', image: '/img/rel4.jpg', price: '35,000원' },
+      { id: 5, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
+      { id: 6, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
     ]
   } catch (error) {
     console.error('관련 상품 로드 실패:', error)

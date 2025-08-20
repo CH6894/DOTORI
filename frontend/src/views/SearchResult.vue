@@ -61,15 +61,20 @@
           class="product_item"
         >
           <div class="product_item_img">
-            <a href="#" class="product_item_link">
-              <!-- 이미지가 없으니 일단 비워둡니다. 필요 시 item.image 추가 -->
+            <router-link
+              class="product_item_link"
+              :to="{ name: 'Product', params: { id: String(item.id) } }"
+            >
               <img src="../assets/1.jpg" :alt="item.name + ' 이미지'" />
-            </a>
+            </router-link>
           </div>
           <div class="product_item_info">
-            <a href="#" class="product_item_title">
+            <router-link
+              class="product_item_title"
+              :to="{ name: 'Product', params: { id: String(item.id) } }"
+            >
               <span>{{ item.name }}</span>
-            </a>
+            </router-link>
             <ul class="price">
               <li class="price"><span>{{ item.price }} 원</span></li>
             </ul>
