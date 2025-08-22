@@ -1,18 +1,16 @@
 <!-- src/components/AppHeader.vue -->
 <template>
   <link rel="stylesheet" href="../assets/global.css">
-<div class="utilbar">
+  <div class="utilbar">
     <div class="container utilbar__inner">
       <div class="utilbar__spacer"></div>
       <nav class="utilbar__links">
-        <a href="#">회원가입</a>
+        <RouterLink :to="{ name: 'login' }">로그인</RouterLink>
         <span aria-hidden="true">/</span>
-        <a href="#">로그인</a>
-        <span aria-hidden="true">/</span>
-        <a href="#">고객센터</a>
+        <RouterLink to="#">고객센터</RouterLink>
       </nav>
-   </div>
-</div>
+    </div>
+  </div>
   <!-- 헤더 -->
   <div class="logo-box">
       <img src="../assets/dotori_logo.svg" alt="DOTORI 로고" class="logo-img" />
@@ -48,27 +46,31 @@
     </form>
 
     <!-- 아이콘 -->
-    <div class="header__icons">
-      <a class="icon-btn" href="#" aria-label="관심 상품">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 21s-8-5.33-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.67-8 11-8 11z" />
-        </svg>
-      </a>
-      <a class="icon-btn" href="#" aria-label="마이페이지">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 20a8 8 0 0 1 16 0" />
-        </svg>
-      </a>
-      <a class="icon-btn" href="#" aria-label="장바구니">
-        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 6h15l-1.5 9h-12z"/>
-          <path d="M6 6L5 3H2"/>
-          <circle cx="9" cy="21" r="1.5"/>
-          <circle cx="18" cy="21" r="1.5"/>
-        </svg>
-      </a>
-    </div>
+        <div class="header__icons">
+          <RouterLink class="icon-btn" :to="{ name: 'mypage-wish' }" aria-label="관심 상품">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s-8-5.33-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.67-8 11-8 11z" fill="currentColor"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </RouterLink>
+          <RouterLink class="icon-btn" :to="{ name: 'mypage' }" aria-label="마이페이지">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" fill="currentColor" stroke="currentColor" stroke-width="1.6" />
+              <path d="M4 20a8 8 0 0 1 16 0" fill="currentColor" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" />
+            </svg>
+          </RouterLink>
+          <RouterLink class="icon-btn" :to="{ name: 'cart' }" aria-label="장바구니">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6h15l-1.5 9h-12z" fill="currentColor" stroke="currentColor" stroke-width="1.6"
+                stroke-linejoin="round" />
+              <path d="M6 6L5 3H2" fill="currentColor" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" />
+              <circle cx="9" cy="21" r="1.5" fill="currentColor" />
+              <circle cx="18" cy="21" r="1.5" fill="currentColor" />
+            </svg>
+          </RouterLink>
+        </div>
   </div>
   </div>
   

@@ -63,7 +63,7 @@
           <div class="product_item_img">
             <router-link
               class="product_item_link"
-              :to="{ name: 'Product', params: { id: String(item.id) } }"
+              :to="{ name: 'product', params: { id: String(item.id) } }"
             >
               <img src="../assets/1.jpg" :alt="item.name + ' 이미지'" />
             </router-link>
@@ -71,7 +71,7 @@
           <div class="product_item_info">
             <router-link
               class="product_item_title"
-              :to="{ name: 'Product', params: { id: String(item.id) } }"
+              :to="{ name: 'product', params: { id: String(item.id) } }"
             >
               <span>{{ item.name }}</span>
             </router-link>
@@ -88,48 +88,39 @@
 </template>
 
 <script>
-import TopCategoryData from "../assets/TopCategoryData.js";
-import MidCategoryData from "../assets/MidCategoryData.js";
-import ItemData from "../assets/ItemData.js";
+import * as TopCat from "../assets/TopCategoryData.js";
+import * as MidCat from "../assets/MidCategoryData.js";
+import * as Items  from "../assets/ItemData.js";
+
+// default 또는 named 어느 쪽이든 대응
+const TopCategoryData = TopCat.default ?? TopCat.TopCategoryData ?? [];
+const MidCategoryData = MidCat.default ?? MidCat.MidCategoryData ?? [];
+const ItemData       = Items.default  ?? Items.ItemData       ?? [];
 
 export default {
-  name: "CategoryTabComponent",
+  name: "SearchResult",
   data() {
     return {
-      activeTop: "Animation", // 기본 선택
-      activeMid: "",          // "" = 전체(서브필터 해제)
-      items: ItemData,        // 전체 아이템(현재 Animation만 포함)
+      activeTop: "Animation",
+      activeMid: "",
+      items: ItemData,
     };
   },
   computed: {
-    topCategories() {
-      return TopCategoryData; // ["Animation","Creator","Game","Kpop","Sports","Webtoon"]
-    },
-    midCategories() {
-      // 요구사항: Animation의 Mid만 존재/표시
-      return this.activeTop === "Animation" ? MidCategoryData : [];
-    },
+    topCategories() { return Array.isArray(TopCategoryData) ? TopCategoryData : []; },
+    midCategories() { return this.activeTop === "Animation" ? MidCategoryData : []; },
     filteredItems() {
-      // Top → Mid 순서로 필터링
-      let list = this.items.filter(i => i.top_category === this.activeTop);
-      if (this.activeMid) {
-        list = list.filter(i => i.mid_category === this.activeMid);
-      }
+      const src = Array.isArray(this.items) ? this.items : [];
+      let list = src.filter(i => i?.top_category === this.activeTop);
+      if (this.activeMid) list = list.filter(i => i?.mid_category === this.activeMid);
       return list;
     },
   },
   methods: {
-    selectTop(cat) {
-      if (this.activeTop === cat) return;
-      this.activeTop = cat;
-      this.activeMid = ""; // Top 바뀌면 Mid 초기화
-    },
-    selectMid(mid) {
-      this.activeMid = mid; // ''이면 전체
-    },
+    selectTop(cat) { if (this.activeTop !== cat) { this.activeTop = cat; this.activeMid = ""; } },
+    selectMid(mid) { this.activeMid = mid; },
   },
 };
-
 </script>
 
 <style>
