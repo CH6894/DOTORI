@@ -1,33 +1,25 @@
+<script setup lang="ts">
+const cats = [
+  { key: "Animation", img: "/img/category/Anime.jpg" },
+  { key: "Webtoon",   img: "/img/category/Webtoon.jpg" },
+  { key: "Game",      img: "/img/category/Game.webp" },
+  { key: "Sports",    img: "/img/category/Sports.webp" },
+  { key: "Creator",   img: "/img/category/Creator.jpg" },
+  { key: "Kpop",      img: "/img/category/KPOP.webp" }, // 파일명 대소문자 확인!
+]
+</script>
+
 <template>
   <div class="category-grid">
-    <a class="cat-card" href="#" aria-label="Animation">
-      <img class="cat-card__img" src="/img/category/Anime.jpg" alt="Animation" />
-      <span class="cat-card__label">Animation</span>
-    </a>
-
-    <a class="cat-card" href="#" aria-label="Webtoon">
-      <img class="cat-card__img" src="/img/category/Webtoon.jpg" alt="Webtoon" />
-      <span class="cat-card__label">Webtoon</span>
-    </a>
-
-    <a class="cat-card" href="#" aria-label="Game">
-      <img class="cat-card__img" src="/img/category/Game.webp" alt="Game" />
-      <span class="cat-card__label">Game</span>
-    </a>
-
-    <a class="cat-card" href="#" aria-label="Sports">
-      <img class="cat-card__img" src="/img/category/Sports.webp" alt="Sports" />
-      <span class="cat-card__label">Sports</span>
-    </a>
-
-    <a class="cat-card" href="#" aria-label="Creator">
-      <img class="cat-card__img" src="/img/category/Creator.jpg" alt="Creator" />
-      <span class="cat-card__label">Creator</span>
-    </a>
-
-    <a class="cat-card" href="#" aria-label="Kpop">
-      <img class="cat-card__img" src="/img/category/KPOP.webp" alt="Kpop" />
-      <span class="cat-card__label">Kpop</span>
-    </a>
+    <RouterLink
+      v-for="c in cats"
+      :key="c.key"
+      class="cat-card"
+      :to="{ name: 'search', query: { top: c.key } }"
+      :aria-label="c.key"
+    >
+      <img class="cat-card__img" :src="c.img" :alt="c.key" />
+      <span class="cat-card__label">{{ c.key }}</span>
+    </RouterLink>
   </div>
 </template>

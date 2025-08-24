@@ -59,8 +59,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import Header from '@/components/AppHeader.vue'
-import Footer from '@/components/AppFooter.vue'
 import ProductInfo from '@/components/ProductInfo.vue'
 import PriceChart from '@/components/PriceChart.vue'
 import UsedProductsSection from '@/components/UsedProductsSection.vue'

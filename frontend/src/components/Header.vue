@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 
-/* ===== 기존 헤더 상태 ===== */
+/* ===== 헤더/퀵바 상태 ===== */
+const router = useRouter()
 const quickOpen = ref(false)
 const headerEl = ref<HTMLElement | null>(null)
 const quickTop = ref<number>(64)
@@ -16,29 +18,39 @@ function measureQuickTop() {
   document.documentElement.style.setProperty('--quickbar-top', `${bottom}px`)
 }
 
-/* ===== 검색 패널 상태/로직 추가 ===== */
+/* 퀵바 카테고리 → /search?top=키 */
+const quickCats = [
+  { label: 'Anime',   key: 'Animation' },
+  { label: 'KPOP',    key: 'Kpop' },
+  { label: 'Game',    key: 'Game' },
+  { label: 'Sports',  key: 'Sports' },
+  { label: 'Webtoon', key: 'Webtoon' },
+  { label: 'Creator', key: 'Creator' },
+]
+
+/* ===== 검색 패널 상태 ===== */
 const searchWrapEl = ref<HTMLElement | null>(null)
 const searchOpen = ref(false)
 const query = ref('')
 
 type PopularItem = { term: string; rank: number; prevRank?: number }
-type RecentItem = { term: string; ts: number }
+type RecentItem  = { term: string; ts: number }
 
-/* 데모 인기 검색어(랭크는 1이 최고) */
+/* 데모 인기 검색어 */
 const popular = ref<PopularItem[]>([
-  { term: '포토카드', rank: 1, prevRank: 3 },
-  { term: '슬리브',   rank: 2, prevRank: 1 },
-  { term: '굿즈 캘린더',     rank: 3, prevRank: 5 },
-  { term: '한정판',     rank: 4, prevRank: 4 },
-  { term: '피규어',     rank: 5, prevRank: 2 },
-  { term: '재입고',     rank: 6, prevRank: 6 },
-  { term: '티켓',     rank: 7, prevRank: 10 },
-  { term: '웰컴키트',        rank: 8, prevRank: 8 },
-  { term: '특전',       rank: 9, prevRank: 7 },
-  { term: '랜덤가챠',        rank: 10, prevRank: 11 },
+  { term: '포토카드',   rank: 1,  prevRank: 3 },
+  { term: '슬리브',     rank: 2,  prevRank: 1 },
+  { term: '굿즈 캘린더', rank: 3,  prevRank: 5 },
+  { term: '한정판',     rank: 4,  prevRank: 4 },
+  { term: '피규어',     rank: 5,  prevRank: 2 },
+  { term: '재입고',     rank: 6,  prevRank: 6 },
+  { term: '티켓',       rank: 7,  prevRank: 10 },
+  { term: '웰컴키트',   rank: 8,  prevRank: 8 },
+  { term: '특전',       rank: 9,  prevRank: 7 },
+  { term: '랜덤가챠',   rank: 10, prevRank: 11 },
 ])
 
-/* 최근 검색어: localStorage에 저장/불러오기 */
+/* 최근 검색어: localStorage */
 const RECENT_KEY = 'recent-searches'
 const recent = ref<RecentItem[]>([])
 
@@ -67,7 +79,7 @@ function clearRecent() {
   saveRecent()
 }
 
-/* 등락 계산: prevRank - rank > 0 이면 상승(▲), <0 하락(▼), =0 보합(—/삼각 회색) */
+/* 등락 표기 */
 function delta(item: PopularItem) {
   if (item.prevRank == null) return 0
   return item.prevRank - item.rank
@@ -81,18 +93,21 @@ function deltaLabel(item: PopularItem) {
   return d > 0 ? `▲${d}` : d < 0 ? `▼${Math.abs(d)}` : '—'
 }
 
-/* 제출/선택 */
+/* ===== 검색 실행/제출 ===== */
+function goSearch(term: string) {
+  const q = term.trim()
+  if (!q) return
+  addRecent(q)
+  searchOpen.value = false
+  router.push({ name: 'search', query: { q } })
+}
 function onSearchSubmit(e?: Event) {
   e?.preventDefault()
-  addRecent(query.value)
-  // TODO: 라우터 연결 시 교체
-  // router.push({ name:'Search', query:{ q: query.value } })
-  // 현재는 주소 이동 없이 패널만 닫음
-  searchOpen.value = false
+  goSearch(query.value)
 }
 function selectTerm(term: string) {
   query.value = term
-  onSearchSubmit()
+  goSearch(term)
 }
 
 /* 포커스/열고닫기 */
@@ -112,7 +127,6 @@ onMounted(async () => {
   window.addEventListener('resize', measureQuickTop, { passive: true })
   window.addEventListener('scroll', measureQuickTop, { passive: true })
   ;(document as any).fonts?.ready?.then?.(measureQuickTop)
-
   document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onEscKey)
 })
@@ -134,11 +148,16 @@ onBeforeUnmount(() => {
         </a>
       </div>
 
-      <!-- 햄버거 + 메뉴 + 검색 + 아이콘 -->
       <div class="header__bottom">
         <!-- 햄버거 버튼 -->
-        <button id="hamburgerBtn" class="icon-btn header__hamburger" :aria-expanded="quickOpen"
-          aria-controls="quickBar" aria-label="메뉴 열기" @click="toggleQuick">
+        <button
+          id="hamburgerBtn"
+          class="icon-btn header__hamburger"
+          :aria-expanded="quickOpen"
+          aria-controls="quickBar"
+          aria-label="메뉴 열기"
+          @click="toggleQuick"
+        >
           <svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true">
             <rect width="22" height="2" y="0" rx="1" />
             <rect width="22" height="2" y="8" rx="1" />
@@ -146,7 +165,7 @@ onBeforeUnmount(() => {
           </svg>
         </button>
 
-        <!-- 메뉴 -->
+        <!-- 상단 메뉴(예시) -->
         <nav class="header__nav">
           <a href="#">도감</a>
           <a href="#">캘린더</a>
@@ -171,7 +190,7 @@ onBeforeUnmount(() => {
             </button>
           </form>
 
-          <!-- 패널 -->
+          <!-- 검색 제안 패널 -->
           <div
             id="searchPanel"
             class="search-panel"
@@ -184,8 +203,12 @@ onBeforeUnmount(() => {
               <section class="panel-section">
                 <div class="panel-title">인기 검색어</div>
                 <ol class="pop-list">
-                  <li v-for="item in popular.slice(0,10)" :key="item.term" class="pop-item">
-                    <button type="button" class="pop-link" @click="selectTerm(item.term)">
+                  <li v-for="item in popular.slice(0, 10)" :key="item.term" class="pop-item">
+                    <button
+                      type="button"
+                      class="pop-link"
+                      @click="selectTerm(item.term)"
+                    >
                       <span class="rank">{{ item.rank }}</span>
                       <span class="term">{{ item.term }}</span>
                       <span class="delta" :class="deltaClass(item)">{{ deltaLabel(item) }}</span>
@@ -211,7 +234,7 @@ onBeforeUnmount(() => {
                 </div>
                 <ul class="recent-list">
                   <li v-if="recent.length === 0" class="recent-empty">최근 검색어가 없습니다.</li>
-                  <li v-for="r in recent.slice(0,10)" :key="r.term" class="recent-item">
+                  <li v-for="r in recent.slice(0, 10)" :key="r.term" class="recent-item">
                     <button type="button" class="recent-link" @click="selectTerm(r.term)">
                       {{ r.term }}
                     </button>
@@ -232,84 +255,97 @@ onBeforeUnmount(() => {
         </div>
         <!-- ===== /검색 ===== -->
 
-        <!-- 아이콘 -->
+        <!-- 우측 아이콘 -->
         <div class="header__icons">
-          <a class="icon-btn" href="#" aria-label="관심 상품">
+          <RouterLink class="icon-btn" :to="{ name: 'mypage-wish' }" aria-label="관심 상품">
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 21s-8-5.33-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.67-8 11-8 11z" fill="currentColor"
                 stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-          </a>
-          <a class="icon-btn" href="#" aria-label="마이페이지">
+          </RouterLink>
+          <RouterLink class="icon-btn" :to="{ name: 'mypage' }" aria-label="마이페이지">
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="8" r="4" fill="currentColor" stroke="currentColor" stroke-width="1.6" />
-              <path d="M4 20a8 8 0 0 1 16 0" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              <path d="M4 20a8 8 0 0 1 16 0" fill="currentColor" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" />
             </svg>
-          </a>
-          <a class="icon-btn" href="#" aria-label="장바구니">
+          </RouterLink>
+          <RouterLink class="icon-btn" :to="{ name: 'cart' }" aria-label="장바구니">
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6h15l-1.5 9h-12z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-              <path d="M6 6L5 3H2" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              <path d="M6 6h15l-1.5 9h-12z" fill="currentColor" stroke="currentColor" stroke-width="1.6"
+                stroke-linejoin="round" />
+              <path d="M6 6L5 3H2" fill="currentColor" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" />
               <circle cx="9" cy="21" r="1.5" fill="currentColor" />
               <circle cx="18" cy="21" r="1.5" fill="currentColor" />
             </svg>
-          </a>
+          </RouterLink>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- 퀵바 -->
-  <div id="quickBar" class="quick-bar" :class="{ 'is-open': quickOpen }" :style="{ top: `${quickTop}px` }"
-    role="region" aria-label="빠른 작업 바">
+  <!-- ===== 퀵바 ===== -->
+  <div
+    id="quickBar"
+    class="quick-bar"
+    :class="{ 'is-open': quickOpen }"
+    :style="{ top: `${quickTop}px` }"
+    role="region"
+    aria-label="빠른 작업 바"
+  >
     <nav class="quick-bar__inner container">
-      <a href="#">Anime</a>
-      <a href="#">KPOP</a>
-      <a href="#">Game</a>
-      <a href="#">Sports</a>
-      <a href="#">Webtoon</a>
-      <a href="#">Creator</a>
+      <RouterLink
+        v-for="c in quickCats"
+        :key="c.key"
+        class="quick-link"
+        :to="{ name: 'search', query: { top: c.key } }"
+        @click="quickOpen = false"
+      >
+        {{ c.label }}
+      </RouterLink>
     </nav>
   </div>
 </template>
 
 <style scoped>
-/* 검색 래퍼: 패널 절대배치 기준 */
+/* 검색 래퍼: 패널 기준 */
 .search-wrap { position: relative; }
 
+/* 검색 폼(너비는 페이지 레이아웃에 맞게 조절) */
+.search { position: relative; width: 400px; }
+.search input[type="search"] { width: 100%; }
+
 /* 패널 박스 */
-.search-panel{
+.search-panel {
   position: absolute;
   top: calc(100% + 8px);
   left: 0; right: 0;
   background: #fff;
   border: 1px solid #eee;
   border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .12);
   padding: 12px;
   z-index: 2000;
 }
 
-/* 패널 레이아웃: 2열 */
-.panel-grid{
+/* 패널 레이아웃 */
+.panel-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 .panel-section { min-width: 0; }
-.panel-title{
+.panel-title {
   font: 700 13px/1 "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: #333;
-  margin: 6px 0 10px;
+  color: #333; margin: 6px 0 10px;
 }
-.panel-title.row{
-  display: flex; align-items: center; justify-content: space-between;
-}
+.panel-title.row { display: flex; align-items: center; justify-content: space-between; }
 
 /* 인기 검색어 */
-.pop-list{ list-style: none; margin: 0; padding: 0; }
+.pop-list { list-style: none; margin: 0; padding: 0; }
 .pop-item + .pop-item { margin-top: 6px; }
-.pop-link{
+.pop-link {
   width: 100%;
   display: grid;
   grid-template-columns: 24px 1fr auto; /* rank, term, delta */
@@ -323,61 +359,54 @@ onBeforeUnmount(() => {
   cursor: pointer;
   text-align: left;
 }
-.pop-link:hover{ background: #f5f5f5; }
-.rank{ font-weight: 700; color:#666; text-align: right; }
-.term{
-  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-}
-.delta{
-  font-size: 12px; color:#888; display:inline-flex; align-items:center; gap:4px;
-}
-.delta.up{ color:#0ea35a; }     /* ▲ 상승 - 초록 */
-.delta.down{ color:#e54848; }   /* ▼ 하락 - 빨강 */
-.delta.same{ color:#9aa0a6; }   /* — 보합 - 회색 */
+.pop-link:hover { background: #f5f5f5; }
+.rank { font-weight: 700; color: #666; text-align: right; }
+.term { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.delta { font-size: 12px; color: #888; display: inline-flex; align-items: center; gap: 4px; }
+.delta.up { color: #0ea35a; }   /* ▲ 상승 */
+.delta.down { color: #e54848; } /* ▼ 하락 */
+.delta.same { color: #9aa0a6; } /* — 보합 */
 
 /* 최근 검색어 */
-.recent-list{ list-style:none; margin:0; padding:0; }
-.recent-empty{
-  padding: 8px 10px; color:#9aa0a6; background:#fafafa; border-radius:8px;
+.recent-list { list-style: none; margin: 0; padding: 0; }
+.recent-empty {
+  padding: 8px 10px; color: #9aa0a6;
+  background: #fafafa; border-radius: 8px;
 }
-.recent-item{
+.recent-item {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
-  align-items: center;
+  gap: 8px; align-items: center;
   padding: 6px 0;
 }
-.recent-link{
+.recent-link {
   max-width: 100%;
   padding: 8px 10px;
   border-radius: 8px;
-  background:#fafafa;
+  background: #fafafa;
   border: 1px solid transparent;
   text-align: left;
   overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 }
-.recent-link:hover{ background:#f5f5f5; }
-.recent-del{
+.recent-link:hover { background: #f5f5f5; }
+.recent-del {
   width: 28px; height: 28px;
-  border: 1px solid #eee; border-radius: 6px; background:#fff; color:#666;
-  cursor: pointer;
+  border: 1px solid #eee; border-radius: 6px;
+  background: #fff; color: #666; cursor: pointer;
 }
-.recent-del:hover{ background:#f8f8f8; }
-.clear-all{
-  border: none; background: transparent; cursor: pointer;
-  color:#888; font-size:12px;
-}
-.clear-all:hover{ color:#555; }
+.recent-del:hover { background: #f8f8f8; }
+.clear-all { border: none; background: transparent; cursor: pointer; color: #888; font-size: 12px; }
+.clear-all:hover { color: #555; }
 
-/* 입력창 자체는 기존 스타일 유지 가정, 필요한 경우 보강 */
-.search { position: relative; } /* 패널 기준이 form이면 이걸로도 OK */
-.search input[type="search"]{ width: 100%; }
-
-/* 작은 화면에서 1열로 */
-@media (max-width: 768px){
-  .panel-grid{ grid-template-columns: 1fr; }
+/* 퀵바 링크 */
+.quick-link {
+  color: inherit; text-decoration: none;
+  padding: 0 8px; font-weight: 700; white-space: nowrap;
 }
-.search {
-    width : 400px;
+.quick-link:hover { text-decoration: underline; }
+
+/* 작은 화면에서 1열 */
+@media (max-width: 768px) {
+  .panel-grid { grid-template-columns: 1fr; }
 }
 </style>
