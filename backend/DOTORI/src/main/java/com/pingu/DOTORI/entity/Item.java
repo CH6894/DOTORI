@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity @Table(name = "Item")
+@Entity @Table(name = "item")
 public class Item {
 
     @Id
@@ -15,36 +15,36 @@ public class Item {
     @EqualsAndHashCode.Include
     private String ean;
 
-    @Column(name = "Name", nullable = false, length = 255)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
 
-    @Column(name = "Title", nullable = false, length = 255)
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @Column(name = "Manufacturer", length = 255)
+    @Column(name = "manufacturer", length = 255)
     private String manufacturer;
 
-    @Column(name = "Texture", length = 255)
+    @Column(name = "texture", length = 255)
     private String texture;
 
-    @Column(name = "Release_Date")
+    @Column(name = "release_Date")
     private LocalDate releaseDate;
 
-    @Column(name = "Size", nullable = false, length = 100)
+    @Column(name = "size", nullable = false, length = 100)
     private String size;
 
     @Lob
-    @Column(name = "Information")
+    @Column(name = "information")
     private String information;
 
     @Lob
-    @Column(name = "Img_URL", unique = true)
+    @Column(name = "img_url", unique = true)
     private String imgUrl;
 
-    @Column(name = "StorageFees", nullable = false)
+    @Column(name = "storage_fees", nullable = false)
     private Long storageFees;
 
-    @Column(name = "Genre", nullable = false, length = 100)
+    @Column(name = "genre", nullable = false, length = 100)
     private String genre;
 
     // Relations
