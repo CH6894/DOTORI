@@ -274,8 +274,8 @@ onMounted(() => {
   padding: 24px;
 }
 .modal {
-  width: min(860px, 100%);
-  min-height: min(560px, 100%);
+  width:min(1200px,95vw); 
+  height:min(850px,50vw);
   overflow: auto;
   background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,.18);
   padding: 20px 20px 12px; outline: none;
@@ -290,7 +290,7 @@ onMounted(() => {
 .progress__text { display:block; font-size: 12px; color: #6b7280; margin-top: 6px; }
 
 /* --- Dropzone --- */
-.dropzone { border: 2px dashed #d1d5db; border-radius: 14px; padding: 18px; background: #fafafa; margin-top: 12px; }
+.dropzone { border: 2px dashed #d1d5db; border-radius: 14px; padding: 48px; background: #fafafa; margin-top: 12px; }
 .dropzone--drag { background: #eef2ff; border-color: #6366f1; }
 .dropzone__input { position: absolute; opacity: 0; pointer-events: none; }
 .dropzone__content { text-align: center; cursor: pointer; }
@@ -317,7 +317,7 @@ onMounted(() => {
 .size { background:#ffffffd9; border:1px solid #e5e7eb; backdrop-filter: blur(2px); font-size: 11px; padding:2px 6px; border-radius: 999px; }
 .card__actions { display:flex; gap:6px; padding:8px; justify-content: space-between; }
 .caption { display:flex; flex-direction: column; gap: 6px; padding: 0 10px 10px; }
-.caption__label { font-size: 12px; color:#6b7280; }
+.caption__label { font-size: 15px; color:#6b7280; }
 .caption__input { border:1px solid #e5e7eb; border-radius: 10px; padding: 8px 10px; font-size: 14px; }
 
 /* --- Footer --- */
@@ -331,7 +331,7 @@ onMounted(() => {
 .btn--primary { background:#111827; color:#fff; border-color:#111827; }
 .btn--ghost.danger { color:#dc2626; border-color:#fecaca; }
 
-.fine { margin: 10px 2px 2px; color:#6b7280; font-size: 12px; }
+.fine { margin: 10px 2px 2px; color:#6b7280; font-size: 15px; }
 
 /* --- Mobile tweaks --- */
 @media (max-width: 560px) {
