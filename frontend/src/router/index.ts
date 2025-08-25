@@ -12,6 +12,7 @@ const ProductInfo = () => import("@/views/ProductInfo.vue");
 const LoginView = () => import("@/views/LoginView.vue");
 const CheckoutPage = () => import("@/views/CheckoutPage.vue");
 const OrderComplete = () => import("@/views/OrderComplete.vue");
+
 /* ===== admin/verify & oauth ===== */
 const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
 const AdminPage = () => import("@/views/AdminPage.vue");
@@ -19,8 +20,9 @@ const OAuthCallback = () => import("@/pages/OAuthCallback.vue");
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
 const DexView = () => import("@/views/DexView.vue");
-const CalendarView = () => import("@/views/CalendarView.vue");
-const InspectionView = () => import("@/views/InspectionView.vue");
+const CalendarView = () => import("@/views/CalendarPage.vue");
+const CalendarManager = () => import("@/views/CalendarManager.vue");
+const InspectionView = () => import("@/views/InspectionPage.vue");
 
 /* ===== MyPage & children ===== */
 const MyPage = () => import("@/views/MyPage.vue");
@@ -32,6 +34,7 @@ const MyPageWish = () => import("@/components/mypage/MyPageWish.vue");
 
 /* ===== Cart ===== */
 const ShoppingCart = () => import("@/views/ShoppingCart.vue");
+
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
@@ -160,6 +163,7 @@ const routes: RouteRecordRaw[] = [
     meta: { header: "main", footer: true },
   },
 ];
+
 
 /* ===== router ===== */
 const router = createRouter({
