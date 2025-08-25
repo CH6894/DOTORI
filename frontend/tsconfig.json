@@ -1,13 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "ESNext",                 // import.meta 허용
+    "moduleResolution": "Bundler",      // Vite 권장
     "strict": true,
     "jsx": "preserve",
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] },
-    "types": ["vite/client"]
+    "paths": { "@/*": ["src/*"] },      // @ 별칭 → src
+    "types": ["vite/client", "node"],   // import.meta.env / Node 타입
+    "noEmit": true
   },
-  "include": ["src/**/*", "src/env.d.ts"]
+  "include": [
+    "src/**/*",
+    "src/env.d.ts",
+    "vite.config.ts"                    // vite 설정도 타입체크
+  ]
 }

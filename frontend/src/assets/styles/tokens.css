@@ -1,0 +1,12 @@
+:root {
+  --ink: #2d251c;
+  --muted: #7b6d5d;
+  --card: #eee7d5;
+  --card-2: #f2ecdf;
+  --beige: #f7f2e6;
+  --accent: #a83b32;
+  --accent-2: #c54b40;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --radius: 18px;
+  --quickbar-height: 50px;
+}

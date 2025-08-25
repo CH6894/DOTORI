@@ -10,3 +10,25 @@
     </div>
   </div>
 </template>
+<style scoped>
+/* ---------- Util bar ---------- */
+.utilbar {
+  background: #f5efdf;
+  border-bottom: 1px solid #ece4d1;
+  font-size: 12px;
+  color: #847768;
+}
+.utilbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+}
+.utilbar__links a {
+  padding: 0 8px;
+}
+.utilbar__links span {
+  color: #c4b9a9;
+}
+
+</style>

@@ -8,7 +8,6 @@ import CategoryGrid from '../components/CategoryGrid.vue'
 import ProductGrid from '../components/ProductGrid.vue'
 import TopButton from '../components/TopButton.vue'
 import ChatbotFab from '../components/ChatbotFab.vue'
-import "@/assets/styles/main.css"
 
 </script>
 
@@ -88,7 +87,20 @@ body.home::after {
   background-image: url("./img/Down_BG.svg");
   background-position: center bottom;
 }
-
+/* ---------- Filters ---------- */
+.filters {
+  text-align: center;
+  margin: 4px 0 18px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.filters a {
+  padding: 0 4px;
+}
+.filters a:hover {
+  text-decoration: none;
+  color: var(--accent-2);
+}
 /* (선택) 반응형 높이: 화면 넓으면 조금 더 크게 */
 @media (min-width: 960px) {
   body.home::before,

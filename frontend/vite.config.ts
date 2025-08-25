@@ -1,19 +1,15 @@
-// vite.config.ts
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
-    // 프로젝트 루트 기준 절대 경로 별칭
-    alias: { '@': '/src' },
-  },
-  build: {
-    outDir: "../backend/src/main/resources/static"
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)) // __dirname 불필요, ESM 안전
+    }
   },
   server: {
-    proxy: {
-      '/api': { target: 'http://localhost:8081', changeOrigin: true }
-    },
-  },
+    proxy: { '/api': { target: 'http://localhost:8080', changeOrigin: true } }
+  }
 })

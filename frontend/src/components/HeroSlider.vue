@@ -68,32 +68,50 @@ onBeforeUnmount(stopAuto)
 </template>
 
 <style scoped>
+/* ---------- Hero Slider ---------- */
 .hero-slider {
   position: relative;
+  padding-top: 12px;
 }
 
 .hero-viewport {
   overflow: hidden;
+  border-radius: 24px;
 }
 
 .hero-track {
   display: flex;
-  transition: transform .5s ease;
+  will-change: transform;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* 각 슬라이드 */
 .hero-slide {
+  flex: 0 0 100%;
   min-width: 100%;
   position: relative;
   display: block;
   height: 360px;
   overflow: hidden;
+  text-decoration: none;
+  /* 링크 밑줄 제거 */
 }
 
-/* 이미지 영역 */
+.hero-slide:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 이미지 */
 .hero__art {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
+  /* 통일 */
+  border-radius: 18px;
+  background: radial-gradient(80px 80px at 20% 80%, #ffcfed33 0, transparent 60%),
+    radial-gradient(80px 80px at 70% 20%, #8ad3ff33 0, transparent 60%),
+    linear-gradient(135deg, #2b262d, #1f1a23);
 }
 
 .hero__art img {
@@ -104,6 +122,13 @@ onBeforeUnmount(stopAuto)
   display: block;
 }
 
+.hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 /* 텍스트 */
 .hero__content {
   position: relative;
@@ -111,6 +136,32 @@ onBeforeUnmount(stopAuto)
   color: #fff;
   padding: 40px 6vw;
   text-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+  align-self: center;
+}
+
+.hero h1 {
+  font-size: 40px;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  letter-spacing: -0.5px;
+}
+
+.hero__sub {
+  margin: 0;
+  color: #d6cde8;
+}
+
+/* Hero 장식 */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(2px 2px at 10% 20%, #fff8 50%, transparent 51%) repeat,
+    radial-gradient(1.5px 1.5px at 80% 30%, #fff6 50%, transparent 51%) repeat,
+    radial-gradient(1.5px 1.5px at 45% 70%, #fff7 50%, transparent 51%) repeat;
+  background-size: 180px 140px, 220px 160px, 200px 140px;
+  pointer-events: none;
 }
 
 /* 좌우 버튼 */
@@ -129,33 +180,43 @@ onBeforeUnmount(stopAuto)
 }
 
 .hero-btn.prev {
-  left: 8px;
+  left: 10px;
 }
 
 .hero-btn.next {
-  right: 8px;
+  right: 10px;
 }
 
-/* 점 네비 */
+.hero-btn:hover {
+  filter: brightness(1.03);
+}
+
+/* 인디케이터 (dots) */
 .hero-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
   display: flex;
   gap: 8px;
-  justify-content: center;
-  margin-top: 10px;
-  position: relative;
-  z-index: 2;
+  padding: 16px;
+  z-index: 5;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.hero-dots button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;      
   border: 0;
-  background: #cfcfcf;
+  background: #d7cbbb;    
   cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-.dot.active {
-  background: #333;
+/* 모션 줄이기 선호 시 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-track {
+    transition: none;
+  }
 }
 </style>
