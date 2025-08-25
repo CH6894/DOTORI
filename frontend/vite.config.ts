@@ -8,9 +8,12 @@ export default defineConfig({
     // 프로젝트 루트 기준 절대 경로 별칭
     alias: { '@': '/src' },
   },
+  build: {
+    outDir: "../backend/src/main/resources/static"
+  },
   server: {
     proxy: {
-      '/api': { target: 'http://localhost:8080', changeOrigin: true }
+      '/api': { target: 'http://localhost:8081', changeOrigin: true }
     },
   },
 })
