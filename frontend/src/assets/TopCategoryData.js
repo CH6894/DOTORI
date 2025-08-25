@@ -1,2 +1,2 @@
-const TopCategoryData = ["Animation","Creator","Game","Kpop","Sports","Webtoon"]
+const TopCategoryData = ["Animation","KPOP","Game","Sports","Webtoon", "Creator"]
 export default TopCategoryData;
