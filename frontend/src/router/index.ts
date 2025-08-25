@@ -14,7 +14,6 @@ const CheckoutPage = () => import("@/views/CheckoutPage.vue");
 const OrderComplete = () => import("@/views/OrderComplete.vue");
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
-const DexView = () => import("@/views/DexView.vue");
 const CalendarView = () => import("@/views/CalendarView.vue");
 const InspectionView = () => import("@/views/InspectionView.vue");
 
@@ -28,6 +27,7 @@ const MyPageWish = () => import("@/components/mypage/MyPageWish.vue");
 
 /* ===== Cart ===== */
 const ShoppingCart = () => import("@/views/ShoppingCart.vue");
+const Dex = () => import("@/views/Dex.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
@@ -49,13 +49,13 @@ const routes: RouteRecordRaw[] = [
     path: "/search",
     name: "search",
     component: SearchResult,
-    meta: { header: "main", footer: true, utilbar: false },
+    meta: { header: "main", footer: true, utilbar: true },
   },
   {
     path: "/product/:id",
     name: "product",
     component: ProductInfo,
-    meta: { header: "main", footer: true, utilbar: false },
+    meta: { header: "main", footer: true, utilbar: true },
   },
 
   // 로그인
@@ -66,7 +66,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       header: "main",
       footer: true,
-      utilbar: false,
+      utilbar: true,
       chatbot: true,
       topbtn: true,
     },
@@ -75,14 +75,14 @@ const routes: RouteRecordRaw[] = [
     path: "/mypage",
     name: "mypage",
     component: MyPage,
-    meta: { requiresAuth: true, header: "main", footer: true, utilbar: false },
+    meta: { requiresAuth: true, header: "main", footer: true, utilbar: true },
     children: [
       { path: "", name: "mypage-index", redirect: { name: "mypage-orders" } },
       { path: "orders", name: "mypage-orders", component: MyPageOrders },
       { path: "sales", name: "mypage-sales", component: MyPageSales },
       { path: "ship", name: "mypage-ship", component: MyPageShip },
       { path: "storage", name: "mypage-storage", component: MyPageStorage },
-      { path: "wish", name: "mypage-wish", component: MyPageWish }, 
+      { path: "wish", name: "mypage-wish", component: MyPageWish },
     ],
   },
 
@@ -95,7 +95,7 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: true,
       header: "main",
       footer: true,
-      utilbar: false,
+      utilbar: true,
       chatbot: true,
       topbtn: true,
     },
@@ -108,7 +108,7 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: true,
       header: "main",
       footer: true,
-      utilbar: false,
+      utilbar: true,
       chatbot: true,
       topbtn: true,
     },
@@ -119,14 +119,15 @@ const routes: RouteRecordRaw[] = [
     path: "/cart",
     name: "cart",
     component: ShoppingCart,
-    meta: { header: "main", footer: true, utilbar: false },
+    meta: { header: "main", footer: true, utilbar: true },
   },
 
   // 도감/캘린더/검수기준 (페이지 스텁 가능)
+
   {
     path: "/dex",
-    name: "dex",
-    component: DexView,
+    name: "collection",
+    component: Dex,
     meta: { header: "main", footer: true },
   },
   {
