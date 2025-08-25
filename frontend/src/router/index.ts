@@ -12,6 +12,10 @@ const ProductInfo = () => import("@/views/ProductInfo.vue");
 const LoginView = () => import("@/views/LoginView.vue");
 const CheckoutPage = () => import("@/views/CheckoutPage.vue");
 const OrderComplete = () => import("@/views/OrderComplete.vue");
+/* ===== admin/verify & oauth ===== */
+const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
+const AdminPage = () => import("@/views/AdminPage.vue");
+const OAuthCallback = () => import("@/pages/OAuthCallback.vue");
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
 const DexView = () => import("@/views/DexView.vue");
@@ -31,7 +35,8 @@ const ShoppingCart = () => import("@/views/ShoppingCart.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
-  return !!localStorage.getItem("authToken");
+  // Pinia store에서 사용하는 키와 통일: 'accessToken'
+  return !!localStorage.getItem("accessToken");
 }
 
 /* ===== routes ===== */
@@ -49,13 +54,13 @@ const routes: RouteRecordRaw[] = [
     path: "/search",
     name: "search",
     component: SearchResult,
-    meta: { header: "main", footer: true, utilbar: false },
+    meta: { header: "main", footer: true, utilbar: true },
   },
   {
     path: "/product/:id",
     name: "product",
     component: ProductInfo,
-    meta: { header: "main", footer: true, utilbar: false },
+    meta: { header: "main", footer: true, utilbar: true },
   },
 
   // 로그인
@@ -66,7 +71,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       header: "main",
       footer: true,
-      utilbar: false,
+      utilbar: true,
       chatbot: true,
       topbtn: true,
     },
@@ -75,7 +80,7 @@ const routes: RouteRecordRaw[] = [
     path: "/mypage",
     name: "mypage",
     component: MyPage,
-    meta: { requiresAuth: true, header: "main", footer: true, utilbar: false },
+    meta: { requiresAuth: true, header: "main", footer: true, utilbar: true },
     children: [
       { path: "", name: "mypage-index", redirect: { name: "mypage-orders" } },
       { path: "orders", name: "mypage-orders", component: MyPageOrders },
@@ -95,7 +100,7 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: true,
       header: "main",
       footer: true,
-      utilbar: false,
+      utilbar: true,
       chatbot: true,
       topbtn: true,
     },
@@ -108,18 +113,23 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: true,
       header: "main",
       footer: true,
-      utilbar: false,
+      utilbar: true,
       chatbot: true,
       topbtn: true,
     },
   },
+
+  // 인증/관리 보조 페이지
+  { path: "/verify-upload", name: "verify-upload", component: VerifyUploadPage, meta: { header: "main", footer: true } },
+  { path: "/admin", name: "admin", component: AdminPage, meta: { header: "main", footer: true } },
+  { path: "/oauth2/callback", name: "oauth-callback", component: OAuthCallback, meta: { header: "main", footer: false, utilbar: true } },
 
   // 장바구니
   {
     path: "/cart",
     name: "cart",
     component: ShoppingCart,
-    meta: { header: "main", footer: true, utilbar: false },
+    meta: { header: "main", footer: true, utilbar: true },
   },
 
   // 도감/캘린더/검수기준 (페이지 스텁 가능)

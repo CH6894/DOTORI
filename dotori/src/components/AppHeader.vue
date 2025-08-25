@@ -5,8 +5,9 @@
     <div class="container utilbar__inner">
       <div class="utilbar__spacer"></div>
       <nav class="utilbar__links">
-        <a v-if="!isAuthed" href="javascript:;" @click="loginNaver">로그인</a>
-        <a v-else href="javascript:;" @click="logout">로그아웃</a>
+        <a href="#">회원가입</a>
+        <span aria-hidden="true">/</span>
+        <a href="#">로그인</a>
         <span aria-hidden="true">/</span>
         <a href="#">고객센터</a>
       </nav>
@@ -47,31 +48,27 @@
     </form>
 
     <!-- 아이콘 -->
-        <div class="header__icons">
-          <RouterLink class="icon-btn" :to="{ name: 'mypage-wish' }" aria-label="관심 상품">
-            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 21s-8-5.33-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.67-8 11-8 11z" fill="currentColor"
-                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </RouterLink>
-          <RouterLink class="icon-btn" :to="{ name: 'mypage' }" aria-label="마이페이지">
-            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="8" r="4" fill="currentColor" stroke="currentColor" stroke-width="1.6" />
-              <path d="M4 20a8 8 0 0 1 16 0" fill="currentColor" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" />
-            </svg>
-          </RouterLink>
-          <RouterLink class="icon-btn" :to="{ name: 'cart' }" aria-label="장바구니">
-            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6 6h15l-1.5 9h-12z" fill="currentColor" stroke="currentColor" stroke-width="1.6"
-                stroke-linejoin="round" />
-              <path d="M6 6L5 3H2" fill="currentColor" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" />
-              <circle cx="9" cy="21" r="1.5" fill="currentColor" />
-              <circle cx="18" cy="21" r="1.5" fill="currentColor" />
-            </svg>
-          </RouterLink>
-        </div>
+    <div class="header__icons">
+      <a class="icon-btn" href="#" aria-label="관심 상품">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 21s-8-5.33-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.67-8 11-8 11z" />
+        </svg>
+      </a>
+      <a class="icon-btn" href="#" aria-label="마이페이지">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20a8 8 0 0 1 16 0" />
+        </svg>
+      </a>
+      <a class="icon-btn" href="#" aria-label="장바구니">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6h15l-1.5 9h-12z"/>
+          <path d="M6 6L5 3H2"/>
+          <circle cx="9" cy="21" r="1.5"/>
+          <circle cx="18" cy="21" r="1.5"/>
+        </svg>
+      </a>
+    </div>
   </div>
   </div>
   
@@ -80,59 +77,10 @@
 </template>
 
 
-<script setup>
-import { ref, onMounted } from 'vue'
-
-const isAuthed = ref(false)
-const API_BASE = 'http://192.168.198.1:8085'
-
-// 현재 로그인 상태 반영
-function syncAuth() {
-  isAuthed.value = !!localStorage.getItem('accessToken')
-}
-
-async function logout() {
-  try {
-    // 세션/쿠키 로그아웃(있다면)
-    await fetch(`${API_BASE}/logout`, {
-      method: 'POST',
-      credentials: 'include', // JSESSIONID 보내기
-    })
-  } catch (_) {
-    // JWT만 쓰면 실패 무시해도 됨
-  } finally {
-    // 클라이언트 토큰 제거
-    localStorage.removeItem('accessToken')
-    syncAuth()
-    // 원하는 페이지로
-    window.location.href = '/login'
-  }
-}
-
-function loginNaver() {
-  window.location.assign(`${API_BASE}/oauth2/authorization/naver`)
-}
-
-onMounted(() => {
-  // 기존 syncAuth
-  syncAuth()
-
-  // ✅ URL에 토큰이 있으면 localStorage에 저장
-  const params = new URLSearchParams(window.location.search)
-  const token = params.get("token")
-  if (token) {
-    localStorage.setItem("accessToken", token)
-    syncAuth()
-
-    // 토큰 저장 후 URL 깔끔하게 정리
-    window.history.replaceState({}, document.title, window.location.pathname)
-  }
-
-  // 다른 탭과 동기화
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'accessToken') syncAuth()
-  })
-})
+<script>
+    export default{
+        name:'HeaderComponent'
+    }
 </script>   
 
 <style>
@@ -218,6 +166,7 @@ onMounted(() => {
   font-size: 17px;
   color:#000;
   text-decoration:none;
+  white-space: nowrap;
 }
 .nav-link:hover { 
   background: #fff0df;
@@ -250,8 +199,8 @@ onMounted(() => {
 
 
 .header__inner {
-  max-width: 1500px;            /* 컨텐츠 폭 제한 */
-  margin: 0 auto;               /* 가운데 정렬 */
+  max-width: 1500px;           
+  margin: 0 auto;              
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -264,11 +213,11 @@ onMounted(() => {
 
 .header__bottom {
   width: 100%;   
-  height: 50px;              /* 부모 100% 대신 화면 전체 */
+  height: 50px;             
   display: flex;
   justify-content: flex-start;
   gap: 0px;
-  background: #F4F3E6;             /* 좌우 살짝 여백만 */
+  background: #F4F3E6;            
   box-sizing: border-box;
 }
 /* 추가 1 */

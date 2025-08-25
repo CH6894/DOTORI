@@ -1,25 +1,19 @@
-<!-- src/views/LoginView.vue -->
 <template>
-   <div class="page">
+  <div class="page">
     <main class="auth">
       <section class="auth-card" role="region" aria-labelledby="authTitle">
         <h1 id="authTitle" class="auth-title">간편 로그인</h1>
 
         <div class="btn-col">
-          <!-- 네이버 -->
-          <button class="btn btn-naver" @click="loginNaver('naver')" aria-label="네이버로 계속하기">
+          <button class="btn btn-naver" @click="loginWithNaver" aria-label="네이버로 계속하기">
             <span class="btn__icon" aria-hidden="true">
-              <!-- N 로고 -->
               <svg viewBox="0 0 24 24"><path fill="#fff" d="M6 4h5.3l6.7 9.1V4H24v16h-5.3L12 10.9V20H6z"/></svg>
             </span>
             <span class="btn__text">네이버로 계속하기</span>
-          
           </button>
 
-          <!-- 카카오 -->
           <button class="btn btn-kakao" @click="handleSocialLogin('kakao')" aria-label="카카오로 계속하기">
             <span class="btn__icon" aria-hidden="true">
-              <!-- 카톡 말풍선 -->
               <svg viewBox="0 0 24 24">
                 <path fill="#391B1B" d="M12 3C6.5 3 2 6.5 2 10.7c0 2.5 1.7 4.7 4.3 6.1L5.5 21l4-2.1c.8.1 1.6.2 2.5.2 5.5 0 10-3.5 10-7.8S17.5 3 12 3z"/>
               </svg>
@@ -27,10 +21,8 @@
             <span class="btn__text">카카오로 계속하기</span>
           </button>
 
-          <!-- 구글 -->
           <button class="btn btn-google" @click="handleSocialLogin('google')" aria-label="구글로 계속하기">
             <span class="btn__icon" aria-hidden="true">
-              <!-- G 로고 -->
               <svg viewBox="0 0 24 24">
                 <path fill="#EA4335" d="M12 10.2v3.7h5.2c-.2 1.3-1.6 3.7-5.2 3.7A6 6 0 1 1 12 6c1.6 0 2.6.6 3.2 1.2l2.2-2.2C16.2 3.8 14.3 3 12 3a9 9 0 1 0 0 18c5.2 0 8.7-3.7 8.7-8.9 0-.6-.1-1.2-.2-1.7z"/>
                 <path fill="#4285F4" d="M22.7 12.1c0-.6-.1-1.2-.2-1.7H12v3.7h5.2c-.2 1.3-1.6 3.7-5.2 3.7v3.6c5.2 0 8.7-3.7 8.7-8.9z"/>
@@ -46,30 +38,36 @@
       </section>
     </main>
   </div>
-
-
 </template>
 
 <script setup>
-// import { OAUTH } from '@/config'
+import { OAUTH } from '@/config'
 
-// function loginWithNaver(){
-//   window.location.href = OAUTH.naver
-// }
-function handleSocialLogin(provider){
-  // 아직 백엔드 준비 전이므로 임시 비활성/안내
-  alert(`${provider}는 백엔드 연결 후 활성화됩니다.`)
+function generateRandomString(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }
 
-const loginNaver = () => {
-  window.location.href = 'http://192.168.198.1:8085/oauth2/authorization/naver';
+function loginWithNaver() {
+  const state = generateRandomString(10);
+  const naverLoginUrl = OAUTH.naver.replace('YOUR_STATE', state);
+  window.location.href = naverLoginUrl;
+}
+
+function handleSocialLogin(provider) {
+  alert(`${provider}는 백엔드 연결 후 활성화됩니다.`)
 }
 </script>
 
 <style scoped>
 /* 페이지 래퍼 */
 .page{
-  margin-top:-100px;  
+  margin-top:-100px;
   min-height: 75vh;
   display: flex; flex-direction: column;
 }
@@ -115,7 +113,7 @@ const loginNaver = () => {
 }
 .btn__icon{
   display: grid; place-items: center;
-  width: 40px; height: 40px; margin-left: 80px;
+  width: 40px; height: 40px; margin-left: 135px;
 }
 .btn__icon svg{ width: 26px; height: 26px; display: block; }
 .btn__text{ justify-self: center; }
