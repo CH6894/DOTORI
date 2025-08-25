@@ -1,4 +1,6 @@
 <template>
+    <teleport to="body">
+
   <div class="modal-overlay" @click="closeModal">
     <div class="modal-container" @click.stop>
       <!-- 모달 헤더 -->
@@ -119,6 +121,8 @@
       </div>
     </div>
   </div>
+    </teleport>
+
 </template>
 
 <script setup>

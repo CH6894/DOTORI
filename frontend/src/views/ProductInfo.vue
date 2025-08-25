@@ -139,7 +139,7 @@ const fetchUsedItems = async () => {
       {
         id: 1,
         title: '세가 귀멸의 칼날 피규어',
-        description: 'dmdkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk',
+        description: 'dmdkkkkkkkkkkkk',
         price: 22000,
         originalPrice: 25000,
         condition: 'excellent',

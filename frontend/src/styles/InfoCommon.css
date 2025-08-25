@@ -80,7 +80,7 @@
 }
 
 .indicator.active {
-  background: #FC703C; /* 통일된 색상 */
+  background: #fc703c; /* 통일된 색상 */
   transform: scale(1.2);
 }
 
@@ -182,13 +182,12 @@
 
 .heart-btn:hover,
 .like-btn:hover {
-  border-color: #FC703C;
+  border-color: #fc703c;
 }
-
 
 .heart-btn:hover .heart-icon,
 .like-btn:hover .like-icon {
-  color: #FC703C;
+  color: #fc703c;
 }
 
 .heart-icon,
@@ -200,12 +199,12 @@
 
 .heart-icon.active,
 .like-icon.active {
-  color: #FC703C;
+  color: #fc703c;
 }
 
 /* 구매 버튼 공통 스타일 */
 .purchase-btn {
-  background: #FC703C;
+  background: #fc703c;
   border: none;
   color: white;
   flex: 1;
@@ -231,7 +230,7 @@
 .cart-btn:hover {
   background: #5a6268;
 }
-/* ===== 공통 모달 스타일 ===== */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -242,10 +241,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1001;
+  z-index: 1100; 
 }
 
 .modal-container {
+  position: relative;
+
   background: white;
   border-radius: 16px;
   max-width: 900px;
