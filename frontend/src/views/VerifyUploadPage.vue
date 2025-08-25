@@ -18,7 +18,7 @@
 import { ref, onMounted } from 'vue'
 // import Header from '../components/AppHeader.vue'
 // import Footer from '../components/AppFooter.vue'
-import UploadVerifyModal from '../components/UploadVerifyModal.vue'
+import UploadVerifyModal from '@/components/UploadVerifyModal.vue'
 
 const open = ref(false)
 // 페이지 들어오자마자 띄워보고 싶으면 주석 해제

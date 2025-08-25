@@ -9,6 +9,7 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) }, 
   },
   server: {
-    proxy: { '/api': { target: 'http://localhost:8081', changeOrigin: true } }
+    host: '0.0.0.0', 
+    port: 5173,
   }
 })

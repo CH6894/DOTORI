@@ -3,12 +3,12 @@
 import { computed } from "vue"
 import { useRoute, RouterView } from "vue-router"
 
-import UtilityBar from "@/components/UtilBar.vue"
-import MainHeader from "@/components/Header.vue"        // 메인 헤더
-import AppHeader  from "@/components/AppHeader.vue"     // 서브 헤더
-import AppFooter  from "@/components/AppFooter.vue"
-import ChatbotFab from "@/components/ChatbotFab.vue"
-import TopButton  from "@/components/TopButton.vue"
+import UtilityBar from "./components/UtilBar.vue"
+import MainHeader from "./components/Header.vue"        // 메인 헤더
+import AppHeader  from "./components/AppHeader.vue"     // 서브 헤더
+import AppFooter  from "./components/AppFooter.vue"
+import ChatbotFab from "./components/ChatbotFab.vue"
+import TopButton  from "./components/TopButton.vue"
 
 type HeaderKind = "main" | "sub" | "none"
 
