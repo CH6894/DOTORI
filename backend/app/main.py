@@ -55,7 +55,6 @@ async def root():
         "docs": "/docs",
         "endpoints": {
             "pdf_chat": "/api/chat",
-            "general_chat": "/api/chat/general",
             "health": "/api/health"
         }
     }

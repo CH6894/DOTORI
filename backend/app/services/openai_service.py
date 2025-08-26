@@ -7,6 +7,7 @@ from langchain.memory import ConversationSummaryMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
 
 from app.config.settings import settings
 from app.models.chat import ChatMessage, MessageRole
@@ -48,7 +49,7 @@ class OpenAIService:
         """문서 로딩 및 벡터스토어 설정"""
         try:
             # PDF 경로
-            pdf_path = "C:\\Users\\smhrd\\Documents\\mbti.pdf"
+            pdf_path = "C:\\Users\\smhrd\\Documents\\figure_dummy_200.pdf"
             
             # PDF 로딩
             logger.info(f"📄 PDF 문서 로딩 중: {pdf_path}")
@@ -69,14 +70,37 @@ class OpenAIService:
                 documents=texts,
                 embedding=self.embeddings
             )
-            self.retriever = self.vectorstore.as_retriever()
+            self.retriever = self.vectorstore.as_retriever(search_kwargs={"k": 5})
             
-            # RetrievalQA 체인 생성
+            # 피규어 전문 프롬프트 템플릿 생성
+            prompt_template = """당신은 피규어 전문 쇼핑몰의 AI 어시스턴트입니다. 
+사용자의 질문에 대해 제공된 피규어 데이터베이스 정보를 바탕으로 정확하고 도움이 되는 답변을 해주세요.
+
+피규어 데이터베이스 정보:
+{context}
+
+사용자 질문: {question}
+
+답변 지침:
+- 피규어 관련 질문이면 데이터베이스 정보를 참조해서 구체적으로 답변해주세요
+- 가격, 재고, 희귀도, 상태 등의 정보를 포함해주세요  
+- 일반적인 대화도 피규어 쇼핑몰 어시스턴트로서 친근하게 답변해주세요
+- 데이터에 없는 정보는 "죄송하지만 해당 정보는 현재 데이터베이스에 없습니다"라고 안내해주세요
+
+답변:"""
+
+            PROMPT = PromptTemplate(
+                template=prompt_template, 
+                input_variables=["context", "question"]
+            )
+            
+            # RetrievalQA 체인 생성 (모든 질문에 대해 RAG 사용)
             self.chain = RetrievalQA.from_chain_type(
                 llm=self.llm,
                 chain_type="stuff",
                 retriever=self.retriever,
-                return_source_documents=True
+                return_source_documents=True,
+                chain_type_kwargs={"prompt": PROMPT}
             )
             
             logger.info(f"✅ 문서 처리 완료: {len(texts)}개 청크 생성")
@@ -102,8 +126,9 @@ class OpenAIService:
         self, 
         user_message: str, 
         session_id: str = None,
+        conversation_history: List[ChatMessage] = None
     ) -> Tuple[str, str]:
-        """RAG 기반 응답 생성"""
+        """RAG 기반 응답 생성 (모든 질문에 대해 PDF 참조)"""
         try:
             # 세션 ID 처리
             if not session_id:
@@ -114,7 +139,7 @@ class OpenAIService:
             
             logger.info(f"🤖 RAG 질문 처리 시작: [{session_id}] {user_message[:50]}...")
             
-            # RetrievalQA 체인으로 답변 생성
+            # RetrievalQA 체인으로 답변 생성 (항상 PDF 데이터 참조)
             result = self.chain.invoke({"query": user_message})
             ai_response = result["result"]
             
@@ -125,6 +150,7 @@ class OpenAIService:
             )
             
             logger.info(f"✅ RAG 응답 생성 완료: [{session_id}]")
+            logger.info(f"📚 참조된 문서 수: {len(result.get('source_documents', []))}")
             
             return ai_response, session_id
             
@@ -132,40 +158,7 @@ class OpenAIService:
             logger.error(f"❌ RAG 응답 생성 실패: {str(e)}")
             raise Exception(f"질답 처리 중 오류가 발생했습니다: {str(e)}")
     
-    async def generate_general_response(
-        self, 
-        user_message: str, 
-        conversation_history: List[ChatMessage] = None
-    ) -> Tuple[str, str]:
-        """일반 대화형 응답 생성 (문서 검색 없이)"""
-        try:
-            # 다람쥐 캐릭터 프롬프트
-            system_prompt = """당신은 '다람이'라는 이름의 친근하고 도움이 되는 다람쥐 AI 어시스턴트입니다.
-사용자의 질문에 정중하고 유용한 답변을 한국어로 해주세요. 🐿️"""
-            
-            # LangChain 메시지 타입 import (여기서만 사용)
-            from langchain.schema import HumanMessage, SystemMessage
-            
-            messages = [SystemMessage(content=system_prompt)]
-            
-            # 대화 기록 추가
-            if conversation_history:
-                for msg in conversation_history[-5:]:
-                    if msg.role == MessageRole.USER:
-                        messages.append(HumanMessage(content=msg.content))
-            
-            # 현재 메시지 추가
-            messages.append(HumanMessage(content=user_message))
-            
-            # 응답 생성
-            response = await self.llm.ainvoke(messages)
-            session_id = str(uuid.uuid4())
-            
-            return response.content, session_id
-            
-        except Exception as e:
-            logger.error(f"❌ 일반 응답 생성 실패: {str(e)}")
-            raise Exception(f"응답 생성 중 오류가 발생했습니다: {str(e)}")
+    # generate_general_response 메서드 제거 - 모든 응답이 RAG를 사용하도록 함
     
     async def health_check(self) -> bool:
         """서비스 상태 확인"""
