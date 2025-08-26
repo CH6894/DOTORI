@@ -12,6 +12,6 @@ import com.pingu.DOTORI.repository.ItemRepository;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-	private final ItemRepository itemRepository;
+	private ItemRepository itemRepository;
 	public Page<Item> findAll(Pageable pageable){ return itemRepository.findAll(pageable); }
 }
