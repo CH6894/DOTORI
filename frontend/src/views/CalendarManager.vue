@@ -75,18 +75,15 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 
-/* ===== 커스텀 CSS ===== */
-import '../assets/calendar.css'
-
 /* ===== 유틸 ===== */
 const pad = (n) => String(n).padStart(2, '0')
 const toLocalInputValue = (dateLike) => {
   const d = new Date(dateLike)
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 const fromLocalInputValue = (v) => (v ? new Date(v) : null)
-const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))
-const fmtYmd = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]))
+const fmtYmd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 const timeRange = (s, e) => {
   const f = (x) => `${pad(x.getHours())}:${pad(x.getMinutes())}`
   if (!e || e.getTime() === s.getTime()) return f(s)
@@ -101,9 +98,9 @@ const calendarEl = ref(null)
 let calendar
 
 const isModalOpen = ref(false)
-const modalTitle   = ref('일정')
-const agendaHtml   = ref('')
-const pageDate     = ref(new Date())
+const modalTitle = ref('일정')
+const agendaHtml = ref('')
+const pageDate = ref(new Date())
 
 /* ✅ reactive: 객체 자체를 교체하지 말고 속성만 갱신 */
 const form = reactive({
@@ -125,7 +122,7 @@ function openModal(mode, ev) {
       id: '',
       title: '',
       start: toLocalInputValue(now),
-      end: toLocalInputValue(new Date(now.getTime() + 60*60*1000)),
+      end: toLocalInputValue(new Date(now.getTime() + 60 * 60 * 1000)),
       allDay: false,
       color: '#7c3aed'
     })
@@ -163,7 +160,7 @@ function onSave() {
     const sDay = startOfDay(s)
     const eDay = e ? startOfDay(e) : sDay
     const startStr = fmtYmd(sDay)
-    const endStr   = fmtYmd(addDays(eDay, 1))  // exclusive
+    const endStr = fmtYmd(addDays(eDay, 1))  // exclusive
 
     if (!form.id) {
       calendar.addEvent({
@@ -276,10 +273,10 @@ function renderAgenda() {
 
   const html = keys.map(k => {
     const dateObj = new Date(k + 'T00:00:00')
-    const dateLabel = `${dateObj.getFullYear()}년 ${dateObj.getMonth()+1}월 ${dateObj.getDate()}일`
+    const dateLabel = `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`
     const items = map.get(k).map(ev => {
       const color = ev.extendedProps?.color || ev.backgroundColor || '#7c3aed'
-      const time  = ev.allDay ? '종일' : timeRange(ev.start, ev.end)
+      const time = ev.allDay ? '종일' : timeRange(ev.start, ev.end)
       const title = escapeHtml(ev.title || '(제목 없음)')
       return `
         <li class="agenda__item" style="--dot-color:${color}">
@@ -332,14 +329,14 @@ onMounted(() => {
       const d0 = startOfDay(info.date)
       const d1 = endOfDayInclusive(info.date)
       form.start = toLocalInputValue(d0)
-      form.end   = toLocalInputValue(d1)
+      form.end = toLocalInputValue(d1)
     },
 
     select: (arg) => {
       openModal('create')
       const isAll = arg.allDay === true
       form.allDay = isAll
-      form.start  = toLocalInputValue(arg.start)
+      form.start = toLocalInputValue(arg.start)
 
       if (arg.end) {
         if (isAll) {
@@ -351,12 +348,12 @@ onMounted(() => {
             fixedEnd = new Date(arg.start.getTime() + 60 * 60 * 1000) // 1시간 보정
           }
           const isMidnight =
-            fixedEnd.getHours()===0 && fixedEnd.getMinutes()===0 &&
-            fixedEnd.getSeconds()===0 && fixedEnd.getMilliseconds()===0
+            fixedEnd.getHours() === 0 && fixedEnd.getMinutes() === 0 &&
+            fixedEnd.getSeconds() === 0 && fixedEnd.getMilliseconds() === 0
           const diffDate =
-            fixedEnd.getFullYear()!==arg.start.getFullYear() ||
-            fixedEnd.getMonth()!==arg.start.getMonth() ||
-            fixedEnd.getDate()!==arg.start.getDate()
+            fixedEnd.getFullYear() !== arg.start.getFullYear() ||
+            fixedEnd.getMonth() !== arg.start.getMonth() ||
+            fixedEnd.getDate() !== arg.start.getDate()
           if (isMidnight && diffDate) fixedEnd = endOfDayInclusive(fixedEnd)
           form.end = toLocalInputValue(fixedEnd)
         }
@@ -384,3 +381,4 @@ onMounted(() => {
 
 onBeforeUnmount(() => { if (calendar) calendar.destroy() })
 </script>
+<style src="../assets/calendar.css"></style>

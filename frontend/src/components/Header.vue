@@ -375,6 +375,8 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+   max-width: 1280px; 
+   margin: 0 auto; 
   padding: 12px 0;
 }
 .header__logo { display: flex; justify-content: center; }
@@ -388,7 +390,6 @@ onBeforeUnmount(() => {
   background: transparent !important;
 }
 .header__nav {
-  margin-left: 100px;
   margin-bottom: 8px;
   display: flex;
   gap: 100px;
@@ -407,8 +408,9 @@ onBeforeUnmount(() => {
   grid-template-columns: 1fr auto;
   gap: 8px;
   align-items: center;
-  margin-left: 124px;
   width: 400px;
+  margin-left: 120px;
+  margin-right: 30px;
 }
 
 /* 검색 input: 너비 100% + 스타일 */

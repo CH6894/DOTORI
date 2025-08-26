@@ -172,7 +172,8 @@ const setCurrentImage = (index) => {
   }
 }
 
-const closeModal = () => {
+const close
+ = () => {
   emit('close')
 }
 
