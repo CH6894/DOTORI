@@ -43,7 +43,8 @@
       <!-- 토글 패널 -->
       <transition name="collapse">
         <div v-show="isNoteOpen" class="note-panel" role="region" aria-label="배송 요청사항 입력">
-          <textarea v-model="tempNote" class="note-textarea" rows="3" placeholder="예) 경비실에 맡겨주세요 / 부재 시 문앞에 두세요" />
+          <textarea v-model="tempNote" class="note-textarea" rows="3"
+            placeholder="예) 경비실에 맡겨주세요 / 부재 시 문앞에 두세요"></textarea>
           <div class="note-actions">
             <button class="btn-subtle" @click="onClearNote">지우기</button>
             <div class="note-actions-right">
@@ -124,7 +125,8 @@
 
             <div class="field">
               <label>입금자명 <span class="req">*</span></label>
-              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" />
+              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능"
+                @compositionstart="isComposing = true" @compositionend="onNameCompEnd" @input="onNameInput" />
             </div>
 
             <div class="notice">
@@ -153,17 +155,21 @@
 
     <!-- 하단 고정 결제 바 -->
     <div class="paybar">
-      <div class="agree">약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</div>
-      <!-- <div class="sum"><b>{{ formatCurrency(total) }}</b>원 결제하기</div> -->
-      <!-- <button class="btn-pay" :disbled="payMethod !== 'bank' || !isBankFormValid" @click="onPay"><b>{{
-        formatCurrency(total) }}</b>원 결제하기</button> -->
-      <router-link v-if="isBankFormValid" :to="{ name: 'ordercomplete' }" class="btn-pay">
+      <div class="agree">
+        약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.
+      </div>
+
+      <!-- ✅ 무통장 + 유효할 때만 '이동 가능한' 링크 -->
+      <router-link v-if="payMethod === 'bank' && isBankFormValid" :to="{ name: 'ordercomplete' }" class="btn-pay">
         <b>{{ formatCurrency(total) }}</b>원 결제하기
       </router-link>
-      <button v-else class="btn-pay" :disabled="payMethod !== 'bank' || !isBankFormValid" @click="onPay">
+
+      <!-- ❌ 그 외에는 항상 비활성 버튼만 -->
+      <button class="btn-pay" disabled @click.prevent>
         <b>{{ formatCurrency(total) }}</b>원 결제하기
       </button>
     </div>
+
   </div>
 </template>
 
@@ -242,9 +248,22 @@ const discount = computed(() =>
   items.value.reduce((s, it) => s + (it.discount || 0), 0)
 )
 const shippingFee = ref(0)
-const payMethod = ref('easy')
+const payMethod = ref('')
+const isComposing = ref(false)
 
 
+const onNameInput = (e) => {
+  // 한글 조합 중에는 유효성 활성화를 지연, 조합이 끝나면 바로 반영
+  if (!isComposing.value) {
+    depositorName.value = e.target.value
+  }
+}
+
+const onNameCompEnd = (e) => {
+  isComposing.value = false
+  // 조합 종료 시 최종 문자열을 강제 반영 (트리밍 포함)
+  depositorName.value = (e.target.value || '').trim()
+}
 // 합계는 배열 기준으로
 const subtotal = computed(() =>
   items.value.reduce((sum, it) => sum + it.price * it.qty, 0)
@@ -277,7 +296,7 @@ const isBankFormValid = computed(() => {
 const onPay = () => {
   alert(`${payMethod.value} 방식으로 ${total.value}원 결제합니다.`)
   if (payMethod.value !== 'bank' || !isBankFormValid.value) return
-  
+
 }
 
 /* 무통장 결제용 상태 */
@@ -464,6 +483,7 @@ const depositDeadlineHours = ref(3)
   font-weight: 700;
   cursor: pointer;
 }
+
 
 /* 부드러운 열고닫기 */
 .collapse-enter-active,
@@ -665,7 +685,7 @@ const depositDeadlineHours = ref(3)
   font-weight: 700;
   cursor: pointer;
   margin-right: 250px;
-  text-decoration:none;
+  text-decoration: none;
 }
 
 .btn-pay:hover {

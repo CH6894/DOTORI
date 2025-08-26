@@ -1,4 +1,4 @@
-export const API_BASE = 'http://192.168.198.1:8085';
+export const API_BASE = 'http://192.168.198.1:8081';
 
 export const OAUTH_NAVER_CLIENT_ID = '3J_9EIeTfTEup01jihZe';
 export const OAUTH_NAVER_REDIRECT_URI = `${API_BASE}/login/oauth2/code/naver`;
