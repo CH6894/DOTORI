@@ -6,15 +6,8 @@
       <h1 class="mypage__title">마이페이지</h1>
 
       <nav class="tabs" role="tablist" aria-label="마이페이지 탭">
-        <button
-          v-for="t in tabs"
-          :key="t.key"
-          class="tab"
-          :class="{ 'is-active': currentTab === t.key }"
-          role="tab"
-          :aria-selected="currentTab === t.key"
-          @click="setTab(t.key)"
-        >
+        <button v-for="t in tabs" :key="t.key" class="tab" :class="{ 'is-active': currentTab === t.key }" role="tab"
+          :aria-selected="currentTab === t.key" @click="setTab(t.key)">
           {{ t.label }}
         </button>
       </nav>
@@ -80,19 +73,10 @@
         <h2 class="section__title link" @click="go('ShipPage')">주문 배송 현황</h2>
         <div class="panel">
           <ol class="steps steps--flat">
-            <li
-              v-for="(s, i) in orderSteps"
-              :key="s.key"
-              class="step"
-              :class="{ 'is-done': i <= orderProgressIndex }"
-            >
+            <li v-for="(s, i) in orderSteps" :key="s.key" class="step" :class="{ 'is-done': i <= orderProgressIndex }">
               <img :src="s.icon" :alt="s.label" class="step__icon" />
-              <div
-                v-if="i < orderSteps.length - 1"
-                class="step__arrow"
-                :class="{ 'is-on': i < orderProgressIndex }"
-                aria-hidden="true"
-              >›</div>
+              <div v-if="i < orderSteps.length - 1" class="step__arrow" :class="{ 'is-on': i < orderProgressIndex }"
+                aria-hidden="true">›</div>
               <p class="step__label">{{ s.label }}</p>
             </li>
           </ol>
@@ -220,25 +204,25 @@ import { useOrderStore } from '@/stores/orders'
 
 import defaultPhoto from '@/assets/profile_phto.svg'
 import iconOrder from '@/assets/주문.png'
-import iconPay   from '@/assets/결제.png'
-import iconPrep  from '@/assets/준비.png'
-import iconShip  from '@/assets/배송.png'
-import iconDone  from '@/assets/완료.png'
+import iconPay from '@/assets/결제.png'
+import iconPrep from '@/assets/준비.png'
+import iconShip from '@/assets/배송.png'
+import iconDone from '@/assets/완료.png'
 
 /* 위시리스트 이미지들 */
-import imgRengokuKeyring   from '@/assets/list/렌고쿠 코쥬로 키링.svg'
-import imgAkazaDoll        from '@/assets/list/아카자 인형.svg'
-import imgKozumeFigure     from '@/assets/list/코즈메 켄마 피규어.svg'
-import imgMikuFigure       from '@/assets/list/하츠네 미쿠 피규어.svg'
+import imgRengokuKeyring from '@/assets/list/렌고쿠 코쥬로 키링.svg'
+import imgAkazaDoll from '@/assets/list/아카자 인형.svg'
+import imgKozumeFigure from '@/assets/list/코즈메 켄마 피규어.svg'
+import imgMikuFigure from '@/assets/list/하츠네 미쿠 피규어.svg'
 import imgHinataSoyoFigure from '@/assets/list/히나타 소요 피규어.svg'
 
 /* ✅ 라우터 이름 매핑: 현 프로젝트 라우터(index.ts)의 실제 name에 맞춤 */
 const ROUTE_NAME_MAP = {
-  ShipPage:    'mypage-ship',
-  OrdersPage:  'mypage-orders',
-  SalesPage:   'mypage-sales',
+  ShipPage: 'mypage-ship',
+  OrdersPage: 'mypage-orders',
+  SalesPage: 'mypage-sales',
   StoragePage: 'mypage-storage',
-  WishPage:    'mypage-wish',
+  WishPage: 'mypage-wish',
 }
 
 export default {
@@ -249,8 +233,8 @@ export default {
       /* 탭(토글) */
       tabs: [
         { key: 'profile', label: '내 정보' },
-        { key: 'dex',     label: '도감' },
-        { key: 'qna',     label: '문의내역' },
+        { key: 'dex', label: '도감' },
+        { key: 'qna', label: '문의내역' },
       ],
 
       /* 프로필 */
@@ -261,33 +245,33 @@ export default {
 
       /* 주문 단계 */
       orderSteps: [
-        { key: 'order',   label: '주문접수',  icon: iconOrder },
-        { key: 'payment', label: '결제 완료',  icon: iconPay },
-        { key: 'prep',    label: '상품 준비',  icon: iconPrep },
-        { key: 'ship',    label: '배송중',     icon: iconShip },
-        { key: 'done',    label: '배송 완료',  icon: iconDone },
+        { key: 'order', label: '주문접수', icon: iconOrder },
+        { key: 'payment', label: '결제 완료', icon: iconPay },
+        { key: 'prep', label: '상품 준비', icon: iconPrep },
+        { key: 'ship', label: '배송중', icon: iconShip },
+        { key: 'done', label: '배송 완료', icon: iconDone },
       ],
       orderProgressIndex: 2,
 
       /* 판매 내역 (더미) */
       sales: [
-        { no: 'S2025081201', item: '루피 피규어',  price: 53000, state: { type: 'ing',  text: '판매중' } },
-        { no: 'S2025080303', item: '미쿠 스페셜',  price: 67000, state: { type: 'done', text: '거래 완료' } },
+        { no: 'S2025081201', item: '루피 피규어', price: 53000, state: { type: 'ing', text: '판매중' } },
+        { no: 'S2025080303', item: '미쿠 스페셜', price: 67000, state: { type: 'done', text: '거래 완료' } },
       ],
 
       /* 보관함 (더미) */
       storageItems: [
         { id: 'st1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
-        { id: 'st2', title: '아카자 인형',        image: imgAkazaDoll,      price: 48000 },
+        { id: 'st2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
       ],
 
       /* 위시리스트 (더미) */
       wishlist: [
-        { id: 'w1', title: '렌고쿠 코쥬로 키링',  image: imgRengokuKeyring,   price: 10000 },
-        { id: 'w2', title: '아카자 인형',         image: imgAkazaDoll,        price: 48000 },
-        { id: 'w3', title: '코즈메 켄마 피규어',   image: imgKozumeFigure,     price: 59000 },
-        { id: 'w4', title: '하츠네 미쿠 피규어',   image: imgMikuFigure,       price: 53000 },
-        { id: 'w5', title: '히나타 소요 피규어',   image: imgHinataSoyoFigure, price: 67000 },
+        { id: 'w1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
+        { id: 'w2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
+        { id: 'w3', title: '코즈메 켄마 피규어', image: imgKozumeFigure, price: 59000 },
+        { id: 'w4', title: '하츠네 미쿠 피규어', image: imgMikuFigure, price: 53000 },
+        { id: 'w5', title: '히나타 소요 피규어', image: imgHinataSoyoFigure, price: 67000 },
       ],
 
       toast: { open: false, _t: null },
@@ -338,7 +322,7 @@ export default {
     },
     startEdit() {
       this.form.nickname = this.user.nickname
-      this.form.userId   = this.user.userId
+      this.form.userId = this.user.userId
       this.isEditing = true
     },
     cancelEdit() {
@@ -348,7 +332,7 @@ export default {
     },
     saveProfile() {
       this.user.nickname = this.form.nickname || this.user.nickname
-      this.user.userId   = this.form.userId   || this.user.userId
+      this.user.userId = this.form.userId || this.user.userId
       if (this.preview) this.user.photo = this.preview
       this.isEditing = false
       this.preview = ''
@@ -412,104 +396,297 @@ export default {
 
 <style scoped>
 /* ---- (기존 스타일 그대로) ---- */
-.container { width:min(1160px,92%); margin:0 auto; }
-.mypage { color:#2d251c; letter-spacing:-0.1px; }
-.mypage__head { padding-top:18px; text-align:center; }
-.mypage__title { margin:16px 0 12px; font-size:28px; font-weight:800; }
+.container {
+  width: min(1160px, 92%);
+  margin: 0 auto;
+}
+
+.mypage {
+  color: #2d251c;
+  letter-spacing: -0.1px;
+}
+
+.mypage__head {
+  padding-top: 18px;
+  text-align: center;
+}
+
+.mypage__title {
+  margin: 16px 0 12px;
+  font-size: 28px;
+  font-weight: 800;
+}
 
 /* 탭 */
 .tabs {
-  display:grid;
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
   width: min(420px, 100%);
   margin: 0 auto;
-  border-bottom:2px solid #e5dcc9;
+  border-bottom: 2px solid #e5dcc9;
 }
+
 .tab {
-  appearance:none; background:transparent; border:0;
-  padding:12px 8px; font-weight:700; color:#7b6d5d;
-  position:relative; cursor:pointer; text-align:center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 12px 8px;
+  font-weight: 700;
+  color: #7b6d5d;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
 }
-.tab.is-active { color:#2d251c; }
+
+.tab.is-active {
+  color: #2d251c;
+}
+
 .tab.is-active::after {
-  content:""; position:absolute; left:0; right:0; bottom:-2px;
-  height:2px; background:#2d251c;
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: #2d251c;
 }
 
 /* 패널 및 카드 */
-.card { margin-top:18px; padding:22px; background:#fff; border:1px solid #e8e1d4; border-radius:10px; }
-.card__title { margin:0 0 14px; font-size:16px; font-weight:800; }
-.panel { background:#fff; border:1.5px solid #e9e4db; border-radius:12px; padding:16px 18px; }
-.section__title { margin:22px 4px 10px; font-size:16px; font-weight:800; color:#2d251c; }
-.section__title.link { cursor: pointer; }
-.section__title.link:hover { text-decoration: underline; }
-.muted { color:#7b6d5d; }
-.center { text-align:center; }
+.card {
+  margin-top: 18px;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e8e1d4;
+  border-radius: 10px;
+}
+
+.card__title {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.panel {
+  background: #fff;
+  border: 1.5px solid #e9e4db;
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.section__title {
+  margin: 22px 4px 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #2d251c;
+}
+
+.section__title.link {
+  cursor: pointer;
+}
+
+.section__title.link:hover {
+  text-decoration: underline;
+}
+
+.muted {
+  color: #7b6d5d;
+}
+
+.center {
+  text-align: center;
+}
 
 /* 프로필 카드 */
-.profile-card { position:relative; }
+.profile-card {
+  position: relative;
+}
+
 .card__tools {
-  position:absolute; top:10px; right:12px;
-  display:flex; gap:8px; align-items:center;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
+
 .link-edit {
-  background:transparent; border:0; font-size:12px;
-  color:#7b6d5d; cursor:pointer;
+  background: transparent;
+  border: 0;
+  font-size: 12px;
+  color: #7b6d5d;
+  cursor: pointer;
 }
-.edit-actions .btn--sm { padding:6px 10px; }
+
+.edit-actions .btn--sm {
+  padding: 6px 10px;
+}
 
 .profile {
-  display:flex;
-  align-items:center;
-  gap:20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .profile__avatar {
-  width:80px; height:80px;
-  border:1px solid #e5dcc9; border-radius:50%;
-  overflow:hidden; display:grid; place-items:center; background:#fff;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #e5dcc9;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #fff;
 }
-.profile__avatar img { width:80%; height:80%; object-fit:cover; }
 
-.profile__label { font-size: 14px; color: #8f8577; margin-right: 6px; }
-.profile__nickname { font-size: 18px; font-weight: 800; color: #2d251c; }
-.profile__userid { font-size: 14px; font-weight: 600; color: #5c5346; }
+.profile__avatar img {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+}
 
-.profile__form { max-width:360px; display:flex; flex-direction:column; gap:10px; }
-.profile__row { display:flex; flex-direction:column; }
-.profile__form .profile__label { font-size:12px; color:#8f8577; margin-bottom:4px; }
-.profile__form input { width:100%; padding:10px 12px; border:1px solid #e5dcc9; border-radius:10px; }
+.profile__label {
+  font-size: 14px;
+  color: #8f8577;
+  margin-right: 6px;
+}
 
-.profile__photoRow { position:absolute; right:16px; bottom:16px; }
-.hidden { display:none; }
+.profile__nickname {
+  font-size: 18px;
+  font-weight: 800;
+  color: #2d251c;
+}
+
+.profile__userid {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5c5346;
+}
+
+.profile__form {
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile__row {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile__form .profile__label {
+  font-size: 12px;
+  color: #8f8577;
+  margin-bottom: 4px;
+}
+
+.profile__form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5dcc9;
+  border-radius: 10px;
+}
+
+.profile__photoRow {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+}
+
+.hidden {
+  display: none;
+}
 
 /* 버튼 */
 .btn {
-  appearance:none; border:0; background:#f4f4f4; color:black;
-  padding:10px 14px; border-radius:8px; font-weight:700; cursor:pointer;
+  appearance: none;
+  border: 0;
+  background: #f4f4f4;
+  color: black;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
 }
-.btn--ghost { background:#f4f3e6; color:#5f5346; border:1px solid #d9d9d9; }
-.btn--wide { width:100%; padding:12px 16px; border:1px solid #d9d9d9; }
-.btn--sm { padding:6px 10px; border-radius:8px; background:#fff7ea; color:#332b22; border:1px solid #e3d7c2; margin-left: 5px;}
-.btn--thin { padding:6px 10px; border-radius:7px; border:1px solid #d9d9d9; }
+
+.btn--ghost {
+  background: #f4f3e6;
+  color: #5f5346;
+  border: 1px solid #d9d9d9;
+}
+
+.btn--wide {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d9d9d9;
+}
+
+.btn--sm {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fff7ea;
+  color: #332b22;
+  border: 1px solid #e3d7c2;
+  margin-left: 5px;
+}
+
+.btn--thin {
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: 1px solid #d9d9d9;
+}
 
 /* 주문 진행 단계 */
-:root { --line:#e9e4db; --green:#f4f4f4; }
+:root {
+  --line: #e9e4db;
+  --green: #f4f4f4;
+}
+
 .steps--flat {
-  margin:8px 0 0; padding:12px 10px; border:1px solid var(--line);
-  border-radius:8px; background:#fff; display:grid; grid-template-columns:repeat(5,1fr); align-items:center;
+  margin: 8px 0 0;
+  padding: 12px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
 }
+
 .step {
-  position:relative; display:grid; grid-template-rows:28px auto;
-  justify-items:center; padding:6px 0 2px;
+  position: relative;
+  display: grid;
+  grid-template-rows: 28px auto;
+  justify-items: center;
+  padding: 6px 0 2px;
 }
+
 .step__arrow {
-  position:absolute; top:3px; right:-2px; color:#d9d4cc;
-  font-size:22px; line-height:22px; transition:color .2s;
+  position: absolute;
+  top: 3px;
+  right: -2px;
+  color: #d9d4cc;
+  font-size: 22px;
+  line-height: 22px;
+  transition: color .2s;
 }
-.step__arrow.is-on { color:var(--green); }
-.step__label { margin-top:6px; font-size:12px; color:#8f8577; }
-.step.is-done .step__label { color:#5c5246; font-weight:700; }
+
+.step__arrow.is-on {
+  color: var(--green);
+}
+
+.step__label {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #8f8577;
+}
+
+.step.is-done .step__label {
+  color: #5c5246;
+  font-weight: 700;
+}
 
 .step__icon {
   width: 40px;
@@ -518,61 +695,169 @@ export default {
   filter: grayscale(100%) opacity(0.6);
   transition: filter .2s ease;
 }
-.step.is-done .step__icon { filter: none; }
+
+.step.is-done .step__icon {
+  filter: none;
+}
 
 /* 주문 요약 */
 .order-summary {
-  margin:8px 0 0; padding:14px 10px; border:1px solid var(--line);
-  border-radius:8px; list-style:none; display:grid; grid-template-columns:repeat(4,1fr); background:#fff;
+  margin: 8px 0 0;
+  padding: 14px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #fff;
 }
-.order-summary__item { text-align:center; padding:10px 0; }
+
+.order-summary__item {
+  text-align: center;
+  padding: 10px 0;
+}
+
 .order-summary__label {
-  display:block; font-weight:800; color:#2d251c;
-  margin-bottom:6px; font-size:14px;
+  display: block;
+  font-weight: 800;
+  color: #2d251c;
+  margin-bottom: 6px;
+  font-size: 14px;
 }
+
 .order-summary__num {
-  display:inline-block; font-weight:800; font-size:16px; color:#000;
+  display: inline-block;
+  font-weight: 800;
+  font-size: 16px;
+  color: #000;
 }
 
 /* 테이블 */
-.tbl { width:100%; border-collapse:collapse; }
-th,td { border-bottom:1px solid #eee6d7; padding:10px 8px; text-align:left; }
-.badge { padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid #e4d8c3; }
-.badge[data-type="ing"] { background:#fff7ea; }
-.badge[data-type="done"] { background:#e9f7ef; border-color:#cfe9d9; }
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #eee6d7;
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid #e4d8c3;
+}
+
+.badge[data-type="ing"] {
+  background: #fff7ea;
+}
+
+.badge[data-type="done"] {
+  background: #e9f7ef;
+  border-color: #cfe9d9;
+}
 
 /* 보관함 */
-.storage { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.storage {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .storage__row {
-  display:grid; grid-template-columns:64px 1fr auto; gap:10px;
-  align-items:center; padding:6px 4px; border-bottom:1px solid #eee6d7;
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 4px;
+  border-bottom: 1px solid #eee6d7;
 }
+
 .storage__thumb {
-  width:64px; height:64px; object-fit:cover; border-radius:8px;
-  background:#f4f3e6; border:1px solid #e8e1d4;
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f4f3e6;
+  border: 1px solid #e8e1d4;
 }
-.storage__title { font-weight:800; }
-.storage__sub { margin-top:2px; font-size:12px; color:#7b6d5d; }
-.storage__actions { display:flex; gap:8px; }
+
+.storage__title {
+  font-weight: 800;
+}
+
+.storage__sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #7b6d5d;
+}
+
+.storage__actions {
+  display: flex;
+  gap: 8px;
+}
 
 /* 위시리스트 */
 .wish {
-  display:grid; grid-template-columns:repeat(5,1fr); gap:10px;
-  list-style:none; padding:0; margin:0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
+
 .wish__item {
-  background:#fff; border:1px solid #e8e1d4; border-radius:10px;
-  overflow:hidden; display:grid; grid-template-rows:200px auto auto;
+  background: #fff;
+  border: 1px solid #e8e1d4;
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 200px auto auto;
 }
+
 .wish__fig {
-  background:#f4f3e6; display:grid; place-items:center;
-  width:185px; height:200px; margin:0 auto;
+  background: #f4f3e6;
+  display: grid;
+  place-items: center;
+  width: 185px;
+  height: 200px;
+  margin: 0 auto;
 }
-.wish__fig img { width:100%; height:100%; object-fit:cover; }
-.wish__meta { padding:20px 12px 5px; margin-top:0; }
-.wish__title { font-weight:800; margin-bottom:4px; }
-.wish__sub { font-size:12px; color:#7b6d5d; }
-.wish__actions { display:flex; gap:6px; padding:8px 8px 8px; }
+
+.wish__fig img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wish__meta {
+  padding: 20px 12px 5px;
+  margin-top: 0;
+}
+
+.wish__title {
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.wish__sub {
+  font-size: 12px;
+  color: #7b6d5d;
+}
+
+.wish__actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 8px 8px;
+}
 
 /* 토스트 */
 .toast {
@@ -591,21 +876,55 @@ th,td { border-bottom:1px solid #eee6d7; padding:10px 8px; text-align:left; }
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; transform: translate(-50%, -60%); }
-  15% { opacity: 1; transform: translate(-50%, -50%); }
-  85% { opacity: 1; transform: translate(-50%, -50%); }
-  100% { opacity: 0; transform: translate(-50%, -40%); }
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  85% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
 }
 
 /* 반응형 */
 @media (max-width:1024px) {
-  .wish { grid-template-columns:repeat(3,1fr); }
+  .wish {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
+
 @media (max-width:640px) {
-  .tabs { width:100%; }
-  .profile { flex-direction:column; align-items:flex-start; }
-  .wish { grid-template-columns:repeat(2,1fr); }
-  .steps--flat { grid-template-columns:repeat(5, minmax(44px,1fr)); }
-  .order-summary { grid-template-columns:repeat(2,1fr); row-gap:8px; }
+  .tabs {
+    width: 100%;
+  }
+
+  .profile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wish {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steps--flat {
+    grid-template-columns: repeat(5, minmax(44px, 1fr));
+  }
+
+  .order-summary {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 8px;
+  }
 }
 </style>

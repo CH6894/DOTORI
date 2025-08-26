@@ -1,31 +1,31 @@
-<!-- src/App.vue (patched) -->
+<!-- src/App.vue (merged) -->
 <script setup lang="ts">
 import { computed } from "vue"
-import { useRoute, RouterView } from "vue-router"
+import { useRoute } from "vue-router"
 
-import UtilityBar from "./components/UtilBar.vue"
-import MainHeader from "./components/Header.vue"        // 메인 헤더
-import AppHeader  from "./components/AppHeader.vue"     // 서브 헤더
-import AppFooter  from "./components/AppFooter.vue"
-import ChatbotFab from "./components/ChatbotFab.vue"
-import TopButton  from "./components/TopButton.vue"
+import UtilityBar from "@/components/UtilBar.vue"
+import MainHeader from "@/components/Header.vue"       
+import AppHeader  from "@/components/AppHeader.vue"    
+import AppFooter  from "@/components/AppFooter.vue"
+import ChatbotFab from "@/components/ChatbotFab.vue"
+import TopButton  from "@/components/TopButton.vue"
 
 type HeaderKind = "main" | "sub" | "none"
 
 const route = useRoute()
 
-/** 라우트 메타로 레이아웃 제어 */
+// 라우트 메타 기반 레이아웃 제어
 const headerKind  = computed<HeaderKind>(() => (route.meta.header as HeaderKind) ?? "main")
 const showFooter  = computed<boolean>(() => (route.meta.footer  as boolean) ?? true)
 const showUtil    = computed<boolean>(() => (route.meta.utilbar as boolean) ?? true)
-const showChatbot = computed<boolean>(() => route.meta.chatbot !== false) // 기본: 보임
-const showTop     = computed<boolean>(() => route.meta.topbtn  !== false) // 기본: 보임
+const showChatbot = computed<boolean>(() => route.meta.chatbot !== false) 
+const showTop     = computed<boolean>(() => route.meta.topbtn  !== false) 
 
-/** 헤더 선택 */
+// 헤더 선택
 const currentHeader = computed(() => {
   if (headerKind.value === "main") return MainHeader
   if (headerKind.value === "sub")  return AppHeader
-  return null // "none"이면 헤더 숨김
+  return null // "none"
 })
 </script>
 
@@ -34,10 +34,13 @@ const currentHeader = computed(() => {
     <!-- 상단 유틸바 -->
     <UtilityBar v-if="showUtil" />
 
-    <!-- 동적 헤더 (래퍼로 감싸 class 부여 + out-in 교체) -->
+    <!-- 동적 헤더 -->
     <div v-if="currentHeader" class="app-header">
+      <!-- 🔧 Transition 경고 방지: 요소(root)로 한 번 감싸서 key 부여 -->
       <Transition mode="out-in">
-        <component :is="currentHeader" :key="headerKind" />
+        <div :key="headerKind">
+          <component :is="currentHeader" />
+        </div>
       </Transition>
     </div>
 
@@ -64,16 +67,20 @@ const currentHeader = computed(() => {
   flex-direction: column;
 }
 
-/* 헤더가 fragment를 렌더하더라도 래퍼에 class가 안전하게 적용됨 */
 .app-header {
-  position: sticky; /* 또는 fixed; 정책에 맞게 */
-  top: 0;
-  z-index: 100;     /* 모달 오버레이가 위로 오도록 100 이하 권장 */
+  position: sticky;   /* 정책에 따라 fixed로 바꿔도 됨 */
+  top: 0;             /* 유틸바 아래로 내리고 싶으면 top: var(--utilbar-h); */
+  z-index: 100;       /* 모달/드롭다운 z-index 설계에 맞춰 조정 */
 }
 
+/* 본문은 남는 공간을 차지하여 footer를 아래로 밀어냄 */
 .main-content {
   flex: 1;
   position: relative;
   z-index: 1;
 }
+
+/* 요구사항: 링크 방문 스타일 공통 적용 필요 시 전역 CSS에서 관리 권장
+a { text-decoration: none; color: inherit; }
+a:visited { text-decoration: none; color: inherit; } */
 </style>

@@ -2,14 +2,8 @@
   <!-- body 최상단으로 텔레포트하여 헤더보다 위 레이어에서 그리기 -->
   <teleport to="body">
     <transition name="fade">
-      <div
-        v-if="modelValue"
-        class="overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="verifyTitle"
-        @keydown.esc.prevent="handleClose"
-      >
+      <div v-if="modelValue" class="overlay" role="dialog" aria-modal="true" aria-labelledby="verifyTitle"
+        @keydown.esc.prevent="handleClose">
         <!-- Modal -->
         <div class="modal" ref="modalRef" tabindex="0">
           <!-- Header -->
@@ -25,18 +19,13 @@
           </div>
 
           <!-- Dropzone -->
-          <section class="dropzone" :class="{ 'dropzone--drag': isDragOver }">
-            <input
-              ref="fileInput"
-              class="dropzone__input"
-              type="file"
-              multiple
-              accept="image/*,.jpg,.jpeg,.png,.webp"
-              :disabled="uploading"
-              @change="onFilePick"
-            />
+          <section class="dropzone" :class="{ 'dropzone--drag': isDragOver }" @dragover.prevent="onDragOver"
+            @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
+            <input ref="fileInput" class="dropzone__input" type="file" multiple accept="image/*" :disabled="uploading"
+              @change="onFilePick" />
 
-            <div class="dropzone__content" @click="openPicker" @dragover.prevent="onDragOver" @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
+            <div class="dropzone__content" @click="openPicker" @dragover.prevent="onDragOver"
+              @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
               <div class="dropzone__icon" aria-hidden="true">📸</div>
               <p class="dropzone__title">이미지를 끌어오거나 클릭해서 선택</p>
               <p class="dropzone__hint">최소 {{ MIN_FILES }}장, 최대 {{ MAX_FILES }}장 · 파일당 최대 {{ MAX_MB }}MB</p>
@@ -58,13 +47,16 @@
                 <span class="size">{{ formatBytes(item.file.size) }}</span>
               </div>
               <div class="card__actions">
-                <button class="btn btn--ghost" @click="move(idx, -1)" :disabled="idx === 0 || uploading" aria-label="왼쪽으로">←</button>
-                <button class="btn btn--ghost" @click="move(idx, 1)" :disabled="idx === items.length - 1 || uploading" aria-label="오른쪽으로">→</button>
+                <button class="btn btn--ghost" @click="move(idx, -1)" :disabled="idx === 0 || uploading"
+                  aria-label="왼쪽으로">←</button>
+                <button class="btn btn--ghost" @click="move(idx, 1)" :disabled="idx === items.length - 1 || uploading"
+                  aria-label="오른쪽으로">→</button>
                 <button class="btn btn--ghost danger" @click="remove(idx)" :disabled="uploading">삭제</button>
               </div>
               <label class="caption">
                 <span class="caption__label">설명(선택)</span>
-                <input class="caption__input" type="text" maxlength="60" placeholder="예) 상자 모서리 스크래치 있음" v-model="item.caption" :disabled="uploading" />
+                <input class="caption__input" type="text" maxlength="60" placeholder="예) 상자 모서리 스크래치 있음"
+                  v-model="item.caption" :disabled="uploading" />
               </label>
             </article>
           </section>
@@ -159,7 +151,7 @@ function addFiles(fileList: FileList) {
   }
 
   for (const f of queue) {
-    if (!/^image\/(jpeg|png|webp|jpg)/i.test(f.type)) {
+    if (!/^image\/(jpeg|png|webp)$/i.test(f.type)) {
       errors.value.push(`${f.name} · 지원하지 않는 형식`)
       continue
     }
@@ -169,7 +161,7 @@ function addFiles(fileList: FileList) {
     }
     if (items.value.length >= MAX_FILES) break
 
-    const id = crypto.randomUUID()
+    const id = Date.now().toString(36) + Math.random().toString(36).substring(2, 9)
     const preview = URL.createObjectURL(f)
     items.value.push({ id, file: f, preview, caption: '' })
   }
@@ -265,43 +257,145 @@ onMounted(() => {
 
 <style scoped>
 /* --- Overlay & Transitions --- */
-.fade-enter-active, .fade-leave-active { transition: opacity .18s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .18s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
 .overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.55); /* 약간 더 진하게 */
-  display: grid; place-items: center; z-index: 5000; /* ✅ 헤더 위로 확실히 */
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  /* 약간 더 진하게 */
+  display: grid;
+  place-items: center;
+  z-index: 5000;
+  /* ✅ 헤더 위로 확실히 */
   padding: 24px;
 }
+
 .modal {
-  width:min(1200px,95vw); 
-  height:min(850px,50vw);
+  width: min(1200px, 95vw);
+  height: min(850px, 50vw);
   overflow: auto;
-  background: #fff; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,.18);
-  padding: 20px 20px 12px; outline: none;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .18);
+  padding: 20px 20px 12px;
+  outline: none;
 }
-.modal__header { display:flex; align-items:center; gap:12px; }
-.modal__title { font-size: 20px; font-weight: 700; line-height: 1.3; }
-.icon-btn { margin-left: auto; border: none; background: transparent; font-size: 18px; cursor: pointer; padding: 6px; }
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal__title {
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.icon-btn {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+}
 
 /* --- Progress --- */
-.progress { position: relative; margin: 16px 0 8px; background: #f3f4f6; border-radius: 10px; height: 10px; }
-.progress__bar { position:absolute; left:0; top:0; bottom:0; background: linear-gradient(90deg,#4f46e5,#22c55e); border-radius: 10px; transition: width .2s; }
-.progress__text { display:block; font-size: 12px; color: #6b7280; margin-top: 6px; }
+.progress {
+  position: relative;
+  margin: 16px 0 8px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  height: 10px;
+}
+
+.progress__bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #4f46e5, #22c55e);
+  border-radius: 10px;
+  transition: width .2s;
+}
+
+.progress__text {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+}
 
 /* --- Dropzone --- */
-.dropzone { border: 2px dashed #d1d5db; border-radius: 14px; padding: 48px; background: #fafafa; margin-top: 12px; }
-.dropzone--drag { background: #eef2ff; border-color: #6366f1; }
-.dropzone__input { position: absolute; opacity: 0; pointer-events: none; }
-.dropzone__content { text-align: center; cursor: pointer; }
-.dropzone__icon { font-size: 32px; margin-bottom: 8px; }
-.dropzone__title { font-weight: 600; }
-.dropzone__hint, .dropzone__sub { font-size: 12px; color: #6b7280; margin-top: 4px; }
-.dropzone__sub strong { color:#374151; }
+.dropzone {
+  border: 2px dashed #d1d5db;
+  border-radius: 14px;
+  padding: 55px;
+  background: #fafafa;
+  margin-top: 12px;
+}
+
+.dropzone--drag {
+  background: #eef2ff;
+  border-color: #6366f1;
+}
+
+.dropzone__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropzone__content {
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropzone__icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.dropzone__title {
+  font-weight: 600;
+}
+
+.dropzone__hint,
+.dropzone__sub {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.dropzone__sub strong {
+  color: #374151;
+}
 
 /* --- Errors --- */
-.errors { margin: 12px 0 0; padding: 10px 12px; background:#fef2f2; color:#991b1b; border:1px solid #fecaca; border-radius: 10px; font-size: 13px; }
-.errors li + li { margin-top: 4px; }
+.errors {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.errors li+li {
+  margin-top: 4px;
+}
 
 /* --- Grid Preview --- */
 .grid {
@@ -310,32 +404,140 @@ onMounted(() => {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
 }
-.card { position: relative; background:#fff; border:1px solid #e5e7eb; border-radius: 12px; overflow: hidden; display:flex; flex-direction: column; }
-.card__img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background:#f3f4f6; }
-.card__meta { position: absolute; top: 8px; left: 8px; display:flex; gap:6px; align-items:center; }
-.badge { background:#111827; color:#fff; font-size: 11px; padding: 2px 6px; border-radius: 999px; }
-.size { background:#ffffffd9; border:1px solid #e5e7eb; backdrop-filter: blur(2px); font-size: 11px; padding:2px 6px; border-radius: 999px; }
-.card__actions { display:flex; gap:6px; padding:8px; justify-content: space-between; }
-.caption { display:flex; flex-direction: column; gap: 6px; padding: 0 10px 10px; }
-.caption__label { font-size: 15px; color:#6b7280; }
-.caption__input { border:1px solid #e5e7eb; border-radius: 10px; padding: 8px 10px; font-size: 14px; }
+
+.card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  background: #f3f4f6;
+}
+
+.card__meta {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.badge {
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.size {
+  background: #ffffffd9;
+  border: 1px solid #e5e7eb;
+  backdrop-filter: blur(2px);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.card__actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  justify-content: space-between;
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 10px 10px;
+}
+
+.caption__label {
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.caption__input {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
 
 /* --- Footer --- */
-.modal__footer { display:flex; align-items:center; gap: 12px; margin-top: 14px; }
-.confirm { display:flex; align-items:center; gap: 8px; font-size: 14px; color:#374151; }
-.spacer { flex:1; }
+.modal__footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
 
-.btn { border:1px solid #e5e7eb; background:#fff; padding:8px 14px; border-radius: 10px; font-weight:600; cursor:pointer; }
-.btn:disabled { opacity:.6; cursor:not-allowed; }
-.btn--ghost { background:#fff; }
-.btn--primary { background:#111827; color:#fff; border-color:#111827; }
-.btn--ghost.danger { color:#dc2626; border-color:#fecaca; }
+.confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+}
 
-.fine { margin: 10px 2px 2px; color:#6b7280; font-size: 15px; }
+.spacer {
+  flex: 1;
+}
+
+.btn {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.btn--ghost {
+  background: #fff;
+}
+
+.btn--primary {
+  background: #fc703c;
+  color: #fff;
+  border-color: #fc703c;
+}
+
+.btn--ghost.danger {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.fine {
+  margin: 10px 2px 2px;
+  color: #6b7280;
+  font-size: 15px;
+}
 
 /* --- Mobile tweaks --- */
 @media (max-width: 560px) {
-  .modal { padding: 16px 12px 8px; border-radius: 12px; }
-  .grid { grid-template-columns: repeat(2, 1fr); }
+  .modal {
+    padding: 16px 12px 8px;
+    border-radius: 12px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>

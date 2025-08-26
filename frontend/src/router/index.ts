@@ -12,15 +12,17 @@ const ProductInfo = () => import("@/views/ProductInfo.vue");
 const LoginView = () => import("@/views/LoginView.vue");
 const CheckoutPage = () => import("@/views/CheckoutPage.vue");
 const OrderComplete = () => import("@/views/OrderComplete.vue");
+
 /* ===== admin/verify & oauth ===== */
 const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
 const AdminPage = () => import("@/views/AdminPage.vue");
 const OAuthCallback = () => import("@/pages/OAuthCallback.vue");
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
-const DexView = () => import("@/views/DexView.vue");
-const CalendarView = () => import("@/views/CalendarView.vue");
-const InspectionView = () => import("@/views/InspectionView.vue");
+const CalendarView = () => import("@/views/CalendarPage.vue");
+const CalendarManager = () => import("@/views/CalendarManager.vue");
+const InspectionView = () => import("@/views/InspectionPage.vue");
+
 
 /* ===== MyPage & children ===== */
 const MyPage = () => import("@/views/MyPage.vue");
@@ -32,6 +34,8 @@ const MyPageWish = () => import("@/components/mypage/MyPageWish.vue");
 
 /* ===== Cart ===== */
 const ShoppingCart = () => import("@/views/ShoppingCart.vue");
+const Dex = () => import("@/views/Dex.vue");
+
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
@@ -87,7 +91,7 @@ const routes: RouteRecordRaw[] = [
       { path: "sales", name: "mypage-sales", component: MyPageSales },
       { path: "ship", name: "mypage-ship", component: MyPageShip },
       { path: "storage", name: "mypage-storage", component: MyPageStorage },
-      { path: "wish", name: "mypage-wish", component: MyPageWish }, 
+      { path: "wish", name: "mypage-wish", component: MyPageWish },
     ],
   },
 
@@ -133,10 +137,11 @@ const routes: RouteRecordRaw[] = [
   },
 
   // 도감/캘린더/검수기준 (페이지 스텁 가능)
+
   {
     path: "/dex",
-    name: "dex",
-    component: DexView,
+    name: "collection",
+    component: Dex,
     meta: { header: "main", footer: true },
   },
   {
@@ -160,6 +165,7 @@ const routes: RouteRecordRaw[] = [
     meta: { header: "main", footer: true },
   },
 ];
+
 
 /* ===== router ===== */
 const router = createRouter({

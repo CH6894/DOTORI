@@ -38,13 +38,14 @@
           <thead>
             <tr>
               <th style="width: 140px">검수 ID</th>
-              <th>상품명</th>
+              <th style="width: 140px">상품명</th>
               <th style="width: 140px">판매자</th>
+              <th style="width: 140px">판매 등록가</th>
+              <th style="width: 120px">개봉 여부</th>
               <th style="width: 160px">등록일</th>
-              <th style="width: 140px">촬영시각(내부)</th>
+              <th style="width: 140px">촬영시각</th>
               <th style="width: 100px">이미지</th>
               <th style="width: 120px">상태</th>
-              <th style="width: 120px"></th>
             </tr>
           </thead>
           <tbody>
@@ -333,6 +334,7 @@ function demoInspections(): Inspection[] {
     listingId: `list_${2000 + i}`,
     listingTitle: `굿즈 상품 ${i}`,
     sellerName: i % 2 ? 'mango' : 'peach',
+    // sellprice:
     submittedAt: new Date(now - i * 86400000).toISOString(),
     status: st,
     photos: Array.from({ length: 4 + (i % 3) }, (_, k) => ({
