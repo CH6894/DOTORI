@@ -1,589 +1,38 @@
-/* ====== Base ====== */
-:root {
-  --fc-font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  --cal-fixed-width: 1280px;
-  /* 캘린더 폭 고정 (원하면 숫자만 바꿔도 됨) */
+/* =========================
+   DOTORI Calendar (scoped)
+   전역오염 차단: .calendar-scope 네임스페이스
+   ========================= */
+
+/* 캘린더 범위 변수/폭 고정 */
+.calendar-scope {
+  --cal-fixed-width: 1280px; /* 필요시 숫자만 변경 */
 }
 
-html,
-body {
-
-  /* ====== Base ====== */
-  :root {
-    --fc-font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    --cal-fixed-width: 1280px;
-  }
-
-  html,
-  body {
-    height: 100%;
-  }
-
-  body {
-    margin: 0;
-    font-family: var(--fc-font-family);
-    background: #fafafa;
-    color: #111;
-    overflow-x: hidden;
-  }
-
-  /* 타이틀 */
-  .calendar-title {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #555;
-    margin: 90px 0 10px;
-  }
-
-  /* 캘린더 래퍼 */
-  .calendar-wrap {
-    width: var(--cal-fixed-width);
-    max-width: 100%;
-    margin: 10px auto 0;
-    padding: 0 12px;
-  }
-
-  #calendar,
-  .fc {
-    inline-size: 100%;
-    block-size: auto;
-  }
-
-  /* 캘린더 박스 */
-  #calendar {
-    background: #fff;
-    border: 1px solid #e9e9e9;
-    border-radius: 0;
-    padding: 0;
-    box-shadow: none;
-  }
-
-  /* 헤더(요일) */
-  .fc .fc-col-header {
-    background: #fafafa;
-    border-bottom: 1px solid #e9e9e9;
-  }
-
-  .fc .fc-col-header-cell-cushion {
-    padding: 10px 0;
-    font-weight: 600;
-    color: #222;
-  }
-
-  /* 그리드 라인 */
-  .fc-theme-standard .fc-scrollgrid,
-  .fc-theme-standard td,
-  .fc-theme-standard th {
-    border-color: #e9e9e9;
-  }
-
-  /* 날짜 숫자 */
-  .fc .fc-daygrid-day-top {
-    justify-content: flex-end;
-    padding: 6px 8px 0 0;
-  }
-
-  .fc .fc-daygrid-day-number {
-    color: #111;
-    font-weight: 600;
-    font-size: 13px;
-  }
-
-  /* 오늘 */
-  .fc .fc-day-today {
-    background: #f7f7f7;
-  }
-
-  /* 셀 내부 패딩 */
-  .fc .fc-daygrid-day-frame {
-    padding: 2px 6px 8px;
-  }
-
-  /* 이벤트 점 스타일 */
-  .fc .fc-daygrid-dot-event {
-    padding: 0 0 0 16px;
-    line-height: 1.25;
-    font-size: 12px;
-  }
-
-  .fc .fc-daygrid-event-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    border-width: 0;
-    background: var(--dot-color, #888);
-    margin: 0 6px 0 0;
-  }
-
-  .fc .fc-event-time {
-    display: none;
-  }
-
-  /* 다른 달 날짜 흐림 */
-  .fc .fc-day-other .fc-daygrid-day-number {
-    color: #bbb;
-  }
-
-  /* ===== 버튼(주황 톤) – 공통 ===== */
-  .fc .fc-button {
-    padding: 8px 16px !important;
-    border-radius: 12px !important;
-    /* 네 모서리 모두 둥글게 */
-    font-weight: 700 !important;
-    background: #ff8935 !important;
-    border: 1px solid #ff8935 !important;
-    color: #fff !important;
-    margin: 0 7px !important;
-    /* 각 버튼 좌우 여유 */
-  }
-
-  .fc .fc-button:hover,
-  .fc .fc-button:focus {
-    background: #e85f00 !important;
-    border-color: #cc5200 !important;
-  }
-
-  /* (사용 중이면) .btn 계열도 동일 톤 유지 */
-  .fc .btn,
-  .fc .btn-primary {
-    background-color: #ff8935 !important;
-    border-color: #ff8935 !important;
-    color: #fff !important;
-    border-radius: 10px !important;
-    padding: 6px 12px !important;
-    font-weight: 700;
-  }
-
-  .fc .btn:hover,
-  .fc .btn-primary:hover,
-  .fc .btn:focus,
-  .fc .btn-primary:focus {
-    background-color: #e85f00 !important;
-    border-color: #cc5200 !important;
-  }
-
-  /* 커스텀 addEvent 버튼 */
-  .fc .fc-toolbar .fc-addEventButton-button,
-  .fc .fc-toolbar .fc-addEventButton-button.btn {
-    background: #ff6a00 !important;
-    border-color: #e85f00 !important;
-    color: #fff !important;
-    border-radius: 12px !important;
-    padding: 6px 12px !important;
-  }
-
-  /* FullCalendar 기본 타이틀 숨김(우리는 .calendar-title 사용) */
-  .fc .fc-toolbar-title {
-    display: none !important;
-  }
-
-  /* ===== 툴바 레이아웃 – 좌/우 분리 + 버튼 각각 분리 ===== */
-  .fc .fc-header-toolbar {
-    display: flex !important;
-    justify-content: space-between !important;
-    /* 왼쪽(prev/today/next) / 오른쪽(view) */
-    align-items: center !important;
-    margin: 12px 0 18px !important;
-    padding: 6px !important;
-  }
-
-  /* 어떤 테마라도 ‘붙는’ 효과 제거: 그룹 내부도 gap 사용 */
-  .fc .fc-toolbar-chunk,
-  .fc .fc-button-group {
-    display: flex !important;
-    gap: 14px !important;
-    /* 버튼 간격(원하면 조절) */
-  }
-
-  /* 테마가 넣는 -1px 결합 무력화 + 모서리 복구 */
-  .fc .fc-button-group>.fc-button {
-    margin: 0 !important;
-    border-radius: 12px !important;
-  }
-
-  .fc .fc-button-group>.fc-button+.fc-button {
-    margin-left: 0 !important;
-    border-top-left-radius: 12px !important;
-    border-bottom-left-radius: 12px !important;
-  }
-
-  /* prev/next 아이콘 여유(선택) */
-  .fc-prev-button::before {
-    content: "‹";
-    margin-right: 6px;
-    font-size: 1.2rem;
-    line-height: 1;
-  }
-
-  .fc-next-button::after {
-    content: "›";
-    margin-left: 6px;
-    font-size: 1.2rem;
-    line-height: 1;
-  }
-
-  /* ===== Modal ===== */
-  .modal {
-    position: fixed;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, .4);
-    z-index: 9999;
-  }
-
-  .modal[aria-hidden="false"] {
-    display: flex;
-  }
-
-  .modal__dialog {
-    width: 560px;
-    max-width: calc(100% - 24px);
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
-    overflow: hidden;
-  }
-
-  .modal__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .modal__body {
-    padding: 16px;
-  }
-
-  .modal__footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 12px 16px;
-    border-top: 1px solid #eee;
-  }
-
-  .modal__close {
-    border: 0;
-    background: transparent;
-    font-size: 24px;
-    cursor: pointer;
-    line-height: 1;
-  }
-
-  /* 모달 버튼 */
-  .btn {
-    appearance: none;
-    border: 1px solid #d0d0d0;
-    background: #fff;
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-
-  .btn:hover {
-    background: #f5f5f5;
-  }
-
-  .btn-primary {
-    background: #111;
-    color: #fff;
-    border-color: #111;
-  }
-
-  .btn-primary:hover {
-    filter: brightness(0.9);
-  }
-
-  .btn-secondary {
-    background: #f0f0f0;
-    color: #333;
-    border-color: #ddd;
-  }
-
-  .btn-secondary:hover {
-    background: #e6e6e6;
-  }
-
-  .btn-danger {
-    background: #ef4444;
-    border-color: #ef4444;
-    color: #fff;
-  }
-
-  .btn-danger:hover {
-    filter: brightness(0.9);
-  }
-
-  /* ===== Agenda ===== */
-  .agenda {
-    margin-top: 10px;
-  }
-
-  .agenda__title {
-    margin: 16px 0 10px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #111;
-  }
-
-  .agenda__section {
-    background: #fff;
-    border: 1px solid #e9e9e9;
-    border-radius: 8px;
-    box-shadow: none;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-  }
-
-  .agenda__date {
-    margin: 6px 0 8px;
-    font-size: 14px;
-    font-weight: 700;
-    color: #333;
-  }
-
-  .agenda__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .agenda__item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 4px;
-    border-radius: 8px;
-    position: relative;
-  }
-
-  .agenda__item::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    background: var(--dot-color, #999);
-  }
-
-  .agenda__time {
-    width: 88px;
-    font-size: 13px;
-    color: #444;
-    flex: 0 0 auto;
-  }
-
-  .agenda__title {
-    font-size: 14px;
-    color: #111;
-  }
-
-  .agenda__edit {
-    margin-left: auto;
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    border: 1px solid #bbb;
-    background: #fff;
-    cursor: pointer;
-  }
-
-  .agenda__edit:hover {
-    background: #f5f5f5;
-  }
-
-  .agenda__empty {
-    padding: 14px;
-    color: #666;
-    font-size: 14px;
-    text-align: center;
-  }
-
-  /* 인쇄 */
-  @media print {
-    body {
-      background: #fff;
-    }
-
-    #calendar {
-      border-color: #ddd;
-    }
-
-    .agenda__section {
-      break-inside: avoid;
-    }
-  }
-
-  이코드에서 버튼색상과 헤더와 캘린더 간격은 절대로 건들지말고
-
-  /* ===== Force split: 그룹 결합/부트스트랩 규칙 무력화 ===== */
-  /* 툴바 좌/우 분리 및 정렬 */
-  .fc .fc-header-toolbar {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-
-  /* 2-1) FullCalendar 기본 그룹 결합 깨기 */
-  .fc .fc-toolbar-chunk,
-  .fc .fc-button-group {
-    display: flex !important;
-    gap: 12px !important;
-    /* 버튼 사이 간격 */
-  }
-
-  /* 인접 버튼 결합(-1px margin-left) 제거 */
-  .fc .fc-button-group>.fc-button+.fc-button {
-    margin-left: 0 !important;
-  }
-
-  /* 2-2) Bootstrap 충돌 차단 (로드돼 있어도 영향 없게) */
-  .fc .btn-group {
-    /* 혹시 FC가 btn-group으로 잡히는 테마일 때 */
-    display: flex !important;
-    gap: 12px !important;
-  }
-
-  .fc .btn-group>.btn+.btn {
-    margin-left: 0 !important;
-    /* bootstrap의 -1px 상쇄 */
-  }
-
-  .fc .btn-group .btn {
-    float: none !important;
-    /* bootstrap float 해제 */
-  }
-
-  /* 2-3) 버튼 자체를 '독립 박스'로 고정 */
-  .fc .fc-button {
-    display: inline-flex !important;
-    align-items: center;
-    margin: 0 8px !important;
-    /* 좌우 여백(간격) */
-    padding: 8px 16px !important;
-    border-radius: 12px !important;
-    font-weight: 700 !important;
-    /* 주황 톤 */
-    background: #ff8935 !important;
-    border: 1px solid #ff8935 !important;
-    color: #fff !important;
-  }
-
-  .fc .fc-button:hover,
-  .fc .fc-button:focus {
-    background: #e85f00 !important;
-    border-color: #cc5200 !important;
-  }
-
-  /* pill 모서리 복구: 첫/마지막만 둥글게 만드는 테마 무력화 */
-  .fc .fc-button-group .fc-button:first-child,
-  .fc .fc-button-group .fc-button:last-child {
-    border-radius: 12px !important;
-  }
-
-  /* prev/next 아이콘 가독성 (선택) */
-  .fc-prev-button::before {
-    content: "‹";
-    margin-right: 6px;
-    font-size: 1.2rem;
-    line-height: 1;
-  }
-
-  .fc-next-button::after {
-    content: "›";
-    margin-left: 6px;
-    font-size: 1.2rem;
-    line-height: 1;
-  }
-
-  /* ===== Force split: 그룹 결합/부트스트랩 규칙 무력화 (색상/간격 무변경) ===== */
-
-  /* 툴바 좌/우 분리 및 정렬 (margin/padding 건드리지 않음) */
-  .fc .fc-header-toolbar {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-  }
-
-  /* FullCalendar 기본 그룹 결합 깨기: 그룹 내부를 gap으로 분리 */
-  .fc .fc-toolbar-chunk,
-  .fc .fc-button-group {
-    display: flex !important;
-    gap: 12px !important;
-    /* 버튼 사이 간격만 부여 */
-  }
-
-  /* 인접 버튼 결합(-1px margin-left) 제거 */
-  .fc .fc-button-group>.fc-button+.fc-button {
-    margin-left: 0 !important;
-  }
-
-  /* Bootstrap 테마가 끼어 있어도 붙지 않도록 */
-  .fc .btn-group {
-    display: flex !important;
-    gap: 12px !important;
-  }
-
-  .fc .btn-group>.btn+.btn {
-    margin-left: 0 !important;
-  }
-
-  .fc .btn-group .btn {
-    float: none !important;
-  }
-
-  /* 버튼을 '독립 박스'로 보이게: 레이아웃만 손댐(색상/테두리 유지) */
-  .fc .fc-button {
-    display: inline-flex !important;
-    align-items: center;
-    /* 색상/배경/테두리/마진/패딩은 기존 네 규칙을 그대로 사용 */
-  }
-
-  /* pill 모서리 보정: 첫/마지막만 둥글게 만드는 테마를 무력화 */
-  .fc .fc-button-group .fc-button:first-child,
-  .fc .fc-button-group .fc-button:last-child {
-    border-radius: 12px !important;
-  }
-
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: var(--fc-font-family);
-  background: #fafafa;
-  color: #111;
-  overflow-x: hidden;
-}
-
-/* 도토리 로고처럼 중앙 고정 타이틀 */
-.calendar-title {
+/* 중앙 고정 타이틀 */
+.calendar-scope .calendar-title {
   text-align: center;
   font-size: 2rem;
   font-weight: 700;
   color: #555;
-  margin: 16px 0 8px;
+  margin: 16px 0 8px; /* 헤더-캘린더 간격 유지 */
 }
 
-/* 캘린더 래퍼: 가운데 정렬 + 고정폭 */
-.calendar-wrap {
+/* 캘린더 래퍼 */
+.calendar-scope .calendar-wrap {
   width: var(--cal-fixed-width);
   max-width: 100%;
   margin: 0 auto;
 }
 
-#calendar,
-.fc {
+/* 캘린더 크기 */
+.calendar-scope #calendar,
+.calendar-scope .fc {
   inline-size: 100%;
   block-size: auto;
 }
 
-/* 플랫 달력 박스 */
-#calendar {
+/* 캘린더 박스 */
+.calendar-scope #calendar {
   background: #fff;
   border: 1px solid #e9e9e9;
   border-radius: 0;
@@ -591,55 +40,49 @@ body {
   box-shadow: none;
 }
 
-/* 요일 헤더 */
-.fc .fc-col-header {
+/* ===== FullCalendar: 헤더/그리드 ===== */
+.calendar-scope .fc .fc-col-header {
   background: #fafafa;
   border-bottom: 1px solid #e9e9e9;
 }
-
-.fc .fc-col-header-cell-cushion {
+.calendar-scope .fc .fc-col-header-cell-cushion {
   padding: 10px 0;
   font-weight: 600;
   color: #222;
 }
-
-/* 얇은 그리드 라인 */
-.fc-theme-standard .fc-scrollgrid,
-.fc-theme-standard td,
-.fc-theme-standard th {
+.calendar-scope .fc-theme-standard .fc-scrollgrid,
+.calendar-scope .fc-theme-standard td,
+.calendar-scope .fc-theme-standard th {
   border-color: #e9e9e9;
 }
 
-/* 날짜 숫자(우상단) */
-.fc .fc-daygrid-day-top {
+/* 날짜/오늘/다른달 */
+.calendar-scope .fc .fc-daygrid-day-top {
   justify-content: flex-end;
   padding: 6px 8px 0 0;
 }
-
-.fc .fc-daygrid-day-number {
+.calendar-scope .fc .fc-daygrid-day-number {
   color: #111;
   font-weight: 600;
   font-size: 13px;
 }
-
-/* 오늘 */
-.fc .fc-day-today {
+.calendar-scope .fc .fc-day-today {
   background: #f7f7f7;
 }
-
-/* 셀 패딩 */
-.fc .fc-daygrid-day-frame {
-  padding: 2px 6px 8px;
+.calendar-scope .fc .fc-day-other .fc-daygrid-day-number {
+  color: #bbb;
 }
 
-/* 이벤트: 점 스타일 */
-.fc .fc-daygrid-dot-event {
+/* 셀 패딩 & 이벤트 점 */
+.calendar-scope .fc .fc-daygrid-day-frame {
+  padding: 2px 6px 8px;
+}
+.calendar-scope .fc .fc-daygrid-dot-event {
   padding: 0 0 0 16px;
   line-height: 1.25;
   font-size: 12px;
 }
-
-.fc .fc-daygrid-event-dot {
+.calendar-scope .fc .fc-daygrid-event-dot {
   width: 8px;
   height: 8px;
   border-radius: 2px;
@@ -647,94 +90,112 @@ body {
   background: var(--dot-color, #888);
   margin: 0 6px 0 0;
 }
-
-.fc .fc-event-time {
+.calendar-scope .fc .fc-event-time {
   display: none;
 }
 
-/* 다른 달 날짜 흐림 */
-.fc .fc-day-other .fc-daygrid-day-number {
-  color: #bbb;
-}
-
-/* ===== FullCalendar 버튼: 주황 통일 ===== */
-.fc .btn,
-.fc .btn-primary {
-  background-color: #ff8935 !important;
-  border-color: #ff8935 !important;
+/* ===== FullCalendar 버튼: 주황 유지 ===== */
+.calendar-scope .fc .fc-button {
+  padding: 8px 16px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  background: #ff8935 !important; /* 유지 */
+  border: 1px solid #ff8935 !important;
   color: #fff !important;
-  border-radius: 8px !important;
-  padding: 6px 12px !important;
-  font-weight: 700;
+  margin: 0 7px !important; /* 유지 */
+}
+.calendar-scope .fc .fc-button:hover,
+.calendar-scope .fc .fc-button:focus {
+  background: #e85f00 !important; /* 유지 */
+  border-color: #cc5200 !important; /* 유지 */
 }
 
-.fc .btn:hover,
-.fc .btn-primary:hover,
-.fc .btn:focus,
-.fc .btn-primary:focus {
-  background-color: #e85f00 !important;
-  border-color: #cc5200 !important;
-}
-
-/* 커스텀 addEvent 버튼(텍스트만 바꿔도 동일 스타일 적용됨) */
-.fc .fc-toolbar .fc-addEventButton-button.btn {
-  background: #ff6a00 !important;
-  border-color: #e85f00 !important;
-  color: #fff !important;
-  border-radius: 10px !important;
-  padding: 6px 12px !important;
-}
-
-/* 기본 타이틀은 숨김(우리는 별도 .calendar-title 사용) */
-.fc .fc-toolbar-title {
+/* 기본 타이틀 숨김: .calendar-title 사용 */
+.calendar-scope .fc .fc-toolbar-title {
   display: none !important;
 }
 
-/* ===== Modal ===== */
-.modal {
+/* ===== 툴바 레이아웃/그룹 간격 (간격/패딩 유지) ===== */
+.calendar-scope .fc .fc-header-toolbar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin: 12px 0 18px !important; /* 유지 */
+  padding: 6px !important; /* 유지 */
+}
+.calendar-scope .fc .fc-toolbar-chunk,
+.calendar-scope .fc .fc-button-group {
+  display: flex !important;
+  gap: 12px !important;
+}
+.calendar-scope .fc .fc-button-group > .fc-button + .fc-button {
+  margin-left: 0 !important;
+}
+/* Bootstrap 테마 충돌 방지 */
+.calendar-scope .fc .btn-group {
+  display: flex !important;
+  gap: 12px !important;
+}
+.calendar-scope .fc .btn-group > .btn + .btn {
+  margin-left: 0 !important;
+}
+.calendar-scope .fc .btn-group .btn {
+  float: none !important;
+}
+
+/* prev/next 아이콘 */
+.calendar-scope .fc-prev-button::before {
+  content: "‹";
+  margin-right: 4px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.calendar-scope .fc-next-button::after {
+  content: "›";
+  margin-left: 4px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* ===== 모달 ===== */
+.calendar-scope .modal {
   position: fixed;
   inset: 0;
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, .4);
+  background: rgba(0, 0, 0, 0.4);
   z-index: 9999;
 }
-
-.modal[aria-hidden="false"] {
+.calendar-scope .modal[aria-hidden="false"] {
   display: flex;
 }
-
-.modal__dialog {
+.calendar-scope .modal__dialog {
   width: 560px;
   max-width: calc(100% - 24px);
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
-
-.modal__header {
+.calendar-scope .modal__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
   border-bottom: 1px solid #eee;
 }
-
-.modal__body {
+.calendar-scope .modal__body {
   padding: 16px;
 }
-
-.modal__footer {
+.calendar-scope .modal__footer {
   display: flex;
   justify-content: space-between;
   gap: 8px;
   padding: 12px 16px;
   border-top: 1px solid #eee;
 }
-
-.modal__close {
+.calendar-scope .modal__close {
   border: 0;
   background: transparent;
   font-size: 24px;
@@ -742,8 +203,8 @@ body {
   line-height: 1;
 }
 
-/* 버튼 모달용 */
-.btn {
+/* 모달 내부 버튼(기본형) */
+.calendar-scope .btn {
   appearance: none;
   border: 1px solid #d0d0d0;
   background: #fff;
@@ -751,54 +212,45 @@ body {
   border-radius: 10px;
   cursor: pointer;
 }
-
-.btn:hover {
+.calendar-scope .btn:hover {
   background: #f5f5f5;
 }
-
-.btn-primary {
+.calendar-scope .btn-primary {
   background: #111;
   color: #fff;
   border-color: #111;
 }
-
-.btn-primary:hover {
+.calendar-scope .btn-primary:hover {
   filter: brightness(0.9);
 }
-
-.btn-secondary {
+.calendar-scope .btn-secondary {
   background: #f0f0f0;
   color: #333;
   border-color: #ddd;
 }
-
-.btn-secondary:hover {
+.calendar-scope .btn-secondary:hover {
   background: #e6e6e6;
 }
-
-.btn-danger {
+.calendar-scope .btn-danger {
   background: #ef4444;
   border-color: #ef4444;
   color: #fff;
 }
-
-.btn-danger:hover {
+.calendar-scope .btn-danger:hover {
   filter: brightness(0.9);
 }
 
 /* ===== 상세일정(Agenda) ===== */
-.agenda {
+.calendar-scope .agenda {
   margin-top: 10px;
 }
-
-.agenda__title {
+.calendar-scope .agenda__title {
   margin: 16px 0 10px;
   font-size: 16px;
   font-weight: 700;
   color: #111;
 }
-
-.agenda__section {
+.calendar-scope .agenda__section {
   background: #fff;
   border: 1px solid #e9e9e9;
   border-radius: 8px;
@@ -806,21 +258,18 @@ body {
   padding: 10px 12px;
   margin-bottom: 10px;
 }
-
-.agenda__date {
+.calendar-scope .agenda__date {
   margin: 6px 0 8px;
   font-size: 14px;
   font-weight: 700;
   color: #333;
 }
-
-.agenda__list {
+.calendar-scope .agenda__list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
-.agenda__item {
+.calendar-scope .agenda__item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -828,28 +277,24 @@ body {
   border-radius: 8px;
   position: relative;
 }
-
-.agenda__item::before {
+.calendar-scope .agenda__item::before {
   content: "";
   width: 8px;
   height: 8px;
   border-radius: 2px;
   background: var(--dot-color, #999);
 }
-
-.agenda__time {
+.calendar-scope .agenda__time {
   width: 88px;
   font-size: 13px;
   color: #444;
   flex: 0 0 auto;
 }
-
-.agenda__title {
+.calendar-scope .agenda__title {
   font-size: 14px;
   color: #111;
 }
-
-.agenda__edit {
+.calendar-scope .agenda__edit {
   margin-left: auto;
   font-size: 12px;
   padding: 4px 8px;
@@ -858,199 +303,158 @@ body {
   background: #fff;
   cursor: pointer;
 }
-
-.agenda__edit:hover {
+.calendar-scope .agenda__edit:hover {
   background: #f5f5f5;
 }
-
-.agenda__empty {
+.calendar-scope .agenda__empty {
   padding: 14px;
   color: #666;
   font-size: 14px;
   text-align: center;
 }
 
-/* 인쇄 최적화 */
+/* ===== 프린트 (스코프 한정) ===== */
 @media print {
-  body {
-    background: #fff;
-  }
-
-  #calendar {
+  .calendar-scope #calendar {
     border-color: #ddd;
   }
-
-  .agenda__section {
+  .calendar-scope .agenda__section {
     break-inside: avoid;
   }
 }
 
-.fc-prev-button::before {
-  content: "‹";
-  margin-right: 4px;
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
-.fc-next-button::after {
-  content: "›";
-  margin-left: 4px;
-  font-size: 1.2rem;
-  line-height: 1;
-}
-
-/* ===== Cute modal makeover – override only ===== */
-
-/* 다이얼로그 박스: 더 둥글고 부드럽게 */
-.modal__dialog {
-  max-width: 640px;
-  /* 조금 더 넉넉하게 */
-  border-radius: 20px;
-  /* 둥글게 */
-  box-shadow: 0 20px 50px rgba(0, 0, 0, .18);
+/* ===== 귀여운 모달 업그레이드 (선택적 오버라이드) ===== */
+.calendar-scope .modal__dialog {
+  max-width: 640px; /* 넉넉하게 */
+  border-radius: 20px; /* 둥글게 */
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
   border: 1px solid #f0f0f0;
 }
-
-/* 헤더 톤을 살짝 파스텔로 */
-.modal__header {
+.calendar-scope .modal__header {
   padding: 18px 20px;
   background: linear-gradient(180deg, #ffffff, #ffffff);
   border-bottom: 1px solid #ffffff;
 }
-
-.modal__header h2 {
+.calendar-scope .modal__header h2 {
   font-size: 22px;
   font-weight: 800;
-  letter-spacing: .02em;
+  letter-spacing: 0.02em;
 }
-
-/* X 버튼 동글동글 */
-.modal__close {
+.calendar-scope .modal__close {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   font-size: 22px;
-  line-height: 1;
   display: grid;
   place-items: center;
   color: #666;
 }
-
-.modal__close:hover {
-  background: rgba(0, 0, 0, .06);
+.calendar-scope .modal__close:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
-
-/* 본문 패딩 살짝 키움 */
-.modal__body {
+.calendar-scope .modal__body {
   padding: 18px 20px 8px;
 }
-
-/* 폼 행 구성 & 라벨 */
-.form-row {
+.calendar-scope .form-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 14px;
 }
-
-.form-row>label {
+.calendar-scope .form-row > label {
   font-size: 13px;
   font-weight: 700;
   color: #7a7a7a;
 }
-
-/* 입력 공통 (텍스트/시간/색상) */
-.form-row input[type="text"],
-.form-row input[type="datetime-local"],
-.form-row input[type="color"] {
+.calendar-scope .form-row input[type="text"],
+.calendar-scope .form-row input[type="datetime-local"],
+.calendar-scope .form-row input[type="color"] {
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid #e5e5e5;
   background: #fff;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, .02) inset;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) inset;
   font-size: 14px;
-  transition: box-shadow .15s, border-color .15s, transform .03s;
+  transition: box-shadow 0.15s, border-color 0.15s, transform 0.03s;
 }
-
-.form-row input[type="text"]:focus,
-.form-row input[type="datetime-local"]:focus {
+.calendar-scope .form-row input[type="text"]:focus,
+.calendar-scope .form-row input[type="datetime-local"]:focus {
   outline: none;
   border-color: #fca567;
-  box-shadow: 0 0 0 3px rgba(255, 106, 0, .12);
+  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
 }
-
-/* 체크박스는 주황 포인트 */
-.form-row input[type="checkbox"] {
+.calendar-scope .form-row input[type="checkbox"] {
   width: 16px;
   height: 16px;
   accent-color: #ff6a00;
   transform: translateY(1px);
 }
-
-/* 색상 피커 살짝 크게 */
-.form-row input[type="color"] {
+.calendar-scope .form-row input[type="color"] {
   width: 52px;
   height: 40px;
   padding: 0;
   border-radius: 10px;
 }
-
-/* 푸터 버튼 영역 */
-.modal__footer {
+.calendar-scope .modal__footer {
   padding: 14px 20px;
   background: #fff;
   border-top: 1px solid #f2f2f2;
 }
-
-/* 버튼(모달 안) 라운드 + 그림자 */
-.modal__footer .btn {
+.calendar-scope .modal__footer .btn {
   border-radius: 12px;
   padding: 10px 14px;
   border: 1px solid #e7e7e7;
   background: #fff;
   font-weight: 700;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, .03);
-  transition: transform .05s ease, filter .15s ease;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.03);
+  transition: transform 0.05s ease, filter 0.15s ease;
 }
-
-.modal__footer .btn:active {
+.calendar-scope .modal__footer .btn:active {
   transform: translateY(1px);
 }
-
-/* 취소(회색) */
-.modal__footer .btn.btn-secondary,
-.modal__footer .btn:not(.btn-primary):not(.btn-danger) {
+.calendar-scope .modal__footer .btn.btn-secondary,
+.calendar-scope .modal__footer .btn:not(.btn-primary):not(.btn-danger) {
   background: #f5f6f7;
   border-color: #e6e6e6;
   color: #444;
 }
-
-.modal__footer .btn.btn-secondary:hover,
-.modal__footer .btn:not(.btn-primary):not(.btn-danger):hover {
-  filter: brightness(.98);
-}
-
-/* 저장(주황) — 기존 규칙 유지 + 살짝 강조 */
-.modal__footer .btn.btn-primary {
-  background: #000000;
+.calendar-scope .modal__footer .btn.btn-primary {
+  background: #000000; /* 요청대로 기존 느낌 유지 */
   border-color: #000000;
   color: #fff;
-  box-shadow: 0 6px 14px rgba(255, 106, 0, .25);
+  box-shadow: 0 6px 14px rgba(255, 106, 0, 0.25);
 }
-
-.modal__footer .btn.btn-primary:hover {
-  filter: brightness(.96);
-}
-
-/* 삭제(빨강) — 그대로 강조 */
-.modal__footer .btn.btn-danger {
+.calendar-scope .modal__footer .btn.btn-danger {
   background: #ef4444;
   border-color: #ef4444;
   color: #fff;
-  box-shadow: 0 6px 14px rgba(239, 68, 68, .18);
+  box-shadow: 0 6px 14px rgba(239, 68, 68, 0.18);
+}
+/* ===== FullCalendar (Bootstrap 테마 버튼 대응) ===== */
+.calendar-scope .fc .btn,
+.calendar-scope .fc .btn-primary {
+  background-color: #ff8935 !important;
+  border-color: #ff8935 !important;
+  color: #fff !important;
+  border-radius: 12px !important;   /* fc-button과 통일 */
+  padding: 8px 16px !important;     /* fc-button과 통일 */
+  font-weight: 700 !important;
+  margin: 0 7px !important;
+}
+.calendar-scope .fc .btn:hover,
+.calendar-scope .fc .btn-primary:hover,
+.calendar-scope .fc .btn:focus,
+.calendar-scope .fc .btn-primary:focus {
+  background-color: #e85f00 !important;
+  border-color: #cc5200 !important;
 }
 
-.modal__footer .btn.btn-danger:hover {
-  filter: brightness(.96);
+/* 그룹 결합 해제(부트스트랩의 -1px 상쇄 제거) */
+.calendar-scope .fc .btn-group {
+  display: flex !important;
+  gap: 12px !important;
+}
+.calendar-scope .fc .btn-group > .btn + .btn {
+  margin-left: 0 !important;
 }

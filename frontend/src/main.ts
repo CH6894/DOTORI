@@ -10,6 +10,7 @@ import { API_BASE } from './config';
 import '@/assets/styles/base.css'
 import '@/assets/styles/tokens.css'
 import '@/assets/styles/utilities.css'
+import '@/assets/styles/links.css'
 
 const app = createApp(App)
 

@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import axios from 'axios'
+import { fetchItems } from '@/api/items'   // ✅ API 레이어만 임포트
 import { ref, onMounted } from 'vue'
 
 const items = ref([])
@@ -35,14 +35,11 @@ const totalPages = ref(1)
 const loading = ref(false)
 const error = ref('')
 
-const fetchItems = async () => {
+async function load() {
   loading.value = true
   error.value = ''
   try {
-    const { data } = await axios.get(`/api/items`, {
-      params: { page: page.value, size: size.value },
-    })
-    // Spring Data Page 응답 형태: content, totalPages, number 등
+    const data = await fetchItems({ page: page.value, size: size.value })
     items.value = data.content ?? []
     totalPages.value = data.totalPages ?? 1
   } catch (e) {
@@ -56,7 +53,7 @@ const fetchItems = async () => {
 const next = () => { if (page.value < totalPages.value - 1) { page.value++; fetchItems() } }
 const prev = () => { if (page.value > 0) { page.value--; fetchItems() } }
 
-onMounted(fetchItems)
+onMounted(load)
 </script>
 
 <style scoped>
