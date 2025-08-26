@@ -1,141 +1,57 @@
 <template>
   <div class="inspect-page" :class="{ 'no-emoji': !SHOW_EMOJI }">
-    <!-- 제목: sticky 아님 -->
+    <!-- 제목 -->
     <div class="title">
       <h1>검수 기준</h1>
-      <p class="sub">카테고리별 세부 판정 · 등급/할인율 · 실무 가이드</p>
     </div>
 
-    <!-- 탭만 sticky -->
-    <div class="ig-header">
-      <!-- 1차: 카테고리 탭 (한 줄 + 가로 스크롤) -->
-      <nav class="ig-tabs" role="tablist" aria-label="inspection categories">
+    <!-- 카테고리 -->
+    <section class="ig-panel cat-panel">
+      <div class="cat" role="grid" aria-label="inspection categories quick select">
         <button
-          v-for="tab in tabs"
-          :key="tab.key"
-          class="ig-tab"
-          :class="{ active: activeKey === tab.key && guideKey === 'none' }"
-          role="tab"
-          :aria-selected="activeKey === tab.key && guideKey === 'none'"
-          @click="guideKey = 'none'; activeKey = tab.key"
+          v-for="c in catItems"
+          :key="c.key"
+          class="chip"
+          role="gridcell"
+          :class="{ active: activeKey === c.key }"
+          :aria-label="`${c.label} 바로가기`"
+          @click="activeKey = c.key"
         >
-          {{ tab.label }}
+          <span class="chip-label">{{ c.label }}</span>
         </button>
-      </nav>
-
-      <!-- 2차: 부가 가이드 탭 -->
-      <nav class="ig-tabs sub" role="tablist" aria-label="inspection guides">
-        <button
-          v-for="g in guideTabs"
-          :key="g.key"
-          class="ig-tab"
-          :class="{ active: guideKey === g.key }"
-          role="tab"
-          :aria-selected="guideKey === g.key"
-          @click="guideKey = g.key"
-        >
-          {{ g.label }}
-        </button>
-      </nav>
-    </div>
-
-    <!-- 부가 가이드 -->
-    <section v-if="guideKey !== 'none'">
-      <div class="ig-panel" v-if="guideKey === 'guide'">
-        <div class="ig-panel-title">{{ p('📏','검수 실무 가이드') }}</div>
-        <div class="ig-guide">
-          <div class="ig-block">
-            <h3>{{ p('📏','측정 도구') }}</h3>
-            <ul>
-              <li>자/버니어캘리퍼스: 정확한 갈라짐/기스 측정</li>
-              <li>UV 라이트: 숨겨진 얼룩/수리 흔적 확인</li>
-              <li>색상 비교표: 바램/변색 정도 판정</li>
-              <li>스프링 테스터: 관절/스프링 힘 측정</li>
-            </ul>
-          </div>
-          <div class="ig-block">
-            <h3>{{ p('📸','증거 사진 필수 항목') }}</h3>
-            <ol>
-              <li>전체 상태</li>
-              <li>손상부위 클로즈업</li>
-              <li>자가 보이는 치수</li>
-              <li>작동/기능 동영상</li>
-            </ol>
-          </div>
-          <div class="ig-block">
-            <h3>{{ p('⚠️','등급 조정 규칙') }}</h3>
-            <ul>
-              <li>2등급↑ 차이: 반송/재협상</li>
-              <li>1등급 차이: 실제 등급으로 조정</li>
-              <li>안전 문제: 즉시 불합격</li>
-            </ul>
-          </div>
-          <div class="ig-block">
-            <h3>{{ p('💰','가격 계산') }}</h3>
-            <p class="formula">최종가 = 정가 × (100 − 할인율) ÷ 100</p>
-            <p class="example">예) 50,000원 · A(20%) → <strong>40,000원</strong></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="ig-panel" v-else>
-        <div class="ig-panel-title">{{ p('🚨','검수 유의사항') }}</div>
-        <div class="ig-caution">
-          <h3>불합격/페널티</h3>
-          <table class="ig-table">
-            <thead>
-              <tr><th style="width:180px;">구분</th><th style="width:140px;">처리</th><th style="width:100px;">페널티</th><th>비고</th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="(pRow, i) in penalties" :key="i">
-                <td class="ig-row-head">{{ pRow.type }}</td>
-                <td>{{ pRow.action }}</td>
-                <td>{{ pRow.penalty }}</td>
-                <td>{{ pRow.note }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="ig-excludes">
-            <details open>
-              <summary>{{ p('⚠️','검수 기준 적용 제외') }}</summary>
-              <ul class="columns">
-                <li><strong>🏭 제조공정상</strong>: 몰드 라인, 미세 어긋남, 도금/연결부 편차, 프린팅 위치 1–2mm 차이 등</li>
-                <li><strong>📦 유통/포장</strong>: 박스 모서리 ≤5mm 눌림, 블리스터 주름, 포장재 칼자국</li>
-                <li><strong>🚛 검수/배송</strong>: 완충재 손상, 택 고리 이탈, 스티커 흔적</li>
-                <li><strong>🎯 특성</strong>: 시리얼 차이, 시기별 색감/패키징, 인증스티커 위치/크기 차이</li>
-              </ul>
-            </details>
-            <details>
-              <summary>{{ p('🔍','최종 판단') }}</summary>
-              <ul>
-                <li>모호한 경우 책임자 최종 판단</li>
-                <li>특수 제작·복합 손상은 개별 판정</li>
-              </ul>
-            </details>
-            <details>
-              <summary>{{ p('📅','구매자 의사 확인') }}</summary>
-              <ul>
-                <li>대상: 구성품 누락, 경계선 등급</li>
-                <li>절차: 보류 안내 → 상세 사진 → 24시간 회신, 무응답 시 자동 합격</li>
-              </ul>
-            </details>
-            <details>
-              <summary>{{ p('🏷️','검수 스티커 정책') }}</summary>
-              <ul>
-                <li>통과 상품에 인증 스티커(홀로그램/QR) 부착, 발송 시 제거 금지</li>
-              </ul>
-            </details>
-          </div>
-        </div>
       </div>
     </section>
 
     <!-- 카테고리별 기준표 -->
-    <section v-else>
+    <section>
       <div class="ig-panel">
         <div class="ig-panel-title">설명란</div>
         <div class="ig-desc">
+
+          <!-- 유의사항(빨강) -->
+          <div class="notice-text">
+            <h3>※ 유의사항</h3>
+            <p>본 검수 기준은 거래 당사자 간 원활한 거래와 보편적 기준 확립을 위한 안내입니다. 제조사별 보증은 포함하지 않습니다.</p>
+            <p>제품 기능 및 기타 제품 관련 문의는 제조업체로 문의하시기 바랍니다. 제조업체의 A/S 여부는 보장되지 않을 수 있습니다.</p>
+            <p>＊다음 사항들은 제조/유통 과정의 특성으로 인해 하자로 판단하지 않습니다.＊</p>
+            <ul>
+              -제조공정·유통과정·소재 특성상 발생 가능한 사항<br>
+              -미세한 도장/마감 편차 및 생산 시점별 차이<br>
+              -제품 본연의 기능과 무관한 경미 흠(스크래치 등)<br>
+              -운송 과정에서 포장재에 발생할 수 있는 눌림/주름<br>
+              -상품택/구성품의 경미한 눌림·이염·누락 등
+            </ul>
+          </div>
+
+          <!-- 실무 가이드 -->
+          <div class="guide-text">
+            <h3>실무 가이드</h3>
+            <p>· 점상 손상은 <strong>가장 긴 부분</strong> 기준</p>
+            <p>· 면상 손상은 <strong>최대 지름</strong> 기준</p>
+            <p>· <strong>5mm 이내</strong>에 모여 있는 손상은 <strong>1개</strong>로 간주</p>
+          </div>
+
+          <!-- 기존 할인율/등급 요약 -->
           <p class="ig-discount">
             <strong>할인율</strong>:
             최상 {{ current.discount.s }}%, 상 {{ current.discount.a }}%, 중 {{ current.discount.b }}%, 하 {{ current.discount.c }}%
@@ -147,15 +63,6 @@
             <li><span class="dot c"></span><strong>C급</strong>: {{ current.brief.c }}</li>
             <li><span class="dot f"></span><strong>F급</strong>: {{ current.brief.f }}</li>
           </ul>
-
-          <div class="notes">
-            <h3>{{ p('📐','공통 손상 측정 기준') }}</h3>
-            <ul>
-              <li>점상 손상: <b>가장 긴 부분</b> 기준</li>
-              <li>면상 손상: <b>최대 지름</b> 기준</li>
-              <li><b>5mm 이내</b> 모여 있으면 <b>1개</b>로 계산</li>
-            </ul>
-          </div>
         </div>
       </div>
 
@@ -192,11 +99,10 @@
 import { computed, reactive, ref } from 'vue'
 import '../assets/inspection.css'
 
-/** 이모지 표시 토글(기본 숨김) */
+/** 이모지 표시 토글 */
 const SHOW_EMOJI = false
-const p = (emoji, text) => (SHOW_EMOJI ? `${emoji} ${text}` : text)
 
-/* 1차: 카테고리 탭 */
+/* 카테고리 탭 */
 const tabs = [
   { key: 'figure',     label: '피규어 / 토이류' },
   { key: 'keyring',    label: '키링' },
@@ -207,13 +113,15 @@ const tabs = [
 ]
 const activeKey = ref('figure')
 
-/* 2차: 부가 가이드 탭 */
-const guideTabs = [
-  { key: 'guide',  label: '실무 가이드' },
-  { key: 'notice', label: '유의사항' },
+/* 카테고리 칩 데이터 */
+const catItems = [
+  { label: '피규어',     key: 'figure' },
+  { label: '키링',       key: 'keyring' },
+  { label: '잡화',       key: 'acc' },
+  { label: '문구류',     key: 'stationery' },
+  { label: '의류/패션',  key: 'apparel' },
+  { label: '생활용품',   key: 'living' },
 ]
-const guideKey = ref('none')
-
 /* ==== 데이터: 업로드 문서 기반 ==== */
 const DATA = reactive({
   figure: {
@@ -240,9 +148,9 @@ const DATA = reactive({
         f: '헤드 크랙 등 주요 손상' },                      // 
       { section: '관절/가동',
         s: '헐거움 0, 가동 100%, 포징 완전',
-        a: '헐거움 1–2부위, 가동 90%↑',
-        b: '헐거움 3–5부위, 가동 70%↑',
-        c: '조인트 크랙 1–2개, 가동 50%↑',
+        a: '헐거움 1–2부위, 가동 90% 이상',
+        b: '헐거움 3–5부위, 가동 70% 이상',
+        c: '조인트 크랙 1–2개, 가동 50% 이상',
         f: '조인트 브레이크 등 복구 불가' },               // 
       { section: '바디/의상',
         s: '화이트닝/풀림/부속 로스 0',
@@ -384,8 +292,8 @@ const DATA = reactive({
     table: [
       { section: '컵/텀블러',
         s: '표면 기스 0, 프린트 닳음 0%, 보온 100%, 밀폐 완벽',
-        a: '기스 ≤2mm 1–2개, 작은 흠 ≤1mm 1개, 보온 90%↑',
-        b: '기스 ≤5mm 3–5개, 찌그러짐 ≤3mm 2–3개, 보온 70%↑',
+        a: '기스 ≤2mm 1–2개, 작은 흠 ≤1mm 1개, 보온 90% 이상',
+        b: '기스 ≤5mm 3–5개, 찌그러짐 ≤3mm 2–3개, 보온 70% 이상',
         c: '깊은 기스 ≤1cm 6–10개, 찌그러짐 다수, 보온 저하 뚜렷',
         f: '누수/큰 갈라짐' },
       { section: '쿠션/인형',
