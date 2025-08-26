@@ -1,16 +1,136 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { chatAPI, type ChatMessage } from '@/services/api'
 
 const open = ref(false)
 const toggle = () => (open.value = !open.value)
-const close  = () => (open.value = false)
+const close = () => (open.value = false)
 
-// ESC 로 닫기
+// ESC로 닫기
 const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close() }
 onMounted(() => window.addEventListener('keydown', onKey))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 
-const suggestions = ['도토리 주기','도토리 주기','도토리 주기','도토리 주기','도토리 주기','도토리 주기']
+// === 채팅 상태 관리 ===
+interface Message {
+  id: string
+  text: string
+  isUser: boolean
+  timestamp: Date
+}
+// 주고받은 모든 메시지를 ref로 감싸서 메시지가 추가될 떄마다 화면 자동 업뎃
+const messages = ref<Message[]>([])
+// 사용자가 입력창에 쓰는 텍스트를 실시간으로 저장
+const inputText = ref('')
+const isLoading = ref(false)
+const sessionId = ref('') // 페이지 새로고침시 자동으로 초기화됨
+const chatBody = ref<HTMLElement>()
+
+// 챗봇 창을 닫을 때 대화 기록은 유지하지만
+// 페이지 새로고침/탭 닫기시에는 모든 데이터가 자동으로 사라짐
+// (localStorage 사용 안 함 = 브라우저 세션과 함께 사라짐)
+
+// 제안 버튼들
+const suggestions = [
+  '기본질문1',
+  '기본질문2',
+  '기본질문3',
+  '기본질문4',
+  '기본질문5',
+  '기본질문6'
+]
+
+// === 메시지 관리 함수들 ===
+const addMessage = (text: string, isUser: boolean) => {
+  const message: Message = {
+    id: Date.now().toString(),
+    text,
+    isUser,
+    timestamp: new Date()
+  }
+  messages.value.push(message)
+  
+  // 스크롤을 맨 아래로
+  nextTick(() => {
+    if (chatBody.value) {
+      chatBody.value.scrollTop = chatBody.value.scrollHeight
+    }
+  })
+}
+
+// === API 호출 함수 ===
+const sendMessageToAPI = async (userMessage: string): Promise<string> => {
+  try {
+    // 세션 ID가 없으면 새로 생성 (페이지 새로고침시)
+    if (!sessionId.value) {
+      sessionId.value = `session_${Date.now()}`
+    }
+
+    // 대화 기록을 ChatMessage 형태로 변환 (현재 세션만)
+    const conversationHistory: ChatMessage[] = messages.value
+      .slice(-10) // 최근 10개만
+      .map(msg => ({
+        role: msg.isUser ? 'user' : 'assistant',
+        content: msg.text
+      }))
+
+    // API 요청 데이터
+    const request = {
+      message: userMessage,
+      session_id: sessionId.value, // 현재 세션 ID 사용
+      conversation_history: conversationHistory
+    }
+
+    // 일반 대화 모드 사용
+    const response = await chatAPI.sendGeneralMessage(request)
+    
+    // 세션 ID 업데이트 (백엔드에서 관리)
+    sessionId.value = response.session_id
+    
+    return response.response
+
+  } catch (error) {
+    console.error('API 호출 실패:', error)
+    return '죄송해요, 일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요! 🐿️'
+  }
+}
+
+// === 메시지 전송 ===
+const sendMessage = async (text?: string) => {
+  const messageText = text || inputText.value.trim()
+  if (!messageText || isLoading.value) return
+
+  // 사용자 메시지 추가
+  addMessage(messageText, true)
+  inputText.value = ''
+  isLoading.value = true
+
+  try {
+    // API 호출
+    const aiResponse = await sendMessageToAPI(messageText)
+    
+    // AI 응답 추가
+    addMessage(aiResponse, false)
+    
+  } catch (error) {
+    addMessage('죄송해요, 오류가 발생했어요. 🐿️', false)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// === 제안 버튼 클릭 ===
+const handleSuggestionClick = (suggestion: string) => {
+  sendMessage(suggestion)
+}
+
+// === 엔터키로 전송 ===
+const handleKeyPress = (e: KeyboardEvent) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault()
+    sendMessage()
+  }
+}
 </script>
 
 <template>
@@ -27,7 +147,6 @@ const suggestions = ['도토리 주기','도토리 주기','도토리 주기','�
         @keydown.enter.prevent="toggle"
         @keydown.space.prevent="toggle"
       >
-        <!-- /public/img/ChatBot.svg 기준 -->
         <img class="fab-icon" src="/img/chatbot/ChatBot.svg" alt="챗봇 열기" />
       </div>
     </transition>
@@ -37,31 +156,90 @@ const suggestions = ['도토리 주기','도토리 주기','도토리 주기','�
       <div v-if="open" class="backdrop" @click="close" aria-hidden="true"></div>
     </transition>
 
-    <!-- 패널: 래퍼에 scale(.6) 적용 -->
+    <!-- 패널 -->
     <transition name="panel">
       <div v-if="open" class="panel-wrap">
         <section class="squirrel-panel" role="dialog" aria-label="다람쥐 챗봇">
           <header class="head">
-            <button class="btn-close" @click="close" aria-label="닫기">X</button>
-
+            <button class="btn-close" @click="close" aria-label="닫기">×</button>
             <i class="eye eye--left"></i>
             <i class="eye eye--right"></i>
             <i class="nose"></i>
           </header>
 
-          <main class="body">
-            <div class="bubble">
-              <p class="greet"><strong>안녕하세요! 어쩌고 저쩌고 도와드립니다!</strong></p>
-              <div class="chips">
-                <button v-for="(t,i) in suggestions" :key="i" class="chip">{{ t }}</button>
+          <main class="body" ref="chatBody">
+            <!-- 초기 인사말 (메시지가 없을 때만 표시) -->
+            <div v-if="messages.length === 0" class="welcome">
+              <div class="bubble welcome-bubble">
+                <p class="greet">
+                  <strong>안녕하세요! 저는 다람이 🐿️</strong>
+                </p>
+                <p>무엇을 도와드릴까요?</p>
+                <div class="chips">
+                  <button 
+                    v-for="(suggestion, i) in suggestions" 
+                    :key="i" 
+                    class="chip"
+                    @click="handleSuggestionClick(suggestion)"
+                  >
+                    {{ suggestion }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 채팅 메시지들 -->
+            <div class="chat-messages">
+              <div
+                v-for="message in messages"
+                :key="message.id"
+                :class="['message', { 
+                  'user-message': message.isUser, 
+                  'ai-message': !message.isUser 
+                }]"
+              >
+                <div class="message-bubble" :class="{ 'user-bubble': message.isUser }">
+                  <p>{{ message.text }}</p>
+                  <small class="timestamp">
+                    {{ message.timestamp.toLocaleTimeString('ko-KR', { 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    }) }}
+                  </small>
+                </div>
+              </div>
+
+              <!-- 로딩 표시 -->
+              <div v-if="isLoading" class="message ai-message">
+                <div class="message-bubble loading">
+                  <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
               </div>
             </div>
           </main>
 
           <footer class="foot">
             <button class="btn-attach" title="첨부" aria-label="첨부">+</button>
-            <input class="input" type="text" placeholder="메시지 입력" />
-            <button class="btn-send" type="button">전송</button>
+            <input 
+              class="input" 
+              type="text" 
+              placeholder="메시지 입력" 
+              v-model="inputText"
+              @keypress="handleKeyPress"
+              :disabled="isLoading"
+            />
+          <button
+            class="btn-send"
+            type="button"
+            @click="() => sendMessage(inputText)"
+            :disabled="isLoading || !inputText.trim()"
+          >
+            {{ isLoading ? '전송중...' : '전송' }}
+          </button>
           </footer>
         </section>
       </div>
@@ -70,35 +248,30 @@ const suggestions = ['도토리 주기','도토리 주기','도토리 주기','�
 </template>
 
 <style scoped>
-/* ===== 토큰 ===== */
+/* 기존 스타일은 그대로 유지 */
 .chatbot{
-  --fab-size: 128px;     /* 아이콘 크기 */
-  --fab-right: 24px;
-  --fab-bottom: 24px;
-
-  --panel-w: 420px;      /* 원본 사이즈 유지 */
+  --fab-size: 128px;
+  --fab-right: calc(24px + 60px);
+  --fab-bottom: calc(24px + 32px);
+  --panel-w: 420px;
   --panel-h: 78vh;
   --panel-gap: 16px;
-  --panel-scale: .8;     /* ✅ 60%로 축소(래퍼에 적용) */
-
+  --panel-scale: .8;
   --brand: #c6742e;
   --brand-dark: #b36222;
   --cream: #f4f2e5;
   --accent: #ff7a3a;
   --shadow: 0 16px 40px rgba(0,0,0,.18);
-  --fab-right: calc(24px + 60px);   /* = 40px → 왼쪽으로 이동 */
-  --fab-bottom: calc(24px + 32px);  /* = 56px → 위로 이동 */
   --panel-shift-x: 48px;
   --panel-shift-y: 72px;
 }
 
-/* ===== 트랜지션 ===== */
+/* 트랜지션 */
 .fade-enter-active, .fade-leave-active{ transition: opacity .18s ease }
 .fade-enter-from, .fade-leave-to{ opacity: 0 }
-
-/* panel 트랜지션은 래퍼(.panel-wrap)에 적용됨 */
 .panel-enter-active{ animation: pop-in .18s ease-out both }
 .panel-leave-active{ animation: pop-out .14s ease-in both }
+
 @keyframes pop-in {
   from { transform: translateY(8px) scale(var(--panel-scale)); opacity: 0; }
   to   { transform: translateY(0)   scale(var(--panel-scale)); opacity: 1; }
@@ -108,61 +281,48 @@ const suggestions = ['도토리 주기','도토리 주기','도토리 주기','�
   to   { transform: translateY(8px) scale(var(--panel-scale)); opacity: 0; }
 }
 
-/* ===== FAB ===== */
+/* FAB */
 .fab-wrap{
-  position: fixed;
-  right: var(--fab-right);
-  bottom: var(--fab-bottom);
-  width: var(--fab-size);
-  height: var(--fab-size);
-  z-index: 2147483647;
-  display: grid; place-items: center;
-  cursor: pointer;
+  position: fixed; right: var(--fab-right); bottom: var(--fab-bottom);
+  width: var(--fab-size); height: var(--fab-size); z-index: 2147483647;
+  display: grid; place-items: center; cursor: pointer;
 }
 .fab-icon{
   width: 100%; height: 100%; display: block;
   transition: transform .2s ease, filter .2s ease;
 }
-.fab-wrap:hover .fab-icon{ transform: translateY(-2px); filter: drop-shadow(0 10px 22px rgba(0,0,0,.2)); }
-.fab-wrap:focus-visible{ outline: 3px solid #7aa7ff; outline-offset: 3px; }
-
-/* ===== 백드롭 ===== */
-.backdrop{
-  position: fixed; inset: 0; background: rgba(0,0,0,.25);
-  z-index: 9998;
+.fab-wrap:hover .fab-icon{ 
+  transform: translateY(-2px); 
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.2)); 
 }
 
-/* ===== 패널 래퍼(여기에 scale 적용) ===== */
+/* 백드롭 */
+.backdrop{
+  position: fixed; inset: 0; background: rgba(0,0,0,.25); z-index: 9998;
+}
+
+/* 패널 */
 .panel-wrap{
   position: fixed;
-  /* 기존: right: var(--fab-right); 또는 calc(...) 였다면 교체 */
   right: clamp(0px, calc(var(--fab-right) - var(--panel-shift-x)), 100vw);
-  bottom: max(0px,
-    calc(var(--fab-bottom) + var(--fab-size) + var(--panel-gap) - var(--panel-shift-y))
-  );  transform: scale(var(--panel-scale));
-  transform-origin: bottom right;
-  z-index: 9999;
-  will-change: transform;
-}
-/* ===== 패널 본체(원본 크기 유지) ===== */
-.squirrel-panel{
-  width: var(--panel-w);
-  height: var(--panel-h);
-  display: grid;
-  grid-template-rows: 140px 1fr auto;
-  border-radius: 20px;
-  overflow: hidden;              /* 모서리 라운드 살림 */
-  box-shadow: var(--shadow);
-  background: var(--brand);
-  box-sizing: border-box;
+  bottom: max(0px, calc(var(--fab-bottom) + var(--fab-size) + var(--panel-gap) - var(--panel-shift-y)));
+  transform: scale(var(--panel-scale));
+  transform-origin: bottom right; z-index: 9999;
 }
 
-/* ===== 머리/귀/얼굴 ===== */
+.squirrel-panel{
+  width: var(--panel-w); height: var(--panel-h);
+  display: grid; grid-template-rows: 140px 1fr auto;
+  border-radius: 20px; overflow: hidden;
+  box-shadow: var(--shadow); background: var(--brand);
+}
+
+/* 머리 */
 .head{ position: relative; background: var(--brand); }
 .btn-close{
   position: absolute; right: 16px; top: 16px;
-  background: #e5e5e5; border:0; border-radius: 8px;
-  padding: 8px 10px; font-size: 14px; cursor: pointer; color:#333;
+  background: #e5e5e5; border: 0; border-radius: 8px;
+  padding: 8px 10px; font-size: 16px; cursor: pointer; color: #333;
 }
 .eye{
   position: absolute; top: 56px; width: 16px; height: 36px;
@@ -172,68 +332,117 @@ const suggestions = ['도토리 주기','도토리 주기','도토리 주기','�
 .eye--right{ right: calc(50% - 60px); }
 .nose{
   position: absolute; top: 92px; left: 50%; transform: translateX(-50%);
-  width: 36px; height: 16px; background: #f2a4a4;
-  border-radius: 18px; box-shadow: 0 1px 0 rgba(0,0,0,.12) inset;
+  width: 36px; height: 16px; background: #f2a4a4; border-radius: 18px;
 }
 
-/* ===== 본문 ===== */
-.body{ background: var(--cream); padding: 16px 14px 0; overflow: auto; }
-.bubble{
+/* 본문 */
+.body{ 
+  background: var(--cream); padding: 16px 14px 0; 
+  overflow-y: auto; min-width: 0;
+  display: flex; flex-direction: column;
+}
+
+/* 웰컴 메시지 */
+.welcome { margin-bottom: 16px; }
+.welcome-bubble {
   position: relative; max-width: calc(100% - 28px);
   background: #fff; border: 1px solid #d8d3c7; border-radius: 12px;
-  padding: 14px 16px; color:#222; box-shadow: 0 2px 4px rgba(0,0,0,.05);
+  padding: 14px 16px; color: #222; box-shadow: 0 2px 4px rgba(0,0,0,.05);
 }
-.bubble::after{
-  content:""; position:absolute; left: 20px; bottom: -14px;
-  border-width: 14px 12px 0 0; border-style: solid; display:block;
+/* .welcome-bubble::after{
+  content: ""; position: absolute; left: 20px; bottom: -14px;
+  border-width: 14px 12px 0 0; border-style: solid;
   border-color: #fff transparent transparent transparent;
   filter: drop-shadow(-1px 1px 0 #d8d3c7);
-}
-.greet{ margin: 0 0 10px; }
+} */
 
-/* 칩 */
-.chips{ display:flex; flex-wrap:wrap; gap:10px; }
-.chip{
-  border:0; padding:8px 12px; border-radius:999px;
-  background:#9b9b9b; color:#fff; font-weight:700; cursor:pointer;
+/* 채팅 메시지 */
+.chat-messages { flex: 1; }
+.message { margin-bottom: 14px; display: flex; }
+
+.user-message { justify-content: flex-end; }
+.ai-message { justify-content: flex-start; }
+
+.message-bubble {
+  max-width: 80%; padding: 0px 15px 0px 15px; border-radius: 18px;
+  background: #fff; color: #333; position: relative;
+  border-bottom: 0px;
+}
+.message-bubble:not(.loading) p {
+  margin: 15px 5px 2px 5px;
+}
+.user-bubble {
+  background: var(--accent); color: white;
+  border-bottom-right-radius: 6px;
 }
 
-/* ===== 입력 ===== */
-.foot{
-  background: var(--brand);
+.ai-message .message-bubble {
+  background: #fff; border: 1px solid #d8d3c7;
+  border-bottom-left-radius: 6px;
+}
+
+.timestamp {
+  display: block; font-size: 11px; opacity: 0.6; margin-bottom: 10px;
+}
+.message-bubble.loading{
+   width: 60px; /* 원하는 너비 */
+  height: 35px; /* 원하는 높이 */
+  background: #ffffff !important;
   display: grid;
-  grid-template-columns: 44px 1fr auto;   /* ⬅ 버튼은 auto, 인풋은 1fr로 길게 */
-  gap: 10px;
-  align-items: center;
-  padding: 10px 10px 12px;
-  border-top: 6px solid var(--brand-dark);
+  place-items: center; 
+}
+/* 로딩 애니메이션 */
+.loading { background: #f0f0f0 !important; }
+.typing-indicator { display: flex; gap: 3px; }
+.typing-indicator span {
+  width: 6px; height: 6px; border-radius: 50%; background: #999;
+  animation: typing 1.4s infinite ease-in-out;
+}
+.typing-indicator span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-10px); opacity: 1; }
+}
+
+/* 제안 칩들 */
+.greet{ margin: 5px 0px 1px 1px; }
+.chips{ display: flex; flex-wrap: wrap; gap: 8px; }
+.chip{
+  border: 0; padding: 6px 12px; border-radius: 999px;
+  background: #9b9b9b; color: #fff; font-weight: 600; cursor: pointer;
+  font-size: 12px; transition: background 0.2s;
+}
+.chip:hover { background: #777; }
+
+/* 입력부 */
+.foot{
+  background: var(--brand); display: grid;
+  grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center;
+  padding: 10px 10px 12px; border-top: 6px solid var(--brand-dark);
 }
 .btn-attach{
-  width: 40px; height: 40px;              /* ⬅ 작게 통일 */
-  border-radius: 50%;
-  border: 0; background: #fff; color: var(--accent);
-  font-size: 22px; font-weight: 900; line-height: 1;
-  cursor: pointer; display: grid; place-items: center;
-  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+  width: 40px; height: 40px; border-radius: 50%; border: 0;
+  background: #fff; color: var(--accent); font-size: 22px; cursor: pointer;
+  display: grid; place-items: center;
 }
 .input{
-  height: 40px;                            /* ⬅ 인풋 길고 낮게 */
-  border-radius: 10px;
-  border: 0; outline: none; padding: 0 12px;
-  background: #f4f2e5; color: #333; font-size: 14px;
-  min-width: 0;                             /* ⬅ overflow 방지 (중요) */
+  height: 40px; border-radius: 10px; border: 0; outline: none;
+  padding: 0 12px; background: #f4f2e5; color: #333; font-size: 14px;
 }
+.input:disabled { opacity: 0.7; cursor: not-allowed; }
 .btn-send{
-  height: 40px;                             /* ⬅ 버튼 낮게 */
-  border-radius: 10px;
-  border: 0; background: var(--accent); color:#fff;
-  font-weight: 800; font-size: 14px;
-  padding: 0 12px;                          /* ⬅ 내용만큼 너비 */
-  cursor: pointer; white-space: nowrap;     /* ⬅ “전송” 두 줄 방지 */
-  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+  height: 40px; border-radius: 10px; border: 0;
+  background: var(--accent); color: #fff; font-weight: 800;
+  padding: 0 12px; cursor: pointer; font-size: 14px;
 }
-.body{ background: var(--cream); padding: 16px 14px 0; overflow: auto; min-width: 0; }
-/* 스크롤바(선택) */
-.body::-webkit-scrollbar{ width:10px }
-.body::-webkit-scrollbar-thumb{ background:#d0c8b2; border-radius:10px }
+.btn-send:disabled {
+  background: #ccc; cursor: not-allowed;
+}
+
+/* 스크롤바 */
+.body::-webkit-scrollbar{ width: 8px; }
+.body::-webkit-scrollbar-thumb{ background: #d0c8b2; border-radius: 10px; }
 </style>
