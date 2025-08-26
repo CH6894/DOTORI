@@ -29,7 +29,7 @@ const emit = defineEmits<{ (e: 'update:modelValue', v: string): void }>()
 <style scoped>
 .mid_category_list {
   background: #EFECC6;
-  border-radius: 10px;
+  border-radius: 0px 10px 10px 10px;
   padding: 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;

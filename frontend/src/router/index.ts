@@ -23,7 +23,6 @@ const CalendarView = () => import("@/views/CalendarPage.vue");
 const CalendarManager = () => import("@/views/CalendarManager.vue");
 const InspectionView = () => import("@/views/InspectionPage.vue");
 
-
 /* ===== MyPage & children ===== */
 const MyPage = () => import("@/views/MyPage.vue");
 const MyPageShip = () => import("@/components/mypage/MyPageShip.vue");
@@ -36,11 +35,10 @@ const MyPageWish = () => import("@/components/mypage/MyPageWish.vue");
 const ShoppingCart = () => import("@/views/ShoppingCart.vue");
 const Dex = () => import("@/views/Dex.vue");
 
-
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
   // Pinia store에서 사용하는 키와 통일: 'accessToken'
-  return !!localStorage.getItem("accessToken");
+  return !!localStorage.getItem("authToken");
 }
 
 const ItemList = () => import("@/components/ItemList.vue");
@@ -133,9 +131,24 @@ const routes: RouteRecordRaw[] = [
   },
 
   // 인증/관리 보조 페이지
-  { path: "/verify-upload", name: "verify-upload", component: VerifyUploadPage, meta: { header: "main", footer: true } },
-  { path: "/admin", name: "admin", component: AdminPage, meta: { header: "main", footer: true, chatbot: false,},   },
-  { path: "/oauth2/callback", name: "oauth-callback", component: OAuthCallback, meta: { header: "main", footer: false, utilbar: true } },
+  {
+    path: "/verify-upload",
+    name: "verify-upload",
+    component: VerifyUploadPage,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/admin",
+    name: "admin",
+    component: AdminPage,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/oauth2/callback",
+    name: "oauth-callback",
+    component: OAuthCallback,
+    meta: { header: "main", footer: false, utilbar: true },
+  },
 
   // 장바구니
   {
@@ -149,8 +162,8 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: "/dex",
-    name: "collection",
-    component: Dex,
+    name: "dex",
+    component: () => import("@/views/Dex.vue"),
     meta: { header: "main", footer: true },
   },
   {
@@ -174,7 +187,6 @@ const routes: RouteRecordRaw[] = [
     meta: { header: "main", footer: true },
   },
 ];
-
 
 /* ===== router ===== */
 const router = createRouter({

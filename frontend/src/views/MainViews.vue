@@ -48,7 +48,7 @@ import ChatbotFab from '../components/ChatbotFab.vue'
 body {
   min-height: 100%;
   position: relative;
-  isolation: isolate; /* 네 코드 그대로 유지 */
+  isolation: isolate; 
   margin: 0;
   font-family: "Pretendard", sans-serif;
   color: #2d251c;
@@ -57,20 +57,20 @@ body {
 
   /* 포인트: 가상요소를 뒤로 보낼 안전한 스택 컨텍스트 생성 */
   position: relative;
-  isolation: isolate; /* 중요 */
+  isolation: isolate; 
 }
 
 /* 2) 공통: 문서의 최상단/최하단에 “배경처럼” 깔릴 레이어 */
 body.home::before,
 body.home::after {
   content: "";
-  position: absolute; /* 문서(body.home) 기준 배치 — 레이아웃 공간 차지 X */
+  position: absolute; 
   left: 0;
   right: 0;
-  height: 220px; /* 필요 시 180~380px 등으로 조절 */
-  pointer-events: none; /* 클릭 방해 X */
-  z-index: -1; /* 본문 내용 뒤로 */
-  background-size: auto 100%; /* 높이를 먼저 맞추고, 가로는 비율대로 */
+  height: 220px; 
+  pointer-events: none; 
+  z-index: -1; 
+  background-size: auto 100%; 
   background-repeat: repeat-x;
 }
 
@@ -107,5 +107,12 @@ body.home::after {
   body.home::after {
     height: clamp(200px, 22vw, 360px);
   }
+}
+.divider {
+  border: 0;
+  height: 1px;
+  background-color: rgba(45, 37, 28, 0.08);
+  margin-block: clamp(16px, 4vw, 40px);
+  margin-inline: calc(50% - 50vw);
 }
 </style>
