@@ -25,7 +25,7 @@
   font-size: 14px;
 }
 
-/* 탭 (sticky 제거됨) */
+/* 탭 */
 .ig-header {
   max-width: 1120px;
   margin: 0 auto 16px;
@@ -34,15 +34,12 @@
   background: #f7f8fb;
 }
 
-/* 탭 리스트: 한 줄 유지 + 가로 스크롤 */
 .ig-tabs {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: nowrap;
-  /* 한 줄 */
   overflow-x: auto;
-  /* 좁으면 가로 스크롤 */
   -webkit-overflow-scrolling: touch;
   padding-bottom: 6px;
 }
@@ -60,10 +57,8 @@
   margin-top: 6px;
 }
 
-/* 탭 버튼 */
 .ig-tab {
   flex: 0 0 auto;
-  /* 줄바꿈 방지 */
   white-space: nowrap;
   padding: 10px 14px;
   border-radius: 999px;
@@ -85,7 +80,7 @@
   box-shadow: inset 0 0 0 2px rgba(31, 41, 55, .18);
 }
 
-/* ===== Panels/Table 기본 ===== */
+/* 패널/테이블 */
 .ig-panel {
   max-width: 1120px;
   margin: 12px auto;
@@ -240,7 +235,7 @@
   color: #fff
 }
 
-/* Guide/Caution 영역 */
+/* 가이드/주의 */
 .ig-guide,
 .ig-caution {
   padding: 14px 18px;
@@ -268,14 +263,13 @@
   margin-top: 6px;
 }
 
-/* Hint */
 .hint {
   margin: 10px 2px 0;
   color: #64748b;
   font-size: 12px;
 }
 
-/* 접근성/모션 */
+/* 접근성/반응형/인쇄 */
 .ig-tab:focus-visible {
   outline: 3px solid rgba(31, 41, 55, .35);
   outline-offset: 2px;
@@ -288,7 +282,6 @@
   }
 }
 
-/* 반응형 */
 @media (max-width: 820px) {
   .ig-row-head {
     width: 170px;
@@ -305,7 +298,6 @@
   }
 }
 
-/* 인쇄 */
 @media print {
   .inspect-page {
     padding: 0;
@@ -331,4 +323,137 @@
   .ig-table thead th {
     position: static;
   }
+}
+
+/* ===== KREAM 스타일 카테고리 칩 ===== */
+.cat-panel .ig-panel-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.cat {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 12px;
+  padding: 14px 16px 18px;
+  background: #fff;
+}
+
+.chip {
+  appearance: none;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 14px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  color: #6b7280;
+  line-height: 1.2;
+  transition: background-color .12s ease, color .12s ease, border-color .12s ease,
+    transform .12s ease, box-shadow .12s ease;
+}
+
+.chip:hover {
+  background: #fbfcff;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, .06);
+}
+
+/* 활성: 주황색 강조 */
+.chip.active {
+  color: #fff;
+  /* 글씨 흰색 */
+  border-color: #ff8935;
+  /* 주황 테두리 */
+  background: #ff8935;
+  /* 주황 배경 */
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 137, 53, .35),
+    0 6px 16px rgba(255, 137, 53, .25);
+}
+
+.chip:focus-visible {
+  outline: 3px solid rgba(31, 41, 55, .35);
+  outline-offset: 2px;
+}
+
+.chip-label {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .cat {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .cat {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .chip {
+    text-align: left;
+    padding: 14px 16px;
+  }
+}
+
+/* ===== 설명란 상단 텍스트 블록 ===== */
+.notice-text {
+  color: #dc2626;
+  /* 빨강 */
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+.notice-text h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.notice-text ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.notice-text li {
+  list-style: disc;
+  margin: 2px 0;
+}
+
+.guide-text {
+  color: #111827;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+.guide-text h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+/* 설명란과 텍스트 블록 기본 정렬 왼쪽 */
+.ig-desc,
+.notice-text,
+.guide-text,
+.ig-grades,
+.ig-discount,
+.notes {
+  text-align: left;
+}
+
+/* 표 안의 셀도 왼쪽 정렬 */
+.ig-table thead th,
+.ig-table tbody th,
+.ig-table tbody td {
+  text-align: left;
 }
