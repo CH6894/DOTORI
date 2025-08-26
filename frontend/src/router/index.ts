@@ -125,7 +125,7 @@ const routes: RouteRecordRaw[] = [
 
   // 인증/관리 보조 페이지
   { path: "/verify-upload", name: "verify-upload", component: VerifyUploadPage, meta: { header: "main", footer: true } },
-  { path: "/admin", name: "admin", component: AdminPage, meta: { header: "main", footer: true } },
+  { path: "/admin", name: "admin", component: AdminPage, meta: { header: "main", footer: true, chatbot: false,},   },
   { path: "/oauth2/callback", name: "oauth-callback", component: OAuthCallback, meta: { header: "main", footer: false, utilbar: true } },
 
   // 장바구니

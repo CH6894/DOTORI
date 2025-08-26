@@ -52,7 +52,7 @@
             class="note-textarea"
             rows="3"
             placeholder="예) 경비실에 맡겨주세요 / 부재 시 문앞에 두세요"
-          />
+          ></textarea>
           <div class="note-actions">
             <button class="btn-subtle" @click="onClearNote">지우기</button>
             <div class="note-actions-right">
@@ -115,7 +115,7 @@
 
             <div class="field">
               <label>입금자명 <span class="req">*</span></label>
-              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" />
+              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" @input="onInputDepositor" />
             </div>
 
             <div class="notice">
@@ -132,27 +132,27 @@
     </section>
   </div>
 
-  <!-- ✅ 항상 화면 하단에 떠 있는 결제바 (이 페이지에서만) -->
-  <div ref="paybarEl" class="paybar" role="region" aria-label="하단 결제 바">
-    <div class="agree">약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</div>
-
-    <router-link
-      v-if="isPayEnabled && items.length"
-      :to="{ name: 'ordercomplete', query: { note: note || '' } }"
-      class="btn-pay"
-    >
-      <b>{{ formatCurrency(total) }}</b>원 결제하기
-    </router-link>
-
-    <button
-      v-else
-      class="btn-pay"
-      :disabled="!isPayEnabled || !items.length"
-      @click="onPay"
-    >
-      <b>{{ formatCurrency(total) }}</b>원 결제하기
-    </button>
+<!-- 하단 고정 결제 바 -->
+<div class="paybar">
+  <div class="agree">
+    약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.
   </div>
+
+  <!-- ✅ 무통장 + 유효할 때만 '이동 가능한' 링크 -->
+  <router-link
+    v-if="payMethod === 'bank' && isBankFormValid"
+    :to="{ name: 'ordercomplete' }"
+    class="btn-pay"
+  >
+    <b>{{ formatCurrency(total) }}</b>원 결제하기
+  </router-link>
+
+  <!-- ❌ 그 외에는 항상 비활성 버튼만 -->
+  <button v-else class="btn-pay" disabled @click.prevent>
+    <b>{{ formatCurrency(total) }}</b>원 결제하기
+  </button>
+</div>
+
 </template>
 
 <script setup lang="ts">
@@ -266,6 +266,10 @@ const payMethod = ref<'bank' | 'easy' | 'card' | 'mobile'>('easy')
 const selectedBank = ref(banks[0])
 const depositorName = ref('')
 const depositDeadlineHours = ref(3)
+
+const onInputDepositor = (e: Event) => {
+  depositorName.value = (e.target as HTMLInputElement).value
+}
 
 const isBankFormValid = computed(() => {
   if (payMethod.value !== 'bank') return false
@@ -386,11 +390,23 @@ const onPay = () => {
 /* 텍스트/버튼 */
 .agree { color: #fff; margin-left: 250px; white-space: nowrap; }
 .btn-pay {
-  white-space: nowrap; background: #fff; color: #000; border: none; border-radius: 10px;
+  white-space: nowrap; background: #fff; color: #000; border: none; border-radius: 10px; 
   padding: 12px 25px; font-weight: 700; cursor: pointer; margin-right: 250px; text-decoration: none;
+    /* 추가 */
+  display: inline-flex;      /* 내부 텍스트 크기 변화에도 고정 */
+  align-items: center;
+  justify-content: center;
+  height: 45px;              /* 원하는 높이 고정 */
+  min-width: 220px;          /* 원하는 최소 너비 고정 */
+  line-height: 1; 
+  font-size: 15px;
+  font-variant-numeric: tabular-nums; 
+}
+.btn-pay .amount{
+  font-variant-numeric: tabular-nums;
 }
 .btn-pay:hover { filter: brightness(0.98); }
-.btn-pay:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
+.btn-pay:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; filter:none;}
 
 /* 모바일 */
 @media (max-width: 480px) {
