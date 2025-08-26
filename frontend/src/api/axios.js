@@ -1,5 +1,5 @@
 import axios from 'axios'
-const api = axios.create({ baseURL: 'http://192.168.198.1:8085', withCredentials: false })
+const api = axios.create({ baseURL: 'http://localhost:8081', withCredentials: false })
 
 api.interceptors.request.use(config => {
   const t = localStorage.getItem('accessToken')

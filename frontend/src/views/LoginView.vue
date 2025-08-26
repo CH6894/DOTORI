@@ -62,7 +62,7 @@ function handleSocialLogin(provider){
 }
 
 const loginNaver = () => {
-  window.location.href = 'http://192.168.198.1:8085/oauth2/authorization/naver';
+  window.location.href = 'http://localhost:8081/oauth2/authorization/naver';
 }
 </script>
 

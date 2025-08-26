@@ -43,8 +43,17 @@ function isAuthenticated(): boolean {
   return !!localStorage.getItem("accessToken");
 }
 
+const ItemList = () => import("@/components/ItemList.vue");
+
 /* ===== routes ===== */
 const routes: RouteRecordRaw[] = [
+
+  {
+    path: '/items',
+    name: 'items',
+    component: ItemList
+  },
+
   // 홈
   {
     path: "/",
