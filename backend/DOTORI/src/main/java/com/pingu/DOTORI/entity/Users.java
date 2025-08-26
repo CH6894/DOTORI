@@ -38,8 +38,11 @@ public class Users {
  @Column(name = "Gender", nullable = false)
  private Byte gender; // TINYINT
 
- @Column(name = "Birth", nullable = false)
- private LocalDate birth;
+ @Column(name = "BirthDate", nullable = false)
+ private LocalDate birthDate;
+ 
+ @Column(name = "BirthYear", nullable = false)
+ private LocalDate birthYear;
 
  @Column(name = "Sign_in_Date", nullable = false)
  private LocalDateTime signInDate;
