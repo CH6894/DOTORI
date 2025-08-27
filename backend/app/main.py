@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime
 from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -44,11 +43,6 @@ app.include_router(
 
 @app.get("/", tags=["기본"])
 async def root():
-    """
-    API 루트 엔드포인트
-    - 앱이 정상 작동하는지 확인용
-    - 기본 정보 제공
-    """
     return {
         "message": "🐿️ 다람이 챗봇 API가 실행 중입니다!",
         "version": "1.0.0",
@@ -57,18 +51,6 @@ async def root():
             "pdf_chat": "/api/chat",
             "health": "/api/health"
         }
-    }
-
-# === 전역 헬스체크 ===
-@app.get("/health", tags=["기본"])
-async def health():
-    """전체 서비스 상태 확인"""
-    return {
-        "status": "healthy",
-        "app": "도토리 챗봇 API",
-        "version": "1.0.0",
-        "timestamp": datetime.now(),
-        "debug_mode": settings.DEBUG
     }
 
 # === 전역 예외 처리 ===
@@ -102,7 +84,6 @@ async def startup_event():
     """
     logger.info("🚀 도토리 챗봇 API 시작 중...")
     logger.info(f"📋 API 문서: http://127.0.0.1:8000/docs")
-    logger.info(f"🔍 디버그 모드: {settings.DEBUG}")
     
     # OpenAI 서비스 초기화 확인
     try:
@@ -120,27 +101,4 @@ async def startup_event():
     
     logger.info("🎉 도토리 챗봇 API 시작 완료!")
 
-# === 앱 종료 이벤트 ===
-@app.on_event("shutdown") 
-async def shutdown_event():
-    """
-    앱이 종료될 때 실행되는 함수
-    - 정리 작업
-    - 연결 해제
-    - 종료 로그
-    """
-    logger.info("🛑 도토리 챗봇 API 종료 중...")
-    
-    # 필요시 여기서 정리 작업 (DB 연결 해제, 파일 저장 등)
-    
-    logger.info("👋 도토리 챗봇 API 종료 완료!")
 
-# === 개발용 정보 ===
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "app.main:app",
-        host="127.0.0.1", 
-        port=8000,
-        reload=True  # 코드 변경시 자동 재시작
-    )

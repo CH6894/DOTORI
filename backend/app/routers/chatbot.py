@@ -14,7 +14,18 @@ router = APIRouter(
         500: {"model": ErrorResponse}
     }
 )
-# pdf 문서 기반의 질의 응답을 처리하는 주문 창고
+
+_is_initialized = False
+
+async def initialize_openai_service():
+    """앱 시작시 OpenAI 서비스 초기화 (PDF 로딩 포함)"""
+    global _is_initialized
+    if not _is_initialized:
+        logger.info("🔄 OpenAI 서비스 초기화 중...")
+        await openai_service.initialize()  # PDF 로딩 + 벡터스토어 생성
+        _is_initialized = True
+        logger.info("✅ OpenAI 서비스 초기화 완료")
+
 @router.post(
     "/chat",
     response_model=ChatResponse,
@@ -22,31 +33,29 @@ router = APIRouter(
     description="사용자 메시지를 받아 AI 응답을 생성합니다."
 )
 async def gen_answer(req: ChatRequest):
-    """
-    - PDF 로딩은 서비스 초기화 시 한 번만
-    - 매 요청마다 빠른 검색만 실행
-    - 에러 처리 강화
-    """
+
     try:
+        # 초기화 확인
+        await initialize_openai_service()
+        
         logger.info(f'입력: {req.message}')
 
         ai_response, session_id = await openai_service.generate_response(
             user_message=req.message,
-            session_id=req.session_id,  # 세션 관리
+            session_id=req.session_id,
             conversation_history=req.conversation_history
         )
         
-        # 응답 객체 생성 (기존 코드 참조하여 구조 맞춤)
         response = ChatResponse(
-            response=ai_response,  # 기존: result["result"] → 개선: ai_response
+            response=ai_response,
             session_id=session_id,
             timestamp=datetime.now(),
-            model_used="gpt-3.5-turbo"
+            model_used="gpt-4o"
         )
         
         logger.info(f'응답 생성 완료: {session_id}')
         return response
-        
+         
     except Exception as e:
         error_msg = f"챗봇 응답 생성 실패: {str(e)}"
         logger.error(f"❌ {error_msg}")
@@ -55,3 +64,4 @@ async def gen_answer(req: ChatRequest):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=error_msg
         )
+    
