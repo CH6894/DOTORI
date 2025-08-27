@@ -51,6 +51,11 @@ const routes: RouteRecordRaw[] = [
     name: 'items',
     component: ItemList
   },
+  {
+    path:"/CalendarManager",
+    name:'CalendarManager',
+    component: CalendarManager
+  },
 
   // 홈
   {
