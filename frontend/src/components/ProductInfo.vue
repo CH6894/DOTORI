@@ -1,3 +1,4 @@
+<!-- src/components/ProductInfo.vue -->
 <template>
   <section class="product-info-section">
     <div class="product-info-container">
@@ -8,25 +9,25 @@
           <img :src="currentMainImage || '/img/placeholder.jpg'" :alt="product.title" class="main-image" />
 
           <!-- 이미지 네비게이션 화살표 -->
-          <button v-if="product.images?.length > 1" class="nav-btn prev-btn" @click="previousImage"
+          <button v-if="images.length > 1" class="nav-btn prev-btn" @click="previousImage"
             :disabled="currentImageIndex === 0">
             ‹
           </button>
-          <button v-if="product.images?.length > 1" class="nav-btn next-btn" @click="nextImage"
-            :disabled="currentImageIndex === product.images.length - 1">
+          <button v-if="images.length > 1" class="nav-btn next-btn" @click="nextImage"
+            :disabled="currentImageIndex === images.length - 1">
             ›
           </button>
 
           <!-- 이미지 인디케이터 -->
-          <div v-if="product.images?.length > 1" class="image-indicators">
-            <span v-for="(image, index) in product.images" :key="index" class="indicator"
-              :class="{ active: index === currentImageIndex }" @click="setCurrentImage(index)"></span>
+          <div v-if="images.length > 1" class="image-indicators">
+            <span v-for="(image, index) in images" :key="index" class="indicator"
+              :class="{ active: index === currentImageIndex }" @click="setCurrentImage(index)" />
           </div>
         </div>
 
         <!-- 썸네일 이미지들 -->
-        <div v-if="product.images?.length > 1" class="thumbnail-gallery">
-          <img v-for="(image, index) in product.images" :key="index" :src="image || '/img/placeholder.jpg'"
+        <div v-if="images.length > 1" class="thumbnail-gallery">
+          <img v-for="(image, index) in images" :key="index" :src="image || '/img/placeholder.jpg'"
             :alt="`${product.title} ${index + 1}`" class="thumbnail-image"
             :class="{ active: index === currentImageIndex }" @click="setCurrentImage(index)" />
         </div>
@@ -71,133 +72,226 @@
 
         <!-- 액션 버튼들 -->
         <div class="action-buttons">
-          <button class="like-btn" @click="toggleLike">
-            <span :class="['like-icon', { active: isLiked }]">{{ isLiked ? '♥' : '♡' }}</span>
+          <button class="like-btn" :aria-pressed="isLiked" @click="toggleLike" @keydown="onLikeKey">
+            <!-- 하트 아이콘 (빈 → 채움) -->
+            <svg class="heart" width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="좋아요"
+              :class="{ active: isLiked }">
+              <path
+                d="M12 21s-6.3-4.2-9-7.9C1.2 10.9 2.2 6.5 6 6.5c2 0 3.5 1.2 4 2.4.5-1.2 2-2.4 4-2.4 3.8 0 4.8 4.4 3 6.6-2.7 3.7-9 7.9-9 7.9z"
+                stroke-width="1.5" vector-effect="non-scaling-stroke" />
+            </svg>
           </button>
+
           <button class="sell-btn" @click="handleSell">판매</button>
-          <button class="purchase-btn" @click="openUsedModal('buy')">구매</button>
+          <button class="purchase-btn" @click="buyNowDirect">구매</button>
         </div>
 
         <div class="cart-section">
-          <button class="cart-btn" @click="openUsedModal('cart')">
-            장바구니
-          </button>
+          <button class="cart-btn" @click="addToCartAndNotify">장바구니</button>
         </div>
       </div>
     </div>
 
-    <!-- 판매 확인 모달 (기존) -->
+    <!-- 판매 확인 모달 -->
     <ModalSellConfirm v-if="showSellModal" :item="sellItem" :rows="priceRows" @close="closeSellModal"
       @submit="onSellSubmit" />
 
-    <!-- ✅ 중고 상세 선택 모달: 버튼 클릭 시 /checkout으로 즉시 이동하지 않고 이 모달을 먼저 띄움 -->
+    <!-- 중고 상세 선택 모달 -->
     <Teleport to="body">
       <UsedItemDetailModal v-if="showUsedModal" :item="product" :mode="usedMode" v-model:open="showUsedModal"
         @close="closeUsedModal" @confirm="onUsedConfirm" />
     </Teleport>
 
+    <!-- 장바구니 토스트 -->
+    <Teleport to="body">
+      <div v-if="showCartToast" class="cart-toast" role="status" aria-live="polite">
+        <div class="cart-toast__content">
+          <span class="cart-toast__text">장바구니에 담았습니다.</span>
+        </div>
+      </div>
+    </Teleport>
   </section>
 </template>
 
-<script setup>
-/* eslint-disable no-undef */
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import ModalSellConfirm from '@/components/ModalSellConfirm.vue'
 import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
 
-const props = defineProps({
-  product: {
-    type: Object,
-    default: () => ({})
-  }
-})
+/* ===== 타입 정의 ===== */
+interface Product {
+  id?: string | number
+  title?: string
+  brand?: string
+  series?: string
+  originalPrice?: number | string
+  currentPrice?: number | string
+  price?: number | string
+  condition?: string
+  shipping?: number | string
+  images?: string[]
+}
 
-// (부모에서 이미 듣고 있으면 유지)
-const emit = defineEmits(['purchase', 'addToCart'])
+interface UsedConfirmPayload {
+  qty?: number
+  price?: number
+  condition?: string | null
+  note?: string | null
+  variant?: string | null
+}
+
+interface CartItem {
+  id: string | number
+  title: string
+  price: number
+  qty: number
+  shipping: number
+  thumb: string
+  condition: string | null
+  note: string | null
+  variant: string | null
+}
+
+/* ===== props / emits ===== */
+const props = defineProps<{ product: Product }>()
+const emit = defineEmits<{
+  (e: 'purchase', p: Product): void
+  (e: 'addToCart', p: Product): void
+}>()
 
 const router = useRouter()
 
-/* ---------- 상태 ---------- */
-const isLiked = ref(false)
-const currentImageIndex = ref(0)
+/* ===== 상태 ===== */
+const isLiked = ref<boolean>(false)
+const currentImageIndex = ref<number>(0)
 
 /* 판매 모달 */
-const showSellModal = ref(false)
+const showSellModal = ref<boolean>(false)
 
-/* ✅ 중고 상세 모달 */
-const showUsedModal = ref(false)
-const usedMode = ref('buy') // 'buy' | 'cart'
+/* 중고 상세 모달 */
+const showUsedModal = ref<boolean>(false)
+const usedMode = ref<'buy' | 'cart'>('buy')
 
-/* ---------- 판매 모달용 ---------- */
+/* 토스트 상태 */
+const showCartToast = ref<boolean>(false)
+const TOAST_DURATION = 1200 // ms
+
+/* ===== 안전 이미지 배열 ===== */
+const images = computed<string[]>(() => {
+  const arr = props.product?.images
+  return Array.isArray(arr) ? (arr.filter(Boolean) as string[]) : []
+})
+
+/* ===== 판매 모달용 데이터 ===== */
 const sellItem = computed(() => ({
-  id: props.product.id ?? 0,
-  title: props.product.title ?? '',
-  images: props.product.images?.length ? props.product.images : ['/img/placeholder.jpg'],
-  condition: props.product.condition ?? 'excellent',
-  price: Number(props.product.currentPrice ?? props.product.price ?? 0),
+  id: props.product?.id ?? 0,
+  title: props.product?.title ?? '',
+  images: images.value.length ? images.value : ['/img/placeholder.jpg'],
+  condition: undefined as unknown as undefined,
+  price: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
 }))
-const priceRows = ref([
-  { option: '미개봉', price: Number(props.product.currentPrice ?? props.product.price ?? 0), date: '2025-08-01' },
-  { option: '사용감 없음', price: Math.max(0, Number(props.product.currentPrice ?? props.product.price ?? 0) - 2000), date: '2025-08-15' },
+
+const priceRows = ref<Array<{ option: string; price: number; date: string }>>([
+  {
+    option: '미개봉',
+    price: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
+    date: '2025-08-01',
+  },
+  {
+    option: '사용감 없음',
+    price: Math.max(
+      0,
+      Number(props.product?.currentPrice ?? props.product?.price ?? 0) - 2000,
+    ),
+    date: '2025-08-15',
+  },
 ])
 
-/* ---------- 이미지 갤러리 ---------- */
-const currentMainImage = computed(() => {
-  if (props.product.images?.length > 0) {
-    return props.product.images[currentImageIndex.value]
-  }
-  return '/img/placeholder.jpg'
+/* ===== 이미지 갤러리 ===== */
+const currentMainImage = computed<string>(() => {
+  return images.value[currentImageIndex.value] ?? '/img/placeholder.jpg'
 })
-const previousImage = () => { if (currentImageIndex.value > 0) currentImageIndex.value-- }
-const nextImage = () => {
-  if (props.product.images && currentImageIndex.value < props.product.images.length - 1) currentImageIndex.value++
+
+const previousImage = (): void => {
+  if (currentImageIndex.value > 0) currentImageIndex.value--
 }
-const setCurrentImage = (index) => { currentImageIndex.value = index }
 
-/* ---------- 좋아요 ---------- */
-const toggleLike = () => { isLiked.value = !isLiked.value }
+const nextImage = (): void => {
+  if (currentImageIndex.value < images.value.length - 1) currentImageIndex.value++
+}
 
-/* ---------- 판매 버튼(모달) ---------- */
-const handleSell = () => { showSellModal.value = true }
-const closeSellModal = () => { showSellModal.value = false }
-const onSellSubmit = (payload) => {
-  // TODO: 서버 제출 등 필요한 처리
+const setCurrentImage = (index: number): void => {
+  currentImageIndex.value = index
+}
+
+/* ===== 좋아요 토글 + 키보드 접근성 ===== */
+const toggleLike = (): void => {
+  isLiked.value = !isLiked.value
+}
+
+function onLikeKey(e: KeyboardEvent): void {
+  if (e.key === ' ' || e.key === 'Spacebar') {
+    e.preventDefault()
+    toggleLike()
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    toggleLike()
+  }
+}
+
+/* ===== 판매 모달 ===== */
+const handleSell = (): void => {
+  showSellModal.value = true
+}
+const closeSellModal = (): void => {
+  showSellModal.value = false
+}
+const onSellSubmit = (payload: unknown): void => {
   console.log('Modal submit payload:', payload)
   showSellModal.value = false
 }
 
-/* ---------- ✅ UsedItemDetailModal 열기 ---------- */
-const openUsedModal = (mode /* 'buy' | 'cart' */) => {
+/* ===== 중고 상세 모달 열기 ===== */
+const openUsedModal = (mode: 'buy' | 'cart'): void => {
   usedMode.value = mode
   showUsedModal.value = true
 }
-const closeUsedModal = () => { showUsedModal.value = false }
-
-/* ---------- 장바구니/구매 공통 유틸 (모달에서 확정 후 실행) ---------- */
-const LS_CART = 'dotori_cart_v1'          // 장바구니 저장소
-const SS_BUY_ONE = 'dotori_checkout_one'  // 바로구매 단건
-
-const getCart = () => {
-  try { return JSON.parse(localStorage.getItem(LS_CART) || '[]') } catch { return [] }
+const closeUsedModal = (): void => {
+  showUsedModal.value = false
 }
-const saveCart = (list) => localStorage.setItem(LS_CART, JSON.stringify(list))
 
-// 같은 id + (선택) 상태/옵션이 같으면 수량 합치기
-const upsert = (cart, item) => {
-  const i = cart.findIndex(x =>
-    String(x.id) === String(item.id) &&
-    (x.condition ?? null) === (item.condition ?? null)
+/* ===== 장바구니/구매 유틸 ===== */
+const LS_CART = 'dotori_cart_v1'
+const SS_BUY_ONE = 'dotori_checkout_one'
+
+const getCart = (): CartItem[] => {
+  try {
+    const raw = localStorage.getItem(LS_CART)
+    return raw ? (JSON.parse(raw) as CartItem[]) : []
+  } catch {
+    return []
+  }
+}
+const saveCart = (list: CartItem[]): void => {
+  localStorage.setItem(LS_CART, JSON.stringify(list))
+}
+
+const upsert = (cart: CartItem[], item: CartItem): CartItem[] => {
+  const i = cart.findIndex(
+    (x) =>
+      String(x.id) === String(item.id) &&
+      (x.condition ?? null) === (item.condition ?? null),
   )
   if (i >= 0) cart[i].qty += item.qty
   else cart.push(item)
   return cart
 }
 
-// 모달에서 전달한 선택값(payload)에 맞춰 카트 아이템 생성
-const buildCartItem = (payload = {}) => {
-  const p = props.product || {}
-  const firstImage = Array.isArray(p.images) ? p.images.find(Boolean) : null
+const buildCartItem = (payload: UsedConfirmPayload = {}): CartItem => {
+  const p = props.product ?? {}
+  const firstImage = Array.isArray(p.images) ? p.images.find(Boolean) ?? null : null
 
   return {
     id: p.id ?? String(Date.now()),
@@ -205,43 +299,64 @@ const buildCartItem = (payload = {}) => {
     price: Number(payload.price ?? p.currentPrice ?? p.price ?? 0),
     qty: Math.max(1, Number(payload.qty ?? 1)),
     shipping: Number(p.shipping ?? 0),
-    thumb: firstImage || '/img/placeholder.jpg',
+    thumb: firstImage ?? '/img/placeholder.jpg',
 
-    // 중고/선택 정보들(있으면 저장 → upsert 키로도 사용)
-    condition: payload.condition ?? p.condition ?? null,
+    condition: (payload.condition ?? p.condition ?? null) ?? null,
     note: payload.note ?? null,
     variant: payload.variant ?? null,
   }
 }
 
-/* ---------- ✅ 모달 확정 핸들러 ---------- */
-const onUsedConfirm = (payload /* { qty, price, condition, ... } */) => {
+/* ===== 구매 플로우 ===== */
+// 구매 버튼 → 모달 없이 즉시 결제 페이지
+const buyNowDirect = (): void => {
+  const item = buildCartItem({})
+  sessionStorage.setItem(SS_BUY_ONE, JSON.stringify([item]))
+  emit('purchase', props.product)
+  router.push({ name: 'checkout', query: { mode: 'buynow' } })
+}
+
+/* ===== 장바구니 버튼 플로우  ===== */
+const addToCartAndNotify = (): void => {
+  // 1) 실제 장바구니 저장 (upsert)
+  const next = upsert(getCart(), buildCartItem({}))
+  saveCart(next)
+  emit('addToCart', props.product)
+
+  // 2) 토스트 보여주고 자동 닫기
+  showCartToast.value = true
+  window.setTimeout(() => {
+    showCartToast.value = false
+  }, TOAST_DURATION)
+}
+
+/* ===== 모달에서 확정 시 (cart 분기도 토스트만) ===== */
+const onUsedConfirm = (payload: UsedConfirmPayload): void => {
   const item = buildCartItem(payload)
 
   if (usedMode.value === 'cart') {
     const next = upsert(getCart(), item)
     saveCart(next)
     emit('addToCart', props.product)
-    alert('장바구니에 담았습니다.')
+    showCartToast.value = true
+    window.setTimeout(() => { showCartToast.value = false }, TOAST_DURATION)
+
     closeUsedModal()
     return
   }
 
-  // usedMode === 'buy' → 즉시구매: 모달에서 확정 후에만 체크아웃으로 진행
+  // buy 분기
   sessionStorage.setItem(SS_BUY_ONE, JSON.stringify([item]))
   emit('purchase', props.product)
   closeUsedModal()
-  // 필요 시 결제 페이지로 이동 (모달 확인 후)
-  // 주: 버튼 클릭 시에는 이동하지 않고, 모달에서 확정한 뒤 이동합니다.
   router.push({ name: 'checkout', query: { mode: 'buynow' } })
 }
 </script>
 
 <style scoped>
-/* 공통 스타일 import - 파일명 수정 */
 @import '@/styles/InfoCommon.css';
 
-/* ProductInfo 컴포넌트 특화 스타일만 */
+/* ProductInfo 컴포넌트 특화 스타일 */
 .product-info-section {
   padding: 20px 0;
   border-bottom: 1px solid #eee;
@@ -269,8 +384,7 @@ const onUsedConfirm = (payload /* { qty, price, condition, ... } */) => {
   font-size: 30px;
   font-weight: bold;
   color: #333;
-  margin-bottom: 30px;
-  margin-top: 0;
+  margin: 0 0 30px;
   line-height: 1.3;
 }
 
@@ -358,19 +472,15 @@ const onUsedConfirm = (payload /* { qty, price, condition, ... } */) => {
   grid-template-columns: 56px 1fr 1fr;
 }
 
+/* 버튼들 */
 .like-btn {
   height: 56px;
   border-radius: 10px;
   border: 1px solid #e5e5e5;
   background: #fff;
-}
-
-.like-icon {
-  font-size: 20px;
-}
-
-.like-icon.active {
-  color: #FC703C;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sell-btn {
@@ -378,7 +488,7 @@ const onUsedConfirm = (payload /* { qty, price, condition, ... } */) => {
   border: none;
   height: 56px;
   background: #28a745;
-  color: white;
+  color: #fff;
   font-size: 18px;
   border-radius: 10px;
 }
@@ -401,5 +511,69 @@ const onUsedConfirm = (payload /* { qty, price, condition, ... } */) => {
 .cart-btn {
   flex: 1;
   border-radius: 10px;
+}
+
+/* SVG 하트 (빈 → 채움) */
+.heart {
+  fill: transparent;
+  stroke: #bbb;
+  transition: fill .2s ease, stroke .2s ease, transform .12s ease;
+}
+
+.heart.active {
+  fill: #FC703C;
+  stroke: #FC703C;
+}
+
+.like-btn:active .heart {
+  transform: scale(.96);
+}
+
+/* 장바구니 토스트 */
+.cart-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.cart-toast__content {
+  min-width: 180px;
+  max-width: 60vw;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #670600;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  animation: toast-in .18s ease-out forwards;
+
+  /* 👇 중앙 정렬 핵심 */
+  display: flex;
+  align-items: center;      /* 수직 중앙 */
+  justify-content: center;  /* 수평 중앙 */
+  text-align: center;       /* 여러 줄일 때 텍스트 중앙 */
+  gap: 8px;                 /* 아이콘이 있다면 간격 */
+}
+
+.cart-toast__text {
+  /* 굳이 inline-block 필요 없음 */
+  display: inline; /* or simply remove this rule */
+}
+
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
