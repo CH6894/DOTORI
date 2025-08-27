@@ -1,6 +1,5 @@
 package com.pingu.DOTORI.entity;
 
-import java.security.Timestamp;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;

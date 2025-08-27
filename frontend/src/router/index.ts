@@ -38,7 +38,7 @@ const Dex = () => import("@/views/Dex.vue");
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
   // Pinia store에서 사용하는 키와 통일: 'accessToken'
-  return !!localStorage.getItem("accessToken");
+  return !!localStorage.getItem("AuthToken");
 }
 
 const ItemList = () => import("@/components/ItemList.vue");
@@ -96,7 +96,7 @@ const routes: RouteRecordRaw[] = [
     path: "/mypage",
     name: "mypage",
     component: MyPage,
-    meta: { requiresAuth: true, header: "main", footer: true, utilbar: true },
+    meta: { requiresAuth: false, header: "main", footer: true, utilbar: true },
     children: [
       { path: "", name: "mypage-index", redirect: { name: "mypage-orders" } },
       { path: "orders", name: "mypage-orders", component: MyPageOrders },
@@ -113,7 +113,7 @@ const routes: RouteRecordRaw[] = [
     name: "checkout",
     component: CheckoutPage,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       header: "main",
       footer: true,
       utilbar: true,
@@ -126,7 +126,7 @@ const routes: RouteRecordRaw[] = [
     name: "ordercomplete",
     component: OrderComplete,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
       header: "main",
       footer: true,
       utilbar: true,

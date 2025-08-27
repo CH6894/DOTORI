@@ -1,128 +1,111 @@
+<!-- src/components/UsedItemDetailModal.vue (예상 경로/이름) -->
 <template>
-    <teleport to="body">
+  <teleport to="body">
+    <!-- 오버레이 -->
+    <div class="modal-overlay" role="presentation" @click="closeModal">
+      <!-- 컨테이너 -->
+      <div class="modal-container" role="dialog" aria-modal="true" :aria-label="item.title || '상세 선택'" @click.stop>
+        <!-- 헤더 -->
+        <div class="modal-header">
+          <h2 class="modal-title">{{ item.title }}</h2>
+          <button class="close-btn" @click="closeModal" aria-label="닫기">&times;</button>
+        </div>
 
-  <div class="modal-overlay" @click="closeModal">
-    <div class="modal-container" @click.stop>
-      <!-- 모달 헤더 -->
-      <div class="modal-header">
-        <h2 class="modal-title">{{ item.title }}</h2>
-        <button class="close-btn" @click="closeModal">&times;</button>
-      </div>
-      
-      <!-- 모달 콘텐츠 -->
-      <div class="modal-content">
-        <div class="item-detail-container">
-          <!-- 왼쪽: 이미지 갤러리 -->
-          <div class="image-gallery">
-            <div class="main-image-container">
-              <img 
-                :src="currentImage || '/img/placeholder.jpg'" 
-                :alt="item.title"
-                class="main-image"
-              />
-              <!-- 상태 배지 -->
-              <div class="condition-badge" :class="item.condition">
-                {{ getConditionText(item.condition) }}
-              </div>
-              
-              <!-- 이미지 네비게이션 화살표 -->
-              <button 
-                v-if="item.images?.length > 1"
-                class="nav-btn prev-btn" 
-                @click="previousImage"
-                :disabled="currentImageIndex === 0"
-              >
-                ‹
-              </button>
-              <button 
-                v-if="item.images?.length > 1"
-                class="nav-btn next-btn" 
-                @click="nextImage"
-                :disabled="currentImageIndex === item.images.length - 1"
-              >
-                ›
-              </button>
-              
-              <!-- 이미지 인디케이터 -->
-              <div v-if="item.images?.length > 1" class="image-indicators">
-                <span 
-                  v-for="(image, index) in item.images" 
-                  :key="index"
-                  class="indicator"
-                  :class="{ active: index === currentImageIndex }"
-                  @click="setCurrentImage(index)"
-                ></span>
-              </div>
-            </div>
-            
-            <!-- 썸네일 이미지들 -->
-            <div v-if="item.images?.length > 1" class="thumbnail-container">
-              <img 
-                v-for="(image, index) in item.images" 
-                :key="index"
-                :src="image || '/img/placeholder.jpg'"
-                :alt="`${item.title} ${index + 1}`"
-                class="thumbnail-image"
-                :class="{ active: currentImage === image }"
-                @click="setCurrentImage(index)"
-              />
-            </div>
-          </div>
-          
-          <!-- 오른쪽: 상품 정보 -->
-          <div class="item-info-section">
-            <!-- 가격 정보 -->
-            <div class="price-section">
-              <div class="current-price">{{ formatPrice(item.price) }}원</div>
-              <div v-if="item.originalPrice" class="original-price">
-                정가: {{ formatPrice(item.originalPrice) }}원
-              </div>
-            </div>
-            
-            <!-- 상품 상태 및 정보 -->
-            <div class="item-details">
-              <div class="detail-row">
-                <span class="label">상품 상태</span>
-                <span class="value condition-text" :class="item.condition">
+        <!-- 본문 -->
+        <div class="modal-content">
+          <div class="item-detail-container">
+            <!-- 왼쪽: 이미지 갤러리 -->
+            <div class="image-gallery">
+              <div class="main-image-container">
+                <img :src="currentImage || '/img/placeholder.jpg'" :alt="item.title" class="main-image" />
+
+                <!-- 상태 배지 -->
+                <div class="condition-badge" :class="item.condition">
                   {{ getConditionText(item.condition) }}
-                </span>
+                </div>
+
+                <!-- 좌/우 화살표 -->
+                <button v-if="images.length > 1" class="nav-btn prev-btn" @click="previousImage"
+                  :disabled="currentImageIndex === 0">‹</button>
+                <button v-if="images.length > 1" class="nav-btn next-btn" @click="nextImage"
+                  :disabled="currentImageIndex === images.length - 1">›</button>
+
+                <!-- 인디케이터 -->
+                <div v-if="images.length > 1" class="image-indicators">
+                  <span v-for="(image, index) in images" :key="index" class="indicator"
+                    :class="{ active: index === currentImageIndex }" @click="setCurrentImage(index)" />
+                </div>
               </div>
-              <div class="detail-row">
-                <span class="label">상태 상세</span>
-                <span class="value">{{ getConditionDetails(item.conditionDetails) }}</span>
-              </div>
-              
-              <div class="detail-row">
-                <span class="label">등록일</span>
-                <span class="value">{{ formatDate(item.createdAt) }}</span>
+
+              <!-- 썸네일 -->
+              <div v-if="images.length > 1" class="thumbnail-container">
+                <img v-for="(image, index) in images" :key="index" :src="image || '/img/placeholder.jpg'"
+                  :alt="`${item.title} ${index + 1}`" class="thumbnail-image"
+                  :class="{ active: currentImage === image }" @click="setCurrentImage(index)" />
               </div>
             </div>
-            
-            <!-- 상품 설명 -->
-            <div class="description-section">
-              <h4 class="section-title">상품 설명</h4>
-              <p class="description-text">{{ item.description }}</p>
-            </div>
-            
-            <!-- 액션 버튼들 -->
-            <div class="action-buttons">
-              <button class="heart-btn" @click="toggleWishlist">
-                <span :class="['heart-icon', { active: isWishlisted }]">♡</span>
-              </button>
-              <button class="cart-btn" @click="addToCart">
-                장바구니
-              </button>
-              <button class="purchase-btn" @click="purchaseNow">
-                구매하기
-              </button>
+
+            <!-- 오른쪽: 상품 정보 -->
+            <div class="item-info-section">
+              <!-- 가격 -->
+              <div class="price-section">
+                <div class="current-price">{{ formatPrice(item.price) }}원</div>
+                <div v-if="item.originalPrice" class="original-price">
+                  정가: {{ formatPrice(item.originalPrice) }}원
+                </div>
+              </div>
+
+              <!-- 세부 -->
+              <div class="item-details">
+                <div class="detail-row">
+                  <span class="label">상품 상태</span>
+                  <span class="value condition-text" :class="item.condition">
+                    {{ getConditionText(item.condition) }}
+                  </span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">상태 상세</span>
+                  <span class="value">{{ getConditionDetails(item.conditionDetails) }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">등록일</span>
+                  <span class="value">{{ formatDate(item.createdAt) }}</span>
+                </div>
+              </div>
+
+              <!-- 설명 -->
+              <div class="description-section">
+                <h4 class="section-title">상품 설명</h4>
+                <p class="description-text">{{ item.description }}</p>
+              </div>
+
+              <!-- 액션 -->
+              <div class="action-buttons">
+                <button class="heart-btn" @click="toggleWishlist" :aria-pressed="isWishlisted">
+                  <span :class="['heart-icon', { active: isWishlisted }]">♡</span>
+                </button>
+
+                <!-- ✅ 장바구니: alert 없이 저장 + 토스트 -->
+                <button class="cart-btn" @click="addToCart">
+                  장바구니
+                </button>
+
+                <button class="purchase-btn" @click="purchaseNow">
+                  구매하기
+                </button>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
-  </div>
-    </teleport>
 
+    <!-- ✅ 토스트 -->
+    <div v-if="showToast" class="toast" role="status" aria-live="polite">
+      <div class="toast__content">장바구니에 담았습니다.</div>
+    </div>
+  </teleport>
 </template>
 
 <script setup>
@@ -130,91 +113,100 @@
 import { ref, computed } from 'vue'
 
 const props = defineProps({
-  item: {
-    type: Object,
-    required: true
-  },
-  productInfo: {
-    type: Object,
-    default: () => ({})
-  }
+  item: { type: Object, required: true },
+  productInfo: { type: Object, default: () => ({}) },
 })
-
 const emit = defineEmits(['close', 'purchase', 'addToCart'])
 
+// ---------- 상태 ----------
 const currentImageIndex = ref(0)
 const isWishlisted = ref(false)
+const showToast = ref(false)
+const TOAST_MS = 1200
 
-// 현재 이미지 계산
-const currentImage = computed(() => {
-  if (props.item.images?.length > 0) {
-    return props.item.images[currentImageIndex.value]
-  }
-  return '/img/placeholder.jpg'
+// ---------- 안전 이미지 배열 ----------
+const images = computed(() => {
+  const arr = props.item?.images
+  return Array.isArray(arr) ? arr.filter(Boolean) : []
 })
 
-// 이미지 네비게이션 함수들
-const previousImage = () => {
-  if (currentImageIndex.value > 0) {
-    currentImageIndex.value--
-  }
-}
+// 현재 이미지
+const currentImage = computed(() =>
+  images.value[currentImageIndex.value] || '/img/placeholder.jpg'
+)
 
+// 이미지 네비게이션
+const previousImage = () => { if (currentImageIndex.value > 0) currentImageIndex.value-- }
 const nextImage = () => {
-  if (currentImageIndex.value < props.item.images.length - 1) {
-    currentImageIndex.value++
-  }
+  if (currentImageIndex.value < images.value.length - 1) currentImageIndex.value++
 }
-
 const setCurrentImage = (index) => {
-  if (index >= 0 && index < props.item.images.length) {
-    currentImageIndex.value = index
+  if (index >= 0 && index < images.value.length) currentImageIndex.value = index
+}
+
+// 닫기
+const closeModal = () => { emit('close') }
+
+// 구매(부모가 처리)
+const purchaseNow = () => { emit('purchase', props.item) }
+
+// ---------- 장바구니 저장 (alert 없이) ----------
+const LS_CART = 'dotori_cart_v1'
+const getCart = () => {
+  try { return JSON.parse(localStorage.getItem(LS_CART) || '[]') } catch { return [] }
+}
+const saveCart = (list) => localStorage.setItem(LS_CART, JSON.stringify(list))
+const upsert = (cart, item) => {
+  const i = cart.findIndex(x =>
+    String(x.id) === String(item.id) &&
+    (x.condition ?? null) === (item.condition ?? null)
+  )
+  if (i >= 0) cart[i].qty += item.qty
+  else cart.push(item)
+  return cart
+}
+// 현재 모달의 item으로 카트 아이템 구성
+const buildCartItem = () => {
+  const p = props.item || {}
+  const firstImage = Array.isArray(p.images) ? p.images.find(Boolean) : null
+  return {
+    id: p.id ?? String(Date.now()),
+    title: p.title ?? '',
+    price: Number(p.currentPrice ?? p.price ?? 0),
+    qty: 1,
+    shipping: Number(p.shipping ?? 0),
+    thumb: firstImage || '/img/placeholder.jpg',
+    condition: p.condition ?? null,
+    note: null,
+    variant: null,
   }
 }
-
-const close
- = () => {
-  emit('close')
-}
-
-const purchaseNow = () => {
-  emit('purchase', props.item)
-}
-
 const addToCart = () => {
-  emit('addToCart', props.item)
+  const next = upsert(getCart(), buildCartItem())
+  saveCart(next)
+  emit('addToCart', props.item) // 부모가 별도 처리할 게 있으면 사용
+
+  // 토스트만 잠깐 보여주고 끝 (alert 없음, 페이지 이동 없음)
+  showToast.value = true
+  window.setTimeout(() => { showToast.value = false }, TOAST_MS)
 }
 
-const toggleWishlist = () => {
-  isWishlisted.value = !isWishlisted.value
-  console.log('찜하기 토글:', props.item.id)
-}
+// 찜 토글
+const toggleWishlist = () => { isWishlisted.value = !isWishlisted.value }
 
-// 유틸리티 함수들
+// ---------- 유틸 ----------
 const getConditionText = (condition) => {
-  const conditionMap = {
-    'excellent': '최상',
-    'good': '상',
-    'fair': '중',
-    'poor': '하'
-  }
-  return conditionMap[condition] || '미정'
+  const map = { excellent: '최상', good: '상', fair: '중', poor: '하' }
+  return map[condition] || '미정'
 }
-
-const getConditionDetails = (details) => {
-  return details || '상태 양호'
-}
-
-const formatPrice = (price) => {
-  return price.toLocaleString()
-}
-
+const getConditionDetails = (details) => details || '상태 양호'
+const formatPrice = (price) =>
+  new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 0 }).format(Number(price || 0))
 const formatDate = (dateString) => {
+  if (!dateString) return '-'
   const date = new Date(dateString)
   const now = new Date()
-  const diffTime = Math.abs(now - date)
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-  
+  const diffDays = Math.floor(Math.abs(+now - +date) / 86400000)
   if (diffDays === 0) return '오늘'
   if (diffDays === 1) return '어제'
   if (diffDays < 7) return `${diffDays}일 전`
@@ -226,6 +218,49 @@ const formatDate = (dateString) => {
 <style scoped>
 @import '@/styles/InfoCommon.css';
 
+/* 레이아웃 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  width: min(960px, 92vw);
+  max-height: 88vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, .25);
+  padding: 20px;
+}
+
+/* 헤더 */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.close-btn {
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* 본문 */
 .item-detail-container {
   display: flex;
   gap: 40px;
@@ -237,12 +272,98 @@ const formatDate = (dateString) => {
 }
 
 .item-info-section {
-  flex:1;
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 300px;
 }
 
+/* 이미지 */
+.main-image-container {
+  position: relative;
+}
+
+.main-image {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.condition-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: #111;
+  color: #fff;
+}
+
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
+}
+
+.prev-btn {
+  left: 8px;
+}
+
+.next-btn {
+  right: 8px;
+}
+
+.image-indicators {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #ddd;
+  cursor: pointer;
+}
+
+.indicator.active {
+  background: #111;
+}
+
+.thumbnail-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  overflow-x: auto;
+}
+
+.thumbnail-image {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.thumbnail-image.active {
+  border-color: #111;
+}
+
+/* 가격/세부/설명 */
 .price-section {
   margin-bottom: 30px;
   padding: 20px;
@@ -252,13 +373,13 @@ const formatDate = (dateString) => {
 
 .current-price {
   font-size: 28px;
-  font-weight: bold;
+  font-weight: 800;
   color: #ff6b35;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .original-price {
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
 }
 
@@ -289,15 +410,12 @@ const formatDate = (dateString) => {
 
 .description-section {
   margin-bottom: 30px;
-  
 }
 
 .section-title {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
-  margin: 0 0 10px 0;
-  word-wrap: break-word;
+  margin: 0 0 10px;
 }
 
 .description-text {
@@ -306,7 +424,67 @@ const formatDate = (dateString) => {
   margin: 0;
 }
 
+/* 액션 */
 .action-buttons {
- margin-top: auto;
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.heart-btn,
+.cart-btn,
+.purchase-btn {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+}
+
+.cart-btn {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.purchase-btn {
+  background: #ff6b35;
+  color: #fff;
+  border-color: #ff6b35;
+}
+
+/* 토스트 */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 1100;
+  pointer-events: none;
+}
+
+.toast__content {
+  min-width: 220px;
+  max-width: 70vw;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(25, 25, 25, .92);
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  animation: toast-in .18s ease-out forwards;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

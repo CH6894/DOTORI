@@ -258,17 +258,6 @@ const handlePurchase = async (productData) => {
   }
 }
 
-const handleAddToCart = async (productData) => {
-  try {
-    // 장바구니 추가 API 호출
-    console.log('장바구니 추가:', productData)
-    // const response = await fetch('/api/cart/add', {...})
-    alert('장바구니에 추가되었습니다.')
-  } catch (error) {
-    console.error('장바구니 추가 실패:', error)
-    alert('장바구니 추가 중 오류가 발생했습니다.')
-  }
-}
 
 // 중고상품 관련 핸들러들
 const handleUsedItemDetailDirect = (item) => {
