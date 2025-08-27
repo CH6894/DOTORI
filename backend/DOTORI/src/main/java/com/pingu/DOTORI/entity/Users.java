@@ -50,6 +50,9 @@ public class Users {
  @Column(name = "UserType", nullable = false)
  private Integer userType;
 
+ @Column(name = "UserImg")
+ private String userImg
+ 
  // Relations (양방향 컬렉션은 필요시만 유지)
  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
  private List<Address> addresses;

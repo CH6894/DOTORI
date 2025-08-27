@@ -81,12 +81,8 @@ const sendMessageToAPI = async (userMessage: string): Promise<string> => {
       conversation_history: conversationHistory
     }
 
-    // 일반 대화 모드 사용
-    const response = await chatAPI.sendGeneralMessage(request)
-    
-    // 세션 ID 업데이트 (백엔드에서 관리)
+    const response = await chatAPI.sendMessage(request)
     sessionId.value = response.session_id
-    
     return response.response
 
   } catch (error) {
