@@ -141,7 +141,7 @@ const routes: RouteRecordRaw[] = [
     path: "/admin",
     name: "admin",
     component: AdminPage,
-    meta: { header: "main", footer: true },
+    meta: { header: "main", footer: true,  chatbot: false  },
   },
   {
     path: "/oauth2/callback",
@@ -155,7 +155,8 @@ const routes: RouteRecordRaw[] = [
     path: "/cart",
     name: "cart",
     component: ShoppingCart,
-    meta: { header: "main", footer: true, utilbar: true },
+    meta: {      requiresAuth: true,
+ header: "main", footer: true, utilbar: true },
   },
 
   // 도감/캘린더/검수기준 (페이지 스텁 가능)
@@ -164,7 +165,8 @@ const routes: RouteRecordRaw[] = [
     path: "/dex",
     name: "dex",
     component: () => import("@/views/Dex.vue"),
-    meta: { header: "main", footer: true },
+    meta: {      requiresAuth: true,
+ header: "main", footer: true },
   },
   {
     path: "/calendar",

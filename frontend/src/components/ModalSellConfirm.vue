@@ -274,6 +274,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, reactive } from 'vue'
+import { createInspection } from '@/api/inspection' // 경로는 프로젝트에 맞게
 
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
 type Item = { id: string | number; title: string; images?: string[]; condition?: Condition; price?: number }
@@ -511,7 +512,7 @@ const isSubmitting = ref(false)
 async function submitAll() {
   if (!allAgreed.value || isSubmitting.value) {
     if (!allAgreed.value) alert('필수 항목에 모두 동의해주세요.');
-    return
+    return isSubmitting.value = true
   }
   isSubmitting.value = true
   step.value = 4
@@ -930,7 +931,7 @@ button.ghost:hover {
 
 .uploader__progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #4f46e5, #22c55e);
+  background: linear-gradient(90deg, #FC703C, #f5f2c6);
   transition: width .2s
 }
 
