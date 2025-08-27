@@ -2,6 +2,8 @@ package com.pingu.DOTORI.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -46,7 +48,9 @@ public class Item {
 
     @Column(name = "Genre", nullable = false, length = 100)
     private String genre;
-
+    
+    @column(name = "Cost")
+    private BigDecimal cost;
     // Relations
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
     private List<ItemDetails> itemDetails;
