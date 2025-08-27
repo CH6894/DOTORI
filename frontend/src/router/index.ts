@@ -38,7 +38,7 @@ const Dex = () => import("@/views/Dex.vue");
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
   // Pinia store에서 사용하는 키와 통일: 'accessToken'
-  return !!localStorage.getItem("authToken");
+  return !!localStorage.getItem("accessToken");
 }
 
 const ItemList = () => import("@/components/ItemList.vue");
@@ -50,6 +50,11 @@ const routes: RouteRecordRaw[] = [
     path: '/items',
     name: 'items',
     component: ItemList
+  },
+  {
+    path:"/CalendarManager",
+    name:'CalendarManager',
+    component: CalendarManager
   },
 
   // 홈

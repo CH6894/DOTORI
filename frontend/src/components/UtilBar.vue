@@ -17,7 +17,7 @@
 import { ref, onMounted } from "vue"
 
 const isAuthed = ref(false)
-const API_BASE = 'http://192.168.198.1:8085'
+const API_BASE = 'http://localhost:8081'
 
 // 현재 로그인 상태 반영
 function syncAuth() {
@@ -40,7 +40,7 @@ async function logout() {
 }
 
 function loginNaver() {
-  window.location.assign(`${API_BASE}/oauth2/authorization/naver`)
+  window.location.href = "/login"
 }
 
 onMounted(() => {
