@@ -44,18 +44,6 @@ export const chatAPI = {
       throw new Error('챗봇 서비스에 연결할 수 없습니다.')
     }
   },
-
-  // 일반 대화
-  async sendGeneralMessage(request: ChatRequest): Promise<ChatResponse> {
-    try {
-      const response = await apiClient.post('/api/chat/general', request)
-      return response.data
-    } catch (error) {
-      console.error('일반 대화 API 오류:', error)
-      throw new Error('채팅 서비스에 연결할 수 없습니다.')
-    }
-  },
-
   // 서비스 상태 확인
   async healthCheck() {
     try {

@@ -68,7 +68,7 @@ class ChatRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "message": "도토리는 어디서 구할 수 있어?",
+                "message": "너가 갖고있는 피규어의 장르가 어떻게 돼?",
                 "session_id": "user123",
                 "conversation_history": [
                     {"role": "user", "content": "안녕하세요!"},
