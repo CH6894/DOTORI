@@ -1,9 +1,5 @@
 // src/router/index.ts
-import {
-  createRouter,
-  createWebHistory,
-  type RouteRecordRaw,
-} from "vue-router";
+import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
 
 /* ===== views (code-splitting) ===== */
 const MainViews = () => import("@/views/MainViews.vue");
@@ -33,11 +29,16 @@ const MyPageWish = () => import("@/components/mypage/MyPageWish.vue");
 
 /* ===== Cart ===== */
 const ShoppingCart = () => import("@/views/ShoppingCart.vue");
+
+/* ===== Dex & Category Views ===== */
 const Dex = () => import("@/views/Dex.vue");
+const BlackPink = () => import("@/components/BlackPink.vue");
+const Kimetsu = () => import("@/components/Kimetsu.vue");
+const ChimCollection = () => import("@/components/ChimCollection.vue");
+const KiaCollection = () => import("@/components/KiaCollection.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
-  // Pinia store에서 사용하는 키와 통일: 'accessToken'
   return !!localStorage.getItem("AuthToken");
 }
 
@@ -45,53 +46,26 @@ const ItemList = () => import("@/components/ItemList.vue");
 
 /* ===== routes ===== */
 const routes: RouteRecordRaw[] = [
+  { path: "/items", name: "items", component: ItemList },
 
-  {
-    path: '/items',
-    name: 'items',
-    component: ItemList
-  },
-  {
-    path:"/CalendarManager",
-    name:'CalendarManager',
-    component: CalendarManager
-  },
+  { path: "/CalendarManager", name: "CalendarManager", component: CalendarManager },
 
   // 홈
-  {
-    path: "/",
-    name: "main",
-    component: MainViews,
-    meta: { header: "main", footer: true },
-  },
+  { path: "/", name: "main", component: MainViews, meta: { header: "main", footer: true } },
 
   // 검색/상품
-  {
-    path: "/search",
-    name: "search",
-    component: SearchResult,
-    meta: { header: "main", footer: true, utilbar: true },
-  },
-  {
-    path: "/product/:id",
-    name: "product",
-    component: ProductInfo,
-    meta: { header: "main", footer: true, utilbar: true },
-  },
+  { path: "/search", name: "search", component: SearchResult, meta: { header: "main", footer: true, utilbar: true } },
+  { path: "/product/:id", name: "product", component: ProductInfo, meta: { header: "main", footer: true, utilbar: true } },
 
   // 로그인
   {
     path: "/login",
     name: "login",
     component: LoginView,
-    meta: {
-      header: "main",
-      footer: true,
-      utilbar: true,
-      chatbot: true,
-      topbtn: true,
-    },
+    meta: { header: "main", footer: true, utilbar: true, chatbot: true, topbtn: true },
   },
+
+  // 마이페이지
   {
     path: "/mypage",
     name: "mypage",
@@ -112,94 +86,46 @@ const routes: RouteRecordRaw[] = [
     path: "/checkout",
     name: "checkout",
     component: CheckoutPage,
-    meta: {
-      requiresAuth: false,
-      header: "main",
-      footer: true,
-      utilbar: true,
-      chatbot: true,
-      topbtn: true,
-    },
+    meta: { requiresAuth: false, header: "main", footer: true, utilbar: true, chatbot: true, topbtn: true },
   },
   {
     path: "/ordercomplete",
     name: "ordercomplete",
     component: OrderComplete,
-    meta: {
-      requiresAuth: false,
-      header: "main",
-      footer: true,
-      utilbar: true,
-      chatbot: true,
-      topbtn: true,
-    },
+    meta: { requiresAuth: false, header: "main", footer: true, utilbar: true, chatbot: true, topbtn: true },
   },
 
   // 인증/관리 보조 페이지
-  {
-    path: "/verify-upload",
-    name: "verify-upload",
-    component: VerifyUploadPage,
-    meta: { header: "main", footer: true },
-  },
-  {
-    path: "/admin",
-    name: "admin",
-    component: AdminPage,
-    meta: { header: "main", footer: true },
-  },
-  {
-    path: "/oauth2/callback",
-    name: "oauth-callback",
-    component: OAuthCallback,
-    meta: { header: "main", footer: false, utilbar: true },
-  },
+  { path: "/verify-upload", name: "verify-upload", component: VerifyUploadPage, meta: { header: "main", footer: true } },
+  { path: "/admin", name: "admin", component: AdminPage, meta: { header: "none", footer: true , chatbot:false } },
+  { path: "/oauth2/callback", name: "oauth-callback", component: OAuthCallback, meta: { header: "main", footer: false, utilbar: true } },
 
   // 장바구니
-  {
-    path: "/cart",
-    name: "cart",
-    component: ShoppingCart,
-    meta: { header: "main", footer: true, utilbar: true },
-  },
+  { path: "/cart", name: "cart", component: ShoppingCart, meta: { header: "main", footer: true, utilbar: true } },
 
-  // 도감/캘린더/검수기준 (페이지 스텁 가능)
+  /* ===== 도감/컬렉션 ===== */
+  // 기본 도감: Dex.vue (포켓몬)
+  { path: "/dex", name: "Dex", component: Dex, meta: { header: "main", footer: true } },
 
-  {
-    path: "/dex",
-    name: "dex",
-    component: () => import("@/views/Dex.vue"),
-    meta: { header: "main", footer: true },
-  },
-  {
-    path: "/calendar",
-    name: "calendar",
-    component: CalendarView,
-    meta: { header: "main", footer: true },
-  },
-  {
-    path: "/inspection",
-    name: "inspection",
-    component: InspectionView,
-    meta: { header: "main", footer: true },
-  },
+  // 카테고리별 뷰(팀원 컴포넌트를 페이지로 사용)
+  { path: "/collection/blackpink", name: "BlackPink", component: BlackPink, meta: { header: "main", footer: true } },
+  { path: "/collection/kimetsu",   name: "Kimetsu",   component: Kimetsu,   meta: { header: "main", footer: true } },
+  { path: "/collection/chim",      name: "Chim",      component: ChimCollection, meta: { header: "main", footer: true } },
+  { path: "/collection/kia",       name: "Kia",       component: KiaCollection,  meta: { header: "main", footer: true } },
+
+  // 캘린더/검수
+  { path: "/calendar", name: "calendar", component: CalendarView, meta: { header: "main", footer: true } },
+  { path: "/inspection", name: "inspection", component: InspectionView, meta: { header: "main", footer: true } },
 
   // 404 -> 임시로 검색 페이지로 라우팅
-  {
-    path: "/:pathMatch(.*)*",
-    name: "not-found",
-    component: SearchResult,
-    meta: { header: "main", footer: true },
-  },
+  { path: "/:pathMatch(.*)*", name: "not-found", component: SearchResult, meta: { header: "main", footer: true } },
 ];
 
 /* ===== router ===== */
 const router = createRouter({
-  // ✅ BASE_URL 반영: 배포 서브경로에서도 안전
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(_to, _from, saved) {
-    // 저장된 스크롤 위치가 있으면 복원, 없으면 최상단
     return saved ?? { top: 0 };
   },
 });

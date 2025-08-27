@@ -1,29 +1,29 @@
-import axios from "axios"
+import axios from "axios";
 
-export type Status = "PENDING" | "REVIEWING" | "APPROVED" | "REJECTED"
+export type Status = "PENDING" | "APPROVED" | "REJECTED";
 
 export type Photo = {
-  id: string
-  url: string
-  isCover: boolean
-  width: number
-  height: number
-}
+  id: string;
+  url: string;
+  isCover: boolean;
+  width: number;
+  height: number;
+};
 
 export type Inspection = {
-  id: string
-  listingId: string
-  listingTitle: string
-  sellerName: string
-  sellPrice: number
-  isOpened: string
-  submittedAt: string
-  status: Status
-  photos: Photo[]
-  capturedAtInternal?: string
-  warnings?: string[]
-  grade?: "S" | "A" | "B" | "C"
-}
+  id: string;
+  listingId: string;
+  listingTitle: string;
+  sellerName: string;
+  sellPrice: number;
+  isOpened: string;
+  submittedAt: string;
+  status: Status;
+  photos: Photo[];
+  capturedAtInternal?: string;
+  warnings?: string[];
+  grade?: "S" | "A" | "B" | "C";
+};
 
 // 👉 API 호출 함수
 export async function fetchInspections(params: any): Promise<Inspection[]> {
@@ -32,12 +32,12 @@ export async function fetchInspections(params: any): Promise<Inspection[]> {
   // return data
 
   // 현재는 더미 데이터
-  return demoInspections()
+  return demoInspections();
 }
 
 // 👉 더미 데이터 생성기
 function demoInspections(): Inspection[] {
-  const now = Date.now()
+  const now = Date.now();
   const make = (i: number, st: Status): Inspection => ({
     id: `ins_${1000 + i}`,
     listingId: `list_${2000 + i}`,
@@ -61,20 +61,23 @@ function demoInspections(): Inspection[] {
         : i % 5 === 0
         ? ["해상도 낮음"]
         : [],
-  })
+  });
 
   return [
     make(1, "PENDING"),
-    make(2, "REVIEWING"),
+    make(2, "PENDING"),
     make(3, "PENDING"),
     make(4, "APPROVED"),
     make(5, "REJECTED"),
     make(6, "PENDING"),
     make(7, "PENDING"),
-    make(8, "REVIEWING"),
+    make(8, "APPROVED"),
     make(9, "PENDING"),
     make(10, "PENDING"),
     make(11, "PENDING"),
-  ]
-  
+    make(12, "PENDING"),
+    make(13, "APPROVED"),
+    make(14, "PENDING"),
+    make(15, "REJECTED"),
+  ];
 }

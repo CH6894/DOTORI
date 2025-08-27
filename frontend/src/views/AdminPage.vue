@@ -13,7 +13,6 @@
           <select v-model="status">
             <option value="">전체</option>
             <option value="PENDING">대기</option>
-            <option value="REVIEWING">검토중</option>
             <option value="APPROVED">승인</option>
             <option value="REJECTED">반려</option>
           </select>
@@ -216,7 +215,7 @@ const dateFrom = ref("")
 const dateTo = ref("")
 
 const page = ref(1)
-const pageSize = ref(8)
+const pageSize = ref(12)
 
 const panelOpen = ref(false)
 const current = ref<Inspection | null>(null)
@@ -294,8 +293,6 @@ function fmt(iso?: string) {
 function toKrStatus(s: Status) {
   return s === "PENDING"
     ? "대기"
-    : s === "REVIEWING"
-      ? "검토중"
       : s === "APPROVED"
         ? "승인"
         : "반려"
@@ -316,10 +313,7 @@ function resetFilters() {
 }
 
 function openReview(ins: Inspection) {
-  current.value = {
-    ...ins,
-    status: ins.status === "PENDING" ? "REVIEWING" : ins.status,
-  }
+  current.value = { ...ins }   
   panelOpen.value = true
   decision.value = null
   rejectReasons.value = []
@@ -473,12 +467,6 @@ onMounted(async () => {
   background: #fff7ed;
   color: #c2410c;
   border: 1px solid #fed7aa;
-}
-
-.badge--reviewing {
-  background: #eef2ff;
-  color: #4338ca;
-  border: 1px solid #c7d2fe;
 }
 
 .badge--approved {
