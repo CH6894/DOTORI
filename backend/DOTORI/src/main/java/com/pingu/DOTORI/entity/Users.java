@@ -51,7 +51,7 @@ public class Users {
  private Integer userType;
 
  @Column(name = "UserImg")
- private String userImg
+ private String userImg;
  
  // Relations (양방향 컬렉션은 필요시만 유지)
  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
