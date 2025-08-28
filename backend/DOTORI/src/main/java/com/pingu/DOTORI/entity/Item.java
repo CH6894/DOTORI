@@ -30,13 +30,13 @@ public class Item {
 	@Column(name = "Manufacturer", length = 255)
 	private String manufacturer;
 
-	@Column(name = "Texture", length = 255)
-	private String texture;
+	@Column(name = "Material", length = 255)
+	private String material;
 
-	@Column(name = "Release_Date")
-	private LocalDate releaseDate;
+	@Column(name = "Release_Month")
+	private LocalDate releaseMonth;
 
-	@Column(name = "Size", nullable = false, length = 100)
+	@Column(name = "Size", length = 100)
 	private String size;
 
 	@Lob
@@ -46,7 +46,7 @@ public class Item {
 	@Column(name = "Img_URL", columnDefinition = "TEXT")
 	private String imgUrl;
 
-	@Column(name = "Storage Fees", nullable = false)
+	@Column(name = "Storage_Fees", nullable = false)
 	private Long storageFees;
 
 	@Column(name = "Genre", nullable = false, length = 100)

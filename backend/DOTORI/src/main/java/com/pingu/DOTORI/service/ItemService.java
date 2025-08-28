@@ -2,6 +2,9 @@ package com.pingu.DOTORI.service;
 
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,5 +16,12 @@ import com.pingu.DOTORI.repository.ItemRepository;
 @RequiredArgsConstructor
 public class ItemService {
 	private ItemRepository itemRepository;
-	public Page<Item> findAll(Pageable pageable){ return itemRepository.findAll(pageable); }
+	public List<Item> findAll() {
+        // 아주 단순: 전부 조회
+        return itemRepository.findAll();
+    }
+	
+	public Item findOne(String itemCode) {
+		return itemRepository.findById(itemCode).orElseThrow(() -> new IllegalArgumentException("Item not found:" + itemCode));
+	}
 }
