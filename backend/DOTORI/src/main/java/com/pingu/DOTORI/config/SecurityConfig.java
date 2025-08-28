@@ -39,8 +39,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/", "/health", "/public/**").permitAll()
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
-            .requestMatchers("/api/**").authenticated()
             .requestMatchers("/open/**").permitAll()
+            .requestMatchers("/api/**").authenticated()
             .anyRequest().authenticated())
         .oauth2Login(oauth -> oauth
             .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))

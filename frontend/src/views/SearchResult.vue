@@ -7,10 +7,13 @@ import MidTabs from '@/components/filters/MidTabs.vue'
 import ProductGrid from '@/components/product/ProductGrid.vue'
 import { useCatalog, type Item } from '@/composables/useCatalog'
 
+// rest api에서 가져온 데이터 로드
+import { fetchItems } from '@/api/items'
+import * as Items from '@/assets/ItemData.js'
+
 // 기존 JS 데이터 import 호환
 import * as TopCat from '@/assets/TopCategoryData.js'
 import { MidCategoryMap } from '@/assets/MidCategoryMap'
-import * as Items from '@/assets/ItemData.js'
 
 const route = useRoute()
 const router = useRouter()
