@@ -11,7 +11,7 @@ import java.util.List;
 public class Item {
 
     @Id
-    @Column(name = "ean", length = 255)
+    @Column(name = "ean", length = 13)
     @EqualsAndHashCode.Include
     private String ean;
 
@@ -30,7 +30,7 @@ public class Item {
     @Column(name = "Release_Date")
     private LocalDate releaseDate;
 
-    @Column(name = "Size", length = 100)
+    @Column(name = "Size", nullable = false, length = 100)
     private String size;
 
     @Lob

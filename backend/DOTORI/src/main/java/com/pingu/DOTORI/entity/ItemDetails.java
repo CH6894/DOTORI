@@ -33,10 +33,6 @@ public class ItemDetails {
 
  @Column(name = "Sell_Status", nullable = false)
  private Boolean sellStatus;
- 
- @Lob
- @Column(name = "Item_Explanation")
- private String itemExplanation;
 
  @ManyToOne(fetch = FetchType.LAZY)
  @JoinColumn(name = "User_ID", nullable = false)

@@ -71,7 +71,4 @@ public class Users {
 
  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
  private List<Search> searches;
- 
- @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
- private List<Calendar> calendars;
 }

@@ -21,10 +21,6 @@ public class Orders {
  @Column(name = "Pay_Time", nullable = false)
  private LocalDateTime payTime;
 
- @Column(name = "Pay_Message")
- private LocalDateTime payMessage;
-
- 
  @ManyToOne(fetch = FetchType.LAZY)
  @JoinColumn(name = "Item_ID", nullable = false)
  private ItemDetails itemDetails;

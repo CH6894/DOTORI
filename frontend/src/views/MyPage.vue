@@ -1,4 +1,3 @@
-<!-- src/views/MyPage.vue -->
 <template>
   <main class="mypage">
     <!-- 헤더: 제목 + 탭 -->
@@ -34,39 +33,37 @@
 
           <!-- 프로필 본문 -->
           <div class="profile">
-            <div class="profile__avatar">
-              <img :src="preview || user.photo" alt="프로필" />
-            </div>
+                         <div class="profile__avatar">
+               <img :src="user.userImg || defaultPhoto" alt="프로필" />
+             </div>
 
             <!-- 보기 / 편집 전환 -->
             <div v-if="!isEditing" class="profile__info">
               <p>
                 <span class="profile__label">닉네임</span>
-                <span class="profile__nickname">{{ user.nickname }}</span>
+                <span class="profile__nickName">{{ user.nickName || '닉네임 없음' }}</span>
               </p>
               <p>
-                <span class="profile__label">아이디</span>
-                <span class="profile__userid">{{ user.userId }}</span>
+                <span class="profile__label">이메일</span>
+                <span class="profile__userId">{{ user.email || '이메일 없음' }}</span>
               </p>
             </div>
 
             <form v-else class="profile__form" @submit.prevent="saveProfile">
               <label class="profile__row">
                 <span class="profile__label">닉네임</span>
-                <input v-model.trim="form.nickname" placeholder="닉네임" />
+                <input v-model.trim="form.nickname" placeholder="닉네임" required />
               </label>
               <label class="profile__row">
-                <span class="profile__label">아이디</span>
-                <input v-model.trim="form.userId" placeholder="아이디" />
+                <span class="profile__label">이메일</span>
+                <input :value="user.email" placeholder="이메일" readonly />
               </label>
             </form>
           </div>
 
-          <!-- 사진 변경 버튼 -->
-          <div class="profile__photoRow">
-            <input ref="file" type="file" accept="image/*" class="hidden" @change="onPick" />
-            <button class="btn btn--ghost" @click="triggerPick">프로필사진 변경</button>
-          </div>
+          
+
+
         </div>
 
         <!-- 주문 배송 현황 -->
@@ -194,13 +191,15 @@
 
     <!-- 토스트 메시지 (항상 최상위에서 노출) -->
     <div v-if="toast.open" class="toast">
-      장바구니에 담겼습니다
+      {{ toast.message }}
     </div>
   </main>
 </template>
 
 <script>
 import { useOrderStore } from '@/stores/orders'
+import api from '@/api/axios.js'
+import { useAuthStore } from '@/stores/auth'
 
 import defaultPhoto from '@/assets/profile_phto.svg'
 import iconOrder from '@/assets/주문.png'
@@ -216,7 +215,6 @@ import imgKozumeFigure from '@/assets/list/코즈메 켄마 피규어.svg'
 import imgMikuFigure from '@/assets/list/하츠네 미쿠 피규어.svg'
 import imgHinataSoyoFigure from '@/assets/list/히나타 소요 피규어.svg'
 
-/* ✅ 라우터 이름 매핑: 현 프로젝트 라우터(index.ts)의 실제 name에 맞춤 */
 const ROUTE_NAME_MAP = {
   ShipPage: 'mypage-ship',
   OrdersPage: 'mypage-orders',
@@ -230,20 +228,17 @@ export default {
 
   data() {
     return {
-      /* 탭(토글) */
       tabs: [
         { key: 'profile', label: '내 정보' },
         { key: 'dex', label: '도감' },
         { key: 'qna', label: '문의내역' },
       ],
 
-      /* 프로필 */
-      isEditing: false,
-      user: { photo: defaultPhoto, nickname: '다람이', userId: 'user01' },
-      form: { nickname: '다람이', userId: 'user01' },
-      preview: '',
+             isEditing: false,
+       user: {},
+       form: { nickname: '' },
+       defaultPhoto,
 
-      /* 주문 단계 */
       orderSteps: [
         { key: 'order', label: '주문접수', icon: iconOrder },
         { key: 'payment', label: '결제 완료', icon: iconPay },
@@ -253,19 +248,16 @@ export default {
       ],
       orderProgressIndex: 2,
 
-      /* 판매 내역 (더미) */
       sales: [
         { no: 'S2025081201', item: '루피 피규어', price: 53000, state: { type: 'ing', text: '판매중' } },
         { no: 'S2025080303', item: '미쿠 스페셜', price: 67000, state: { type: 'done', text: '거래 완료' } },
       ],
 
-      /* 보관함 (더미) */
       storageItems: [
         { id: 'st1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
         { id: 'st2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
       ],
 
-      /* 위시리스트 (더미) */
       wishlist: [
         { id: 'w1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
         { id: 'w2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
@@ -274,96 +266,93 @@ export default {
         { id: 'w5', title: '히나타 소요 피규어', image: imgHinataSoyoFigure, price: 67000 },
       ],
 
-      toast: { open: false, _t: null },
-
-      /* Pinia store */
+      toast: { open: false, message: '', _t: null },
       store: useOrderStore(),
+      authStore: useAuthStore(),
     }
   },
 
   computed: {
-    /* URL의 ?tab 값으로 탭 상태 동기화 (기본값 profile) */
     currentTab() {
       return (this.$route.query.tab ?? 'profile')
     },
-    /* 자식 라우트 판별: /mypage의 children이면 true */
     isChildRoute() {
       const n = this.$route.name || ''
       return n.startsWith('mypage-') && n !== 'mypage'
     },
-    /* 주문 요약(스토어) */
     orderSummary() {
       return this.store?.orderSummary ?? { total: 0, deposit: 0, progress: 0, done: 0 }
     },
   },
 
   mounted() {
-    /* 첫 진입시 ?tab이 없으면 profile로 정리 */
     if (!this.$route.query.tab) {
       this.$router.replace({ name: 'mypage', query: { tab: 'profile' } })
     }
+    this.loadProfile()
   },
 
   methods: {
-    /* 탭 변경 + URL 동기화 */
+    loadProfile() {
+      api.get('/me').then(response => {
+        this.user = response.data
+      }).catch(error => {
+        if (error.response?.status === 401) {
+          this.authStore.logout()
+          this.$router.replace('/login')
+        }
+      })
+    },
+
+    updateProfile() {
+      const updateData = {
+        nickName: this.form.nickname
+      }
+      api.put('/me', updateData).then(response => {
+        this.user = response.data
+        alert('저장되었습니다!')
+      }).catch(error => {
+        console.log('업데이트 오류:', error)
+      })
+    },
+
     setTab(key) {
       if (this.currentTab === key) return
       this.$router.push({ name: 'mypage', query: { tab: key } })
     },
 
-    // 프로필 관련
-    triggerPick() { this.$refs.file?.click() },
-    onPick(e) {
-      const f = e.target.files?.[0]
-      if (!f) return
-      const reader = new FileReader()
-      reader.onload = () => (this.preview = reader.result)
-      reader.readAsDataURL(f)
-    },
+    
     startEdit() {
-      this.form.nickname = this.user.nickname
-      this.form.userId = this.user.userId
+      this.form.nickname = this.user.nickName || ''
       this.isEditing = true
     },
-    cancelEdit() {
-      this.isEditing = false
-      this.preview = ''
-      if (this.$refs.file) this.$refs.file.value = ''
-    },
-    saveProfile() {
-      this.user.nickname = this.form.nickname || this.user.nickname
-      this.user.userId = this.form.userId || this.user.userId
-      if (this.preview) this.user.photo = this.preview
-      this.isEditing = false
-      this.preview = ''
-      if (this.$refs.file) this.$refs.file.value = ''
-      alert('저장되었습니다!')
-    },
+         cancelEdit() {
+       this.isEditing = false
+     },
+         saveProfile() {
+       if (!this.form.nickname.trim()) {
+         alert('닉네임을 입력해주세요')
+         return
+       }
 
-    /* ✅ 섹션 타이틀 클릭 시 자식 라우트로 이동 */
+       this.updateProfile()
+       this.isEditing = false
+     },
+
     go(name) {
       const real = ROUTE_NAME_MAP[name]
       if (real) {
         this.$router.push({ name: real })
         return
       }
-      console.warn(`[MyPage] 알 수 없는 이동 키: ${name}. /mypage로 이동합니다.`)
       this.$router.push('/mypage')
     },
 
-    // 보관함
     removeStorage(id) {
       this.storageItems = this.storageItems.filter(it => it.id !== id)
+      this.showToast('보관함에서 제거되었습니다')
     },
 
-    // 장바구니 관련
-    currency(n) {
-      return new Intl.NumberFormat('ko-KR', {
-        style: 'currency',
-        currency: 'KRW',
-        maximumFractionDigits: 0
-      }).format(n)
-    },
     getCart() {
       try {
         const raw = localStorage.getItem('dotori_cart_v1')
@@ -377,7 +366,8 @@ export default {
       else cart.push(item)
       return cart
     },
-    showToast() {
+    showToast(message = '장바구니에 담겼습니다') {
+      this.toast.message = message
       this.toast.open = true
       clearTimeout(this.toast._t)
       this.toast._t = setTimeout(() => { this.toast.open = false }, 2000)
@@ -388,14 +378,15 @@ export default {
       const item = { id: w.id, title: w.title, price: w.price, qty: 1, shipping: 0, thumb: w.image }
       const next = this.upsert(this.getCart(), item)
       this.saveCart(next)
-      this.showToast()
+      this.showToast('장바구니에 담겼습니다')
     },
+
+
   },
 }
 </script>
 
 <style scoped>
-/* ---- (기존 스타일 그대로) ---- */
 .container {
   width: min(1160px, 92%);
   margin: 0 auto;
@@ -417,7 +408,6 @@ export default {
   font-weight: 800;
 }
 
-/* 탭 */
 .tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -452,7 +442,6 @@ export default {
   background: #2d251c;
 }
 
-/* 패널 및 카드 */
 .card {
   margin-top: 18px;
   padding: 22px;
@@ -497,7 +486,6 @@ export default {
   text-align: center;
 }
 
-/* 프로필 카드 */
 .profile-card {
   position: relative;
 }
@@ -541,8 +529,8 @@ export default {
 }
 
 .profile__avatar img {
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -599,7 +587,6 @@ export default {
   display: none;
 }
 
-/* 버튼 */
 .btn {
   appearance: none;
   border: 0;
@@ -638,7 +625,6 @@ export default {
   border: 1px solid #d9d9d9;
 }
 
-/* 주문 진행 단계 */
 :root {
   --line: #e9e4db;
   --green: #f4f4f4;
@@ -700,7 +686,6 @@ export default {
   filter: none;
 }
 
-/* 주문 요약 */
 .order-summary {
   margin: 8px 0 0;
   padding: 14px 10px;
@@ -732,14 +717,12 @@ export default {
   color: #000;
 }
 
-/* 테이블 */
 .tbl {
   width: 100%;
   border-collapse: collapse;
 }
 
-th,
-td {
+th, td {
   border-bottom: 1px solid #eee6d7;
   padding: 10px 8px;
   text-align: left;
@@ -761,7 +744,6 @@ td {
   border-color: #cfe9d9;
 }
 
-/* 보관함 */
 .storage {
   list-style: none;
   margin: 0;
@@ -804,7 +786,6 @@ td {
   gap: 8px;
 }
 
-/* 위시리스트 */
 .wish {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -859,7 +840,6 @@ td {
   padding: 8px 8px 8px;
 }
 
-/* 토스트 */
 .toast {
   position: fixed;
   top: 50%;
@@ -880,24 +860,20 @@ td {
     opacity: 0;
     transform: translate(-50%, -60%);
   }
-
   15% {
     opacity: 1;
     transform: translate(-50%, -50%);
   }
-
   85% {
     opacity: 1;
     transform: translate(-50%, -50%);
   }
-
   100% {
     opacity: 0;
     transform: translate(-50%, -40%);
   }
 }
 
-/* 반응형 */
 @media (max-width:1024px) {
   .wish {
     grid-template-columns: repeat(3, 1fr);
@@ -908,23 +884,12 @@ td {
   .tabs {
     width: 100%;
   }
-
   .profile {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .wish {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .steps--flat {
-    grid-template-columns: repeat(5, minmax(44px, 1fr));
-  }
-
-  .order-summary {
-    grid-template-columns: repeat(2, 1fr);
-    row-gap: 8px;
   }
 }
 </style>
