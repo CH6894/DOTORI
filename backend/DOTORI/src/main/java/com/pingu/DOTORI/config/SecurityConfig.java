@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository; // ✅ 추가
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository; 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.*;
 
@@ -13,6 +13,7 @@ import com.pingu.DOTORI.security.OAuth2SuccessHandler;
 
 import java.util.List;
 
+import com.pingu.DOTORI.config.AlwaysReauthResolver;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -28,10 +29,14 @@ public class SecurityConfig {
                                   ClientRegistrationRepository repo) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
+        .cors(Customizer.withDefaults())
         .cors(cors -> {})
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/", "/health", "/public/**").permitAll()
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
+            .requestMatchers("/static/**").permitAll()      // 정적 리소스 허용
+            .requestMatchers("/api/inspections/admin").hasRole("ADMIN")
+            .requestMatchers("/api/**").permitAll() 
             .anyRequest().authenticated()
         )
         .oauth2Login(oauth -> oauth
@@ -53,7 +58,7 @@ public class SecurityConfig {
     config.setAllowCredentials(true);
 
     var source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
+    source.registerCorsConfiguration("/api/**", config);
     return source;
   }
 }

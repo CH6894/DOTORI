@@ -1,61 +1,62 @@
 package com.pingu.DOTORI.entity;
 
+import com.pingu.DOTORI.entity.ItemImg;
+import com.pingu.DOTORI.entity.Admin;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity @Table(name = "Item_details")
+@Entity
+@Table(name = "Item_details")
 public class ItemDetails {
 
- @Id
- @GeneratedValue(strategy = GenerationType.IDENTITY)
- @Column(name = "Item_ID")
- @EqualsAndHashCode.Include
- private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Item_ID")
+    @EqualsAndHashCode.Include
+    private Long itemId;   // 아이템 고유 번호
 
- @Column(name = "Cost")
- private Long cost;
+    @Column(name = "Cost")
+    private BigDecimal cost;   // 상품 가격
 
- @Column(name = "Storage_Date")
- private LocalDateTime storageDate;
+    @Column(name = "Storage_Date")
+    private LocalDateTime storageDate;   // 입고 날짜
 
- @Column(name = "Delivery_Date")
- private LocalDateTime deliveryDate;
+    @Column(name = "Delivery_Date")
+    private LocalDateTime deliveryDate;  // 출고 날짜
 
- @Column(name = "Unpacked", nullable = false)
- private Byte unpacked; // 0/1
+    @Column(name = "Status", nullable = false)
+    private Boolean status;   // 판매 상태
 
- @Column(name = "Quality")
- private Byte quality; // 1,2,3
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "User_ID", nullable = false)
+    private Users user;  // 유저 고유 번호 (단방향으로 충분)
 
- @Column(name = "Sell_Status", nullable = false)
- private Boolean sellStatus;
- 
- @Lob
- @Column(name = "Item_Explanation")
- private String itemExplanation;
+    @Column(name = "EAN", length = 13, nullable = false)
+    private String ean;  // 상품 바코드
 
- @ManyToOne(fetch = FetchType.LAZY)
- @JoinColumn(name = "User_ID", nullable = false)
- private Users user;
+    // --- 양방향 매핑 ---
+    @OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemImg> images = new ArrayList<>();
 
- @ManyToOne(fetch = FetchType.LAZY)
- @JoinColumn(name = "EAN", nullable = false)
- private Item item;
+    @OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Admin> admins = new ArrayList<>();
 
- // Relations
- @OneToMany(mappedBy = "itemDetails", fetch = FetchType.LAZY)
- private List<ItemImg> images;
+    // --- 편의 메서드 ---
+    public void addImage(ItemImg image) {
+        images.add(image);
+        image.setItemDetails(this);
+    }
 
- @OneToMany(mappedBy = "itemDetails", fetch = FetchType.LAZY)
- private List<Orders> orders;
-
- @OneToMany(mappedBy = "itemDetails", fetch = FetchType.LAZY)
- private List<Cart> carts;
-
- @OneToMany(mappedBy = "itemDetails", fetch = FetchType.LAZY)
- private List<WishList> wishLists;
+    public void addAdmin(Admin admin) {
+        admins.add(admin);
+        admin.setItemDetails(this);
+    }
 }
