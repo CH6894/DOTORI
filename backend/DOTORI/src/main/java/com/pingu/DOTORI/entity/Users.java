@@ -78,4 +78,5 @@ public class Users {
     public void addOrder(Orders order){ orders.add(order); order.setUser(this); }
     //public void addCart(Cart cart){ cart.add(cart); cart.setUser(this); }
     public void addWish(WishList wish){ wishList.add(wish); wish.setUser(this); }
+
 }

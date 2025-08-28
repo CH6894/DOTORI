@@ -1,0 +1,266 @@
+item_code,name,title,manufacturer,material,release_month,size,information,img_url,cost,storage_fees,genre
+DT-DMS-0001,코토부키야 (Kotobukiya) 1/8스케일 ARTFX J 귀멸의 칼날 아가츠마 젠이츠(특전포함),귀멸의 칼날,코토부키야(Kotobukiya),PVC & ABS,,166mm,,/assets/items/DT-DMS-0001.jpg,140000.0,3000,Anime
+DT-DMS-0002,코토부키야 1/8스케일 ARTFX J 귀멸의 칼날 카마도 네즈코 (특전포함),귀멸의 칼날,코토부키야(Kotobukiya),PVC & ABS,,143mm,,/assets/items/DT-DMS-0002.jpg,110000.0,3000,Anime
+DT-DMS-0003,반다이(BANDAI) Figuarts ZERO 귀멸의 칼날 칸로지 미츠리,귀멸의 칼날,반다이 (BANDAI),ABS & PVC,,약 220mm,,/assets/items/DT-DMS-0003.jpg,150000.0,3000,Anime
+DT-DMS-0004,반다이 피규어아츠제로 귀멸의 칼날 하시비라 이노스케 짐승의 호흡,귀멸의 칼날,반다이 (BANDAI),ABS & PVC,,160mm,,/assets/items/DT-DMS-0004.jpg,300000.0,3000,Anime
+DT-DMS-0005,"제일복권 귀멸의 칼날 최고위의 검사 ""주"" 하시라 B상 토미오카 기유 마스터 라이즈 피규어",귀멸의 칼날,반프레스토 (BANPRESTO),PVC & ABS,,26cm,,/assets/items/DT-DMS-0005.jpg,75000.0,3000,Anime
+DT-DMS-0006,제일복권 귀멸의 칼날 ~ 오니가 서있는 거리 ~ 라스트원상 우즈이 텐겐 라스트 원Ver.,귀멸의 칼날,반프레스토 (BANPRESTO),PVC & ABS,,15cm,,/assets/items/DT-DMS-0006.jpg,68000.0,3000,Anime
+DT-DMS-0007,제일복권 귀멸의 칼날 상현의 삼 피규어 라스트원상 아카자 (라스트원ver.),귀멸의 칼날,반프레스토 (BANPRESTO),,,,,/assets/items/DT-DMS-0007.jpg,150000.0,3000,Anime
+DT-DMS-0008,제일복권 귀멸의 칼날 라스트 원상 코쵸우 시노부,귀멸의 칼날,반프레스토 (BANPRESTO),,,15㎝,,/assets/items/DT-DMS-0008.jpg,52000.0,3000,Anime
+DT-DMS-0009,세가 (SEGA) 귀멸의 칼날 Xross Link 피규어 카마도 탄지로,귀멸의 칼날,세가 (SEGA),,,,,/assets/items/DT-DMS-0009.jpg,41000.0,3000,Anime
+DT-DMS-0010,알터 (Alter) 1/8스케일 귀멸의 칼날 츠유리 카나오,귀멸의 칼날,알터 (Alter),PVC ＆ ABS,,210mm,,/assets/items/DT-DMS-0010.jpg,147000.0,3000,Anime
+DT-DMS-0011,후류 (FURYU) 귀멸의 칼날 누들 스토퍼 피규어 하시비라 이노스케 피규어,귀멸의 칼날,후류 (FURYU),,2025-08,,,/assets/items/DT-DMS-0011.jpg,25000.0,3000,Anime
+DT-MHA-0001,코토부키야 (Kotobukiya) 1/8스케일 ARTFX J 나의 히어로 아카데미아 토가 히미코,나의 히어로 아카데미아,코토부키야(Kotobukiya),PVC & ABS,,195mm,,/assets/items/DT-MHA-0001.jpg,254000.0,3000,Anime
+DT-MHA-0002,제일복권 나의 히어로 아카데미아 THE MOVIE WORLD HEROES 'MISSION B상 MASTERLISE EMOVING 바쿠고 카츠키,나의 히어로 아카데미아,반프레스토 (BANPRESTO),PVC & ABS,,240mm,,/assets/items/DT-MHA-0002.jpg,135000.0,3000,Anime
+DT-MHA-0003,반프레스토 나의 히어로 아카데미아 THE AMAZING HEROES Vol.5 올마이트,나의 히어로 아카데미아,반프레스토 (BANPRESTO),PVC & ABS,,,,/assets/items/DT-MHA-0003.jpg,56000.0,3000,Anime
+DT-MHA-0004,[일본내수용] 반프레스토 나의 히어로 아카데미아 AGE OF HEROES 토도로키 쇼토,나의 히어로 아카데미아,반프레스토 (BANPRESTO),PVC & ABS,,170mm,,/assets/items/DT-MHA-0004.jpg,33000.0,3000,Anime
+DT-MHA-0005,반프레스토 나의 히어로 아카데미아 AGE OF HEROES 엔데버,나의 히어로 아카데미아,반프레스토 (BANPRESTO),PVC & ABS,,,,/assets/items/DT-MHA-0005.jpg,63000.0,3000,Anime
+DT-MHA-0006,제일복권 나의 히어로 아카데미아 ULTRA IMPACT G상 호크스 ULTRA IMPACT,나의 히어로 아카데미아,반프레스토 (BANPRESTO),PVC & ABS,,16cm,,/assets/items/DT-MHA-0006.jpg,57000.0,3000,Anime
+DT-MHA-0007,후류 (FURYU) TENITOL 나의 히어로 아카데미아 피규어 다비,나의 히어로 아카데미아,후류 (FURYU),플라스틱,,높이 약 225mm (제조사 제공 스펙),,/assets/items/DT-MHA-0007.jpg,84000.0,3000,Anime
+DT-MHA-0008,타카라토미아츠 1/8스케일 나의 히어로 아카데미아 시가라키 토무라,나의 히어로 아카데미아,타카라토미 (takaratomy),PVC & ABS,,230mm,,/assets/items/DT-MHA-0008.jpg,280000.0,3000,Anime
+DT-MHA-0009,반다이(BANDAI) S.H.Figuarts 나의 히어로 아카데미아 우라라카 오챠코,나의 히어로 아카데미아,반다이 (BANDAI),"ABS, PVC",2025-10,높이 약 130mm,,/assets/items/DT-MHA-0009.jpg,130000.0,3000,Anime
+DT-ONE-0001,제일복권 원피스 미래섬 에그헤드 너를 향한 마음 피규어 B상 볼사리노,원피스,반프레스토 (BANPRESTO),,,,,/assets/items/DT-ONE-0001.jpg,87000.0,3000,Anime
+DT-ONE-0002,원피스 제일복권 메모리얼 로그 20주년 D상 에드워드 뉴 게이트,원피스,반프레스토 (BANPRESTO),"PVC,ABS",,약 155mm,,/assets/items/DT-ONE-0002.jpg,210000.0,3000,Anime
+DT-ONE-0003,제일복권 원피스 EX 용과 쟁쟁한 강자들 A상 킹 - 영혼호주-,원피스,반프레스토 (BANPRESTO),PVC & ABS,,20cm,,/assets/items/DT-ONE-0003.jpg,157000.0,3000,Anime
+DT-ONE-0004,제일복권 원피스 베스트 오브 옴니버스 A상 카이도우 - the Four Emperors-,원피스,반프레스토 (BANPRESTO),PVC & ABS,,19.5cm,,/assets/items/DT-ONE-0004.jpg,150000.0,3000,Anime
+DT-ONE-0005,제일복권 원피스 EX 악마를 품고 있는 자들 Vol.2 B상 마샬.D.티치,원피스,반프레스토 (BANPRESTO),PVC & ABS,,21cm,,/assets/items/DT-ONE-0005.jpg,95000.0,3000,Anime
+DT-ONE-0006,원피스 엑설런트모델 P.O.P SA-MAXIMUM 롤로노아 조로 삼천세계,원피스,메가하우스 (MEGA HOUSE),PVC & ABS,,210mm,,/assets/items/DT-ONE-0006.jpg,576000.0,3000,Anime
+DT-ONE-0007,반프레스토 원피스 SCultures 조형왕 정상결전 WORLD 2018 상디,원피스,반프레스토 (BANPRESTO),PVC & ABS,,200mm,,/assets/items/DT-ONE-0007.jpg,84000.0,3000,Anime
+DT-ONE-0008,제일복권 원피스 BEYOND THE LEVEL 라스트원상 몽키.D.루피 기어5 라스트원 Ver.,원피스,반프레스토 (BANPRESTO),PVC & ABS,,11cm,,/assets/items/DT-ONE-0008.jpg,105000.0,3000,Anime
+DT-ONE-0009,제일복권 원피스 극장판 필름 레드 -MORE BEAT- C상 토니토니 쵸파,원피스,반프레스토 (BANPRESTO),PVC & ABS,,10cm,,/assets/items/DT-ONE-0009.jpg,94000.0,3000,Anime
+DT-ONE-0010,반프레스토 원피스 피규어 브라더후드 2탄 루피 & 에이스 & 사보,원피스,반프레스토 (BANPRESTO),PVC & ABS,,약 14cm,,/assets/items/DT-ONE-0010.jpg,185000.0,3000,Anime
+DT-AOT-0001,진격의 거인 자유의 날개 메탈 뱃지 중국 공식 굿즈,진격의 거인,공식굿즈,아연합금,,약 3.5 x 4 cm,,/assets/items/DT-AOT-0001.jpg,10000.0,3000,Anime
+DT-AOT-0002,포니캐년 (PONY CANYON) 1/6스케일 진격의 거인 인류최강의 병사 리바이,진격의 거인,포니 캐년 (PONY CANYON),플라스틱,,235mm,,/assets/items/DT-AOT-0002.jpg,791000.0,3000,Anime
+DT-AOT-0003,(일본내수용) 반프레스토 진격의 거인 Grandista 피규어 에렌 예거,진격의 거인,반프레스토 (BANPRESTO),,2025-11,,,/assets/items/DT-AOT-0003.jpg,26000.0,3000,Anime
+DT-AOT-0004,진격의 거인 조사병단 자유의 날개 망토 중국 공식 굿즈,진격의 거인,공식굿즈,인조 스웨이드,,프리 사이즈,,/assets/items/DT-AOT-0004.jpg,34000.0,3000,Anime
+DT-AOT-0005,진격의 거인 캔뱃지 세트 리바이&에렌 중국 공식 굿즈,진격의 거인,공식굿즈,캔,,약 5.7cm,,/assets/items/DT-AOT-0005.jpg,36000.0,3000,Anime
+DT-AOT-0006,"세가 진격의거인 PM 피규어 미카사 에커만 조사병단VER,(수량한정판)",진격의 거인,세가 (SEGA),PVC & ABS,,약 14cm,,/assets/items/DT-AOT-0006.jpg,81000.0,3000,Anime
+DT-FTE-0001,팻! (Phat!) 1/7 스케일 피규어 페이트/그랜드 오더 랜서/멜뤼진,페이트,팻! (Phat!),,,,,/assets/items/DT-FTE-0001.jpg,352100.0,3000,Anime
+DT-FTE-0002,애니플렉스 1/7스케일 Fate / EXTRA Last Encore 토오사카 린 전투ver.,페이트,애니플렉스 (ANIPLEX +),PVC & ABS,,220mm,,/assets/items/DT-FTE-0002.jpg,361000.0,3000,Anime
+DT-FTE-0003,팻! (Phat!) 1/7스케일 피규어 Fate/Grand Order 페이트 그랜드 오더 아처/세이 쇼나곤,페이트,팻! (Phat!),플라스틱,,250mm,,/assets/items/DT-FTE-0003.jpg,353000.0,3000,Anime
+DT-FTE-0004,애니플렉스 (ANIPLEX +) Fate/Grand Order 페이트 그랜드 오더 ConoFig 세이버/센지 무라마사,페이트,애니플렉스 (ANIPLEX +),ATBC-PVC & ABS,,205mm,,/assets/items/DT-FTE-0004.jpg,125000.0,3000,Anime
+DT-FTE-0005,프링 1/4스케일 Fate/Grand Order 페이트 그랜드 오더 아처/길가메시,페이트,프링 (FREEing),PVC & ABS,,490mm,,/assets/items/DT-FTE-0005.jpg,417000.0,3000,Anime
+DT-FTE-0006,굿스마일컴퍼니 1/7스케일 Fate/Stay Night 페이트 머나 먼 이상향 세이버 릴리 (아발론),페이트,굿스마일컴퍼니 (Goodsmile Company),PVC & ABS,,230mm,,/assets/items/DT-FTE-0006.jpg,177000.0,3000,Anime
+DT-FTE-0007,(당일발송) 후류 (FURYU) 페이트 그랜드 오더 Trio-Try-iT 피규어 아처 바반 시 제2재림,페이트,후류 (FURYU),,,,,/assets/items/DT-FTE-0007.jpg,25000.0,3000,Anime
+DT-POK-0001,코토부키야 (Kotobukiya) ARTFX J 1/8 스케일 피규어 포켓몬스터 세레나 with 푸호꼬(재판),포켓몬,코토부키야(Kotobukiya),"PVC, ABS",2025-12,195mm,,/assets/items/DT-POK-0001.jpg,170000.0,3000,Game
+DT-POK-0002,반다이(BANDAI) 반다이 남코 BANDAI NAMCO 포켓몬 스케일 월드 관동지방 리자몽 (아시아판),포켓몬,반다이(BANDAI),"PVC, ABS",,,,/assets/items/DT-POK-0002.jpg,58000.0,3000,Game
+DT-POK-0003,포켓몬 스케일 월드 신오지방 아르세우스,포켓몬,반다이(BANDAI),PVC,,110mm*160mm,,/assets/items/DT-POK-0003.jpg,123000.0,3000,Game
+DT-POK-0004,타카라토미 포켓몬스터 몬코레 EX EHP-16 뮤츠,포켓몬,타카라토미 (takaratomy),"PVC, ABS",,100mm,,/assets/items/DT-POK-0004.jpg,50000.0,3000,Game
+DT-POK-0005,타카라토미 포켓몬스터 몬코레 EX EHP-16 짜랑고우거,포켓몬,타카라토미 (takaratomy),"PVC, ABS",,100mm,,/assets/items/DT-POK-0005.jpg,60000.0,3000,Game
+DT-POK-0006,코토부키야 ARTFX J 포켓몬스터 토우코(투희) with 포카부(뚜꾸리),포켓몬,코토부키야(Kotobukiya),"PVC, ABS",,215mm,,/assets/items/DT-POK-0006.jpg,432000.0,3000,Game
+DT-POK-0007,코토부키야 (Kotobukiya) 포켓몬센터 오리지널 라티오스 & 라티아스,포켓몬,코토부키야(Kotobukiya),"PVC, ABS",,168mm,,/assets/items/DT-POK-0007.jpg,316000.0,3000,Game
+DT-POK-0008,코토부키야 ARTFX J 포켓몬스터 피규어 시리즈 릴리에 & 코스모그,포켓몬,코토부키야(Kotobukiya),"PVC, ABS",,95mm*105mm*220mm,,/assets/items/DT-POK-0008.jpg,,3000,Game
+DT-POK-0009,타카라토미 포켓몬스터 몬코레 EX EHP-02 루나아라,포켓몬,타카라토미 (takaratomy),"PVC, ABS",,100mm,,/assets/items/DT-POK-0009.jpg,42000.0,3000,Game
+DT-POK-0010,타카라토미 포켓몬스터 몬코레 MS-24 마임맨,포켓몬,타카라토미 (takaratomy),"PVC, ABS",,100mm,,/assets/items/DT-POK-0010.jpg,28000.0,3000,Game
+DT-DIG-0001,메가하우스 (Mega House) Precious G.E.M. 시리즈 디지몬 어드벤처 메탈 가루몬 & 매튜 (이시타 야마토),디지몬,메가하우스 (MEGA HOUSE),"PVC, ABS",2026-01,300mm,,/assets/items/DT-DIG-0001.jpg,270000.0,3000,Game
+DT-DIG-0002,메가하우스 (Mega House) Precious G.E.M. 시리즈 디지몬 어드벤처 워그레이몬&신태일(야가미 타이치),디지몬,메가하우스 (MEGA HOUSE),"PVC, ABS",2025-12,250mm,,/assets/items/DT-DIG-0002.jpg,270000.0,3000,Game
+DT-DIG-0003,메가하우스 GEM 시리즈 Precious 디지몬 어드벤처 오메가몬,디지몬,메가하우스 (MEGA HOUSE),"PVC, ABS",,600mm,,/assets/items/DT-DIG-0003.jpg,501000.0,3000,Game
+DT-DIG-0004,반다이 SHFiguarts 디지몬 X-Evolution 알파몬,디지몬,반다이 (BANDAI),"PVC, ABS",,170mm,,/assets/items/DT-DIG-0004.jpg,121000.0,3000,Game
+DT-DIG-0005,제일복권 디지몬 시리즈 빛을 발하는 두가지 힘 A상 황제 드라몬 드래곤 모드 영혼혼합 피규어,디지몬,반프레스토 (BANPRESTO),"PVC, ABS",,:,,/assets/items/DT-DIG-0005.jpg,171000.0,3000,Game
+DT-DIG-0006,제일복권 디지몬 시리즈 빛을 발하는 두가지 힘 B상 듀크몬 영혼혼합 피규어,디지몬,반프레스토 (BANPRESTO),"PVC, ABS",,:,,/assets/items/DT-DIG-0006.jpg,115000.0,3000,Game
+DT-DIG-0007,반다이(BANDAI) ﻿S.H.Figuarts 디지몬 어드벤처 엔젤우몬,디지몬,반다이 (BANDAI),"PVC, ABS",,150mm,,/assets/items/DT-DIG-0007.jpg,255000.0,3000,Game
+DT-DIG-0008,메가하우스 (MEGA HOUSE) G.E.M 시리즈 디지몬 어드벤처 엔젤몬 20주년,디지몬,메가하우스 (MEGA HOUSE),"PVC, ABS",,:,,/assets/items/DT-DIG-0008.jpg,494000.0,3000,Game
+DT-DIG-0009,반프레스토 디지몬 어드벤쳐 SOFVI MATES 아구몬,디지몬,반프레스토 (BANPRESTO),"PVC, ABS",,:,,/assets/items/DT-DIG-0009.jpg,53000.0,3000,Game
+DT-DIG-0010,반프레스토 디지몬 어드벤쳐 소프비메이트 피규어 파닥몬,디지몬,반프레스토 (BANPRESTO),"PVC, ABS",,:,,/assets/items/DT-DIG-0010.jpg,25000.0,3000,Game
+DT-GEN-0001,[에이펙스토이즈][원신] LIMEPIE 시리즈 유메미즈키 미즈키 새벽 바람의 꿈 Ver.,원신,에이펙스 토이즈 (APEX TOYS),"PVC, ABS",,230mm,,/assets/items/DT-GEN-0001.jpg,76000.0,3000,Game
+DT-GEN-0002,[MiHoYo][원신] 데포르메 스탬프 시리즈 캔뱃지 닐루,원신,MiHoYo,"PVC, ABS",,58mm,,/assets/items/DT-GEN-0002.jpg,4000.0,3000,Game
+DT-GEN-0003,[원신] 데포르메 스탬프 시리즈 캔뱃지 나히다,원신,MiHoYo,"PVC, ABS",,58mm,,/assets/items/DT-GEN-0003.jpg,4000.0,3000,Game
+DT-GEN-0004,[MiHoYo][원신] 데포르메 스탬프 시리즈 캔뱃지 파루잔,원신,MiHoYo,"PVC, ABS",,58mm,,/assets/items/DT-GEN-0004.jpg,4000.0,3000,Game
+DT-GEN-0005,[MiHoYo][원신] 데포르메 스탬프 시리즈 캔뱃지 요요,원신,MiHoYo,"PVC, ABS",,58mm,,/assets/items/DT-GEN-0005.jpg,4000.0,3000,Game
+DT-GEN-0006,[반다이스피릿][원신] S.H.Figuarts 페이몬 (한정),원신,반다이스피릿 (BANDAI SPIRITS),"PVC, ABS",,105mm,,/assets/items/DT-GEN-0006.jpg,119000.0,3000,Game
+DT-GEN-0007,[알터][원신] 피슬 1/7,원신,알터 (Alter),"PVC, ABS",,290mm,,/assets/items/DT-GEN-0007.jpg,309000.0,3000,Game
+DT-GEN-0008,[에이펙스토이즈][원신] 감우 리월의 수호자 Ver. 1/7,원신,에이펙스 토이즈 (APEX TOYS),"PVC, ABS",,220mm,,/assets/items/DT-GEN-0008.jpg,254000.0,3000,Game
+DT-GEN-0009,[굿스마일컴퍼니][원신] 넨도로이드 No.2660 라이덴 쇼군,원신,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,100mm,,/assets/items/DT-GEN-0009.jpg,69000.0,3000,Game
+DT-GEN-0010,[에이펙스토이즈][원신] 위대하신 나루카미 쇼군상,원신,에이펙스 토이즈 (APEX TOYS),"PVC, ABS",,105mm,,/assets/items/DT-GEN-0010.jpg,72000.0,3000,Game
+DT-BLA-0001,[맥스팩토리][블루 아카이브] 리쿠하치마 아루 1/7,블루 아카이브,맥스팩토리 (Max Factory),"PVC, ABS",,260mm,,/assets/items/DT-BLA-0001.jpg,230200.0,3000,Game
+DT-BLA-0002,[Miyuki][블루 아카이브] 쿄야마 카즈사 밴드 Ver. 1/7,블루 아카이브,Miyuki,"PVC, ABS",,235mm,,/assets/items/DT-BLA-0002.jpg,229300.0,3000,Game
+DT-BLA-0003,[윙][블루 아카이브] 타카나시 호시노 1/7,블루 아카이브,윙 (WING),"PVC, ABS",,210mm,,/assets/items/DT-BLA-0003.jpg,235000.0,3000,Game
+DT-BLA-0004,[굿스마일컴퍼니][블루 아카이브] 스나오오카미 시로코 시로코*테러 Ver. 1/7,블루 아카이브,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,300mm,,/assets/items/DT-BLA-0004.jpg,229200.0,3000,Game
+DT-BLA-0005,[플럼][블루 아카이브] 이오치 마리 체육복 메모리얼 로비 Ver. 1/7,블루 아카이브,플럼 (PLUM),"PVC, ABS",,180mm,,/assets/items/DT-BLA-0005.jpg,257000.0,3000,Game
+DT-BLA-0006,[윙][블루 아카이브] 쿠다 이즈나 1/7,블루 아카이브,윙 (WING),"PVC, ABS",,230mm,,/assets/items/DT-BLA-0006.jpg,257100.0,3000,Game
+DT-BLA-0007,[Miyuki][블루 아카이브] 이오치 마리 1/7,블루 아카이브,Miyuki,"PVC, ABS",,230mm,,/assets/items/DT-BLA-0007.jpg,265000.0,3000,Game
+DT-BLA-0008,[굿스마일컴퍼니][블루 아카이브] 미소노 미카 별의 부름 1/7,블루 아카이브,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,270mm,,/assets/items/DT-BLA-0008.jpg,214700.0,3000,Game
+DT-BLA-0009,[블루 아카이브] Lucrea(루크리아) 이치노세 아스나 1/7,블루 아카이브,메가하우스 (MEGA HOUSE),"PVC, ABS",,250mm,,/assets/items/DT-BLA-0009.jpg,393000.0,3000,Game
+DT-BLA-0010,[굿스마일컴퍼니]블루 아카이브] 나카마사 이치카 1/7,블루 아카이브,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,250mm,,/assets/items/DT-BLA-0010.jpg,152700.0,3000,Game
+DT-NIK-0001,[맥스팩토리][승리의 여신 니케] 피그마 No.640 홍련,니케,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,160mm,,/assets/items/DT-NIK-0001.jpg,142500.0,3000,Game
+DT-NIK-0002,[굿스마일컴퍼니][승리의 여신 니케] 넨도로이드 No.2315 라피,니케,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,100mm,,/assets/items/DT-NIK-0002.jpg,71000.0,3000,Game
+DT-NIK-0003,[굿스마일컴퍼니][승리의 여신 니케] 넨도로이드 No.2397 아니스,니케,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,100mm,,/assets/items/DT-NIK-0003.jpg,71000.0,3000,Game
+DT-NIK-0004,[굿스마일아츠상하이][승리의 여신 니케] Hyper Body 레드 후드,니케,굿스마일아츠 상하이,"PVC, ABS",,150mm,,/assets/items/DT-NIK-0004.jpg,147900.0,3000,Game
+DT-NIK-0005,[승리의 여신 니케] 라피: 클래식 바캉스 1/7,니케,굿스마일아츠 상하이,"PVC, ABS",,250mm,,/assets/items/DT-NIK-0005.jpg,207000.0,3000,Game
+DT-NIK-0006,[굿스마일아츠상하이][승리의 여신 니케] DORO 도로시,니케,굿스마일아츠 상하이,"PVC, ABS",,50mm,,/assets/items/DT-NIK-0006.jpg,14700.0,3000,Game
+DT-NIK-0007,[프링][승리의 여신 니케] 베이 1/4,니케,프링 (FREEing),"PVC, ABS",,495mm,,/assets/items/DT-NIK-0007.jpg,520000.0,3000,Game
+DT-NIK-0008,[아마쿠니][승리의 여신 니케] 앨리스 스위트 홈 1/7,니케,아마쿠니 (AMAKUNI),"PVC, ABS",,250mm,,/assets/items/DT-NIK-0008.jpg,240000.0,3000,Game
+DT-NIK-0009,[굿스마일컴퍼니][승리의 여신 니케] 넨도로이드 No.2763 바이퍼,니케,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,100mm,,/assets/items/DT-NIK-0009.jpg,72300.0,3000,Game
+DT-NIK-0010,[굿스마일컴퍼니][승리의 여신 니케] 넨도로이드 No.2740 도로시,니케,굿스마일컴퍼니 (Goodsmile Company),"PVC, ABS",,100mm,,/assets/items/DT-NIK-0010.jpg,68000.0,3000,Game
+DT-HNK-0001,[알터][붕괴 스타레일] 어벤츄린 1/7,붕괴,알터 (Alter),"PVC, ABS",,200×250mm,,/assets/items/DT-HNK-0001.jpg,441000.0,3000,Game
+DT-HNK-0002,[리보스][붕괴 스타레일] 무영객의 메달 미니 피규어 Vol.1 스파클,붕괴,리보스 (RIBOSE),"PVC, ABS",,85mm,,/assets/items/DT-HNK-0002.jpg,26400.0,3000,Game
+DT-HNK-0003,[리보스][붕괴 스타레일] RISE UP+ 꼬마 고양이 시리즈 은랑,붕괴,리보스 (RIBOSE),"PVC, ABS",,190mm,,/assets/items/DT-HNK-0003.jpg,99000.0,3000,Game
+DT-HNK-0004,[리보스][붕괴 스타레일] 미니 피규어 Vol.1 블레이드,붕괴,리보스 (RIBOSE),"PVC, ABS",,84×92mm,,/assets/items/DT-HNK-0004.jpg,29700.0,3000,Game
+DT-HNK-0005,[리보스][붕괴 스타레일] 미니 피규어 Vol.1 카프카,붕괴,리보스 (RIBOSE),"PVC, ABS",,75×84mm,,/assets/items/DT-HNK-0005.jpg,29700.0,3000,Game
+DT-HNK-0006,[리보스][붕괴 스타레일] 미니 피규어 Vol.1 은랑,붕괴,리보스 (RIBOSE),"PVC, ABS",,85×97mm,,/assets/items/DT-HNK-0006.jpg,29700.0,3000,Game
+DT-HNK-0007,[리보스][붕괴 스타레일] 미니 피규어 Vol.1 단항 음월,붕괴,리보스 (RIBOSE),"PVC, ABS",,85×92mm,,/assets/items/DT-HNK-0007.jpg,29700.0,3000,Game
+DT-HNK-0008,[리보스][붕괴 스타레일] 미니 피규어 Vol.1 아젠티,붕괴,리보스 (RIBOSE),"PVC, ABS",,82×89mm,,/assets/items/DT-HNK-0008.jpg,29700.0,3000,Game
+DT-HNK-0009,[에이펙스토이즈][붕괴 스타레일] 블레이드 치비캬라 흔들흔들 스탠드 피규어,붕괴,에이펙스 토이즈 (APEX TOYS),"PVC, ABS",,90mm,,/assets/items/DT-HNK-0009.jpg,24000.0,3000,Game
+DT-HNK-0010,[에이펙스토이즈][붕괴3rd] 라이덴 메이 번개의 율자 밤의 봄물결 Ver. 1/7,붕괴,에이펙스 토이즈 (APEX TOYS),"PVC, ABS",,215mm,,/assets/items/DT-HNK-0010.jpg,227000.0,3000,Game
+DT-RMH-0001,화산귀환 2025 매화신년 달력,화산귀환,아이콘스,종이,,240x480mm,,/assets/items/DT-RMH-0001.jpg,12000.0,3000,Webtoon
+DT-RMH-0002,화산귀환 야명주 청명 아크릴 마그넷,화산귀환,아이콘스,"아크릴, 에폭시, 자석",,55x64x3mm,,/assets/items/DT-RMH-0002.jpg,9900.0,3000,Webtoon
+DT-RMH-0003,화산귀환 오디오드라마,화산귀환,로뎀코리아,"종이,",,180x180mm,,/assets/items/DT-RMH-0003.jpg,195000.0,3000,Webtoon
+DT-RMH-0004,화산귀환 글리터 아크릴 블록,화산귀환,아이콘스,아크릴,,60x80x9mm,,/assets/items/DT-RMH-0004.jpg,29000.0,3000,Webtoon
+DT-RMH-0005,화산귀환 매화야행 스마트톡,화산귀환,아이콘스,플라스틱,,40x40x20mm,,/assets/items/DT-RMH-0005.jpg,19500.0,3000,Webtoon
+DT-RMH-0006,화산귀환 디오라마 아크릴 스탠드 10종,화산귀환,아이콘스,아크릴,,80x80x126mm,,/assets/items/DT-RMH-0006.jpg,18000.0,3000,Webtoon
+DT-RMH-0007,화산귀환 백아 플랫 파우치,화산귀환,아이콘스,폴리에스터,,90x230x20mm,,/assets/items/DT-RMH-0007.jpg,22000.0,3000,Webtoon
+DT-RMH-0008,화산귀환 백아 포토카드 홀더,화산귀환,아이콘스,PU/금속,,75x170mm,,/assets/items/DT-RMH-0008.jpg,14000.0,3000,Webtoon
+DT-RMH-0009,화산귀환 백아 마우스패드,화산귀환,아이콘스,PVC,,210x184mm,,/assets/items/DT-RMH-0009.jpg,4500.0,3000,Webtoon
+DT-GBT-0001,가비지타임 작뿡 10cm 미니 인형키링,가비지타임,아이콘스,폴리에스테르,,65x100x40mm,,/assets/items/DT-GBT-0001.jpg,18000.0,3000,Webtoon
+DT-GBT-0002,가비지타임 랜덤 작뿡 미니 아크릴 스탠드 10종,가비지타임,아이콘스,아크릴,,66x42x35mm,,/assets/items/DT-GBT-0002.jpg,4800.0,3000,Webtoon
+DT-GBT-0003,가비지타임 아크릴 스탠드 15종,가비지타임,아이콘스,아크릴,,75x172mm,,/assets/items/DT-GBT-0003.jpg,16000.0,3000,Webtoon
+DT-GBT-0004,가비지타임 랜덤 작뿡 띠부띠부 51종,가비지타임,아이콘스,"PVC, 종이",,42x55mm,,/assets/items/DT-GBT-0004.jpg,2000.0,3000,Webtoon
+DT-GBT-0005,가비지타임 지상고등학교 섬유 향수 (EDT) - 단품,가비지타임,주식회사 웨이브코스메틱 인터내셔널,향수,,80ml,,/assets/items/DT-GBT-0005.jpg,25000.0,3000,Webtoon
+DT-GBT-0006,가비지타임 미니 학생증 키링,가비지타임,아이콘스,"플라스틱, 아크릴",,55x35mm,,/assets/items/DT-GBT-0006.jpg,6000.0,3000,Webtoon
+DT-GBT-0007,가비지타임 교복 10cm 미니 인형키링,가비지타임,아이콘스,폴리에스테르,,65x100mm,,/assets/items/DT-GBT-0007.jpg,20000.0,3000,Webtoon
+DT-GBT-0008,가비지타임 작뿡 마우스패드 5종,가비지타임,아이콘스,PVC,,218x216mm,,/assets/items/DT-GBT-0008.jpg,5000.0,3000,Webtoon
+DT-GBT-0009,가비지타임 지상고 홈 유니폼 상의(단품),가비지타임,러츄,폴리에스테르,,"S36, B60, W59, H59, A28, HF76, HB78",,/assets/items/DT-GBT-0009.jpg,54000.0,3000,Webtoon
+DT-GBT-0010,가비지타임 명찰 마스킹 테이프,가비지타임,아이콘스,종이,,20x10000mmm,,/assets/items/DT-GBT-0010.jpg,6000.0,3000,Webtoon
+DT-MRU-0001,마루는강쥐 피규어 액션 볼펜,마루는강쥐,아이콘스,"PVC, ABS",,28x163x23,,/assets/items/DT-MRU-0001.jpg,9800.0,3000,Webtoon
+DT-MRU-0002,마루는강쥐 행운키링 5종,마루는강쥐,아이콘스,PVC,,28x48mm,,/assets/items/DT-MRU-0002.jpg,2500.0,3000,Webtoon
+DT-MRU-0003,마루는강쥐 마그넷 집게 세트,마루는강쥐,아이콘스,"ABS, 자석",,38x50.1x18.2mm,,/assets/items/DT-MRU-0003.jpg,14500.0,3000,Webtoon
+DT-MRU-0004,마루는강쥐 만년 스탬프 세트,마루는강쥐,아이콘스,"ABS, PU",,27x27x57,,/assets/items/DT-MRU-0004.jpg,13800.0,3000,Webtoon
+DT-MRU-0005,마루는강쥐 맥세이프 호환 카드 지갑,마루는강쥐,아이콘스,PC,,58.2x91.2mm,,/assets/items/DT-MRU-0005.jpg,12000.0,3000,Webtoon
+DT-MRU-0006,마루는강쥐 만년 디데이 달력,마루는강쥐,아이콘스,종이,,260x105x80mm,,/assets/items/DT-MRU-0006.jpg,9800.0,3000,Webtoon
+DT-MRU-0007,마루는강쥐 유리컵&얼음틀 2P 세트,마루는강쥐,아이콘스,"유리, 실리콘",,105x135x70mm,,/assets/items/DT-MRU-0007.jpg,24500.0,3000,Webtoon
+DT-MRU-0008,마루는강쥐 바디필로우 곰마루,마루는강쥐,아이콘스,폴리에스테르,,318x630x250mm,,/assets/items/DT-MRU-0008.jpg,29800.0,3000,Webtoon
+DT-ZMB-0001,좀비딸 회전 아크릴 스마트톡,좀비딸,아이콘스,"아크릴, 금속",,63x57x3mm,,/assets/items/DT-ZMB-0001.jpg,12000.0,3000,Webtoon
+DT-ZMB-0002,좀비딸 아크릴 메모 스탠드,좀비딸,아이콘스,아크릴,,80x54x32mm,,/assets/items/DT-ZMB-0002.jpg,10000.0,3000,Webtoon
+DT-ZMB-0003,좀비딸 아크릴 집게,좀비딸,아이콘스,"아크릴, 플라스틱",,44x77mm,,/assets/items/DT-ZMB-0003.jpg,6500.0,3000,Webtoon
+DT-ZMB-0004,좀비딸 씰 스티커,좀비딸,아이콘스,종이,,66x149mm,,/assets/items/DT-ZMB-0004.jpg,3500.0,3000,Webtoon
+DT-ZMB-0005,좀비딸 렌티큘러 미니엽서,좀비딸,원트,렌티큘러 필름,,82x116mm,,/assets/items/DT-ZMB-0005.jpg,2000.0,3000,Webtoon
+DT-AES-0001,에스파 (aespa) - [[Dirty Work] MD] 월드 도미네이션 큐브,에스파,팬덤코퍼레이션 주식회사,플라스틱,2025-10,70 x 70 70mm,,/assets/items/DT-AES-0001.jpg,21000.0,3000,Kpop
+DT-AES-0002,에스파 (aespa) - [[Dirty Work] MD] 리얼 배드 슬로건 타올,에스파,팬덤코퍼레이션 주식회사,폴리에스터,2025-10,990 x 195mm,,/assets/items/DT-AES-0002.jpg,19000.0,3000,Kpop
+DT-AES-0003,에스파 (aespa) - [[Dirty Work] MD] 락 인 카라비너 키링,에스파,팬덤코퍼레이션 주식회사,"아연 합금,메탈",2025-10,"카라비너 (40x68mm), 메탈 참(31x30mm)",,/assets/items/DT-AES-0003.jpg,23000.0,3000,Kpop
+DT-AES-0004,에스파 (aespa) - [SM ARTIST MINI FANLIGHT KEYRING] 미니 응원봉 키링,에스파,(주)에스엠엔터테인먼트 SM Entertainment,"PC, ABS, NICKEL, PET",2025-04,42 X 42 X 98 (MM),,/assets/items/DT-AES-0004.jpg,19000.0,3000,Kpop
+DT-AES-0005,에스파 (aespa) - [2025 SM ARTIST SEASON'S GREETINGS MD] 미니 콜렉트북 SET,에스파,(주)에스엠엔터테인먼트 SM Entertainment,"PVC, PAPER",2025-02,"미니 콜렉트북 61X67, 증명사진 36X46 (MM)",,/assets/items/DT-AES-0005.jpg,13000.0,3000,Kpop
+DT-AES-0006,에스파 (aespa) - 에스파 (aespa) - [Dirty Work] EZL 교통카드,에스파,쿼터뮤직,"PVC, PVCA",2025-06,54 x 85mm,,/assets/items/DT-AES-0006.jpg,7000.0,3000,Kpop
+DT-AES-0007,에스파 (aespa) - [aespa WEEK - #Whiplash_mood MD] 리무버블 스티커,에스파,(주)에스엠엔터테인먼트,PAPER,2025-01,70 X 118~126 X 118 (MM),,/assets/items/DT-AES-0007.jpg,13000.0,3000,Kpop
+DT-ADP-0001,ALLDAY PROJECT (올데이 프로젝트) - PIN BUTTON SET [FAMOUS] OFFICIAL MERCH,올데이프로젝트,팬텀코퍼레이션,,2025-08,3.2cm,,/assets/items/DT-ADP-0001.jpg,9300.0,3000,Kpop
+DT-ADP-0002,ALLDAY PROJECT (올데이 프로젝트) - BAND-AID- Debut Single OFFICAL MERCH,올데이프로젝트,팬텀코퍼레이션,,2025-08,7.2 x 1.9cm,,/assets/items/DT-ADP-0002.jpg,12000.0,3000,Kpop
+DT-ADP-0003,올데이 프로젝트 (ALLDAY PROJECT) - The Debut Single [FAMOUS] (CARTOON ver.) 5P SET,올데이프로젝트,(주)YG PLUS,,2025-06,55 x 85mm,,/assets/items/DT-ADP-0003.jpg,46500.0,3000,Kpop
+DT-ADP-0004,올데이 프로젝트 (ALLDAY PROJECT) - The Debut Single,올데이프로젝트,(주)YG PLUS,,2025-06,152x152,,/assets/items/DT-ADP-0004.jpg,41600.0,3000,Kpop
+DT-ADP-0005,올데이프로젝트 (ALLDAY PROJECT) BLACK MEMBER NAMES T-SHIRT - Debut Single OFFICAL MERCH,올데이프로젝트,팬덤코퍼레이션,,2025-08,73.5cm,,/assets/items/DT-ADP-0005.jpg,48000.0,3000,Kpop
+DT-ADP-0006,"[25-09-03] 데이즈드 앤 컨퓨즈드 Dazed & Confused 2025.09 G형(표지 : 올데이 프로젝트 : 타잔, 베일리)",올데이프로젝트,,,2025-09,:,,/assets/items/DT-ADP-0006.jpg,19000.0,3000,Kpop
+DT-IVE-0001,아이브 (IVE) - 미니앨범 4집 [IVE SECRET] (EVIL CUPID Ver.) (PLATFORM Ver.) (한정반) (Random Ver.),아이브,Kakao Entertainment,,2025-08,34x43mm,,/assets/items/DT-IVE-0001.jpg,29700.0,3000,Kpop
+DT-IVE-0002,아이브 (IVE) - 공식 라이트 키링,아이브,스타쉽,"PC, ABS, STAINLESS",2024-09,41.5x46x112mm,,/assets/items/DT-IVE-0002.jpg,22000.0,3000,Kpop
+DT-IVE-0003,[THE PROM QUEENS] Offical MD 거울,아이브,(주)사운드웨이브,,2023-03,:,,/assets/items/DT-IVE-0003.jpg,13000.0,3000,Kpop
+DT-IVE-0004,[THE PROM QUEENS] Offical MD 후드티,아이브,(주)사운드웨이브,,2023-03,:,,/assets/items/DT-IVE-0004.jpg,65000.0,3000,Kpop
+DT-IVE-0005,아이브 (IVE) - 미니앨범 4집 [IVE SECRET] (MD Ver.),아이브,Kakao Entertainment,,2025-08,120x135x20mm,,/assets/items/DT-IVE-0005.jpg,29700.0,3000,Kpop
+DT-IVE-0006,아이브 (IVE) - 미니앨범 4집 [IVE SECRET] (LOVED IVE Ver.),아이브,Kakao Entertainment,,2025-08,174x183x40mm,,/assets/items/DT-IVE-0006.jpg,18600.0,3000,Kpop
+DT-IVE-0007,아이브 (IVE) - EP앨범 3집 [IVE EMPATHY] (PLVE Ver.) (Random Ver.),아이브,Kakao Entertainment,,2025-02,28.5x48.7mm,,/assets/items/DT-IVE-0007.jpg,12600.0,3000,Kpop
+DT-NJN-0001,Light Stick & Parts Set (NJ & TOKKI),뉴진스,주식회사 하이브,"ABS , PC, PVC",2023-02,11 x 23.1 x 5.27,,/assets/items/DT-NJN-0001.jpg,60000.0,3000,Kpop
+DT-NJN-0002,CHARM SET,뉴진스,주식회사 하이브,Surgical Steel,2023-07,토끼참 : 1.3*1.9*0.15 생일참 : 0.56*3*0.15,,/assets/items/DT-NJN-0002.jpg,19000.0,3000,Kpop
+DT-NJN-0003,NewJeans x Murakami Cushion 30cm,뉴진스,,,2024-06,:,,/assets/items/DT-NJN-0003.jpg,57000.0,3000,Kpop
+DT-NJN-0004,NewJeans x The Powerpuff Girls Metal Keyring Haerin,뉴진스,,Metal,2023-08,:,,/assets/items/DT-NJN-0004.jpg,39000.0,3000,Kpop
+DT-NJN-0005,NewJeans x The Powerpuff Girls Metal Keyring Hanni,뉴진스,,Metal,2023-08,:,,/assets/items/DT-NJN-0005.jpg,39000.0,3000,Kpop
+DT-NJN-0006,NJ X 꼴레 퍼리 버니 플러시 키링 (TIDE BLUE),뉴진스,라인프렌즈스퀘어 주식회사,POLYESTER,,150*160*45 (mm),,/assets/items/DT-NJN-0006.jpg,32000.0,3000,Kpop
+DT-NJN-0007,NJ X 꼴레 래빗 파우치 (WHITE),뉴진스,라인프렌즈스퀘어 주식회사,"NYLON, POLYESTER",,110*235*90 (mm),,/assets/items/DT-NJN-0007.jpg,35000.0,3000,Kpop
+DT-NJN-0008,NewJeans x MURAKAMI PVC 스티커팩,뉴진스,라인프렌즈스퀘어 주식회사,"PVC, PAPER",,120*80*3 (mm),,/assets/items/DT-NJN-0008.jpg,15000.0,3000,Kpop
+DT-TWI-0001,트와이스 (TWICE) - 정규앨범 4집 [THIS IS FOR] (CONFETTI Ver.),트와이스,(주)드림어스컴퍼니,,2025-07,:,,/assets/items/DT-TWI-0001.jpg,23000.0,3000,Kpop
+DT-TWI-0002,Twice Home 9Round Lovely Plush Baby Momo,트와이스,,,2024-10,:,,/assets/items/DT-TWI-0002.jpg,22000.0,3000,Kpop
+DT-TWI-0003,Twice Home 9Round Badge,트와이스,,,2024-10,:,,/assets/items/DT-TWI-0003.jpg,13000.0,3000,Kpop
+DT-TWI-0004,Twice Home 9Round Ball Cap Light Blue,트와이스,,,2024-10,:,,/assets/items/DT-TWI-0004.jpg,38000.0,3000,Kpop
+DT-TWI-0005,Twice Home 9Round Stadium Jumper Black,트와이스,,,2024-10,:,,/assets/items/DT-TWI-0005.jpg,99000.0,3000,Kpop
+DT-TWI-0006,Twice Home 9Round Lovely Plush Baby Sana,트와이스,,,2024-10,:,,/assets/items/DT-TWI-0006.jpg,22000.0,3000,Kpop
+DT-TWI-0007,Twice Secret Life House Season’s Greetings 2023,트와이스,,,2022-12,:,,/assets/items/DT-TWI-0007.jpg,42000.0,3000,Kpop
+DT-SVT-0001,Seventeen Official Light Stick Ver.3 10th Anniv,세븐틴,,,2025-04,:,,/assets/items/DT-SVT-0001.jpg,99000.0,3000,Kpop
+DT-SVT-0002,Seventeen Official Light Stick Ver.3,세븐틴,,,2025-04,:,,/assets/items/DT-SVT-0002.jpg,69000.0,3000,Kpop
+DT-SVT-0003,Seventeen NANA bnb Zip-Up Hoodie Navy,세븐틴,,,2025-05,:,,/assets/items/DT-SVT-0003.jpg,250000.0,3000,Kpop
+DT-SVT-0004,SEVENTEEN 108pcs MINI PUZZLE (SPILL THE FEELS),세븐틴,,Paper,2025-01,100x149mm,,/assets/items/DT-SVT-0004.jpg,8900.0,3000,Kpop
+DT-SVT-0005,SEVENTEEN MAGNET PUZZLE (ALWAYS YOURS),세븐틴,,"Plastic, Magnet",2025-01,2.3 x 120mm,,/assets/items/DT-SVT-0005.jpg,14900.0,3000,Kpop
+DT-SVT-0006,Seventeen NANA bnb Beanie The 8 Black,세븐틴,,,2025-05,:,,/assets/items/DT-SVT-0006.jpg,39000.0,3000,Kpop
+DT-SVT-0007,Seventeen NANA bnb T-Shirt Woozi White,세븐틴,,,2025-05,:,,/assets/items/DT-SVT-0007.jpg,45000.0,3000,Kpop
+DT-SVT-0008,Seventeen NANA bnb T-Shirt Joshua White,세븐틴,,,2025-05,:,,/assets/items/DT-SVT-0008.jpg,45000.0,3000,Kpop
+DT-BTS-0001,BTS Official Light Stick Map Of The Soul Special Edition,방탄소년단,Big Hit Entertainment,,,:,,/assets/items/DT-BTS-0001.jpg,70000.0,3000,Kpop
+DT-BTS-0002,미니 4집 [화양연화 Pt.2],방탄소년단,Big Hit Entertainment,,2015-11,:,,/assets/items/DT-BTS-0002.jpg,13400.0,3000,Kpop
+DT-BTS-0003,Jung Kook (BTS) 'GOLDEN' LP,방탄소년단,BIG HIT MUSIC,,2024-11,W316 X H316 X T5 (mm),,/assets/items/DT-BTS-0003.jpg,52000.0,3000,Kpop
+DT-BTS-0004,HOPE ON THE STREET VOL.1 LP,방탄소년단,BIGHIT MUSIC,,2025-04,W316 X H316 X T5 (mm),,/assets/items/DT-BTS-0004.jpg,51900.0,3000,Kpop
+DT-BTS-0005,V (BTS) 'Layover' LP,방탄소년단,BIG HIT MUSIC,,2024-09,W316 X H316 X T5 (mm),,/assets/items/DT-BTS-0005.jpg,52000.0,3000,Kpop
+DT-BTS-0006,j-hope (BTS) Jack In The Box [LP] (Limited Edition),방탄소년단,BIGHIT MUSIC,,2022-12,:,,/assets/items/DT-BTS-0006.jpg,52000.0,3000,Kpop
+DT-BTS-0007,[2025 BTS FESTA x Weverse] Reversible Basketball Uniform,방탄소년단,,Polyester,2025-05,(총장): 775mm,,/assets/items/DT-BTS-0007.jpg,89000.0,3000,Kpop
+DT-BTS-0008,BTS X DM4 데님백,방탄소년단,,COTTON,,325*345*13 (mm),,/assets/items/DT-BTS-0008.jpg,33000.0,3000,Kpop
+DT-QWR-0001,QWER FOLDING UMBRELLA - Algorithm’s Blossom,qwer,"BEARTO CO, LTD","poly, steel",,5x5x31,,/assets/items/DT-QWR-0001.jpg,35000.0,3000,Kpop
+DT-QWR-0002,"[1, 2, QWER!] HOODIE (BLACK)",qwer,"BEATRO CO, LTD",cotton,2025-01,:,,/assets/items/DT-QWR-0002.jpg,68000.0,3000,Kpop
+DT-QWR-0003,"[1, 2, QWER!] Griptok(Saytouche Collab.)",qwer,,,2024-12,5x6.5cm,,/assets/items/DT-QWR-0003.jpg,19000.0,3000,Kpop
+DT-QWR-0004,"[1, 2, QWER!] T-SHIRT (BLACK)",qwer,"BEATRO CO, LTD",cotton,2025-01,:,,/assets/items/DT-QWR-0004.jpg,45000.0,3000,Kpop
+DT-QWR-0005,"[1, 2, QWER!] T-SHIRT (GRAY)",qwer,"BEATRO CO, LTD",cotton,2025-01,:,,/assets/items/DT-QWR-0005.jpg,45000.0,3000,Kpop
+DT-QWR-0006,Knitted X QWER SIYO Siyoming Logo Ball Cap Black,qwer,,cotton,,:,,/assets/items/DT-QWR-0006.jpg,44800.0,3000,Kpop
+DT-QWR-0007,"[1, 2, QWER!] Official Light Band (Limited ver.)",qwer,"BEATRO CO, LTD","ABS, PC, SILICONE, METAL",2025-01,61x25x254mm,,/assets/items/DT-QWR-0007.jpg,20000.0,3000,Kpop
+DT-BLK-0001,Blackpink Official Light Stick Special Edition,Blackpink,YG PLUS,"PC, ABS, SILICONE",2025-06,155*96*260,,/assets/items/DT-BLK-0001.jpg,39000.0,3000,Kpop
+DT-BLK-0002,Blackpink Deadline Light Stick Patch Cover,Blackpink,YG PLUS,,2025-06,:,,/assets/items/DT-BLK-0002.jpg,50000.0,3000,Kpop
+DT-BLK-0003,Blackpink Deadline Light Stick Badge Cover,Blackpink,YG PLUS,,2025-06,:,,/assets/items/DT-BLK-0003.jpg,50000.0,3000,Kpop
+DT-BLK-0004,Blackpink Deadline Light Stick Keyring Special Edition,Blackpink,YG PLUS,"PC, ABS",2025-06,92 x 48.5 x 30.5,,/assets/items/DT-BLK-0004.jpg,15000.0,3000,Kpop
+DT-BLK-0005,Blackpink Deadline Character Magnetic Plush Keyring Lisa,Blackpink,YG PLUS,,2025-06,:,,/assets/items/DT-BLK-0005.jpg,36000.0,3000,Kpop
+DT-BLK-0006,Blackpink Deadline Character Magnetic Plush Keyring Rose,Blackpink,YG PLUS,,2025-06,:,,/assets/items/DT-BLK-0006.jpg,36000.0,3000,Kpop
+DT-BLK-0007,Blackpink Deadline Character Magnetic Plush Keyring Jennie,Blackpink,YG PLUS,,2025-06,:,,/assets/items/DT-BLK-0007.jpg,36000.0,3000,Kpop
+DT-BLK-0008,Blackpink Deadline Character Magnetic Plush Keyring Jisoo,Blackpink,YG PLUS,,2025-06,:,,/assets/items/DT-BLK-0008.jpg,36000.0,3000,Kpop
+DT-BLK-0009,Blackpink Photo T-Shirt Black,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0009.jpg,48000.0,3000,Kpop
+DT-BLK-0010,Blackpink T-Shirt Slim Crop Fit Yellow,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0010.jpg,45000.0,3000,Kpop
+DT-BLK-0011,Blackpink T-Shirt Slim Crop Fit Grey,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0011.jpg,45000.0,3000,Kpop
+DT-BLK-0012,Blackpink T-Shirt Slim Crop Fit Red,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0012.jpg,45000.0,3000,Kpop
+DT-BLK-0013,Blackpink Pennant,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0013.jpg,32400.0,3000,Kpop
+DT-BLK-0014,Blackpink Tour Logo Bandana Black,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0014.jpg,40600.0,3000,Kpop
+DT-BLK-0015,Blackpink Mesh Tote Bag Black,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0015.jpg,64900.0,3000,Kpop
+DT-BLK-0016,Blackpink Cuff Beanie Black,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0016.jpg,73000.0,3000,Kpop
+DT-BLK-0017,Blackpink Cushion Keyring Black Pink,Blackpink,YG PLUS,,2025-08,:,,/assets/items/DT-BLK-0017.jpg,24000.0,3000,Kpop
+DT-NCT-0001,엔시티 127 (NCT 127) - [SM ARTIST MINI FANLIGHT KEYRING] 미니 응원봉 키링 VER 2.0,NCT 127,SM ENTERTAINMENT,"PC, ABS, NICKEL, PET",2025-05,38 X 32.5 X 100(MM),,/assets/items/DT-NCT-0001.jpg,19000.0,3000,Kpop
+DT-NCT-0002,엔시티 127 (NCT 127) - 공식 응원봉,NCT 127,SM ENTERTAINMENT,"ABS, PC, Nylon, Paper",2024-04,"91 x 77.5 x 240 (mm), 85 x 120 (mm)",,/assets/items/DT-NCT-0002.jpg,45000.0,3000,Kpop
+DT-NCT-0003,엔시티 127 (NCT 127) - RANDOM TRADING CARD,NCT 127,SM ENTERTAINMENT,PAPER,2024-02,55X85 (MM),,/assets/items/DT-NCT-0003.jpg,6000.0,3000,Kpop
+DT-NCT-0004,엔시티 127 (NCT 127) - ID PHOTO KEY RING SET,NCT 127,SM ENTERTAINMENT,"PVC, METAL, PAPER",2024-02,"ID 포토키링 48X81, 증명사진 36X46 (MM)",,/assets/items/DT-NCT-0004.jpg,9000.0,3000,Kpop
+DT-NCT-0005,엔시티 127 (NCT 127) - [8ECRET INVITATION] 슬로건,NCT 127,SM ENTERTAINMENT,"POLYESTER, PVC",2024-10,"슬로건 60X20, 파우치 25X17 (CM)",,/assets/items/DT-NCT-0005.jpg,23000.0,3000,Kpop
+DT-NCT-0006,엔시티 127 (NCT 127)_VELCRO WALLET SET,NCT 127,SM ENTERTAINMENT,"NYLON, PVC, PLASTIC",2024-10,"벨크로 지갑 12.5X8, ID 카드 8.5X5.5 (CM)",,/assets/items/DT-NCT-0006.jpg,25000.0,3000,Kpop
+DT-NCT-0007,엔시티 127 (NCT 127) - [WALK : ON THE BEAT] 스마트톡_24,NCT 127,SM ENTERTAINMENT,"PC, EPOXY, TPU, GEL TAPE",2024-09,47X47 (MM) / 47X47 (MM) / 45X66 (MM),,/assets/items/DT-NCT-0007.jpg,13000.0,3000,Kpop
+DT-NCT-0008,CCOMAZ VALENTINE's CAKE SET [NCT 127 ver.],NCT 127,SM ENTERTAINMENT,"PVC, PP, PAPER",2024-08,"1 BOX, 210 X 210 X 210(MM)",,/assets/items/DT-NCT-0008.jpg,288000.0,3000,Kpop
+DT-STD-0001,스타데이즈 마음의 상호작용 반님 키링,스타데이즈,,아크릴,,48 x 65 mm,,/assets/items/DT-STD-0001.jpg,12000.0,3000,Creator
+DT-STD-0002,스타데이즈 마음의 상호작용 나츠키 키링,스타데이즈,,아크릴,,50 x 66 mm,,/assets/items/DT-STD-0002.jpg,12000.0,3000,Creator
+DT-STD-0003,스타데이즈 디오라마,스타데이즈,,아크릴,2025-05,237*87mm,,/assets/items/DT-STD-0003.jpg,45000.0,3000,Creator
+DT-STD-0004,오버더월 실물 보이스팩 포토카드,스타데이즈,,"플라스틱, 종이, NFC카드",2025-05,90*62*12 mm,,/assets/items/DT-STD-0004.jpg,25000.0,3000,Creator
+DT-STD-0005,테리 2주년 기념 굿즈 - 테리 키캡 세트,스타데이즈,,,2025-01,,,/assets/items/DT-STD-0005.jpg,32000.0,3000,Creator
+DT-STD-0006,반님 캔뱃지 SET,스타데이즈,,알루미늄,2025-06,65*65 mm,,/assets/items/DT-STD-0006.jpg,9000.0,3000,Creator
+DT-STD-0007,오토노 소리 생일 아크릴 스탠드,스타데이즈,,아크릴,2025-07,160mm*80mm,,/assets/items/DT-STD-0007.jpg,28000.0,3000,Creator
+DT-STL-0001,2025 나나 생일 와펜 4종 세트,스텔라이브,,,,,,/assets/items/DT-STL-0001.jpg,29000.0,3000,Creator
+DT-STL-0002,스텔라이브 아티산 키캡 [1/2/3기생],스텔라이브,,,,,,/assets/items/DT-STL-0002.jpg,79000.0,3000,Creator
+DT-STL-0003,STELLIVE SUMMER GOODS 2025 (시부키.),스텔라이브,,"아크릴, 글리터 / PVC",,아크릴 스탠드 H170×W70mm 이내·받침대 직경 약 80mm / PVC 키홀더 직경 약 80mm / 파우치 H175×W90×D20mm,,/assets/items/DT-STL-0003.jpg,60000.0,3000,Creator
+DT-STL-0004,STELLIVE SUMMER GOODS 2025(유니),스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0004.jpg,60000.0,3000,Creator
+DT-STL-0005,STELLIVE SUMMER GOODS 2025(히나),스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0005.jpg,60000.0,3000,Creator
+DT-STL-0006,STELLIVE SUMMER GOODS 2025(리제),스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0006.jpg,60000.0,3000,Creator
+DT-STL-0007,STELLIVE SUMMER GOODS 2025(마시로),스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0007.jpg,60000.0,3000,Creator
+DT-STL-0008,STELLIVE SUMMER GOODS 2025(타비),스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0008.jpg,60000.0,3000,Creator
+DT-STL-0009,STELLIVE SUMMER GOODS 2025(린),스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0009.jpg,60000.0,3000,Creator
+DT-STL-0010,"60,000원",스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0010.jpg,2025.0,3000,Creator
+DT-STL-0011,STELLIVE SUMMER GOODS 2025(리코),스텔라이브,,"아크릴, 글리터 / PVC",,,,/assets/items/DT-STL-0011.jpg,60000.0,3000,Creator
+DT-PRI-0001,2024 오화요 생일굿즈 -아크릴 키링,프로젝트 아이,,아크릴,2025-02,41*51mm,,/assets/items/DT-PRI-0001.jpg,12000.0,3000,Creator
+DT-PRI-0002,2024 오화요 생일굿즈 -아크릴 스탠드,프로젝트 아이,,아크릴,2025-02,168*60mm,,/assets/items/DT-PRI-0002.jpg,22000.0,3000,Creator
+DT-PRI-0003,2024 망내 생일굿즈 -아크릴 키링,프로젝트 아이,25.07,아크릴,,37*57mm,,/assets/items/DT-PRI-0003.jpg,12000.0,3000,Creator
+DT-PRI-0004,2024 담유이 생일굿즈 -아크릴 키링,프로젝트 아이,24.09,아크릴,,36*57mm,,/assets/items/DT-PRI-0004.jpg,12000.0,3000,Creator
+DT-PRI-0005,2024 아야 생일굿즈 -아크릴 키링,프로젝트 아이,24.04,아크릴,,40 *54mm,,/assets/items/DT-PRI-0005.jpg,12000.0,3000,Creator
+DT-PRI-0006,2024 디디디용 생일굿즈 -아크릴 키링,프로젝트 아이,24.06,아크릴,,40*57mm,,/assets/items/DT-PRI-0006.jpg,12000.0,3000,Creator
+DT-PRI-0007,2025 디디디용 생일굿즈 -훌쩍 맥세이프 호환용 스마트톡,프로젝트 아이,25.06,아크릴,,41*51mm,,/assets/items/DT-PRI-0007.jpg,19000.0,3000,Creator
+DT-PRI-0008,2024 망내 생일굿즈 -볼록망내 스마트톡,프로젝트 아이,,아크릴 레진,2024-07,40*24mm,,/assets/items/DT-PRI-0008.jpg,14900.0,3000,Creator
+DT-PRI-0009,2024 담유이 생일굿즈 - 데스크매트,프로젝트 아이,24.09,아크릴,,780*320mm,,/assets/items/DT-PRI-0009.jpg,30000.0,3000,Creator
+DT-HLV-0001,프링 (FREEING) B-STYLE 1/4스케일 피규어 홀로라이브 우사다 페코라,홀로라이브,프링 (FREEing),플라스틱,,약 460mm,,/assets/items/DT-HLV-0001.jpg,595000.0,3000,Creator
+DT-HLV-0002,맥스팩토리 (Max Factory) 1/6스케일 피규어 홀로라이브 프로덕션 호쇼 마린 30세 Ver.,홀로라이브,맥스팩토리 (Max Factory),플라스틱,2025-10,약 270mm (받침대 포함),,/assets/items/DT-HLV-0002.jpg,323900.0,3000,Creator
+DT-HLV-0003,(한국총판)디자인 코코 (Design CoCo) 1/7스케일 홀로라이브 호시마치 스이세이,홀로라이브,디자인 코코 (Design CoCo),PVC、ABS,2025-08,255mm,,/assets/items/DT-HLV-0003.jpg,233000.0,3000,Creator
+DT-HLV-0004,맥스팩토리 (Max Factory) 피그마 피규어 figma no.619 홀로라이브 프로덕션 라플라스 다크니스,홀로라이브,맥스팩토리 (Max Factory),플라스틱,,135mm,,/assets/items/DT-HLV-0004.jpg,135000.0,3000,Creator
+DT-HLV-0005,맥스팩토리 (Max Factory) POP UP PARADE 홀로라이브 오오조라 스바루,홀로라이브,맥스팩토리 (Max Factory),플라스틱,,175mm,,/assets/items/DT-HLV-0005.jpg,125000.0,3000,Creator
+DT-HLV-0006,맥스팩토리 (Max Factory) figma No.641 피그마 피규어 홀로라이브 프로덕션 사쿠라 미코,홀로라이브,맥스팩토리 (Max Factory),플라스틱,,약 140mm,,/assets/items/DT-HLV-0006.jpg,99300.0,3000,Creator
+DT-HLV-0007,맥스팩토리 (Max Factory) POP UP PARADE 피규어 홀로라이브 시시로 보탄,홀로라이브,맥스팩토리 (Max Factory),플라스틱,,170 ~ 180 mm,,/assets/items/DT-HLV-0007.jpg,94000.0,3000,Creator
+DT-HLV-0008,(한국총판) 디자인 코코 (Design CoCo) 1/7스케일 피규어 홀로라이브 모코코 어비스가드(호화판),홀로라이브,디자인 코코 (Design CoCo),PVC、ABS,2026-04,H 265mm,,/assets/items/DT-HLV-0008.jpg,370000.0,3000,Creator
+DT-HLV-0009,(한국총판) 디자인 코코 (Design CoCo) 1/7스케일 피규어 홀로라이브 후와와 어비스가드(호화판),홀로라이브,디자인 코코 (Design CoCo),PVC、ABS,2026-04,H 267mm,,/assets/items/DT-HLV-0009.jpg,370000.0,3000,Creator
+DT-HLV-0010,(한국총판) 디자인 코코 (Design CoCo) 1/7 스케일 피규어 홀로라이브 이누가미 코로네 We are GAMERS ver.,홀로라이브,디자인 코코 (Design CoCo),PVC、ABS,2026-08,H 201mm(베이스 포함),,/assets/items/DT-HLV-0010.jpg,274000.0,3000,Creator
+DT-HLV-0011,맥스팩토리 (Max Factory) figma No.627 피그마 홀로라이브 프로덕션 타카나시 키아라,홀로라이브,맥스팩토리 (Max Factory),플라스틱,,,,/assets/items/DT-HLV-0011.jpg,170000.0,3000,Creator
+DT-HLV-0012,맥스팩토리 (Max Factory) 피그마 figma no.6618 홀로라이브 프로덕션 가우르 구라,홀로라이브,맥스팩토리 (Max Factory),,,135mm,,/assets/items/DT-HLV-0012.jpg,165000.0,3000,Creator
+DT-E-0001,[LoL] 2025 T1 2nd Uniform Jersey,E스포츠,,,,,,/assets/items/DT-E-0001.jpg,119000.0,3000,Sports
+DT-E-0002,Gen.G X Descente 2025 Official Player Jersey (Black),E스포츠,,,,,,/assets/items/DT-E-0002.jpg,109000.0,3000,Sports
+DT-E-0003,Dplus KIA ♥ 캐치! 티니핑 유니폼 셔츠,E스포츠,,,,,,/assets/items/DT-E-0003.jpg,109000.0,3000,Sports
+DT-E-0004,2025 Dplus KIA 공식 유니폼 셔츠,E스포츠,,,,,,/assets/items/DT-E-0004.jpg,129000.0,3000,Sports
+DT-E-0005,[HLE] 25 HLE Authentic Uniform White (SP),E스포츠,,,,,,/assets/items/DT-E-0005.jpg,109000.0,3000,Sports
+DT-E-0006,[DRX]25 S2 AUTHENTIC T-SHIRT,E스포츠,,,,,,/assets/items/DT-E-0006.jpg,95000.0,3000,Sports
+DT-E-0007,[BNK 피어엑스]OFFICIAL 2025 REPLICA JERSEY(HOME),E스포츠,,,,,,/assets/items/DT-E-0007.jpg,72000.0,3000,Sports
+DT-E-0008,[BNK 피어엑스] TICKET HOLDER SET,E스포츠,,,,,,/assets/items/DT-E-0008.jpg,22000.0,3000,Sports

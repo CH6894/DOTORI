@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+// (상단 import 근처)
+import { computed } from 'vue'
+// import { useAuth } from '@/stores/useAuth' // 실제 스토어 사용 시
+
+// ▼ 실제 로그인 상태로 교체하세요.
+// const auth = useAuth()
+// const isLoggedIn = computed(() => auth.isLoggedIn)
+const isLoggedIn = computed(() => false) // 임시: 나중에 실제 값으로 교체
+
+function getKV(): Storage {
+  // 로그인: localStorage(항상 유지), 비로그인: sessionStorage(탭/브라우저 닫히면 삭제)
+  return isLoggedIn.value ? localStorage : sessionStorage
+}
 
 /* ===== 헤더/퀵바 상태 ===== */
 const router = useRouter()
@@ -50,24 +63,28 @@ const popular = ref<PopularItem[]>([
   { term: '랜덤가챠', rank: 10, prevRank: 11 },
 ])
 
-/* 최근 검색어: localStorage */
 const RECENT_KEY = 'recent-searches'
 const recent = ref<RecentItem[]>([])
 
 function loadRecent() {
   try {
-    const raw = localStorage.getItem(RECENT_KEY)
+    const raw = getKV().getItem(RECENT_KEY)
     recent.value = raw ? JSON.parse(raw) : []
-  } catch { recent.value = [] }
+  } catch {
+    recent.value = []
+  }
 }
 function saveRecent() {
-  localStorage.setItem(RECENT_KEY, JSON.stringify(recent.value.slice(0, 10)))
+  // 항상 10개 이내로 잘라 저장
+  const trimmed = recent.value.slice(0, 10)
+  recent.value = trimmed
+  getKV().setItem(RECENT_KEY, JSON.stringify(trimmed))
 }
 function addRecent(term: string) {
   const t = term.trim()
   if (!t) return
+  // 중복은 맨 앞으로, 10개 초과는 뒤에서 잘림
   recent.value = [{ term: t, ts: Date.now() }, ...recent.value.filter(r => r.term !== t)]
-  if (recent.value.length > 10) recent.value.length = 10
   saveRecent()
 }
 function removeRecent(term: string) {
@@ -76,8 +93,10 @@ function removeRecent(term: string) {
 }
 function clearRecent() {
   recent.value = []
-  saveRecent()
+  // 비로그인/로그인 모두 동일 키를 쓰니 현재 저장소에서만 지워도 됨
+  getKV().removeItem(RECENT_KEY)
 }
+
 
 /* 등락 표기 */
 function delta(item: PopularItem) {
@@ -124,18 +143,38 @@ onMounted(async () => {
   await nextTick()
   measureQuickTop()
   loadRecent()
+
   window.addEventListener('resize', measureQuickTop, { passive: true })
   window.addEventListener('scroll', measureQuickTop, { passive: true })
-    ; (document as any).fonts?.ready?.then?.(measureQuickTop)
+  ;(document as any).fonts?.ready?.then?.(measureQuickTop)
   document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onEscKey)
+
+  // 비로그인 시, 탭 이탈/새로고침 시에도 확실히 지우고 싶다면:
+  window.addEventListener('beforeunload', () => {
+    if (!isLoggedIn.value) {
+      try { sessionStorage.removeItem(RECENT_KEY) } catch {}
+    }
+  })
+
+  // (선택) 로그인 상태에서는 다중 탭 동기화
+  window.addEventListener('storage', (e) => {
+    if (!isLoggedIn.value) return
+    if (e.key === RECENT_KEY) {
+      loadRecent()
+    }
+  })
 })
+
 onBeforeUnmount(() => {
   window.removeEventListener('resize', measureQuickTop)
   window.removeEventListener('scroll', measureQuickTop)
   document.removeEventListener('click', onDocClick)
   document.removeEventListener('keydown', onEscKey)
+  window.removeEventListener('beforeunload', () => {}) // 익명 핸들러면 스킵해도 무해
+  window.removeEventListener('storage', () => {})
 })
+
 </script>
 
 <template>

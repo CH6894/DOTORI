@@ -1,8 +1,19 @@
 import axios from "axios";
 
-// --- axios 기본 설정(프록시 안 쓰면 필요) ---
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE || "http://localhost:8081";
+// --- axios 기본 설정 ---
+// 백엔드 API 서버 주소
+axios.defaults.baseURL = "http://localhost:8081";
 axios.defaults.withCredentials = true;
+
+// ✅ AuthToken 자동 주입 (로그인된 사용자만 호출 가능하도록)
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("AuthToken");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return config;
+});
 
 // ===== 뷰 모델 =====
 export type Status = "PENDING" | "APPROVED" | "REJECTED";
@@ -32,7 +43,6 @@ export type Inspection = {
 
 // ===== 더미 목록(로컬 개발용) =====
 export async function fetchInspections(params: any): Promise<Inspection[]> {
-  // 실제 백엔드 붙이면 이 함수는 안 쓰거나, 아래 demoInspections()를 제거
   return demoInspections();
 }
 
@@ -83,7 +93,6 @@ function demoInspections(): Inspection[] {
 }
 
 // ===== 판매 신청 생성 =====
-// ⚠️ 백엔드가 itemId도 돌려줌 → 타입에 추가
 export async function createInspection(
   fd: FormData
 ): Promise<{ inspectionId: number; itemId: number; status: string }> {
@@ -100,46 +109,42 @@ type Page<T> = {
   content: T[];
   totalElements: number;
   totalPages: number;
-  number: number; // 현재 페이지
-  size: number;   // 페이지 크기
+  number: number;
+  size: number;
 };
 
-// 백엔드 목록 행(Projection) 예시: AdminListRow
+// 백엔드 목록 행(Projection) 예시
 type AdminListRow = {
   inspectionId: number;
   itemId: number;
-  registrationDate: string;      // ISO
-  unpacked: number;              // 0 미개봉 / 1 개봉
-  admissionState: number;        // 0 대기 / 1 반려 / 2 승인
+  registrationDate: string;
+  unpacked: number;
+  admissionState: number;
   quality: number | null;
   imageCount: number;
   firstFilmingTime: string | null;
   cost: number;
-  // (상품명/판매자명이 백엔드 응답에 없다면 프론트에서 채우거나, 백엔드에 컬럼 추가 요청)
 };
 
-// 상태코드 → 뷰모델 Status
 function mapState(s: number): Status {
   return s === 2 ? "APPROVED" : s === 1 ? "REJECTED" : "PENDING";
 }
 
-// AdminListRow → Inspection(뷰모델) 매핑
 function rowToInspection(r: AdminListRow): Inspection {
   return {
     id: String(r.inspectionId),
     listingId: String(r.itemId),
-    listingTitle: `상품 ${r.itemId}`,      // ⚠️ 백엔드에서 제목 주면 그 값으로 교체
-    sellerName: "-",                       // ⚠️ 백엔드에서 판매자명 주면 교체
+    listingTitle: `상품 ${r.itemId}`,
+    sellerName: "-",
     sellPrice: r.cost,
     isOpened: r.unpacked === 0 ? "미개봉" : "개봉",
     submittedAt: r.registrationDate,
     status: mapState(r.admissionState),
-    photos: [],                            // 목록에서는 빈 배열(상세에서 별도 요청)
+    photos: [],
     capturedAtInternal: r.firstFilmingTime ?? undefined,
   };
 }
 
-// 실제 관리자 목록 호출 (Page 그대로 돌려받고, 뷰모델 배열도 같이 제공)
 export async function fetchInspectionsFromAdmin(params?: {
   state?: number;
   from?: string;

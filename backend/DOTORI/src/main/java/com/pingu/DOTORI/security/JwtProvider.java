@@ -1,13 +1,34 @@
 package com.pingu.DOTORI.security;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-@Component   // ✅ 스프링 빈으로 등록
+import javax.crypto.SecretKey;
+import java.util.Date;
+
+@Component
 public class JwtProvider {
 
-    // JWT 발급 로직 (예시)
+    private final SecretKey key = Keys.hmacShaKeyFor(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#%^&*()-_=+".getBytes()
+    );
+
     public String createToken(String subject) {
-        // TODO: JWT 생성 코드 (io.jsonwebtoken.Jwts 같은 라이브러리 사용)
-        return "dummy-token-for-" + subject;
+        return Jwts.builder()
+            .subject(subject)
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + 86400000)) // 24시간
+            .signWith(key)
+            .compact();
+    }
+
+    public String getSubject(String token) {
+        return Jwts.parser()
+            .verifyWith(key)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .getSubject();
     }
 }

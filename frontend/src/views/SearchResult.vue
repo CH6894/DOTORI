@@ -202,8 +202,8 @@ watch(() => route.query, (q) => {
   padding:8px 10px;
   background: #fff;
   border:1px solid #eadfc9; border-top:none;
-  border-radius:0 6px 6px 6px;
-  margin-top:-1px;
+  border-radius:0 0 6px 6px;
+  margin-top:-3px;
 }
 .sorticon{
   display:inline-flex; align-items:center; gap:6px;

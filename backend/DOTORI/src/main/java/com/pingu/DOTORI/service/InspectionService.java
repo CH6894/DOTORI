@@ -20,6 +20,7 @@ public class InspectionService {
   private final AdminRepository adminRepo;
   private final UsersRepository usersRepo;
   private final FileStorageService storage;
+  private final ItemRepository itemRepo; 
 
   /** 판매자 검수 신청 생성 */
   @Transactional
@@ -34,7 +35,10 @@ public class InspectionService {
 
     // 1) 사용자 조회(필수)
     Users user = usersRepo.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
-
+    
+    Item baseItem = itemRepo.findById("ITEM001")   // ⚠️ 실제 존재하는 itemCode 넣으세요
+    	    .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+    
     // 2) ItemDetails 생성
     ItemDetails item = ItemDetails.builder()
         .cost(price)
@@ -43,6 +47,7 @@ public class InspectionService {
         .status(false) // 아직 판매중 아님
         .user(user)
         .ean("UNKNOWN")
+        .item(baseItem) 
         .build();
     item = itemDetailsRepo.save(item); // PK 발급
 

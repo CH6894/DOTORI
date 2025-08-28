@@ -13,6 +13,9 @@ const OrderComplete = () => import("@/views/OrderComplete.vue");
 const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
 const AdminPage = () => import("@/views/AdminPage.vue");
 const OAuthCallback = () => import("@/pages/OAuthCallback.vue");
+const ComingSoon = () => import("@/views/ComingSoon.vue");
+
+
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
 const CalendarView = () => import("@/views/CalendarPage.vue");
@@ -32,10 +35,11 @@ const ShoppingCart = () => import("@/views/ShoppingCart.vue");
 
 /* ===== Dex & Category Views ===== */
 const Dex = () => import("@/views/Dex.vue");
-const BlackPink = () => import("@/components/BlackPink.vue");
-const Kimetsu = () => import("@/components/Kimetsu.vue");
-const ChimCollection = () => import("@/components/ChimCollection.vue");
-const KiaCollection = () => import("@/components/KiaCollection.vue");
+const BlackPink = () => import("@/components/dex/BlackPink.vue");
+const Kimetsu = () => import("@/components/dex/Kimetsu.vue");
+const ChimCollection = () => import("@/components/dex/ChimCollection.vue");
+const KiaCollection = () => import("@/components/dex/KiaCollection.vue");
+const Pokemon = () => import("@/components/dex/Pokemon.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
@@ -72,15 +76,18 @@ const routes: RouteRecordRaw[] = [
     component: MyPage,
     meta: { requiresAuth: false, header: "main", footer: true, utilbar: true },
     children: [
-      { path: "", name: "mypage-index", redirect: { name: "mypage-orders" } },
       { path: "orders", name: "mypage-orders", component: MyPageOrders },
       { path: "sales", name: "mypage-sales", component: MyPageSales },
       { path: "ship", name: "mypage-ship", component: MyPageShip },
       { path: "storage", name: "mypage-storage", component: MyPageStorage },
-      { path: "wish", name: "mypage-wish", component: MyPageWish },
     ],
   },
-
+{ 
+  path: "/mypage/wish",
+  name: "mypage-wish",
+  component: MyPageWish,
+  meta: { header: "main", footer: true, utilbar: true, /* requiresAuth: true? */ }
+},
   // 결제 플로우
   {
     path: "/checkout",
@@ -130,30 +137,24 @@ const routes: RouteRecordRaw[] = [
   // 기본 도감: Dex.vue (포켓몬)
   { path: "/dex", name: "Dex", component: Dex, meta: { header: "main", footer: true } },
 
-  {
-    path: "/dex",
-    name: "dex",
-    component: () => import("@/views/Dex.vue"),
-    meta: {
-      requiresAuth: true,
-      header: "main", footer: true
-    },
-  },
-  {
-    path: "/calendar",
-    name: "calendar",
-    component: CalendarView,
-    meta: { header: "main", footer: true },
-  },
-  {
-    path: "/inspection",
-    name: "inspection",
-    component: InspectionView,
-    meta: { header: "main", footer: true },
-  },
+  // 카테고리별 뷰(팀원 컴포넌트를 페이지로 사용)
+  { path: "/dex/blackpink", name: "BlackPink", component: BlackPink, meta: { header: "main", footer: true } },
+  { path: "/dex/kimetsu",   name: "Kimetsu",   component: Kimetsu,   meta: { header: "main", footer: true } },
+  { path: "/dex/chim",      name: "Chim",      component: ChimCollection, meta: { header: "main", footer: true } },
+  { path: "/dex/kia",       name: "Kia",       component: KiaCollection,  meta: { header: "main", footer: true } },
+  { path: "/dex/pokemon",   name: "Pokemon",   component: Pokemon,  meta: { header: "main", footer: true } },
+
+  // 캘린더/검수
+  { path: "/calendar", name: "calendar", component: CalendarView, meta: { header: "main", footer: true } },
+  { path: "/inspection", name: "inspection", component: InspectionView, meta: { header: "main", footer: true } },
 
   // 404 -> 임시로 검색 페이지로 라우팅
   { path: "/:pathMatch(.*)*", name: "not-found", component: SearchResult, meta: { header: "main", footer: true } },
+  { path: "/about",    name: "about",    component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/notices",  name: "notices",  component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/terms",    name: "terms",    component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/privacy",  name: "privacy",  component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/support",  name: "support",  component: ComingSoon, meta: { header: "main", footer: true } },
 ];
 
 /* ===== router ===== */
