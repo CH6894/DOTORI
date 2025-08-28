@@ -96,17 +96,48 @@ const routes: RouteRecordRaw[] = [
   },
 
   // 인증/관리 보조 페이지
+<<<<<<< HEAD
   { path: "/verify-upload", name: "verify-upload", component: VerifyUploadPage, meta: { header: "main", footer: true } },
   { path: "/admin", name: "admin", component: AdminPage, meta: { header: "none", footer: true , chatbot:false } },
   { path: "/oauth2/callback", name: "oauth-callback", component: OAuthCallback, meta: { header: "main", footer: false, utilbar: true } },
 
   // 장바구니
   { path: "/cart", name: "cart", component: ShoppingCart, meta: { header: "main", footer: true, utilbar: true } },
+=======
+  {
+    path: "/verify-upload",
+    name: "verify-upload",
+    component: VerifyUploadPage,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/admin",
+    name: "admin",
+    component: AdminPage,
+    meta: { header: "main", footer: true,  chatbot: false  },
+  },
+  {
+    path: "/oauth2/callback",
+    name: "oauth-callback",
+    component: OAuthCallback,
+    meta: { header: "main", footer: false, utilbar: true },
+  },
+
+  // 장바구니
+  {
+    path: "/cart",
+    name: "cart",
+    component: ShoppingCart,
+    meta: {      requiresAuth: true,
+ header: "main", footer: true, utilbar: true },
+  },
+>>>>>>> 05dce689f0805d91da0ed9b180c546a8167dda44
 
   /* ===== 도감/컬렉션 ===== */
   // 기본 도감: Dex.vue (포켓몬)
   { path: "/dex", name: "Dex", component: Dex, meta: { header: "main", footer: true } },
 
+<<<<<<< HEAD
   // 카테고리별 뷰(팀원 컴포넌트를 페이지로 사용)
   { path: "/collection/blackpink", name: "BlackPink", component: BlackPink, meta: { header: "main", footer: true } },
   { path: "/collection/kimetsu",   name: "Kimetsu",   component: Kimetsu,   meta: { header: "main", footer: true } },
@@ -116,6 +147,27 @@ const routes: RouteRecordRaw[] = [
   // 캘린더/검수
   { path: "/calendar", name: "calendar", component: CalendarView, meta: { header: "main", footer: true } },
   { path: "/inspection", name: "inspection", component: InspectionView, meta: { header: "main", footer: true } },
+=======
+  {
+    path: "/dex",
+    name: "dex",
+    component: () => import("@/views/Dex.vue"),
+    meta: {      requiresAuth: true,
+ header: "main", footer: true },
+  },
+  {
+    path: "/calendar",
+    name: "calendar",
+    component: CalendarView,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/inspection",
+    name: "inspection",
+    component: InspectionView,
+    meta: { header: "main", footer: true },
+  },
+>>>>>>> 05dce689f0805d91da0ed9b180c546a8167dda44
 
   // 404 -> 임시로 검색 페이지로 라우팅
   { path: "/:pathMatch(.*)*", name: "not-found", component: SearchResult, meta: { header: "main", footer: true } },

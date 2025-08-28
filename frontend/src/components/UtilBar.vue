@@ -35,7 +35,7 @@ async function logout() {
   } finally {
     localStorage.removeItem("accessToken")
     syncAuth()
-    window.location.href = "/login"
+    window.location.href = "/"
   }
 }
 

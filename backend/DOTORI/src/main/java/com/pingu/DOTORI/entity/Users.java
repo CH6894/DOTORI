@@ -19,7 +19,7 @@ public class Users {
     @Column(name = "User_Name", length = 50)
     private String userName;
 
-    @Column(name = "NickName", length = 100, unique = true)
+    @Column(name = "Nick_Name", length = 100, unique = true)
     private String nickName; // 단일 유니크
 
     @Column(name = "Email", length = 255, unique = true, nullable = false)
@@ -29,7 +29,7 @@ public class Users {
     private String phone;    // 단일 유니크
 
     @Column(name = "Gender", nullable = false)
-    private Short gender;
+    private Byte gender;
 
     @Column(name = "Birth_Year", nullable = false)
     private LocalDate birthYear;
@@ -40,8 +40,11 @@ public class Users {
     @Column(name = "Sign_in_Date", nullable = false)
     private LocalDateTime signInDate;
 
-    @Column(name = "UserType", nullable = false)
+    @Column(name = "User_Type", nullable = false)
     private Integer userType;
+    
+    @Column(name = "User_Img")
+    private String userImg;
 
     // ===== 양방향 컬렉션 =====
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
@@ -66,13 +69,13 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Search> search = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
-    private Set<CollectionMapping> collectionMapping = new HashSet<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+//    private Set<CollectionMapping> collectionMapping = new HashSet<>();
 
     // 편의 메서드 예시
     // 얘가 있는 이유 -> 연관된 테이블에서 수정하면 여기서도 수정될 수 있도록
     // ex) 오더 테이블에서 특정 값 수정했을 때 여기서도 수정한다고  => 양방향 불일치 문제를 막는다고 함.
     public void addOrder(Orders order){ orders.add(order); order.setUser(this); }
-    public void addCart(Cart cart){ cart.add(cart); cart.setUser(this); }
+    //public void addCart(Cart cart){ cart.add(cart); cart.setUser(this); }
     public void addWish(WishList wish){ wishList.add(wish); wish.setUser(this); }
 }
