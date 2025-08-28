@@ -9,15 +9,12 @@ import org.springframework.http.CacheControl;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-  @Value("${app.upload-dir:uploads}")
-  private String uploadDir;
-
-  /** 정적 파일 서빙: /static/** → file:<uploadDir>/ */
   @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/static/**")
-        .addResourceLocations("file:" + uploadDir + "/")
-        .setCacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic());
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/api/**")
+        .allowedOrigins("http://localhost:5173")
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        .allowCredentials(true);
   }
+
 }
