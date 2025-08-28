@@ -1,43 +1,43 @@
-import axios from "axios"
+import axios from "axios";
 
-export type Status = "PENDING" | "REVIEWING" | "APPROVED" | "REJECTED"
+// --- axios 기본 설정(프록시 안 쓰면 필요) ---
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE || "http://localhost:8081";
+axios.defaults.withCredentials = true;
+
+// ===== 뷰 모델 =====
+export type Status = "PENDING" | "APPROVED" | "REJECTED";
 
 export type Photo = {
-  id: string
-  url: string
-  isCover: boolean
-  width: number
-  height: number
-}
+  id: string;
+  url: string;
+  isCover: boolean;
+  width: number;
+  height: number;
+};
 
 export type Inspection = {
-  id: string
-  listingId: string
-  listingTitle: string
-  sellerName: string
-  sellPrice: number
-  isOpened: string
-  submittedAt: string
-  status: Status
-  photos: Photo[]
-  capturedAtInternal?: string
-  warnings?: string[]
-  grade?: "S" | "A" | "B" | "C"
-}
+  id: string;                // 검수ID
+  listingId: string;         // 아이템ID
+  listingTitle: string;      // (백엔드 목록에 없으면 프론트에서 임시 생성)
+  sellerName: string;        // (백엔드 목록에 없으면 임시 '-')
+  sellPrice: number;
+  isOpened: string;          // '미개봉' | '개봉'
+  submittedAt: string;       // 등록일
+  status: Status;            // 'PENDING' | 'APPROVED' | 'REJECTED'
+  photos: Photo[];           // 목록에선 빈 배열(상세에서 불러오기)
+  capturedAtInternal?: string;
+  warnings?: string[];
+  grade?: "S" | "A" | "B" | "C";
+};
 
-// 👉 API 호출 함수
+// ===== 더미 목록(로컬 개발용) =====
 export async function fetchInspections(params: any): Promise<Inspection[]> {
-  // 나중에 백엔드 나오면 이 부분만 교체
-  // const { data } = await axios.get("/api/inspections", { params })
-  // return data
-
-  // 현재는 더미 데이터
-  return demoInspections()
+  // 실제 백엔드 붙이면 이 함수는 안 쓰거나, 아래 demoInspections()를 제거
+  return demoInspections();
 }
 
-// 👉 더미 데이터 생성기
 function demoInspections(): Inspection[] {
-  const now = Date.now()
+  const now = Date.now();
   const make = (i: number, st: Status): Inspection => ({
     id: `ins_${1000 + i}`,
     listingId: `list_${2000 + i}`,
@@ -61,87 +61,93 @@ function demoInspections(): Inspection[] {
         : i % 5 === 0
         ? ["해상도 낮음"]
         : [],
-  })
+  });
 
   return [
     make(1, "PENDING"),
-    make(2, "REVIEWING"),
+    make(2, "PENDING"),
     make(3, "PENDING"),
     make(4, "APPROVED"),
     make(5, "REJECTED"),
     make(6, "PENDING"),
     make(7, "PENDING"),
-    make(8, "REVIEWING"),
+    make(8, "APPROVED"),
     make(9, "PENDING"),
     make(10, "PENDING"),
     make(11, "PENDING"),
-  ]
-  
+    make(12, "PENDING"),
+    make(13, "APPROVED"),
+    make(14, "PENDING"),
+    make(15, "REJECTED"),
+  ];
 }
 
-// --- [추가] 판매 신청 생성(약관 동의 후 최종 전송) -----------------
-export async function createInspection(fd: FormData): Promise<{ inspectionId: string; status: string }> {
-  const { data } = await axios.post('/api/inspections', fd, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  })
-  return data
+// ===== 판매 신청 생성 =====
+// ⚠️ 백엔드가 itemId도 돌려줌 → 타입에 추가
+export async function createInspection(
+  fd: FormData
+): Promise<{ inspectionId: number; itemId: number; status: string }> {
+  const { data } = await axios.post("/api/inspections", fd, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
 }
 
-// --- [추가] 관리자용 조회(백엔드 붙일 때 fetchInspections 대체용) -----
-export type OpenState = 'UNOPENED' | 'OPENED' | 'PARTIAL'
+// ===== 관리자 목록(API 응답 타입 & 어댑터) =====
 
-// 백엔드에서 내려줄 DTO 예시 타입(필드명이 다르면 여기만 맞춰주면 됨)
-type AdminInspectionDto = {
-  inspectionId: string
-  productId?: string
-  productTitle: string
-  sellerName: string
-  price: number
-  openState: OpenState
-  uploadedAt: string
-  capturedAtInternal?: string
-  status: Status
-  photos?: Array<{ id?: string; url: string; isCover?: boolean; width?: number; height?: number }>
-  imageUrls?: string[] // 사진을 URL 배열로만 줄 수도 있으니 대비
+// 백엔드 Page 래퍼
+type Page<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number; // 현재 페이지
+  size: number;   // 페이지 크기
+};
+
+// 백엔드 목록 행(Projection) 예시: AdminListRow
+type AdminListRow = {
+  inspectionId: number;
+  itemId: number;
+  registrationDate: string;      // ISO
+  unpacked: number;              // 0 미개봉 / 1 개봉
+  admissionState: number;        // 0 대기 / 1 반려 / 2 승인
+  quality: number | null;
+  imageCount: number;
+  firstFilmingTime: string | null;
+  cost: number;
+  // (상품명/판매자명이 백엔드 응답에 없다면 프론트에서 채우거나, 백엔드에 컬럼 추가 요청)
+};
+
+// 상태코드 → 뷰모델 Status
+function mapState(s: number): Status {
+  return s === 2 ? "APPROVED" : s === 1 ? "REJECTED" : "PENDING";
 }
 
-// DTO -> 프론트 `Inspection`으로 변환
-function adaptAdmin(dto: AdminInspectionDto): Inspection {
-  const mkId = () => Math.random().toString(36).slice(2)
-
-  const photos: Photo[] =
-    (dto.photos
-      ? dto.photos.map((p, i) => ({
-          id: p.id ?? `ph_${dto.inspectionId}_${i}`,
-          url: p.url,
-          isCover: p.isCover ?? i === 0,
-          width: p.width ?? 640,
-          height: p.height ?? 640,
-        }))
-      : (dto.imageUrls ?? []).map((u, i) => ({
-          id: `ph_${dto.inspectionId}_${i}`,
-          url: u,
-          isCover: i === 0,
-          width: 640,
-          height: 640,
-        }))) || []
-
+// AdminListRow → Inspection(뷰모델) 매핑
+function rowToInspection(r: AdminListRow): Inspection {
   return {
-    id: dto.inspectionId,
-    listingId: dto.inspectionId,                     // 관리자 테이블에서 ID로도 쓰고 있어서 동일 매핑
-    listingTitle: dto.productTitle,
-    sellerName: dto.sellerName,
-    sellPrice: dto.price,
-    isOpened: dto.openState === 'UNOPENED' ? '미개봉' : '개봉',
-    submittedAt: dto.uploadedAt,
-    status: dto.status,
-    photos,
-    capturedAtInternal: dto.capturedAtInternal,
-  }
+    id: String(r.inspectionId),
+    listingId: String(r.itemId),
+    listingTitle: `상품 ${r.itemId}`,      // ⚠️ 백엔드에서 제목 주면 그 값으로 교체
+    sellerName: "-",                       // ⚠️ 백엔드에서 판매자명 주면 교체
+    sellPrice: r.cost,
+    isOpened: r.unpacked === 0 ? "미개봉" : "개봉",
+    submittedAt: r.registrationDate,
+    status: mapState(r.admissionState),
+    photos: [],                            // 목록에서는 빈 배열(상세에서 별도 요청)
+    capturedAtInternal: r.firstFilmingTime ?? undefined,
+  };
 }
 
-// 실제 관리자 목록 호출 (백엔드 붙이면 이걸 사용)
-export async function fetchInspectionsFromAdmin(params?: any): Promise<Inspection[]> {
-  const { data } = await axios.get<AdminInspectionDto[]>('/api/inspections/admin', { params })
-  return data.map(adaptAdmin)
+// 실제 관리자 목록 호출 (Page 그대로 돌려받고, 뷰모델 배열도 같이 제공)
+export async function fetchInspectionsFromAdmin(params?: {
+  state?: number;
+  from?: string;
+  to?: string;
+  page?: number;
+  size?: number;
+}): Promise<{ page: Page<AdminListRow>; items: Inspection[] }> {
+  const { data } = await axios.get<Page<AdminListRow>>("/api/inspections/admin", { params });
+  const items = data.content.map(rowToInspection);
+  return { page: data, items };
 }

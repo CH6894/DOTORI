@@ -23,7 +23,9 @@ public class Orders {
 
  @Column(name = "Pay_Message")
  private LocalDateTime payMessage;
-
+ 
+ @Column(name = "Depositer_Name", length = 50)
+ private String depositerName; 
  
  @ManyToOne(fetch = FetchType.LAZY)
  @JoinColumn(name = "Item_ID", nullable = false)

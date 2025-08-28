@@ -1,5 +1,6 @@
 package com.pingu.DOTORI.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -38,4 +39,6 @@ public class Admin {
 
   @Column(name = "Rejection_Reason") // 반려 사유 코드(1~5)
   private Integer rejectionReason;
+
+
 }

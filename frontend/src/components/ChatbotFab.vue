@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { chatAPI, type ChatMessage } from '@/services/api'
+import { chatAPI } from '@/services/api'
 
 const open = ref(false)
 const toggle = () => (open.value = !open.value)
@@ -18,17 +18,12 @@ interface Message {
   isUser: boolean
   timestamp: Date
 }
-// 주고받은 모든 메시지를 ref로 감싸서 메시지가 추가될 떄마다 화면 자동 업뎃
+
 const messages = ref<Message[]>([])
-// 사용자가 입력창에 쓰는 텍스트를 실시간으로 저장
 const inputText = ref('')
 const isLoading = ref(false)
-const sessionId = ref('') // 페이지 새로고침시 자동으로 초기화됨
+const userId = ref('default') // 사용자 ID (필요시 변경 가능)
 const chatBody = ref<HTMLElement>()
-
-// 챗봇 창을 닫을 때 대화 기록은 유지하지만
-// 페이지 새로고침/탭 닫기시에는 모든 데이터가 자동으로 사라짐
-// (localStorage 사용 안 함 = 브라우저 세션과 함께 사라짐)
 
 // 제안 버튼들
 const suggestions = [
@@ -59,40 +54,17 @@ const addMessage = (text: string, isUser: boolean) => {
 }
 
 // === API 호출 함수 ===
-const sendMessageToAPI = async (userMessage: string): Promise<string> => {
-  try {
-    // 세션 ID가 없으면 새로 생성 (페이지 새로고침시)
-    if (!sessionId.value) {
-      sessionId.value = `session_${Date.now()}`
-    }
-
-    // 대화 기록을 ChatMessage 형태로 변환 (현재 세션만)
-    const conversationHistory: ChatMessage[] = messages.value
-      .slice(-10) // 최근 10개만
-      .map(msg => ({
-        role: msg.isUser ? 'user' : 'assistant',
-        content: msg.text
-      }))
-
-    // API 요청 데이터
-    const request = {
-      message: userMessage,
-      session_id: sessionId.value, // 현재 세션 ID 사용
-      conversation_history: conversationHistory
-    }
-
-    const response = await chatAPI.sendMessage(request)
-    sessionId.value = response.session_id
-    return response.response
-
-  } catch (error) {
-    console.error('API 호출 실패:', error)
-    return '죄송해요, 일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요! 🐿️'
-  }
+const sendMessageToAPI = (userMessage: string): Promise<string> => {
+  return chatAPI.sendMessage(userMessage, userId.value)
+    .then(response => response.answer)
+    .catch(error => {
+      console.error('API 호출 실패:', error)
+      return '죄송해요, 일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요!'
+    })
 }
 
 // === 메시지 전송 ===
-const sendMessage = async (text?: string) => {
+const sendMessage = (text?: string) => {
   const messageText = text || inputText.value.trim()
   if (!messageText || isLoading.value) return
 
@@ -101,18 +73,18 @@ const sendMessage = async (text?: string) => {
   inputText.value = ''
   isLoading.value = true
 
-  try {
-    // API 호출
-    const aiResponse = await sendMessageToAPI(messageText)
-    
-    // AI 응답 추가
-    addMessage(aiResponse, false)
-    
-  } catch (error) {
-    addMessage('죄송해요, 오류가 발생했어요. 🐿️', false)
-  } finally {
-    isLoading.value = false
-  }
+  // API 호출
+  sendMessageToAPI(messageText)
+    .then(aiResponse => {
+      // AI 응답 추가
+      addMessage(aiResponse, false)
+    })
+    .catch(() => {
+      addMessage('죄송해요, 오류가 발생했어요.', false)
+    })
+    .finally(() => {
+      isLoading.value = false
+    })
 }
 
 // === 제안 버튼 클릭 ===
@@ -168,7 +140,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
             <div v-if="messages.length === 0" class="welcome">
               <div class="bubble welcome-bubble">
                 <p class="greet">
-                  <strong>안녕하세요! 저는 다람이 🐿️</strong>
+                  <strong>안녕하세요! 저는 다람이</strong>
                 </p>
                 <p>무엇을 도와드릴까요?</p>
                 <div class="chips">
@@ -219,6 +191,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
           </main>
 
           <footer class="foot">
+            <!-- 불필요한 첨부 버튼 제거 원하시면 여기 삭제 가능 -->
             <button class="btn-attach" title="첨부" aria-label="첨부">+</button>
             <input 
               class="input" 
@@ -228,21 +201,20 @@ const handleKeyPress = (e: KeyboardEvent) => {
               @keypress="handleKeyPress"
               :disabled="isLoading"
             />
-          <button
-            class="btn-send"
-            type="button"
-            @click="() => sendMessage(inputText)"
-            :disabled="isLoading || !inputText.trim()"
-          >
-            {{ isLoading ? '전송중...' : '전송' }}
-          </button>
+             <button
+                class="btn-send"
+                type="button"
+                @click="() => sendMessage()"
+                :disabled="isLoading || !inputText.trim()"
+              >
+                {{ isLoading ? '전송중...' : '전송' }}
+              </button>
           </footer>
         </section>
       </div>
     </transition>
   </div>
 </template>
-
 <style scoped>
 /* 기존 스타일은 그대로 유지 */
 .chatbot{
@@ -345,12 +317,6 @@ const handleKeyPress = (e: KeyboardEvent) => {
   background: #fff; border: 1px solid #d8d3c7; border-radius: 12px;
   padding: 14px 16px; color: #222; box-shadow: 0 2px 4px rgba(0,0,0,.05);
 }
-/* .welcome-bubble::after{
-  content: ""; position: absolute; left: 20px; bottom: -14px;
-  border-width: 14px 12px 0 0; border-style: solid;
-  border-color: #fff transparent transparent transparent;
-  filter: drop-shadow(-1px 1px 0 #d8d3c7);
-} */
 
 /* 채팅 메시지 */
 .chat-messages { flex: 1; }

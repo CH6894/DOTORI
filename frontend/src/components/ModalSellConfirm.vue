@@ -288,8 +288,6 @@ const MIN_FILES = 3
 const MAX_FILES = 8
 const MAX_MB = 10
 
-const step = ref<1 | 2 | 3 | 4>(1)
-
 /* 0-2: 헤더 뒤로가기 */
 function goBack() {
   if (step.value === 2) step.value = 1
@@ -509,16 +507,34 @@ function onClose() { emit('close') }
 
 /* 최종 제출 → 4단계 */
 const isSubmitting = ref(false)
+const step = ref<1 | 2 | 3 | 4>(1)
+const userId = 1
 async function submitAll() {
   if (!allAgreed.value || isSubmitting.value) {
     if (!allAgreed.value) alert('필수 항목에 모두 동의해주세요.');
     return isSubmitting.value = true
   }
-  isSubmitting.value = true
-  step.value = 4
-  await nextTick()
-  const filesPayload = items.value.map((i, idx) => ({ file: i.file, caption: i.caption || undefined, isCover: idx === 0 }))
-  isSubmitting.value = false
+  try {
+    const fd = new FormData()
+    fd.append('userId', String(userId))
+    fd.append('productTitle', props.item.title)
+    fd.append('price', String(price.value))
+    fd.append('unpacked', selectedChip.value === '미개봉' ? '0' : '1')
+    fd.append('memo', memo.value ?? '')
+
+    items.value.forEach(i => fd.append('images', i.file))
+
+    const res = await createInspection(fd)
+    console.log('created:', res) // { inspectionId, itemId, status }
+
+    step.value = 4 // 완료 페이지로 이동
+    await nextTick()
+  } catch (e) {
+    console.error(e)
+    alert('판매 신청 중 오류가 발생했습니다.')
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 

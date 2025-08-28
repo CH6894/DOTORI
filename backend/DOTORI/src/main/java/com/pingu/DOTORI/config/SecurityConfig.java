@@ -30,7 +30,6 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .cors(Customizer.withDefaults())
-        .cors(cors -> {})
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/", "/health", "/public/**").permitAll()
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
@@ -58,7 +57,7 @@ public class SecurityConfig {
     config.setAllowCredentials(true);
 
     var source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/api/**", config);
+    source.registerCorsConfiguration("/**", config);
     return source;
   }
 }
