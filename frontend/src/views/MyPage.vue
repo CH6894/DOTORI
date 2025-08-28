@@ -499,6 +499,7 @@ export default {
 
 /* 프로필 카드 */
 .profile-card {
+  margin-top: 22px;
   position: relative;
 }
 

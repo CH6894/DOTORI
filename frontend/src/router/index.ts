@@ -32,10 +32,11 @@ const ShoppingCart = () => import("@/views/ShoppingCart.vue");
 
 /* ===== Dex & Category Views ===== */
 const Dex = () => import("@/views/Dex.vue");
-const BlackPink = () => import("@/components/BlackPink.vue");
-const Kimetsu = () => import("@/components/Kimetsu.vue");
-const ChimCollection = () => import("@/components/ChimCollection.vue");
-const KiaCollection = () => import("@/components/KiaCollection.vue");
+const BlackPink = () => import("@/components/dex/BlackPink.vue");
+const Kimetsu = () => import("@/components/dex/Kimetsu.vue");
+const ChimCollection = () => import("@/components/dex/ChimCollection.vue");
+const KiaCollection = () => import("@/components/dex/KiaCollection.vue");
+const Pokemon = () => import("@/components/dex/Pokemon.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
@@ -108,10 +109,11 @@ const routes: RouteRecordRaw[] = [
   { path: "/dex", name: "Dex", component: Dex, meta: { header: "main", footer: true } },
 
   // 카테고리별 뷰(팀원 컴포넌트를 페이지로 사용)
-  { path: "/collection/blackpink", name: "BlackPink", component: BlackPink, meta: { header: "main", footer: true } },
-  { path: "/collection/kimetsu",   name: "Kimetsu",   component: Kimetsu,   meta: { header: "main", footer: true } },
-  { path: "/collection/chim",      name: "Chim",      component: ChimCollection, meta: { header: "main", footer: true } },
-  { path: "/collection/kia",       name: "Kia",       component: KiaCollection,  meta: { header: "main", footer: true } },
+  { path: "/dex/blackpink", name: "BlackPink", component: BlackPink, meta: { header: "main", footer: true } },
+  { path: "/dex/kimetsu",   name: "Kimetsu",   component: Kimetsu,   meta: { header: "main", footer: true } },
+  { path: "/dex/chim",      name: "Chim",      component: ChimCollection, meta: { header: "main", footer: true } },
+  { path: "/dex/kia",       name: "Kia",       component: KiaCollection,  meta: { header: "main", footer: true } },
+  { path: "/dex/pokemon",       name: "Pokemon",       component: Pokemon,  meta: { header: "main", footer: true } },
 
   // 캘린더/검수
   { path: "/calendar", name: "calendar", component: CalendarView, meta: { header: "main", footer: true } },

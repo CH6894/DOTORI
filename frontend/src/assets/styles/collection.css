@@ -3,99 +3,6 @@
   min-height: calc(100vh - 200px);
 }
 
-/* 등록 섹션 */
-.register-section {
-  background: #ffff;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.register-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-.register-bar {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.search-input-wrapper {
-  position: relative;
-  max-width: 400px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.register-input {
-  width: 100%;
-  padding: 1rem 3rem 1rem 1.5rem;
-  border: 2px solid #EFECC6;
-  border-radius: 15px;
-  font-size: 1rem;
-  outline: none;
-  transition: all 0.3s;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.register-input:focus {
-  border-color: #670600;
-  box-shadow: 0 4px 12px rgba(103, 6, 0, 0.1);
-}
-
-.register-input::placeholder {
-  color: #999;
-}
-
-.clear-btn {
-  position: absolute;
-  right: 12px;
-  background: none;
-  border: none;
-  color: #999;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-}
-
-.clear-btn:hover {
-  background: rgba(103, 6, 0, 0.1);
-  color: #670600;
-  transform: scale(1.1);
-}
-
-.register-btn {
-  background: linear-gradient(45deg, #670600, #8B4513);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 15px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(103, 6, 0, 0.2);
-  white-space: nowrap;
-}
-
-.register-btn:hover {
-  background: linear-gradient(45deg, #5a0500, #7a3a0f);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(103, 6, 0, 0.3);
-}
-
 /* 카테고리 탭 스타일 */
 .product_list_wrap {
   width: 100%;
@@ -444,29 +351,6 @@
   z-index: 5;
 }
 
-.figure-image-container.uncollected::after,
-.kia-image-container.uncollected::after {
-  content: '🔒';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, rgba(103, 6, 0, 0.9), rgba(139, 69, 19, 0.9));
-  color: white;
-  padding: 0.8rem 1.2rem;
-  border-radius: 25px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-  box-shadow: 0 4px 12px rgba(103, 6, 0, 0.4), 
-              inset 0 1px 0 rgba(255,255,255,0.2);
-  border: 2px solid rgba(239, 236, 198, 0.3);
-  backdrop-filter: blur(8px);
-  z-index: 10;
-  animation: lockPulse 2s ease-in-out infinite;
-  letter-spacing: 0.5px;
-}
-
 @keyframes lockPulse {
   0%, 100% {
     transform: translate(-50%, -50%) scale(1);
@@ -483,26 +367,6 @@
   transform: none;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-color: #f0f0f0;
-}
-
-/* 인증 배지 */
-.verified-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: linear-gradient(45deg, #670600, #8B4513);
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(103, 6, 0, 0.3);
-  border: 3px solid #EFECC6;
-  animation: verifiedGlow 3s ease-in-out infinite;
 }
 
 @keyframes verifiedGlow {

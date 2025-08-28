@@ -1,8 +1,5 @@
 /* ===== Base ===== */
 .inspect-page {
-  background:
-    linear-gradient(180deg, #eef2ff 0%, rgba(238, 242, 255, 0) 220px),
-    #f7f8fb;
   min-height: 100dvh;
   padding: 24px 20px 40px;
   color: #0f172a;
