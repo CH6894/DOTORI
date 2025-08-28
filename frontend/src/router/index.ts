@@ -13,6 +13,9 @@ const OrderComplete = () => import("@/views/OrderComplete.vue");
 const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
 const AdminPage = () => import("@/views/AdminPage.vue");
 const OAuthCallback = () => import("@/pages/OAuthCallback.vue");
+const ComingSoon = () => import("@/views/ComingSoon.vue");
+
+
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
 const CalendarView = () => import("@/views/CalendarPage.vue");
@@ -73,15 +76,18 @@ const routes: RouteRecordRaw[] = [
     component: MyPage,
     meta: { requiresAuth: false, header: "main", footer: true, utilbar: true },
     children: [
-      { path: "", name: "mypage-index", redirect: { name: "mypage-orders" } },
       { path: "orders", name: "mypage-orders", component: MyPageOrders },
       { path: "sales", name: "mypage-sales", component: MyPageSales },
       { path: "ship", name: "mypage-ship", component: MyPageShip },
       { path: "storage", name: "mypage-storage", component: MyPageStorage },
-      { path: "wish", name: "mypage-wish", component: MyPageWish },
     ],
   },
-
+{ 
+  path: "/mypage/wish",
+  name: "mypage-wish",
+  component: MyPageWish,
+  meta: { header: "main", footer: true, utilbar: true, /* requiresAuth: true? */ }
+},
   // 결제 플로우
   {
     path: "/checkout",
@@ -134,7 +140,7 @@ const routes: RouteRecordRaw[] = [
   { path: "/dex/kimetsu",   name: "Kimetsu",   component: Kimetsu,   meta: { header: "main", footer: true } },
   { path: "/dex/chim",      name: "Chim",      component: ChimCollection, meta: { header: "main", footer: true } },
   { path: "/dex/kia",       name: "Kia",       component: KiaCollection,  meta: { header: "main", footer: true } },
-  { path: "/dex/pokemon",       name: "Pokemon",       component: Pokemon,  meta: { header: "main", footer: true } },
+  { path: "/dex/pokemon",   name: "Pokemon",   component: Pokemon,  meta: { header: "main", footer: true } },
 
   // 캘린더/검수
   { path: "/calendar", name: "calendar", component: CalendarView, meta: { header: "main", footer: true } },
@@ -142,6 +148,11 @@ const routes: RouteRecordRaw[] = [
 
   // 404 -> 임시로 검색 페이지로 라우팅
   { path: "/:pathMatch(.*)*", name: "not-found", component: SearchResult, meta: { header: "main", footer: true } },
+  { path: "/about",    name: "about",    component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/notices",  name: "notices",  component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/terms",    name: "terms",    component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/privacy",  name: "privacy",  component: ComingSoon, meta: { header: "main", footer: true } },
+  { path: "/support",  name: "support",  component: ComingSoon, meta: { header: "main", footer: true } },
 ];
 
 /* ===== router ===== */

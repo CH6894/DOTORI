@@ -16,11 +16,11 @@
       </div>
       <!-- 필요시 노출하는 링크들 -->
       <nav class="footer__nav">
-        <a href="/about.html">회사소개</a>
-        <a href="/notices.html">공지사항</a>
-        <a href="/terms.html">이용약관</a>
-        <a href="/privacy.html">개인정보처리방침</a>
-        <a href="/support.html">고객센터</a>
+        <RouterLink to="/about">회사소개</RouterLink>
+        <RouterLink to="/notices">공지사항</RouterLink>
+        <RouterLink to="/terms">이용약관</RouterLink>
+        <RouterLink to="/privacy">개인정보처리방침</RouterLink>
+        <RouterLink to="/support">고객센터</RouterLink>
       </nav>
     </div>
   </footer>
