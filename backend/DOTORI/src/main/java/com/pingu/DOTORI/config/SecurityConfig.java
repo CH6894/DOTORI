@@ -40,6 +40,7 @@ public class SecurityConfig {
             .requestMatchers("/", "/health", "/public/**").permitAll()
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
             .requestMatchers("/api/**").authenticated()
+            .requestMatchers("/open/**").permitAll()
             .anyRequest().authenticated())
         .oauth2Login(oauth -> oauth
             .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))

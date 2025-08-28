@@ -17,7 +17,7 @@ import com.pingu.DOTORI.service.ItemService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/items")
+@RequestMapping("/open/items")
 @RequiredArgsConstructor
 public class ItemController {
 	private final ItemService itemService;
