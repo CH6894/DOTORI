@@ -178,13 +178,6 @@
           </ul>
         </div>
       </div>
-
-      <!-- 도감 탭 -->
-      <div v-show="currentTab === 'dex'" class="card">
-        <h2 class="card__title">도감</h2>
-        <p class="muted">도감 화면은 이후에 구성됩니다.</p>
-      </div>
-
       <!-- 문의 탭 -->
       <div v-show="currentTab === 'qna'" class="card">
         <h2 class="card__title">문의 내역</h2>
@@ -216,7 +209,7 @@ import imgKozumeFigure from '@/assets/list/코즈메 켄마 피규어.svg'
 import imgMikuFigure from '@/assets/list/하츠네 미쿠 피규어.svg'
 import imgHinataSoyoFigure from '@/assets/list/히나타 소요 피규어.svg'
 
-/* ✅ 라우터 이름 매핑: 현 프로젝트 라우터(index.ts)의 실제 name에 맞춤 */
+/* ✅ 라우터 이름 매핑 */
 const ROUTE_NAME_MAP = {
   ShipPage: 'mypage-ship',
   OrdersPage: 'mypage-orders',
@@ -230,10 +223,10 @@ export default {
 
   data() {
     return {
-      /* 탭(토글) */
+      /* 탭(토글): URL과 무관한 로컬 상태 */
+      currentTab: 'profile',
       tabs: [
         { key: 'profile', label: '내 정보' },
-        { key: 'dex', label: '도감' },
         { key: 'qna', label: '문의내역' },
       ],
 
@@ -282,10 +275,6 @@ export default {
   },
 
   computed: {
-    /* URL의 ?tab 값으로 탭 상태 동기화 (기본값 profile) */
-    currentTab() {
-      return (this.$route.query.tab ?? 'profile')
-    },
     /* 자식 라우트 판별: /mypage의 children이면 true */
     isChildRoute() {
       const n = this.$route.name || ''
@@ -297,18 +286,11 @@ export default {
     },
   },
 
-  mounted() {
-    /* 첫 진입시 ?tab이 없으면 profile로 정리 */
-    if (!this.$route.query.tab) {
-      this.$router.replace({ name: 'mypage', query: { tab: 'profile' } })
-    }
-  },
-
   methods: {
-    /* 탭 변경 + URL 동기화 */
+    /* 탭 변경: URL 건드리지 않음 */
     setTab(key) {
       if (this.currentTab === key) return
-      this.$router.push({ name: 'mypage', query: { tab: key } })
+      this.currentTab = key
     },
 
     // 프로필 관련
@@ -340,7 +322,7 @@ export default {
       alert('저장되었습니다!')
     },
 
-    /* ✅ 섹션 타이틀 클릭 시 자식 라우트로 이동 */
+    /* ✅ 섹션 타이틀 클릭 시 자식 라우트로 이동 (기존 유지) */
     go(name) {
       const real = ROUTE_NAME_MAP[name]
       if (real) {
@@ -394,6 +376,7 @@ export default {
 }
 </script>
 
+
 <style scoped>
 /* ---- (기존 스타일 그대로) ---- */
 .container {
@@ -420,12 +403,12 @@ export default {
 /* 탭 */
 .tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   width: min(420px, 100%);
   margin: 0 auto;
   border-bottom: 2px solid #e5dcc9;
+  gap: 0; /* 필요시 간격 조절 */
 }
-
 .tab {
   appearance: none;
   background: transparent;
@@ -454,7 +437,7 @@ export default {
 
 /* 패널 및 카드 */
 .card {
-  margin-top: 18px;
+  margin-top: 1.5rem;
   padding: 22px;
   background: #fff;
   border: 1px solid #e8e1d4;
@@ -499,7 +482,7 @@ export default {
 
 /* 프로필 카드 */
 .profile-card {
-  margin-top: 22px;
+  margin-top: 1.5rem;
   position: relative;
 }
 
@@ -679,7 +662,7 @@ export default {
 }
 
 .step__label {
-  margin-top: 6px;
+  margin-top: 1rem;
   font-size: 12px;
   color: #8f8577;
 }

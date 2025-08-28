@@ -34,6 +34,7 @@ function onKey(e: KeyboardEvent) {
 .top_category_list {
   display: inline-block;
   background: transparent;
+  cursor: pointer;
 }
 
 .top_category_ul {
@@ -63,9 +64,11 @@ function onKey(e: KeyboardEvent) {
   color: #6e6253;
   font-weight: 700;
   position: relative;
-  z-index: 0;              
+  z-index: 0;
   color: #6e6253;
   padding: 8px 16px;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
 }
 
 /* 선택 탭 */
