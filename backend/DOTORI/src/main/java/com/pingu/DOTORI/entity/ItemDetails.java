@@ -39,7 +39,7 @@ public class ItemDetails {
 	@JoinColumn(name = "User_ID", nullable = false)
 	private Users user; // 유저 고유 번호 (단방향으로 충분)
 
-	@Column(name = "EAN", length = 13, nullable = false)
+	@Column(name = "EAN", length = 13)
 	private String ean; // 상품 바코드
 
 	// --- 양방향 매핑 ---
@@ -57,6 +57,10 @@ public class ItemDetails {
 
 	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = false)
 	private List<WishList> wishLists = new ArrayList<>();
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "Item_Code", nullable = false)
+	private Item item;
 
 	// --- 편의 메서드 ---
 	public void addImage(ItemImg image) {

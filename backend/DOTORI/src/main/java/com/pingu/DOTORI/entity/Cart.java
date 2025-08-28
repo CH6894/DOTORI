@@ -9,10 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Cart")
-@Table(name = "Cart", uniqueConstraints = { @UniqueConstraint(name = "UQ_Cart_ID", columnNames = "Cart_ID"), // DDL
-																												// 반영(사실
-																												// PK로
-																												// 충분)
+@Table(name = "Cart", uniqueConstraints = { @UniqueConstraint(name = "UQ_Cart_ID", columnNames = "Cart_ID"), // DDL 반영(사실 PK로 충분)
 		@UniqueConstraint(name = "UQ_Cart_User_Item", columnNames = { "User_ID", "Item_ID" }) // 판단에 따른 복합 유니크
 })
 public class Cart {

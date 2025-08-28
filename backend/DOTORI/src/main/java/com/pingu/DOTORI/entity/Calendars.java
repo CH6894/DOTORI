@@ -45,5 +45,5 @@ public class Calendars {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "User_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_Users_TO_Calendar"))
-	private Users users;
+	private Users user;
 }
