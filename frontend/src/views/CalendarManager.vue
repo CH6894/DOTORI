@@ -1,16 +1,33 @@
 <template>
-  <div class="page">
+  <div class="page calendar-scope">
     <!-- 화면 중앙 고정 타이틀 -->
-    <h2 class="calendar-title">{{ pageDate.getFullYear() }}년 {{ pageDate.getMonth() + 1 }}월</h2>
+    <h2 class="calendar-title">
+      {{ pageDate.getFullYear() }}년 {{ pageDate.getMonth() + 1 }}월
+    </h2>
 
     <div class="calendar-wrap">
       <div ref="calendarEl" id="calendar"></div>
     </div>
 
-    <!-- 상세일정(Agenda) -->
-    <section class="agenda">
-      <h3 class="agenda__title">상세 일정</h3>
-      <div class="agenda__body" id="agenda-body" v-html="agendaHtml"></div>
+    <!-- ✅ 일정 요약 (현재 뷰 범위 내) -->
+    <section class="summary">
+      <h3 class="summary__title">일정 요약</h3>
+
+      <ul v-if="summary.length" class="summary__list">
+        <li v-for="ev in summary" :key="ev.id" class="summary__item">
+          <span class="summary__dot" :style="{ '--dot-color': ev.color }"></span>
+          <span class="summary__date">{{ ev.ymd }}</span>
+          <span class="summary__when">{{ ev.allDay ? '종일' : ev.time }}</span>
+          <span class="summary__text">{{ ev.title }}</span>
+
+          <div class="summary__actions">
+            <button class="btn btn--tiny" @click="editFromSummary(ev.id)">수정</button>
+            <button class="btn btn--tiny btn--danger" @click="deleteFromSummary(ev.id)">삭제</button>
+          </div>
+        </li>
+      </ul>
+
+      <div v-else class="summary__empty">현재 화면 범위에 일정이 없습니다.</div>
     </section>
 
     <!-- 일정 등록/수정 모달 (조건부 렌더링) -->
@@ -22,6 +39,7 @@
         </div>
 
         <div class="modal__body">
+          <!-- ===== 일정 폼 ===== -->
           <form @submit.prevent>
             <input type="hidden" v-model="form.id" />
 
@@ -49,6 +67,15 @@
               <input id="event-color" v-model="form.color" type="color" />
             </div>
           </form>
+
+          <!-- 구분선 -->
+          <hr style="margin:16px 0; border:none; border-top:1px solid #eee;" />
+
+          <!-- ===== 모달 안의 상세일정(Agenda) ===== -->
+          <section class="agenda">
+            <h3 class="agenda__title">상세 일정</h3>
+            <div class="agenda__body" id="agenda-body" v-html="agendaHtml"></div>
+          </section>
         </div>
 
         <div class="modal__footer">
@@ -145,6 +172,8 @@ function openModal(mode, ev) {
       color: ev?.extendedProps?.color || ev?.backgroundColor || '#7c3aed'
     })
   }
+  // 모달을 열 때 항상 최신 Agenda 반영
+  renderAgenda()
 }
 function closeModal() { isModalOpen.value = false }
 
@@ -161,7 +190,6 @@ function onSave() {
     const eDay = e ? startOfDay(e) : sDay
     const startStr = fmtYmd(sDay)
     const endStr = fmtYmd(addDays(eDay, 1))  // exclusive
-
     if (!form.id) {
       calendar.addEvent({
         id: String(Date.now()),
@@ -214,6 +242,7 @@ function onSave() {
 
   closeModal()
   renderAgenda()
+  refreshSummary()
 }
 function onDelete() {
   if (form.id) {
@@ -222,6 +251,7 @@ function onDelete() {
   }
   closeModal()
   renderAgenda()
+  refreshSummary()
 }
 
 /* ===== Agenda 생성 ===== */
@@ -300,6 +330,48 @@ function renderAgenda() {
   })
 }
 
+/* ===== 요약 리스트 ===== */
+const summary = ref([])
+
+function refreshSummary() {
+  if (!calendar) return
+  const view = calendar.view
+  const rs = view.currentStart
+  const re = view.currentEnd
+
+  const list = calendar.getEvents()
+    .filter(ev => (ev.end || ev.start) > rs && ev.start < re)
+    .map(ev => {
+      const color = ev.extendedProps?.color || ev.backgroundColor || '#7c3aed'
+      return {
+        id: ev.id,
+        title: ev.title || '(제목 없음)',
+        start: ev.start,
+        end: ev.end || ev.start,
+        allDay: ev.allDay,
+        color,
+        time: ev.allDay ? '종일' : timeRange(ev.start, ev.end || ev.start),
+        ymd: fmtYmd(ev.start),
+      }
+    })
+    .sort((a, b) => (a.start?.getTime() || 0) - (b.start?.getTime() || 0))
+
+  summary.value = list
+}
+
+function editFromSummary(id) {
+  const ev = calendar.getEventById(id)
+  if (ev) openModal('edit', ev)
+}
+function deleteFromSummary(id) {
+  const ev = calendar.getEventById(id)
+  if (ev && confirm('이 일정을 삭제할까요?')) {
+    ev.remove()
+    refreshSummary()
+    renderAgenda()
+  }
+}
+
 /* ===== 캘린더 초기화 ===== */
 onMounted(() => {
   calendar = new Calendar(calendarEl.value, {
@@ -345,7 +417,7 @@ onMounted(() => {
         } else {
           let fixedEnd = arg.end
           if (fixedEnd.getTime() === arg.start.getTime()) {
-            fixedEnd = new Date(arg.start.getTime() + 60 * 60 * 1000) // 1시간 보정
+            fixedEnd = new Date(arg.start.getTime() + 60 * 60 * 1000)
           }
           const isMidnight =
             fixedEnd.getHours() === 0 && fixedEnd.getMinutes() === 0 &&
@@ -367,11 +439,12 @@ onMounted(() => {
 
     datesSet: () => {
       renderAgenda()
+      refreshSummary()                 // ✅ 요약 갱신
       pageDate.value = calendar.getDate()
     },
-    eventAdd: renderAgenda,
-    eventChange: renderAgenda,
-    eventRemove: renderAgenda
+    eventAdd: () => { renderAgenda(); refreshSummary() },     // ✅ 요약 갱신
+    eventChange: () => { renderAgenda(); refreshSummary() },  // ✅ 요약 갱신
+    eventRemove: () => { renderAgenda(); refreshSummary() }   // ✅ 요약 갱신
   })
 
   calendar.render()
@@ -381,4 +454,90 @@ onMounted(() => {
 
 onBeforeUnmount(() => { if (calendar) calendar.destroy() })
 </script>
+
+<!-- 전역 캘린더/모달/FC 커스텀 (네가 만든 calendar.css) -->
 <style src="../assets/calendar.css"></style>
+
+<!-- 이 파일 전용 보조 스타일 -->
+<style scoped>
+/* 모달 본문이 길어질 경우 스크롤 */
+.modal__body { max-height: 70vh; overflow: auto; }
+
+/* ===== Summary ===== */
+.summary {
+  width: var(--cal-fixed-width, 1280px);
+  max-width: 100%;
+  margin: 16px auto 0;
+}
+.summary__title {
+  margin: 12px 0 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+.summary__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.summary__item {
+  display: grid;
+  grid-template-columns: 10px 110px 96px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e9e9e9;
+  border-radius: 10px;
+  background: #fff;
+}
+.summary__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--dot-color, #999);
+}
+.summary__date, .summary__when {
+  font-size: 13px;
+  color: #444;
+}
+.summary__text {
+  font-size: 14px;
+  color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.summary__actions {
+  display: flex;
+  gap: 6px;
+}
+.btn.btn--tiny {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn.btn--tiny:hover { background: #f5f5f5; }
+.btn--danger { color: #dc2626; border-color: #fecaca; }
+.summary__empty {
+  padding: 14px;
+  text-align: center;
+  color: #666;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+/* 모바일 대응 */
+@media (max-width: 640px) {
+  .summary__item {
+    grid-template-columns: 10px 92px 72px 1fr auto;
+    gap: 8px;
+  }
+  .summary__date, .summary__when { font-size: 12px; }
+  .summary__text { font-size: 13px; }
+}
+</style>
