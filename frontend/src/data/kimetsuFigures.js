@@ -1,124 +1,98 @@
-// src/data/kimetsuFigures.js
-import kimetsu1 from '@/assets/ani/kimetsu1.svg'
-import kimetsu2 from '@/assets/ani/kimetsu2.svg'
-import kimetsu3 from '@/assets/ani/kimetsu3.svg'
-import kimetsu4 from '@/assets/ani/kimetsu4.svg'
-import kimetsu5 from '@/assets/ani/kimetsu5.svg'
-import kimetsu6 from '@/assets/ani/kimetsu6.svg'
-import kimetsu7 from '@/assets/ani/kimetsu7.svg'
-import kimetsu8 from '@/assets/ani/kimetsu8.svg'
-import kimetsu9 from '@/assets/ani/kimetsu9.svg'
-import kimetsu10 from '@/assets/ani/kimetsu10.svg'
-import kimetsu11 from '@/assets/ani/kimetsu11.svg'
-import kimetsu12 from '@/assets/ani/kimetsu12.svg'
-import kimetsu13 from '@/assets/ani/kimetsu13.svg'
-import kimetsu14 from '@/assets/ani/kimetsu14.svg'
-import kimetsu15 from '@/assets/ani/kimetsu15.svg'
+const imageModules = import.meta.glob("/src/assets/ani/*.{png,jpg,jpeg,svg}", {
+  eager: true,
+  import: "default",
+});
 
-export default [
-  { 
-    name: '우즈이 텐겐', 
-    character: '우즈이 텐겐', 
-    series: '귀멸의 칼날 프리미엄', 
-    image: kimetsu1,
-    verified: false // 미소장
+// 파일명 속 숫자 기준으로 정렬 (1,2,3,...,10,11)
+const images = Object.keys(imageModules)
+  .sort((a, b) => {
+    const na = parseInt(a.match(/(\d+)/)?.[0] ?? "0", 10);
+    const nb = parseInt(b.match(/(\d+)/)?.[0] ?? "0", 10);
+    return na - nb;
+  })
+  .map((p) => imageModules[p]);
+
+// 혹시 이미지 개수가 메타데이터보다 적어도 에러 안 나게 안전 접근
+const imgAt = (idx) => images[idx] ?? images[0] ?? "";
+
+const kimetsuFigures = [
+  {
+    name: "아가츠마 젠이츠",
+    character: "아가츠마 젠이츠",
+    series: "제일복권",
+    image: imgAt(0),
+    verified: false,
   },
-  { 
-    name: '토미오카 기유', 
-    character: '토미오카 기유', 
-    series: '물의 호흡 에디션', 
-    image: kimetsu2,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "카마도 네즈코",
+    character: "카마도 네즈코",
+    series: "제일복권",
+    image: imgAt(1),
+    verified: true,
   },
-  { 
-    name: '코초 시노부', 
-    character: '코초 시노부', 
-    series: '나비의 춤 에디션', 
-    image: kimetsu3,
-    verified: false // 미소장
+  {
+    name: "칸로지 미츠리",
+    character: "칸로지 미츠리",
+    series: "제일복권",
+    image: imgAt(2),
+    verified: false,
   },
-  { 
-    name: '칸로지 미츠리', 
-    character: '칸로지 미츠리', 
-    series: '사랑의 호흡 액션', 
-    image: kimetsu4,
-    verified: false // 미소장
+  {
+    name: "하시비라 이노스케",
+    character: "하시비라 이노스케",
+    series: "제일복권",
+    image: imgAt(3),
+    verified: false,
   },
-  { 
-    name: '토미오카 기유', 
-    character: '토미오카 기유', 
-    series: '다이나믹 액션 시리즈', 
-    image: kimetsu5,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "토미오카 기유",
+    character: "토미오카 기유",
+    series: "제일복권",
+    image: imgAt(4),
+    verified: true,
   },
-  { 
-    name: '아가츠마 젠이츠', 
-    character: '아가츠마 젠이츠', 
-    series: '번개의 호흡 피규어', 
-    image: kimetsu6,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "우즈이 텐겐",
+    character: "우즈이 텐겐",
+    series: "제일복권",
+    image: imgAt(5),
+    verified: true,
   },
-  { 
-    name: '렌고쿠 쿄쥬로', 
-    character: '렌고쿠 쿄쥬로', 
-    series: '불꽃의 호흡 프리미엄', 
-    image: kimetsu7,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "아카자",
+    character: "아카자",
+    series: "제일복권",
+    image: imgAt(6),
+    verified: true,
   },
-  { 
-    name: '카마도 탄지로', 
-    character: '카마도 탄지로', 
-    series: '히노카미 카구라', 
-    image: kimetsu8,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "코쵸우 시노부",
+    character: "코쵸우 시노부",
+    series: "제일복권",
+    image: imgAt(7),
+    verified: true,
   },
-  { 
-    name: '토미오카 기유', 
-    character: '토미오카 기유', 
-    series: '이펙트 피규어 시리즈', 
-    image: kimetsu9,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "카마도 탄지로",
+    character: "카마도 탄지로",
+    series: "제일복권",
+    image: imgAt(8),
+    verified: true,
   },
-  { 
-    name: '렌고쿠 쿄쥬로', 
-    character: '렌고쿠 쿄쥬로', 
-    series: '불꽃 이펙트 에디션', 
-    image: kimetsu10,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "츠유리 카나오",
+    character: "츠유리 카나오",
+    series: "제일복권",
+    image: imgAt(9),
+    verified: true,
   },
-  { 
-    name: '카마도 네즈코', 
-    character: '카마도 네즈코', 
-    series: '나비 정원 에디션', 
-    image: kimetsu11,
-    verified: true // ✅ 소장 완료!
+  {
+    name: "하시비라 이노스케",
+    character: "하시비라 이노스케",
+    series: "제일복권",
+    image: imgAt(10),
+    verified: false,
   },
-  { 
-    name: '코초 시노부', 
-    character: '코초 시노부', 
-    series: '나비의 춤 스페셜', 
-    image: kimetsu12,
-    verified: false // 미소장
-  },
-  { 
-    name: '사바니토', 
-    character: '사바니토', 
-    series: '최종 선별 에디션', 
-    image: kimetsu13,
-    verified: false // 미소장
-  },
-  { 
-    name: '우즈이 텐겐', 
-    character: '우즈이 텐겐', 
-    series: '전투 액션 시리즈', 
-    image: kimetsu14,
-    verified: false // 미소장
-  },
-  { 
-    name: '코초 시노부', 
-    character: '코초 시노부', 
-    series: '일상 컬렉션', 
-    image: kimetsu15,
-    verified: false // 미소장
-  }
-]
+];
+
+export default kimetsuFigures;
