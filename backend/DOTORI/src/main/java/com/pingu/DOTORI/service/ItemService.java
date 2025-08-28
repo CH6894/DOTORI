@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pingu.DOTORI.entity.Item;
@@ -15,7 +13,7 @@ import com.pingu.DOTORI.repository.ItemRepository;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-	private ItemRepository itemRepository;
+	private final ItemRepository itemRepository;
 	public List<Item> findAll() {
         // 아주 단순: 전부 조회
         return itemRepository.findAll();
