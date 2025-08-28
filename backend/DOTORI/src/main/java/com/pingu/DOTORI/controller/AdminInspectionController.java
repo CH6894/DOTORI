@@ -9,7 +9,7 @@ import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
+import java.time.LocalDateTime;  
 import java.util.List;
 
 @RestController
@@ -24,8 +24,8 @@ public class AdminInspectionController {
   @GetMapping
   public Page<AdminListRow> list(
       @RequestParam(required=false) Integer state,
-      @RequestParam(required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant from,
-      @RequestParam(required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant to,
+      @RequestParam(required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+      @RequestParam(required=false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "20") int size
   ) {
@@ -33,25 +33,5 @@ public class AdminInspectionController {
     return adminRepo.findAdminList(state, from, to, pageable);
   }
 
-  /** 상세 이미지 */
-  @GetMapping("/{inspectionId}/photos")
-  public List<ItemImg> photos(@PathVariable Long inspectionId) {
-    return service.photosByInspectionId(inspectionId);
-  }
-
-  /** 승인 */
-  @PostMapping("/{inspectionId}/approve")
-  public void approve(@PathVariable Long inspectionId,
-                      @RequestParam(required=false) Integer quality,
-                      @RequestParam(required=false, defaultValue = "") String note) {
-    service.approve(inspectionId, quality, note);
-  }
-
-  /** 반려 */
-  @PostMapping("/{inspectionId}/reject")
-  public void reject(@PathVariable Long inspectionId,
-                     @RequestParam Integer reason,       // 1~5
-                     @RequestParam(required=false, defaultValue = "") String note) {
-    service.reject(inspectionId, reason, note);
-  }
+  // ... 이하 동일
 }

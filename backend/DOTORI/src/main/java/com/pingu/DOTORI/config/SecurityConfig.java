@@ -13,7 +13,7 @@ import com.pingu.DOTORI.security.OAuth2SuccessHandler;
 
 import java.util.List;
 
-import com.pingu.DOTORI.config.AlwaysReauthResolver;
+//import com.pingu.DOTORI.config.AlwaysReauthResolver;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -44,6 +44,7 @@ public class SecurityConfig {
             )
             .successHandler(oAuth2SuccessHandler) // 로그인 성공 후 JWT 발급
         );
+    
 
     return http.build();
   }

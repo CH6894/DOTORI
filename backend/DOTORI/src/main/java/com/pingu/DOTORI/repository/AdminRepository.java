@@ -6,6 +6,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime; 
 import java.time.Instant;
 import java.util.List;
 
@@ -22,7 +23,8 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
   long countByAdmissionState(Integer admissionState);
 
   /** 특정 아이템의 마지막 신청건 조회(있으면) */
-  List<Admin> findTop1ByItemIdOrderByRegistrationDateDesc(Long itemId);
+  Admin findTop1ByItemDetails_ItemIdOrderByRegistrationDateDesc(Long itemId);
+
 
   /* =========================
    * 목록 화면 최적화 쿼리 (Projection)
@@ -58,9 +60,9 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     nativeQuery = true
   )
   Page<AdminListRow> findAdminList(
-      @Param("state") Integer state,
-      @Param("from") Instant from,
-      @Param("to")   Instant to,
-      Pageable pageable
+		    @Param("state") Integer state,
+		    @Param("from") LocalDateTime from,
+		    @Param("to")   LocalDateTime to,
+		    Pageable pageable
   );
 }

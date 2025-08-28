@@ -27,8 +27,8 @@
               <img :src="currentImage" :alt="item.title" class="main-image" />
               <button v-if="images.length > 1" class="nav-btn prev-btn" :disabled="idx === 0" @click="prev"
                 aria-label="이전 이미지">‹</button>
-              <button v-if="images.length > 1" class="nav-btn next-btn" :disabled="idx === images.length - 1" @click="next"
-                aria-label="다음 이미지">›</button>
+              <button v-if="images.length > 1" class="nav-btn next-btn" :disabled="idx === images.length - 1"
+                @click="next" aria-label="다음 이미지">›</button>
               <div v-if="images.length > 1" class="image-indicators">
                 <span v-for="(img, i) in images" :key="img + '-' + i" class="indicator" :class="{ active: i === idx }"
                   @click="setIdx(i)"></span>
@@ -142,8 +142,8 @@
                 <div class="uploader__actions">
                   <button class="btn btn--ghost" @click="move(idx2, -1)" :disabled="idx2 === 0 || uploading"
                     aria-label="왼쪽으로">←</button>
-                  <button class="btn btn--ghost" @click="move(idx2, 1)" :disabled="idx2 === items.length - 1 || uploading"
-                    aria-label="오른쪽으로">→</button>
+                  <button class="btn btn--ghost" @click="move(idx2, 1)"
+                    :disabled="idx2 === items.length - 1 || uploading" aria-label="오른쪽으로">→</button>
                   <button class="btn btn--ghost danger" @click="remove(idx2)" :disabled="uploading">삭제</button>
                 </div>
                 <label class="uploader__caption">
@@ -509,6 +509,9 @@ function onClose() { emit('close') }
 const isSubmitting = ref(false)
 const step = ref<1 | 2 | 3 | 4>(1)
 const userId = 1
+
+const normalizedPrice = price.toString().replace(/,/g, "")
+
 async function submitAll() {
   if (!allAgreed.value || isSubmitting.value) {
     if (!allAgreed.value) alert('필수 항목에 모두 동의해주세요.');
@@ -518,10 +521,15 @@ async function submitAll() {
     const fd = new FormData()
     fd.append('userId', String(userId))
     fd.append('productTitle', props.item.title)
-    fd.append('price', String(price.value))
+    fd.append("price", String(price.value ?? 0))
     fd.append('unpacked', selectedChip.value === '미개봉' ? '0' : '1')
     fd.append('memo', memo.value ?? '')
+    
+    items.value.forEach(i => fd.append('images', i.file))
 
+    for (const [key, value] of fd.entries()) {
+      console.log("FormData:", key, value)
+    }
     items.value.forEach(i => fd.append('images', i.file))
 
     const res = await createInspection(fd)

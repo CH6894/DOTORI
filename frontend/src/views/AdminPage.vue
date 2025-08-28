@@ -88,7 +88,7 @@
       <div class="pagination" v-if="totalPages > 1">
         <button class="btn btn--ghost" :disabled="page === 1" @click="page--">이전</button>
         <span class="page-indicator">{{ page }} / {{ totalPages }}</span>
-        <button class="btn btn--ghost" :disabled="page === totalPages" @click="page++">다음</button>
+        <button class="btn btn--ghost" :disabled="page === totalPages" @click="page++ ">다음</button>
       </div>
     </section>
 
