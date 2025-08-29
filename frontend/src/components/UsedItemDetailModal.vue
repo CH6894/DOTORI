@@ -476,6 +476,7 @@ const formatDate = (dateString) => {
   animation: toast-in .18s ease-out forwards;
 }
 
+
 @keyframes toast-in {
   from {
     opacity: 0;
