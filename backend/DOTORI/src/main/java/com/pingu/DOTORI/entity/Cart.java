@@ -26,4 +26,8 @@ public class Cart {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "Item_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_Item_details_TO_Cart"))
 	private ItemDetails itemDetails;
+	
+	 // 장바구니 수량 필드 추가
+    @Column(name = "Quantity", nullable = false)
+    private int quantity;
 }
