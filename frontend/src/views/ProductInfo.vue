@@ -57,8 +57,12 @@
 </template>
 
 <script setup>
+import api from '@/api/axios'         // 로그인 필요한 API (장바구니 담기)
+import openApi from '@/api/axiosPublic' // 로그인 불필요 API (상품 조회)
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+
+// components
 import ProductInfo from '@/components/ProductInfo.vue'
 import PriceChart from '@/components/PriceChart.vue'
 import UsedProductsSection from '@/components/UsedProductsSection.vue'
@@ -67,6 +71,7 @@ import RecommendedProducts from '@/components/RecommendedProducts.vue'
 import RelatedProducts from '@/components/RelatedProducts.vue'
 
 const route = useRoute()
+const router = useRouter()
 const productId = route.params.id
 
 // 반응형 데이터
@@ -84,221 +89,122 @@ const productType = computed(() => {
   return product.value.type || 'new' // 기본은 'new' (미개봉)
 })
 
-// API 호출 함수들 (DB 연동 준비)
+  // 상품 상세 조회 (Spring Boot API 연결)
 const fetchProductDetail = async () => {
   try {
-    // const response = await fetch(`/api/products/${productId}`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제)
-    product.value = {
-      id: productId,
-      title: '세가 (SEGA) 귀멸의 칼날 Xross Link 피규어 렌고쿠 쿄쥬로 이카자',
-      brand: '세가',
-      originalPrice: '발매가 미정',
-      currentPrice: '20,000원',
-      type: 'new', // 기본은 미개봉 상품
-      images: [
-        '/img/예시1.jpg',
-         '/img/예시1.jpg',
-         '/img/예시1.jpg',
-      ],
-      description: '세가에서 출시한 귀멸의 칼날 피규어입니다.'
-    }
+    const res = await openApi.get(`/items/${productId}`)
+    product.value = res.data
   } catch (error) {
     console.error('상품 정보 로드 실패:', error)
   }
 }
 
+// 가격 차트 조회
 const fetchPriceData = async () => {
   if (productType.value !== 'new') return
-  
   try {
-    // const response = await fetch(`/api/products/${productId}/price-chart`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제)
-    priceData.value = [
-      { date: '24/07/28', price: 20000 },
-      { date: '24/08/04', price: 22000 },
-      { date: '24/08/11', price: 25000 },
-      { date: '24/08/18', price: 20000 },
-    ]
+    const res = await openApi.get(`/items/${productId}/price-chart`)
+    priceData.value = res.data
   } catch (error) {
-    console.error('가격 차트 데이터 로드 실패:', error)
+    console.error('가격 차트 로드 실패:', error)
   }
 }
 
+// 중고상품 리스트 조회
 const fetchUsedItems = async () => {
   try {
-    // const response = await fetch(`/api/products/${productId}/used-items`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제) - 각각 고유한 개별 중고상품들
-    usedItems.value = [
-      {
-        id: 1,
-        title: '세가 귀멸의 칼날 피규어',
-        description: 'dmdkkkkkkkkkkkk',
-        price: 22000,
-        originalPrice: 25000,
-        condition: 'excellent',
-        createdAt: new Date(),
-        images: ['/img/예시1.jpg', '/img/test.jpg'],
-        conditionDetails: '박스 외관 미세한 눌림, 내용물 완벽'
-      },
-      {
-        id: 2,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '한번 사용 후 보관된 최상급 상품입니다.',
-        price: 24000,
-        originalPrice: 25000,
-        condition: 'excellent',
-        createdAt: new Date(Date.now() - 86400000),
-        images: ['/img/used002.jpg'],
-        conditionDetails: '흠집 전무'
-      },
-      {
-        id: 3,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '박스 개봉했으나 피규어 자체는 새상품 수준입니다.',
-        price: 20000,
-        originalPrice: 25000,
-        condition: 'poor',
-        createdAt: new Date(Date.now() - 172800000),
-        images: ['/img/used003.jpg'],
-        conditionDetails: '더러움 아주 더러움 세상에서 이것보다 더 더러운 것은 없을거임'
-      },
-      {
-        id: 4,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '약간의 사용감이 있지만 전체적으로 양호한 상태입니다.',
-        price: 18000,
-        originalPrice: 25000,
-        condition: 'good',
-        createdAt: new Date(Date.now() - 259200000),
-        images: ['/img/used004.jpg'],
-        conditionDetails: '미세한 스크래치, 기능상 문제없음'
-      },
-      {
-        id: 5,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '일반적인 사용감이 있는 중고상품입니다.',
-        price: 15000,
-        originalPrice: 25000,
-        condition: 'fair',
-        createdAt: new Date(Date.now() - 345600000),
-        images: ['/img/used005.jpg'],
-        conditionDetails: '사용감 있으나 정상 작동'
-      },
-      {
-        id: 6,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '약간의 기스와 사용감이 있지만 저렴한 가격입니다.',
-        price: 17000,
-        originalPrice: 25000,
-        condition: 'good',
-        createdAt: new Date(Date.now() - 432000000),
-        images: ['/img/used006.jpg'],
-        conditionDetails: '약간의 기스, 전체적으로 양호'
-      }
-    ]
+    const res = await openApi.get(`/items/${productId}/used`)
+    usedItems.value = res.data
   } catch (error) {
     console.error('중고상품 목록 로드 실패:', error)
   }
 }
 
+// 추천상품
 const fetchRecommendedProducts = async () => {
   try {
-    // const response = await fetch(`/api/products/${productId}/recommended`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제)
-    recommendedProducts.value = [
-      { id: 1, title: '추천상품1', image: '/img/rec1.jpg', price: '15,000원' },
-      { id: 2, title: '추천상품2', image: '/img/rec2.jpg', price: '18,000원' },
-      { id: 3, title: '추천상품3', image: '/img/rec3.jpg', price: '22,000원' },
-      { id: 4, title: '추천상품4', image: '/img/rec4.jpg', price: '25,000원' },
-      { id: 4, title: '추천상품5', image: '/img/rec4.jpg', price: '25,000원' },
-     { id: 4, title: '추천상품', image: '/img/rec4.jpg', price: '25,000원' },
-    ]
+    const res = await openApi.get(`/items/${productId}/recommended`)
+    recommendedProducts.value = res.data
   } catch (error) {
-    console.error('추천 상품 로드 실패:', error)
+    console.error('추천상품 로드 실패:', error)
   }
 }
 
+// 연관상품
 const fetchRelatedProducts = async () => {
   try {
-    // const response = await fetch(`/api/products/${productId}/related`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제)
-    relatedProducts.value = [
-      { id: 1, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
-      { id: 2, title: '함께본상품2', image: '/img/rel2.jpg', price: '25,000원' },
-      { id: 3, title: '함께본상품3', image: '/img/rel3.jpg', price: '18,000원' },
-      { id: 4, title: '함께본상품4', image: '/img/rel4.jpg', price: '35,000원' },
-      { id: 5, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
-      { id: 6, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
-    ]
+    const res = await openApi.get(`/items/${productId}/related`)
+    relatedProducts.value = res.data
   } catch (error) {
-    console.error('관련 상품 로드 실패:', error)
+    console.error('관련상품 로드 실패:', error)
   }
 }
 
-// 이벤트 핸들러들
-const handlePurchase = async (productData) => {
+// 이벤트
+
+// 미개봉 상품 즉시 구매
+const handlePurchase = async () => {
   try {
-    // 미개봉 상품 즉시 구매 API 호출
-    console.log('구매 처리:', productData)
-    // const response = await fetch('/api/orders/immediate-purchase', {...})
+    const res = await api.post('/orders', {
+      cartIds: [product.value.id], // 단일상품 바로 주문
+      depositerName: '구매자명',   // TODO: 사용자 입력값과 연결
+      payMessage: '빠른 배송 부탁드립니다.'
+    })
+    router.push({ name: 'OrderComplete', state: { orders: res.data } })
   } catch (error) {
-    console.error('구매 처리 실패:', error)
-    alert('구매 처리 중 오류가 발생했습니다.')
+    console.error('구매 실패:', error)
+    alert('구매 처리 실패')
   }
 }
 
+// 장바구니 담기
+const handleAddToCart = async () => {
+  try {
+    await api.post('/cart', null, { params: { itemDetailsId: product.value.id } })
+    alert('장바구니에 담겼습니다!')
+  } catch (error) {
+    console.error('장바구니 담기 실패:', error)
+    alert('장바구니 담기 실패')
+  }
+}
 
-// 중고상품 관련 핸들러들
+// 중고상품 상세
 const handleUsedItemDetailDirect = (item) => {
   selectedUsedItem.value = item
   showUsedItemDetail.value = true
 }
 
+// 중고상품 구매
 const handleUsedItemPurchase = async (usedItem) => {
   try {
-    // 중고상품 구매 API 호출
-    console.log('중고상품 구매:', usedItem)
-    // const response = await fetch('/api/orders/immediate-purchase', {...})
+    const res = await api.post('/orders', {
+      cartIds: [usedItem.id],
+      depositerName: '구매자명',
+      payMessage: '중고상품 구매'
+    })
+    router.push({ name: 'OrderComplete', state: { orders: res.data } })
   } catch (error) {
-    console.error('중고상품 구매 처리 실패:', error)
-    alert('구매 처리 중 오류가 발생했습니다.')
+    console.error('중고상품 구매 실패:', error)
+    alert('구매 처리 실패')
   }
 }
 
+// 중고상품 장바구니 추가
 const handleUsedItemAddToCart = async (usedItem) => {
   try {
-    // 중고상품 장바구니 추가 API 호출
-    console.log('중고상품 장바구니 추가:', usedItem)
-    // const response = await fetch('/api/cart/add', {...})
+    await api.post('/cart', null, { params: { itemDetailsId: usedItem.id } })
     alert('장바구니에 추가되었습니다.')
   } catch (error) {
     console.error('장바구니 추가 실패:', error)
-    alert('장바구니 추가 중 오류가 발생했습니다.')
   }
 }
 
-const goBack = () => {
-  // 이전 페이지로 이동
-  window.history.back()
-}
+const goBack = () => window.history.back()
 
-// 페이지 초기화
+// 초기화
 const initializePage = async () => {
   loading.value = true
-  
   try {
-    // 병렬로 데이터 로드
     await Promise.all([
       fetchProductDetail(),
       fetchPriceData(),
@@ -306,17 +212,12 @@ const initializePage = async () => {
       fetchRecommendedProducts(),
       fetchRelatedProducts()
     ])
-  } catch (error) {
-    console.error('페이지 초기화 실패:', error)
   } finally {
     loading.value = false
   }
 }
 
-// 컴포넌트 마운트 시 데이터 로드
-onMounted(() => {
-  initializePage()
-})
+onMounted(initializePage)
 </script>
 
 <style scoped>

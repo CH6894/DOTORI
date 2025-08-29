@@ -13,6 +13,9 @@
   "include": [
     "src/**/*",
     "src/env.d.ts",
-    "vite.config.ts"                    // vite 설정도 타입체크
+    "vite.config.ts",                    // vite 설정도 타입체크
+    "src/**/*.ts", 
+    "src/**/*.d.ts", 
+    "src/**/*.vue"
   ]
 }

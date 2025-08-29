@@ -9,22 +9,10 @@
         <div class="left">
           <div class="label">배송 주소</div>
           <div class="addr-lines">
-            <div class="addr-line">
-              <span class="addr-label">받는 분</span>
-              <span class="addr-value">{{ address.receiver }}</span>
-            </div>
-
-            <div class="addr-line">
-              <span class="addr-label">연락처</span>
-              <span class="addr-value">{{ address.phone }}</span>
-            </div>
-
-            <div class="addr-line">
-              <span class="addr-label">주소</span>
-              <span class="addr-value">
-                [{{ address.postcode }}] {{ address.addr1 }}<br />
-                {{ address.addr2 }}
-              </span>
+            <div class="addr-line"><span class="addr-label">받는 분</span><span class="addr-value">{{ address.receiver }}</span></div>
+            <div class="addr-line"><span class="addr-label">연락처</span><span class="addr-value">{{ address.phone }}</span></div>
+            <div class="addr-line"><span class="addr-label">주소</span>
+              <span class="addr-value">[{{ address.postcode }}] {{ address.addr1 }}<br />{{ address.addr2 }}</span>
             </div>
           </div>
         </div>
@@ -37,135 +25,82 @@
         @save="updateAddress"
         @search-postcode="openPostcode"
       />
-
-      <button class="btn-primary note" @click="isNoteOpen = !isNoteOpen" :class="{ open: isNoteOpen }">
-        {{ displayNote }}
-        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </button>
-
-      <transition name="collapse">
-        <div v-show="isNoteOpen" class="note-panel" role="region" aria-label="배송 요청사항 입력">
-          <textarea
-            v-model="tempNote"
-            class="note-textarea"
-            rows="3"
-            placeholder="예) 경비실에 맡겨주세요 / 부재 시 문앞에 두세요"
-          ></textarea>
-          <div class="note-actions">
-            <button class="btn-subtle" @click="onClearNote">지우기</button>
-            <div class="note-actions-right">
-              <button class="btn-ghost" @click="onCancelNote">취소</button>
-              <button class="btn-save" @click="onSaveNote">저장</button>
-            </div>
-          </div>
-        </div>
-      </transition>
     </section>
 
     <!-- 주문서 -->
     <section class="card order">
       <h2 class="section-title">주문서</h2>
 
-      <div v-for="it in items" :key="it.id" class="order-items">
-        <div class="thumb"><img :src="it.thumb" alt="" /></div>
+      <div v-for="it in items" :key="it.cartId" class="order-items">
+        <div class="thumb"><img :src="it.thumbnailUrl" alt="" /></div>
         <div class="info">
-          <div class="name">{{ it.name }}</div>
-          <div class="meta">
-            {{ it.desc }}<br />
-            {{ it.option }} <span v-if="it.option && it.qty">/</span> {{ it.qty }}개
-          </div>
+          <div class="name">{{ it.itemName }}</div>
+          <div class="meta">수량: {{ it.quantity }}개</div>
         </div>
-        <div class="price">{{ formatCurrency(it.price * it.qty) }} 원</div>
+        <div class="price">{{ formatCurrency(it.price * it.quantity) }} 원</div>
       </div>
 
-      <p v-if="items.length === 0" class="muted" style="margin-top:12px;">주문할 상품이 없습니다.</p>
+      <p v-if="!items.length" class="muted">주문할 상품이 없습니다.</p>
 
-      <hr v-if="items.length" />
-
-      <!-- 결제 금액 -->
       <div class="amount" v-if="items.length">
         <div class="row"><span>상품 금액</span><b>{{ formatCurrency(subtotal) }}원</b></div>
-        <div class="row"><span>할인 금액</span><b>{{ formatCurrency(discount) }}원</b></div>
-        <div class="row">
-          <span>배송비</span>
-          <b>{{ shippingFee === 0 ? '무료' : formatCurrency(shippingFee) + '원' }}</b>
-        </div>
+        <div class="row"><span>배송비</span><b>{{ shippingFee === 0 ? '무료' : formatCurrency(shippingFee) + '원' }}</b></div>
         <div class="row total"><span>총 주문 금액</span><b>{{ formatCurrency(total) }}원</b></div>
       </div>
 
       <!-- 결제 수단 -->
       <div class="pay-methods" v-if="items.length">
         <h3>결제 수단</h3>
-
         <label class="radio"><input type="radio" value="bank" v-model="payMethod" /><span>무통장 결제</span></label>
-
         <transition name="collapse">
-          <div v-if="payMethod === 'bank'" class="bank-box" role="region" aria-label="무통장 결제 정보">
+          <div v-if="payMethod === 'bank'" class="bank-box">
             <div class="field">
               <label>입금은행 <span class="req">*</span></label>
-              <div class="inline">
-                <select v-model="selectedBank" class="select">
-                  <option v-for="b in banks" :key="b.code" :value="b">{{ b.label }}</option>
-                </select>
-              </div>
-              <div class="hint">계좌번호: <b>{{ selectedBank.account }}</b><span v-if="selectedBank.holder"> / 예금주: {{ selectedBank.holder }}</span></div>
+              <select v-model="selectedBank" class="select">
+                <option v-for="b in banks" :key="b.code" :value="b">{{ b.label }}</option>
+              </select>
+              <div class="hint">계좌번호: <b>{{ selectedBank.account }}</b> / 예금주: {{ selectedBank.holder }}</div>
             </div>
-
             <div class="field">
               <label>입금자명 <span class="req">*</span></label>
-              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" @input="onInputDepositor" />
-            </div>
-
-            <div class="notice">
-              주문은 <b>{{ depositDeadlineHours }}시간</b> 이내 입금 완료 시 확정됩니다.
-              기한 내 미입금 시 <b>자동 주문취소</b>됩니다.
+              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" />
             </div>
           </div>
         </transition>
-
-        <label class="radio"><input type="radio" value="easy" v-model="payMethod" /><span>간편 결제</span></label>
-        <label class="radio"><input type="radio" value="card" v-model="payMethod" /><span>카드 결제</span></label>
-        <label class="radio"><input type="radio" value="mobile" v-model="payMethod" /><span>휴대폰</span></label>
       </div>
     </section>
   </div>
 
-<!-- 하단 고정 결제 바 -->
-<div class="paybar">
-  <div class="agree">
-    약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.
+  <!-- ✅ 하단 고정 결제 바 -->
+  <div class="paybar" ref="paybarEl">
+    <div class="agree">약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</div>
+
+    <!-- 조건 충족 시만 활성화 -->
+    <button v-if="canPay" class="btn-pay" @click="submitOrder">
+      <b>{{ formatCurrency(total) }}</b>원 결제하기
+    </button>
+    <button v-else class="btn-pay" disabled>
+      <b>{{ formatCurrency(total) }}</b>원 결제하기
+    </button>
   </div>
-
-  <!-- ✅ 무통장 + 유효할 때만 '이동 가능한' 링크 -->
-  <router-link
-    v-if="payMethod === 'bank' && isBankFormValid"
-    :to="{ name: 'ordercomplete' }"
-    class="btn-pay"
-  >
-    <b>{{ formatCurrency(total) }}</b>원 결제하기
-  </router-link>
-
-  <!-- ❌ 그 외에는 항상 비활성 버튼만 -->
-  <button v-else class="btn-pay" disabled @click.prevent>
-    <b>{{ formatCurrency(total) }}</b>원 결제하기
-  </button>
-</div>
-
 </template>
 
 <script setup lang="ts">
+import api from '@/api/axios'
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AddressEdit from '@/components/AddressEdit.vue'
 
-/* ───────── 결제바 높이만큼 body 하단 패딩 부여(이 페이지에서만 적용) ───────── */
+const route = useRoute()
+const router = useRouter()
+const note = ref('') 
+
+/* ───── 결제바 높이 패딩 적용 ───── */
 const paybarEl = ref<HTMLElement | null>(null)
 let roPaybar: ResizeObserver | null = null
 function applyBodyPadding(h: number) {
   document.body.style.setProperty('--paybar-h', `${h}px`)
-  document.body.classList.add('has-checkout-paybar') // 페이지 떠나면 제거
+  document.body.classList.add('has-checkout-paybar')
 }
 onMounted(() => {
   const el = paybarEl.value
@@ -183,114 +118,89 @@ onBeforeUnmount(() => {
   document.body.classList.remove('has-checkout-paybar')
 })
 
-/* ───────── 기본 상수/상태 ───────── */
-const LS_KEY = 'dotori_cart_v1'
-
+/* ───── 주소 API ───── */
 const addrModalOpen = ref(false)
-const address = reactive({
-  receiver: '구창회',
-  phone: '010-0000-0000',
-  postcode: '06236',
-  addr1: '서울 강남구 테헤란로 000',
-  addr2: 'OOO빌딩 10층',
-})
-const updateAddress = (next: any) => { Object.assign(address, next) }
-const openPostcode = () => { alert('우편번호 검색 띄우기') }
+const address = reactive<any>({ receiver: '', phone: '', postcode: '', addr1: '', addr2: '' })
+const updateAddress = (next: any) => Object.assign(address, next)
+const openPostcode = () => alert('우편번호 검색')
 
-/* 요청사항 */
-const isNoteOpen = ref(false)
-const note = ref('')
-const tempNote = ref('')
-const displayNote = computed(() => {
-  const txt = note.value.trim()
-  if (!txt) return '요청 사항 없음'
-  return txt.length > 24 ? txt.slice(0, 24) + '…' : txt
-})
-const onSaveNote = () => { note.value = (tempNote.value || '').trim(); isNoteOpen.value = false }
-const onCancelNote = () => { tempNote.value = note.value; isNoteOpen.value = false }
-const onClearNote = () => { tempNote.value = ''; note.value = ''; isNoteOpen.value = false }
-
-/* 장바구니 → 체크아웃 데이터 */
-const route = useRoute()
-type RawItem = {
-  id: number | string
-  title?: string
-  name?: string
-  desc?: string
-  option?: string
-  qty: number
-  price: number
-  shipping?: number
-  thumb?: string
-  image?: string
+// 주소 불러오기
+const loadAddress = async () => {
+  const res = await api.get('/address') // 백엔드 AddressController
+  if (res.data.length > 0) {
+    address.receiver = res.data[0].receiver
+    address.phone = res.data[0].phone
+    address.addr1 = res.data[0].mainAddress
+  }
 }
-const allItems = ref<RawItem[]>([])
-const items = ref<RawItem[]>([])
 
-onMounted(() => {
-  const raw = localStorage.getItem(LS_KEY)
-  const parsed: RawItem[] = raw ? JSON.parse(raw) : []
+/* ───── 장바구니 API ───── */
+const items = ref<any[]>([])
+const loadCart = async () => {
+  const idsParam = String(route.query.cartIds || '')
+  const idSet = new Set(idsParam.split(',').map(n => parseInt(n)).filter(n => Number.isFinite(n)))
 
-  const mode = String(route.query.mode ?? 'all')
-  const idsParam = String(route.query.ids ?? '')
-  const idSet = new Set(idsParam.split(',').map(s => parseInt(s.trim(), 10)).filter(n => Number.isFinite(n)))
-
-  allItems.value = parsed.map(it => ({
-    ...it,
-    name: it.name ?? it.title ?? '(무제)',
-    thumb: it.thumb ?? it.image ?? 'https://via.placeholder.com/72x72?text=item',
-    qty: Math.max(1, Number(it.qty) || 1),
-    price: Math.max(0, Number(it.price) || 0),
-    shipping: Math.max(0, Number(it.shipping) || 0),
-  }))
-
-  items.value = mode === 'selected'
-    ? allItems.value.filter(it => idSet.has(Number(it.id)))
-    : allItems.value
-})
+  const res = await api.get('/cart/me')
+  items.value = idSet.size > 0 ? res.data.filter((it: any) => idSet.has(it.cartId)) : res.data
+}
 
 /* 금액 계산 */
-const discount = computed(() => items.value.reduce((s, it) => s + (Number((it as any).discount) || 0), 0))
-const subtotal  = computed(() => items.value.reduce((sum, it) => sum + it.price * it.qty, 0))
-const shippingFee = computed(() => items.value.reduce((sum, it) => sum + (it.shipping || 0), 0))
-const total = computed(() => subtotal.value - discount.value + shippingFee.value)
+const subtotal = computed(() => items.value.reduce((s, it) => s + it.price * it.quantity, 0))
+const shippingFee = computed(() => 0)
+const total = computed(() => subtotal.value + shippingFee.value)
 const formatCurrency = (n: number) => n.toLocaleString('ko-KR', { maximumFractionDigits: 0 })
 
-/* 결제 수단/검증 */
-const banks = [
-  { code: 'KB', label: '국민은행', account: '123456-01-456789', holder: '도토리' },
-  { code: 'SHIN', label: '신한은행', account: '110-123-456789', holder: '도토리' },
-  { code: 'WOORI', label: '우리은행', account: '1002-123-456789', holder: '도토리' },
+/* 결제 수단 */
+const banks = [ 
+  { code: 'KB', label: '국민은행', account: '123456-01-456789', holder: '도토리' }, 
+  { code: 'SHIN', label: '신한은행', account: '110-123-456789', holder: '도토리' }, 
+  { code: 'WOORI', label: '우리은행', account: '1002-123-456789', holder: '도토리' }, 
 ]
-const payMethod = ref<'bank' | 'easy' | 'card' | 'mobile'>('easy')
+
+const payMethod = ref<'bank'>('bank')
 const selectedBank = ref(banks[0])
 const depositorName = ref('')
-const depositDeadlineHours = ref(3)
 
-const onInputDepositor = (e: Event) => {
-  depositorName.value = (e.target as HTMLInputElement).value
-}
+/* 조건부 활성화 */
+const isBankFormValid = computed(() => !!selectedBank.value?.account && !!depositorName.value.trim())
+const canPay = computed(() => payMethod.value === 'bank' && isBankFormValid.value)
 
-const isBankFormValid = computed(() => {
-  if (payMethod.value !== 'bank') return false
-  const hasBank = !!selectedBank.value?.account
-  const hasName = !!depositorName.value?.trim()
-  return hasBank && hasName
-})
+// 주문 API 호출
+const submitOrder = async () => {
+  try {
+    const cartIds = items.value.map(it => it.cartId)
+    if (!cartIds.length) {
+      alert('주문할 상품이 없습니다.')
+      return
+    }
 
-const isPayEnabled = computed(() => {
-  if (!items.value.length) return false
-  return payMethod.value === 'bank' ? isBankFormValid.value : true
-})
+    const payload = {
+      cartIds,
+      depositerName: depositorName.value,
+      payMessage: note.value || '',
+    }
 
-const onPay = () => {
-  if (!isPayEnabled.value) {
-    if (payMethod.value === 'bank') alert('무통장 결제 정보를 완료해 주세요.')
-    else alert('결제할 상품이 없습니다.')
-    return
+    const res = await api.post('/api/orders', payload)
+    console.log('✅ 주문 완료:', res.data)
+
+    // 백엔드 응답이 List<OrderResponse> 형태라면, 첫 번째 주문의 id 사용
+    const orderId = Array.isArray(res.data) ? res.data[0].orderId : res.data.orderId
+
+    // 장바구니 초기화
+    await api.delete('/api/cart/me')
+
+    // 주문 완료 페이지로 이동 (orderId를 query로 전달)
+    router.push({ name: 'OrderComplete', query: { orderId } })
+  } catch (err) {
+    console.error('❌ 주문 실패:', err)
+    alert('주문 처리 중 오류가 발생했습니다.')
   }
-  alert(`${payMethod.value} 방식으로 ${total.value.toLocaleString()}원 결제합니다.`)
 }
+
+onMounted(() => {
+  loadAddress()
+  loadCart()
+})
 </script>
 
 <style scoped>

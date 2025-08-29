@@ -29,9 +29,9 @@
         <tbody v-if="items.length">
           <CartItem
             v-for="it in items"
-            :key="it.id"
+            :key="it.cartId"
             :item="it"
-            v-model="checked[it.id]"
+            v-model="checked[it.cartId]"
             @apply-qty="applyQty"
             @remove="removeOne"
           />
@@ -68,89 +68,97 @@
   </main>
 </template>
 
-<script>
-import { reactive, ref, computed, watch, onMounted } from 'vue'
+<script setup>
+import api from '@/api/axios'
+import { reactive, ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CartItem from '@/components/shoppingcart/CartItem.vue'
 
-const LS_KEY = 'dotori_cart_v1'
+const cartItems = ref([])
+const router = useRouter()
 
-export default {
-  name: 'CartView',
-  components: { CartItem },
-  setup() {
-    const router = useRouter()
+// items 변수 정의
+const items = cartItems
 
-    const items = ref([])
-    onMounted(() => {
-      const raw = localStorage.getItem(LS_KEY)
-      items.value = raw ? JSON.parse(raw) : []
-    })
+// 선택 상태
+const checked = reactive({})
+const allChecked = computed(() => items.value.length && items.value.every(it => checked[it.cartId] !== false))
+const toggleAll = (v) => { items.value.forEach(it => { checked[it.cartId] = v }) }
+const selectedIds = computed(() => items.value.filter(it => checked[it.cartId] !== false).map(it => it.cartId))
 
-    // 선택 상태
-    const checked = reactive({})
-    const allChecked = computed(() => items.value.length && items.value.every(it => checked[it.id] !== false))
-    const toggleAll = (v) => { items.value.forEach(it => { checked[it.id] = v }) }
-    const selectedIds = computed(() => items.value.filter(it => checked[it.id] !== false).map(it => it.id))
+// 합계
+const subtotal = computed(() => 
+  items.value.reduce((s, it) => s + (checked[it.cartId] !== false ? it.price * it.quantity : 0), 0))
+const shippingTotal = computed(() => 0) // 배송비 로직 필요시 수정
+const grandTotal = computed(() => subtotal.value + shippingTotal.value)
+const totalQty = computed(() => 
+  items.value.reduce((s, it) => s + (checked[it.cartId] !== false ? it.quantity : 0), 0))
 
-    // 합계
-    const subtotal = computed(() =>
-      items.value.reduce((s, it) => s + (checked[it.id] !== false ? it.price * it.qty : 0), 0)
-    )
-    const shippingTotal = computed(() =>
-      items.value.reduce((s, it) => s + (checked[it.id] !== false ? (it.shipping || 0) : 0), 0)
-    )
-    const grandTotal = computed(() => subtotal.value + shippingTotal.value)
-    const totalQty = computed(() =>
-      items.value.reduce((s, it) => s + (checked[it.id] !== false ? it.qty : 0), 0)
-    )
+// 금액 포맷
+const currency = (n) => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(n)
 
-    // 수량 적용/삭제
-    const applyQty = ({ id, qty }) => {
-      const it = items.value.find(x => x.id === id)
-      if (it) it.qty = Math.max(1, parseInt(qty, 10) || 1)
+// API 호출
+const loadCart = async () => {
+  try {
+    console.log('장바구니 로딩 시작...')
+    const res = await api.get('/cart/me')
+    console.log('장바구니 응답:', res.data)
+    items.value = res.data
+    res.data.forEach(it => { checked[it.cartId] = true }) // 기본 선택
+  } catch (error) {
+    console.error('장바구니 로딩 실패:', error)
+    if (error.response?.status === 401) {
+      console.log('인증 실패 - 로그인 필요')
     }
-    const removeOne = (id) => { items.value = items.value.filter(x => x.id !== id) }
-    const removeSelected = () => { items.value = items.value.filter(x => !selectedIds.value.includes(x.id)) }
-
-    // 주문 → /checkout 이동 (쿼리로 모드/ids 전달)
-    const currency = (n) => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(n)
-
-    const orderSelected = () => {
-      if (!selectedIds.value.length) return
-      router.push({
-        path: '/checkout',
-        query: { mode: 'selected', ids: selectedIds.value.join(',') },
-      })
-    }
-
-    const orderAll = () => {
-      if (!items.value.length) return
-      router.push({ path: '/checkout', query: { mode: 'all' } })
-    }
-
-    // 저장
-    watch(items, v => localStorage.setItem(LS_KEY, JSON.stringify(v)), { deep: true })
-
-    return {
-      items,
-      checked,
-      allChecked,
-      toggleAll,
-      selectedIds,
-      subtotal,
-      shippingTotal,
-      grandTotal,
-      totalQty,
-      currency,
-      applyQty,
-      removeOne,
-      removeSelected,
-      orderSelected,
-      orderAll,
-    }
-  },
+  }
 }
+
+const applyQty = async ({ id, qty }) => {
+  try {
+    await api.put(`/cart/${id}`, null, { params: { quantity: qty } })
+    await loadCart()
+  } catch (error) {
+    console.error('수량 변경 실패:', error)
+  }
+}
+
+const removeOne = async (id) => {
+  try {
+    await api.delete(`/cart/${id}`)
+    await loadCart()
+  } catch (error) {
+    console.error('상품 삭제 실패:', error)
+  }
+}
+
+const removeSelected = async () => {
+  try {
+    for (const id of selectedIds.value) {
+      await api.delete(`/cart/${id}`)
+    }
+    await loadCart()
+  } catch (error) {
+    console.error('선택 상품 삭제 실패:', error)
+  }
+}
+
+// 주문하기
+const orderSelected = () => {
+  if (!selectedIds.value.length) return
+  router.push({ name: 'CheckoutPage', query: { cartIds: selectedIds.value.join(',') } })
+}
+
+const orderAll = () => {
+  if (!items.value.length) return
+  const allIds = items.value.map(it => it.cartId)
+  router.push({ name: 'CheckoutPage', query: { cartIds: allIds.join(',') } })
+}
+
+// 마운트 시 로드
+onMounted(() => {
+  console.log('ShoppingCart 마운트됨')
+  loadCart()
+})
 </script>
 
 

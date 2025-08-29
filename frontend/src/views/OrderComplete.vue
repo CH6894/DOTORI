@@ -11,7 +11,7 @@
     </div>
 
     <!-- 주문 상품 표 -->
-    <section class="card wide">
+    <section class="card wide" v-if="items.length">
       <h2 class="section-title">주문 상품</h2>
       <div class="thead row">
         <div>상품 이미지</div>
@@ -21,17 +21,17 @@
         <div>결제 금액</div>
       </div>
       <div class="tbody">
-        <div class="row" v-for="it in items" :key="it.id">
+        <div class="row" v-for="it in items" :key="it.itemDetailsId">
           <div class="thumb">
-            <img :src="it.thumb" alt="" />
+            <img :src="it.thumbnailUrl" alt="" />
           </div>
           <div class="info">
-            <div class="name">{{ it.name }}</div>
-            <div class="meta">{{ it.desc }}</div>
+            <div class="name">{{ it.itemName }}</div>
+            <div class="meta">상품번호: {{ it.itemDetailsId }}</div>
           </div>
-          <div>{{ it.qty }}</div>
-          <div>{{ fmt(it.discount) }}원</div>
-          <div class="right"><b>{{ fmt(it.price * it.qty - it.discount) }}원</b></div>
+          <div>{{ it.quantity }}</div>
+          <div>{{ fmt(it.discount || 0) }}원</div>
+          <div class="right"><b>{{ fmt(it.price * it.quantity - (it.discount || 0)) }}원</b></div>
         </div>
       </div>
     </section>
@@ -69,39 +69,65 @@
 
     <!-- 하단 액션 -->
     <div class="actions">
-      <router-link class="btn outline" :to="{ name: 'login' }">주문 상세보기</router-link>
-      <router-link class="btn primary" :to="{ name: 'checkout' }">쇼핑 계속하기</router-link>
+      <router-link class="btn outline" :to="{ name: 'OrderHistory' }">주문 내역 보기</router-link>
+      <router-link class="btn primary" :to="{ name: 'Home' }">쇼핑 계속하기</router-link>
     </div>
   </div>
 </template>
 
-<script setup>
-import { computed, reactive, ref } from 'vue'
-/* 아이콘 이미지는 프로젝트에 있는 걸로 교체해도 됨 */
-import icon from '@/assets/cart.svg' // 없으면 다른 이미지 경로로 바꿔도 OK
+<script setup lang="ts">
+import { computed, reactive, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import api from '@/api/axios'
+import icon from '@/assets/cart.svg'
 
-// ====== 목업 데이터 (페이지 먼저 확인용) ======
+const route = useRoute()
 const iconSrc = icon
-const orderNo = '1234567890'
-const items = reactive([
-  { id: 'sku-1', name: '상품 A', price: 90000, qty: 1, discount: 0, thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz2BqmHnvVTX6iSjug5pt1h4ehgaX_GHat-Q&s' },
-  { id: 'sku-2', name: '상품 B', price: 45000, qty: 3, discount: 0, thumb: 'https://images.unsplash.com/photo-1549068106-b024baf5062d?w=400&q=80&auto=format&fit=crop' }
-])
-const ship = {
-  receiver: '구창회',
-  phone: '010-0000-0000',
-  postcode: '06236',
-  addr1: '서울 강남구 테헤란로 000',
-  addr2: 'OOO빌딩 10층'
-}
+const orderNo = ref<string>('') // 주문 번호
+const items = ref<any[]>([])
+const ship = reactive({
+  receiver: '',
+  phone: '',
+  postcode: '',
+  addr1: '',
+  addr2: '',
+})
 const shippingFee = ref(0)
 
-const discount = computed(() => items.reduce((s, it) => s + it.discount, 0))
-const subtotal = computed(() => items.reduce((s, it) => s + it.price * it.qty, 0))
+// 금액 계산
+const discount = computed(() => items.value.reduce((s, it) => s + (it.discount || 0), 0))
+const subtotal = computed(() => items.value.reduce((s, it) => s + it.price * it.quantity, 0))
 const total = computed(() => subtotal.value - discount.value + shippingFee.value)
+const fmt = (n: number) => n.toLocaleString('ko-KR')
 
-const fmt = (n) => n.toLocaleString('ko-KR')
+// API: 주문 상세 조회
+const fetchOrderDetail = async () => {
+  try {
+    const orderId = route.query.orderId
+    let res
+
+    if (orderId) {
+      // 특정 주문 상세
+      res = await api.get(`/api/orders/${orderId}`)
+    } else {
+      // orderId 없으면 최신 주문 내역
+      res = await api.get('/api/orders/me')
+    }
+
+    const data = res.data
+    orderNo.value = data.orderId || (Array.isArray(data) ? data[0]?.orderId : 'N/A')
+    items.value = data.items || (Array.isArray(data) ? data[0]?.items : [])
+    // 배송지 정보도 data에서 매핑
+  } catch (err) {
+    console.error('❌ 주문 상세 조회 실패:', err)
+  }
+}
+
+onMounted(() => {
+  fetchOrderDetail()
+})
 </script>
+
 
 <style scoped>
 /* Checkout 페이지와 톤/폭을 맞춤 */

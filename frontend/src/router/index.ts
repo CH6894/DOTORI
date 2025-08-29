@@ -45,7 +45,7 @@ const Pokemon = () => import("@/components/dex/Pokemon.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
-  return !!localStorage.getItem("AuthToken");
+  return !!localStorage.getItem("accessToken");
 }
 
 /* ===== routes ===== */
