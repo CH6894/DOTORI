@@ -1,5 +1,9 @@
 // src/router/index.ts
-import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+} from "vue-router";
 
 /* ===== views (code-splitting) ===== */
 const MainViews = () => import("@/views/MainViews.vue");
@@ -14,8 +18,6 @@ const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
 const AdminPage = () => import("@/views/AdminPage.vue");
 const OAuthCallback = () => import("@/pages/OAuthCallback.vue");
 const ComingSoon = () => import("@/views/ComingSoon.vue");
-
-
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
 const CalendarView = () => import("@/views/CalendarPage.vue");
@@ -46,27 +48,49 @@ function isAuthenticated(): boolean {
   return !!localStorage.getItem("AuthToken");
 }
 
-const ItemList = () => import("@/components/ItemList.vue");
-
 /* ===== routes ===== */
 const routes: RouteRecordRaw[] = [
-  { path: "/items", name: "items", component: ItemList },
-
-  { path: "/CalendarManager", name: "CalendarManager", component: CalendarManager },
+  {
+    path: "/CalendarManager",
+    name: "CalendarManager",
+    component: CalendarManager,
+    meta: { header: "none", footer: true, chatbot: false },
+  },
 
   // 홈
-  { path: "/", name: "main", component: MainViews, meta: { header: "main", footer: true } },
+  {
+    path: "/",
+    name: "main",
+    component: MainViews,
+    meta: { header: "main", footer: true },
+  },
 
   // 검색/상품
-  { path: "/search", name: "search", component: SearchResult, meta: { header: "main", footer: true, utilbar: true } },
-  { path: "/product/:id", name: "product", component: ProductInfo, meta: { header: "main", footer: true, utilbar: true } },
+  {
+    path: "/search",
+    name: "search",
+    component: SearchResult,
+    meta: { header: "main", footer: true, utilbar: true },
+  },
+  {
+    path: "/product/:id",
+    name: "product",
+    component: ProductInfo,
+    meta: { header: "main", footer: true, utilbar: true },
+  },
 
   // 로그인
   {
     path: "/login",
     name: "login",
     component: LoginView,
-    meta: { header: "main", footer: true, utilbar: true, chatbot: true, topbtn: true },
+    meta: {
+      header: "main",
+      footer: true,
+      utilbar: true,
+      chatbot: true,
+      topbtn: true,
+    },
   },
 
   // 마이페이지
@@ -82,24 +106,42 @@ const routes: RouteRecordRaw[] = [
       { path: "storage", name: "mypage-storage", component: MyPageStorage },
     ],
   },
-{ 
-  path: "/mypage/wish",
-  name: "mypage-wish",
-  component: MyPageWish,
-  meta: { header: "main", footer: true, utilbar: true, /* requiresAuth: true? */ }
-},
+  {
+    path: "/mypage/wish",
+    name: "mypage-wish",
+    component: MyPageWish,
+    meta: {
+      header: "main",
+      footer: true,
+      utilbar: true /* requiresAuth: true? */,
+    },
+  },
   // 결제 플로우
   {
     path: "/checkout",
     name: "checkout",
     component: CheckoutPage,
-    meta: { requiresAuth: false, header: "main", footer: true, utilbar: true, chatbot: true, topbtn: true },
+    meta: {
+      requiresAuth: false,
+      header: "main",
+      footer: true,
+      utilbar: true,
+      chatbot: true,
+      topbtn: true,
+    },
   },
   {
     path: "/ordercomplete",
     name: "ordercomplete",
     component: OrderComplete,
-    meta: { requiresAuth: false, header: "main", footer: true, utilbar: true, chatbot: true, topbtn: true },
+    meta: {
+      requiresAuth: false,
+      header: "main",
+      footer: true,
+      utilbar: true,
+      chatbot: true,
+      topbtn: true,
+    },
   },
 
   // 인증/관리 보조 페이지
@@ -113,7 +155,7 @@ const routes: RouteRecordRaw[] = [
     path: "/admin",
     name: "admin",
     component: AdminPage,
-    meta: { header: "main", footer: true, chatbot: false },
+    meta: { header: "none", footer: true, chatbot: false },
   },
   {
     path: '/oauth2/callback',
@@ -127,34 +169,101 @@ const routes: RouteRecordRaw[] = [
     path: "/cart",
     name: "cart",
     component: ShoppingCart,
-    meta: {
-      requiresAuth: true,
-      header: "main", footer: true, utilbar: true
-    },
+    meta: { requiresAuth: true, header: "main", footer: true, utilbar: true },
   },
 
   /* ===== 도감/컬렉션 ===== */
   // 기본 도감: Dex.vue (포켓몬)
-  { path: "/dex", name: "Dex", component: Dex, meta: { header: "main", footer: true } },
+  {
+    path: "/dex",
+    name: "Dex",
+    component: Dex,
+    meta: { header: "main", footer: true },
+  },
 
   // 카테고리별 뷰(팀원 컴포넌트를 페이지로 사용)
-  { path: "/dex/blackpink", name: "BlackPink", component: BlackPink, meta: { header: "main", footer: true } },
-  { path: "/dex/kimetsu",   name: "Kimetsu",   component: Kimetsu,   meta: { header: "main", footer: true } },
-  { path: "/dex/chim",      name: "Chim",      component: ChimCollection, meta: { header: "main", footer: true } },
-  { path: "/dex/kia",       name: "Kia",       component: KiaCollection,  meta: { header: "main", footer: true } },
-  { path: "/dex/pokemon",   name: "Pokemon",   component: Pokemon,  meta: { header: "main", footer: true } },
+  {
+    path: "/dex/blackpink",
+    name: "BlackPink",
+    component: BlackPink,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/kimetsu",
+    name: "Kimetsu",
+    component: Kimetsu,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/chim",
+    name: "Chim",
+    component: ChimCollection,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/kia",
+    name: "Kia",
+    component: KiaCollection,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/pokemon",
+    name: "Pokemon",
+    component: Pokemon,
+    meta: { header: "main", footer: true },
+  },
 
   // 캘린더/검수
-  { path: "/calendar", name: "calendar", component: CalendarView, meta: { header: "main", footer: true } },
-  { path: "/inspection", name: "inspection", component: InspectionView, meta: { header: "main", footer: true } },
+  {
+    path: "/calendar",
+    name: "calendar",
+    component: CalendarView,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/inspection",
+    name: "inspection",
+    component: InspectionView,
+    meta: { header: "main", footer: true },
+  },
 
   // 404 -> 임시로 검색 페이지로 라우팅
-  { path: "/:pathMatch(.*)*", name: "not-found", component: SearchResult, meta: { header: "main", footer: true } },
-  { path: "/about",    name: "about",    component: ComingSoon, meta: { header: "main", footer: true } },
-  { path: "/notices",  name: "notices",  component: ComingSoon, meta: { header: "main", footer: true } },
-  { path: "/terms",    name: "terms",    component: ComingSoon, meta: { header: "main", footer: true } },
-  { path: "/privacy",  name: "privacy",  component: ComingSoon, meta: { header: "main", footer: true } },
-  { path: "/support",  name: "support",  component: ComingSoon, meta: { header: "main", footer: true } },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    component: SearchResult,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/notices",
+    name: "notices",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/terms",
+    name: "terms",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/privacy",
+    name: "privacy",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/support",
+    name: "support",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
 ];
 
 /* ===== router ===== */

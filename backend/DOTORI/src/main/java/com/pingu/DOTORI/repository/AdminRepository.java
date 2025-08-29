@@ -1,68 +1,35 @@
 package com.pingu.DOTORI.repository;
 
-import com.pingu.DOTORI.entity.Admin;
 import com.pingu.DOTORI.dto.AdminListRow;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.*;
+import com.pingu.DOTORI.entity.Admin;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime; 
-import java.time.Instant;
-import java.util.List;
+import java.time.LocalDateTime;
 
 public interface AdminRepository extends JpaRepository<Admin, Long> {
 
-  /** 상태 필터 페이징 (엔티티 그대로) */
-  Page<Admin> findByAdmissionState(Integer admissionState, Pageable pageable);
-
-  /** 기간 + 상태 필터 페이징 (엔티티 그대로) */
-  Page<Admin> findByRegistrationDateBetweenAndAdmissionState(
-      Instant from, Instant to, Integer admissionState, Pageable pageable);
-
-  /** 상태별 카운트 (상단 배지 등에 사용) */
-  long countByAdmissionState(Integer admissionState);
-
-  /** 특정 아이템의 마지막 신청건 조회(있으면) */
-  Admin findTop1ByItemDetails_ItemIdOrderByRegistrationDateDesc(Long itemId);
-
-
-  /* =========================
-   * 목록 화면 최적화 쿼리 (Projection)
-   * - 이미지 개수/최초 촬영시각을 서브쿼리로 뽑아와 한 방에 페이징
-   * - 스키마 이름 그대로 사용 (nativeQuery)
-   * ========================= */
-  @Query(
-    value = """
-      SELECT
-        a.inspection_id  AS inspectionId,
-        a.item_id        AS itemId,
-        a.registration_date AS registrationDate,
-        a.unpacked       AS unpacked,
-        a.admission_state AS admissionState,
-        a.quality        AS quality,
-        (SELECT COUNT(*) FROM item_img ii WHERE ii.item_id = a.item_id)       AS imageCount,
-        (SELECT MIN(ii.filming_time) FROM item_img ii WHERE ii.item_id = a.item_id) AS firstFilmingTime,
-        d.cost           AS cost
-      FROM admin a
-      LEFT JOIN item_details d ON d.item_id = a.item_id
-      WHERE (:state IS NULL OR a.admission_state = :state)
-        AND (:from IS NULL OR a.registration_date >= :from)
-        AND (:to   IS NULL OR a.registration_date <  :to)
-      ORDER BY a.registration_date DESC
-      """,
-    countQuery = """
-      SELECT COUNT(*)
-      FROM admin a
-      WHERE (:state IS NULL OR a.admission_state = :state)
-        AND (:from IS NULL OR a.registration_date >= :from)
-        AND (:to   IS NULL OR a.registration_date <  :to)
-      """,
-    nativeQuery = true
-  )
-  Page<AdminListRow> findAdminList(
-		    @Param("state") Integer state,
-		    @Param("from") LocalDateTime from,
-		    @Param("to")   LocalDateTime to,
-		    Pageable pageable
-  );
+	@Query("""
+		    SELECT a.inspectionId AS inspectionId,
+		           d.itemId AS itemId,
+		           a.registrationDate AS registrationDate,
+		           a.unpacked AS unpacked,
+		           a.admissionState AS admissionState,
+		           a.quality AS quality,
+		           d.cost AS cost
+		    FROM Admin a
+		    JOIN a.itemDetails d
+		    WHERE (:admissionState IS NULL OR a.admissionState = :admissionState)
+		      AND (:from IS NULL OR a.registrationDate >= :from)
+		      AND (:to IS NULL OR a.registrationDate <= :to)
+		""")
+    Page<AdminListRow> findAdminList(
+            @Param("admissionState") Integer admissionState,
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to,
+            Pageable pageable
+    );
 }

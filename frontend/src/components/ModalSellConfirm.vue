@@ -520,10 +520,10 @@ async function submitAll() {
   try {
     const fd = new FormData()
     fd.append('userId', String(userId))
-    fd.append('itemCode', props.item.itemCode) 
-    fd.append('productTitle', props.item.title)
+    fd.append('itemCode', "DT-ADP-0001") 
+    fd.append('productTitle', "ALLDAY PROJECT (올데이 프로젝트) - PIN BUTTON SET [FAMOUS] OFFICIAL MERCH")
     fd.append("price", String(price.value ?? 0))
-    fd.append('unpacked', selectedChip.value === '미개봉' ? '0' : '1')
+    // fd.append('unpacked', selectedChip.value === '미개봉' ? '0' : '1')
     fd.append('memo', memo.value ?? '')
     
     items.value.forEach(i => fd.append('images', i.file))

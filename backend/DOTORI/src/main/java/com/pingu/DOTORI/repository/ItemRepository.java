@@ -9,5 +9,5 @@ import com.pingu.DOTORI.entity.Item;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, String> {
-
+	Optional<Item> findByItemCode(String itemCode);
 }

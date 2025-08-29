@@ -6,3 +6,4 @@ declare module '@/config.js' {
     naver: string
   }
 }
+

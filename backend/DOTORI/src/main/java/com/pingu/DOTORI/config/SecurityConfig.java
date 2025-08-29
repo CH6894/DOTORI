@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository; // ✅ 추가
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.*;
+import org.springframework.security.config.Customizer;
+
 
 import com.pingu.DOTORI.security.OAuth2SuccessHandler;
 import com.pingu.DOTORI.security.JwtAuthenticationFilter;
@@ -31,6 +33,7 @@ public class SecurityConfig {
   SecurityFilterChain filterChain(HttpSecurity http,
       ClientRegistrationRepository repo) throws Exception {
     http
+        .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .cors(cors -> {
         })

@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "./http";
 
 // --- axios 기본 설정 ---
 // 백엔드 API 서버 주소
@@ -95,13 +96,11 @@ function demoInspections(): Inspection[] {
 }
 
 // ===== 판매 신청 생성 =====
-export async function createInspection(
-  fd: FormData
-): Promise<{ inspectionId: number; itemId: number; status: string }> {
-  const { data } = await axios.post("/api/inspections", fd, {
+
+export async function createInspection(fd: FormData) {
+  return api.post("/inspections", fd, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-  return data;
 }
 
 // ===== 관리자 목록(API 응답 타입 & 어댑터) =====
