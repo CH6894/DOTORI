@@ -22,6 +22,6 @@ public class CalendarPublicController {
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam("end")   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {
-        return service.getList(start, end);
+        return service.findInRange(start, end);
     }
 }

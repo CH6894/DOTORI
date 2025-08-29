@@ -1,8 +1,8 @@
 // src/main/java/com/pingu/DOTORI/service/CalendarService.java
 package com.pingu.DOTORI.service;
 
-import com.pingu.DOTORI.dto.CalendarRes;       // 이전에 만든 응답 DTO (FullCalendar 친화)
-import com.pingu.DOTORI.dto.CalendarResponse;  // 이번 컨트롤러가 사용하는 DTO
+import com.pingu.DOTORI.dto.CalendarRequest;
+import com.pingu.DOTORI.dto.CalendarResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +13,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CalendarService {
 
-    // 이미 구현된 비즈니스 서비스(메서드명: findInRange)
-    private final CalendarService calendarsService;
+    // 비즈니스 로직을 가진 실제 서비스(이미 구현되어 있어야 함)
+    private final CalendarService calendarService;
 
-    public List<CalendarResponse> getList(LocalDateTime start, LocalDateTime end) {
-        List<CalendarResponse> resList = calendarsService.findInRange(start, end);
-        return resList.stream()
-                .map(r -> new CalendarResponse(
-                        r.getId(),
-                        r.getTitle(),
-                        r.getStart(),
-                        r.getEnd(),
-                        r.isAllDay(),
-                        r.getDescription(),
-                        r.getColor()
-                ))
-                .toList();
+    /** Public 조회 컨트롤러에서 호출 */
+    public List<CalendarResponse> findInRange(LocalDateTime start, LocalDateTime end) {
+        return calendarService.findInRange(start, end);
+    }
+
+    /** Admin 컨트롤러에서 호출 */
+    public CalendarResponse create(CalendarRequest req) {
+        return calendarService.create(req);
+    }
+
+    public CalendarResponse update(Long id, CalendarRequest req) {
+        return calendarService.update(id, req);
+    }
+
+    public void delete(Long id) {
+        calendarService.delete(id);
     }
 }
