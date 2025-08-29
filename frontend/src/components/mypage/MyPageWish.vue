@@ -5,15 +5,17 @@
 
       <div class="panel panel--center">
         <ul class="wish">
-          <li v-for="w in wish" :key="w.id" class="wish__item">
-            <figure class="wish__fig"><img :src="w.image" :alt="w.title" /></figure>
+          <li v-for="w in wish" :key="w.id" class="wish__item" @click="console.log('상세페이지:', w.id)">
+            <figure class="wish__fig">
+              <img :src="w.image" :alt="w.title" />
+              <button class="heart-btn" @click.stop="toggleWish(w.id)">♥</button>
+            </figure>
             <div class="wish__meta">
               <p class="wish__title">{{ w.title }}</p>
               <p class="wish__sub">{{ w.price.toLocaleString() }}원</p>
             </div>
             <div class="wish__actions">
-              <button class="btn btn--ghost btn--thin">상세</button>
-              <button class="btn btn--thin" @click="addToCart(w)">장바구니</button>
+              <button class="btn btn--thin" @click.stop="addToCart(w)">장바구니</button>
             </div>
           </li>
         </ul>
@@ -24,33 +26,54 @@
 </template>
 
 <script>
-const LS_KEY = 'dotori_cart_v1'
+import api from '@/api/axios.js'
 
 export default {
   name: 'MyPageWish',
   data() {
     return {
-      // 더미 위시리스트
-      wish: [
-        { id:'w1', title:'키링',          image:'https://picsum.photos/seed/w1/400/400', price:10000 },
-        { id:'w2', title:'지브리 피규어', image:'https://picsum.photos/seed/w2/400/400', price:48000 },
-        { id:'w3', title:'이치고 피규어', image:'https://picsum.photos/seed/w3/400/400', price:59000 },
-        { id:'w4', title:'루피 피규어',   image:'https://picsum.photos/seed/w4/400/400', price:53000 },
-        { id:'w5', title:'미쿠 스페셜',   image:'https://picsum.photos/seed/w5/400/400', price:67000 },
-      ],
-      toast: { open:false, _t:null },
+      wish: [],
+      toast: { open: false, _t: null },
     }
   },
+  
+  async mounted() {
+    await this.loadWishlist()
+  },
+
   methods: {
+    async loadWishlist() {
+      try {
+        const response = await api.post('/api/wishlist')
+        this.wish = response.data.map(w => ({
+          id: w.itemDetails.id,
+          title: w.itemDetails.item.name,
+          price: w.itemDetails.cost,
+          image: w.itemDetails.images?.[0]?.url || 'https://picsum.photos/400/400'
+        }))
+      } catch (error) {
+        console.error('위시리스트 조회 실패:', error)
+      }
+    },
+
+    async toggleWish(itemId) {
+      try {
+        await api.post('/api/wishlist/toggle', { itemId })
+        await this.loadWishlist()
+      } catch (error) {
+        console.error('위시리스트 토글 실패:', error)
+      }
+    },
+
     currency(n){
       return new Intl.NumberFormat('ko-KR',{style:'currency',currency:'KRW',maximumFractionDigits:0}).format(n)
     },
 
     getCart(){
-      try{ const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : [] }
+      try{ const raw = localStorage.getItem('dotori_cart_v1'); return raw ? JSON.parse(raw) : [] }
       catch(e){ return [] }
     },
-    saveCart(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)) },
+    saveCart(list){ localStorage.setItem('dotori_cart_v1', JSON.stringify(list)) },
     upsert(cart, item){
       const i = cart.findIndex(x=>x.id===item.id)
       if(i>=0) cart[i].qty += item.qty
@@ -58,7 +81,6 @@ export default {
       return cart
     },
 
-    // 위시
     asCartItem(w){ return { id:w.id, title:w.title, price:w.price, qty:1, shipping:0, thumb:w.image } },
 
     showToast(){
@@ -86,8 +108,8 @@ export default {
 .panel--center{ max-width:980px; margin:0 auto 18px; }
 
 .wish{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; list-style:none; padding:0; margin:0; }
-.wish__item{ background:#fff; border:1px solid #e8e1d4; border-radius:10px; overflow:hidden; display:grid; grid-template-rows:120px auto auto; }
-.wish__fig{ background:#f4f3e6; display:grid; place-items:center; }
+.wish__item{ background:#fff; border:1px solid #e8e1d4; border-radius:10px; overflow:hidden; display:grid; grid-template-rows:120px auto auto; cursor: pointer; }
+.wish__fig{ background:#f4f3e6; display:grid; place-items:center; position: relative; }
 .wish__fig img{ width:100%; height:100%; object-fit:cover; }
 .wish__meta{ padding:10px 12px 5px; margin-top:10px; }
 .wish__title{ font-weight:800; }
@@ -97,6 +119,28 @@ export default {
 .btn{ appearance:none; border:0; background:#f4f4f4; color:black; padding:10px 14px; border-radius:8px; font-weight:700; cursor:pointer; }
 .btn--ghost{ background:#f4f3e6; color:#5f5346; border:1px solid #d9d9d9; }
 .btn--thin{ padding:6px 10px; border-radius:7px; border:1px solid #d9d9d9;}
+
+.heart-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: #ff4757;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.heart-btn:hover {
+  background: white;
+  transform: scale(1.1);
+}
 
 @media (max-width:1024px){ .wish{ grid-template-columns:repeat(3,1fr); } }
 @media (max-width:640px){ .wish{ grid-template-columns:repeat(2,1fr); } }

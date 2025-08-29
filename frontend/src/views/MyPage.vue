@@ -33,19 +33,19 @@
 
           <!-- 프로필 본문 -->
           <div class="profile">
-                         <div class="profile__avatar">
-               <img :src="user.userImg || defaultPhoto" alt="프로필" />
-             </div>
+            <div class="profile__avatar">
+              <img :src="user.userImg || defaultPhoto" alt="프로필" />
+            </div>
 
             <!-- 보기 / 편집 전환 -->
             <div v-if="!isEditing" class="profile__info">
               <p>
                 <span class="profile__label">닉네임</span>
-                <span class="profile__nickName">{{ user.nickName || '닉네임 없음' }}</span>
+                <span class="profile__nickname">{{ user.nickName || '닉네임 없음' }}</span>
               </p>
               <p>
                 <span class="profile__label">이메일</span>
-                <span class="profile__userId">{{ user.email || '이메일 없음' }}</span>
+                <span class="profile__userid">{{ user.email || '이메일 없음' }}</span>
               </p>
             </div>
 
@@ -226,7 +226,7 @@ const ROUTE_NAME_MAP = {
 export default {
   name: 'MyPage',
 
-  data() {
+    data() {
     return {
       tabs: [
         { key: 'profile', label: '내 정보' },
@@ -234,10 +234,10 @@ export default {
         { key: 'qna', label: '문의내역' },
       ],
 
-             isEditing: false,
-       user: {},
-       form: { nickname: '' },
-       defaultPhoto,
+      isEditing: false,
+      user: {},
+      form: { nickname: '' },
+      defaultPhoto,
 
       orderSteps: [
         { key: 'order', label: '주문접수', icon: iconOrder },
@@ -532,6 +532,16 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.profile__info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile__info p {
+  margin: 0;
 }
 
 .profile__label {

@@ -21,7 +21,7 @@
               <span class="sales-summary__num">{{ summary.completed }}</span>
             </li>
             <li class="sales-summary__item">
-              <span class="sales-summary__label">판매취소</span>
+              <span class="sales-summary__label">검수중</span>
               <span class="sales-summary__num">{{ summary.cancelled }}</span>
             </li>
           </ul>
@@ -36,7 +36,7 @@
                 <option value="all">전체</option>
                 <option value="ing">판매중</option>
                 <option value="done">거래완료</option>
-                <option value="cancelled">판매취소</option>
+                <option value="cancelled">검수중</option>
               </select>
             </div>
             <div class="filter-group">
