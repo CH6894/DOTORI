@@ -60,8 +60,6 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<WishList> wishList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
-    private List<ItemDetails> itemDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Orders> orders = new ArrayList<>();

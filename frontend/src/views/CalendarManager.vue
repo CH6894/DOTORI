@@ -4,7 +4,7 @@
     <h2 class="calendar-title">
       {{ pageDate.getFullYear() }}년 {{ pageDate.getMonth() + 1 }}월
     </h2>
-
+    <router-link to="/admin" class="back-btn" role="button">검수관리</router-link>
     <div class="calendar-wrap">
       <div ref="calendarEl" id="calendar"></div>
     </div>
@@ -309,7 +309,6 @@ function renderAgenda() {
       const time = ev.allDay ? '종일' : timeRange(ev.start, ev.end)
       const title = escapeHtml(ev.title || '(제목 없음)')
       return `
-
         <li class="agenda__item" style="--dot-color:${color}">
           <span class="agenda__time">${time}</span>
           <span class="agenda__title">${title}</span>
@@ -458,3 +457,144 @@ onBeforeUnmount(() => { if (calendar) calendar.destroy() })
 
 <!-- 전역 캘린더/모달/FC 커스텀 (네가 만든 calendar.css) -->
 <style src="../assets/calendar.css"></style>
+
+<!-- 이 파일 전용 보조 스타일 -->
+<style scoped>
+/* 모달 본문이 길어질 경우 스크롤 */
+.modal__body { max-height: 70vh; overflow: auto; }
+
+/* ===== Summary ===== */
+.summary {
+  width: var(--cal-fixed-width, 1280px);
+  max-width: 100%;
+  margin: 16px auto 0;
+}
+.summary__title {
+  margin: 12px 0 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+.summary__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.summary__item {
+  display: grid;
+  grid-template-columns: 10px 110px 96px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e9e9e9;
+  border-radius: 10px;
+  background: #fff;
+}
+.summary__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--dot-color, #999);
+}
+.summary__date, .summary__when {
+  font-size: 13px;
+  color: #444;
+}
+.summary__text {
+  font-size: 14px;
+  color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.summary__actions {
+  display: flex;
+  gap: 6px;
+}
+.btn.btn--tiny {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn.btn--tiny:hover { background: #f5f5f5; }
+.btn--danger { color: #dc2626; border-color: #fecaca; }
+.summary__empty {
+  padding: 14px;
+  text-align: center;
+  color: #666;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+}
+/* 모바일 대응 */
+@media (max-width: 640px) {
+  .summary__item {
+    grid-template-columns: 10px 92px 72px 1fr auto;
+    gap: 8px;
+  }
+  .summary__date, .summary__when { font-size: 12px; }
+  .summary__text { font-size: 13px; }
+}
+/* 기본 버튼 */
+.back-btn{
+  margin-left : 7rem;
+  margin-top: -5rem;
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.625rem 1rem;            /* 10px 16px */
+  border:1px solid #e5dcc9;
+  border-radius:.5rem;              /* 8px */
+  background:#ffffff;
+  color:#5f5346;
+  font-weight:700;
+  font-size:.9375rem;               /* 15px */
+  line-height:1;
+  cursor:pointer;
+  transition:background .2s ease, border-color .2s ease, transform .02s ease;
+}
+
+.back-btn:hover{
+  background:#f9f6ef;
+  border-color:#d8cdb3;
+}
+
+.back-btn:active{
+  transform:translateY(1px);
+}
+
+.back-btn:focus-visible{
+  outline:2px solid transparent;
+  box-shadow:0 0 0 3px rgba(252,112,60,.25); /* 테마 오렌지 포커스 링 */
+  border-color:#fc703c;
+}
+
+.back-btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+/* 아이콘 들어갈 때 간격 정리 (옵션) */
+.back-btn svg,
+.back-btn i{
+  width:1rem; height:1rem; flex:0 0 auto;
+}
+
+/* 오렌지 포인트용 변형 (옵션) */
+.back-btn--primary{
+  background:#fc703c;
+  border-color:#fc703c;
+  color:#fff;
+}
+.back-btn--primary:hover{
+  background:#e5633a;
+  border-color:#e5633a;
+}
+
+</style>

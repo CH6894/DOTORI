@@ -72,16 +72,14 @@
 
         <!-- 액션 버튼들 -->
         <div class="action-buttons">
-          <button class="like-btn" :aria-pressed="isLiked" @click="toggleLike" @keydown="onLikeKey">
-            <!-- 하트 아이콘 (빈 → 채움) -->
-            <svg class="heart" width="24" height="24" viewBox="0 0 24 24" role="img" aria-label="좋아요"
-              :class="{ active: isLiked }">
+          <button :class="['wish-heart', { active: wish.has(product.id) }]"
+            @click="wish.toggle({ id: product.id, title: product.title, price: product.price, image: product.images?.[0] })"
+            aria-label="위시 토글" title="위시 토글">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
               <path
-                d="M12 21s-6.3-4.2-9-7.9C1.2 10.9 2.2 6.5 6 6.5c2 0 3.5 1.2 4 2.4.5-1.2 2-2.4 4-2.4 3.8 0 4.8 4.4 3 6.6-2.7 3.7-9 7.9-9 7.9z"
-                stroke-width="1.5" vector-effect="non-scaling-stroke" />
+                d="M12 21s-6.716-4.146-9.193-7.142C.61 11.41 1.077 8.5 3.2 6.9c1.86-1.42 4.46-1.17 6.11.44L12 10l2.69-2.66c1.65-1.61 4.25-1.86 6.11-.44 2.12 1.6 2.59 4.51.393 6.958C18.716 16.854 12 21 12 21z" />
             </svg>
           </button>
-
           <button class="sell-btn" @click="handleSell">판매</button>
           <button class="purchase-btn" @click="buyNowDirect">구매</button>
         </div>
@@ -118,6 +116,9 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import ModalSellConfirm from '@/components/ModalSellConfirm.vue'
 import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
+import { useWishlistStore } from '@/stores/wishlist'
+const wish = useWishlistStore()
+wish.load()
 
 /* ===== 타입 정의 ===== */
 interface Product {
@@ -514,20 +515,38 @@ const onUsedConfirm = (payload: UsedConfirmPayload): void => {
 }
 
 /* SVG 하트 (빈 → 채움) */
-.heart {
-  fill: transparent;
-  stroke: #bbb;
-  transition: fill .2s ease, stroke .2s ease, transform .12s ease;
+/* 동그란 하트 버튼 */
+.wish-heart {
+  display: inline-grid;
+  place-items: center;
+  width: 3.5rem;
+  /* 32px */
+  height: 3.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #fff;
+  color: #bebebe;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
 }
 
-.heart.active {
-  fill: #FC703C;
-  stroke: #FC703C;
+.wish-heart:hover {
+  transform: scale(1.04);
+  background: #fff5f5;
+  border-color: #fecaca;
 }
 
-.like-btn:active .heart {
-  transform: scale(.96);
+.wish-heart.active {
+  background: #fee2e2;
+  /* 활성화 시 살짝 강조 */
+  color: #dc2626;
+  border-color: #fecaca;
 }
+
+.wish-heart svg {
+  pointer-events: none;
+}
+
 
 /* 장바구니 토스트 */
 .cart-toast {
@@ -553,15 +572,20 @@ const onUsedConfirm = (payload: UsedConfirmPayload): void => {
 
   /* 👇 중앙 정렬 핵심 */
   display: flex;
-  align-items: center;      /* 수직 중앙 */
-  justify-content: center;  /* 수평 중앙 */
-  text-align: center;       /* 여러 줄일 때 텍스트 중앙 */
-  gap: 8px;                 /* 아이콘이 있다면 간격 */
+  align-items: center;
+  /* 수직 중앙 */
+  justify-content: center;
+  /* 수평 중앙 */
+  text-align: center;
+  /* 여러 줄일 때 텍스트 중앙 */
+  gap: 8px;
+  /* 아이콘이 있다면 간격 */
 }
 
 .cart-toast__text {
   /* 굳이 inline-block 필요 없음 */
-  display: inline; /* or simply remove this rule */
+  display: inline;
+  /* or simply remove this rule */
 }
 
 
