@@ -86,3 +86,29 @@ onMounted(() => {
 onBeforeUnmount(() => { if (calendar) calendar.destroy() })
 </script>
 <style src="../assets/calendar.css"></style>
+<style scoped>
+/* ===== Agenda ===== */
+.agenda {
+  width: var(--cal-fixed-width);
+  max-width: 100%;
+  margin: 10px auto 0;
+}
+.agenda__title {
+  margin: 16px 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+.agenda__body {
+  background: #fff;
+  border: 1px solid #e9e9e9;
+  border-radius: 8px;
+  padding: 12px;
+}
+.agenda__empty {
+  padding: 14px;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+}
+</style>

@@ -3,6 +3,9 @@
     <!-- 상단 헤더(페이지 타이틀/필터) -->
     <header class="page-header">
       <h1 class="title">검수 관리</h1>
+      <router-link class="btn btn--cal" :to="{ name: 'CalendarManager' }">
+        일정 관리
+      </router-link>
       <div class="filters">
         <label class="field">
           <span>검색</span>
@@ -13,7 +16,6 @@
           <select v-model="status">
             <option value="">전체</option>
             <option value="PENDING">대기</option>
-            <option value="REVIEWING">검토중</option>
             <option value="APPROVED">승인</option>
             <option value="REJECTED">반려</option>
           </select>
@@ -169,8 +171,10 @@
                 </div>
                 <div class="decision__right">
                   <div class="buttons">
-                    <button class="btn btn--ghost danger"  :class="{ active: decision==='REJECTED' }"@click="setReject">반려</button>
-                    <button class="btn btn--primary":class="{ active: decision==='APPROVED' }"@click="setApprove">승인</button>
+                    <button class="btn btn--ghost danger" :class="{ active: decision === 'REJECTED' }"
+                      @click="setReject">반려</button>
+                    <button class="btn btn--primary" :class="{ active: decision === 'APPROVED' }"
+                      @click="setApprove">승인</button>
                   </div>
                 </div>
               </div>
@@ -216,7 +220,7 @@ const dateFrom = ref("")
 const dateTo = ref("")
 
 const page = ref(1)
-const pageSize = ref(8)
+const pageSize = ref(12)
 
 const panelOpen = ref(false)
 const current = ref<Inspection | null>(null)
@@ -294,11 +298,9 @@ function fmt(iso?: string) {
 function toKrStatus(s: Status) {
   return s === "PENDING"
     ? "대기"
-    : s === "REVIEWING"
-      ? "검토중"
-      : s === "APPROVED"
-        ? "승인"
-        : "반려"
+    : s === "APPROVED"
+      ? "승인"
+      : "반려"
 }
 
 // ---------------------
@@ -316,10 +318,7 @@ function resetFilters() {
 }
 
 function openReview(ins: Inspection) {
-  current.value = {
-    ...ins,
-    status: ins.status === "PENDING" ? "REVIEWING" : ins.status,
-  }
+  current.value = { ...ins }
   panelOpen.value = true
   decision.value = null
   rejectReasons.value = []
@@ -381,13 +380,13 @@ onMounted(async () => {
 .title {
   font-size: 22px;
   font-weight: 800;
-  margin-right: auto;
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-left: auto;
   align-items: flex-end;
 }
 
@@ -475,12 +474,6 @@ onMounted(async () => {
   border: 1px solid #fed7aa;
 }
 
-.badge--reviewing {
-  background: #eef2ff;
-  color: #4338ca;
-  border: 1px solid #c7d2fe;
-}
-
 .badge--approved {
   background: #ecfdf5;
   color: #047857;
@@ -506,11 +499,25 @@ onMounted(async () => {
 }
 
 /* ✅ 등급별 색상 */
-.badge-grade--s { background: linear-gradient(45deg, #9333ea, #f43f5e); } 
-.badge-grade--a { background: #2563eb; } 
-.badge-grade--b { background: #16a34a; } 
-.badge-grade--c { background: #f59e0b; }
-.badge-grade--none { background: #9ca3af; } 
+.badge-grade--s {
+  background: linear-gradient(45deg, #9333ea, #f43f5e);
+}
+
+.badge-grade--a {
+  background: #2563eb;
+}
+
+.badge-grade--b {
+  background: #16a34a;
+}
+
+.badge-grade--c {
+  background: #f59e0b;
+}
+
+.badge-grade--none {
+  background: #9ca3af;
+}
 
 
 .chip {
@@ -545,7 +552,8 @@ onMounted(async () => {
 }
 
 .grade-select select {
-  appearance: none;            /* 기본 브라우저 스타일 제거 */
+  appearance: none;
+  /* 기본 브라우저 스타일 제거 */
   -webkit-appearance: none;
   -moz-appearance: none;
   padding: 8px 12px;
@@ -564,12 +572,12 @@ onMounted(async () => {
   border-color: #9ca3af;
   background: #f9fafb;
 }
+
 .grade-select select:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 2px #bfdbfe;
 }
-
 
 .btn {
   border: 1px solid #e5e7eb;
@@ -580,9 +588,19 @@ onMounted(async () => {
   cursor: pointer;
 }
 
+.btn--cal {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .btn--ghost {
   background: #fff;
-  color:#0f172a;
+  color: #0f172a;
   border-color: #111827;
 }
 
@@ -593,7 +611,7 @@ onMounted(async () => {
 
 .btn--primary {
   background: #fff;
-  color:#0f172a;
+  color: #0f172a;
   border-color: #111827;
 }
 

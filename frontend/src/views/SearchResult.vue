@@ -7,10 +7,13 @@ import MidTabs from '@/components/filters/MidTabs.vue'
 import ProductGrid from '@/components/product/ProductGrid.vue'
 import { useCatalog, type Item } from '@/composables/useCatalog'
 
+// rest api에서 가져온 데이터 로드
+import { fetchItems } from '@/api/items'
+import * as Items from '@/assets/ItemData.js'
+
 // 기존 JS 데이터 import 호환
 import * as TopCat from '@/assets/TopCategoryData.js'
 import { MidCategoryMap } from '@/assets/MidCategoryMap'
-import * as Items from '@/assets/ItemData.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,6 +31,14 @@ const sortDir   = ref<SortDir>((route.query.sd as SortDir) || 'desc')
 const TopCategoryData: string[] = (TopCat as any).default ?? TopCat.TopCategoryData ?? []
 const ItemData: Item[] = (Items as any).default ?? Items.ItemData ?? []
 const midOptions = computed<string[]>(() => MidCategoryMap[top.value] ?? [])
+
+// 데이터 불러오기
+export type Item = {
+  id : number | string
+  title?: string
+  name?: string
+  price?: number
+}
 
 // 필터링 → 정렬
 const { filtered } = useCatalog(ItemData, top, mid)
@@ -202,8 +213,8 @@ watch(() => route.query, (q) => {
   padding:8px 10px;
   background: #fff;
   border:1px solid #eadfc9; border-top:none;
-  border-radius:0 6px 6px 6px;
-  margin-top:-1px;
+  border-radius:0 0 6px 6px;
+  margin-top:-3px;
 }
 .sorticon{
   display:inline-flex; align-items:center; gap:6px;

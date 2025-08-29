@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/items")
 @RequiredArgsConstructor
 public class ItemController {
-	private  ItemService itemService;
+	private final ItemService itemService;
 	
 	@GetMapping
 	public Page<Item> list(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){

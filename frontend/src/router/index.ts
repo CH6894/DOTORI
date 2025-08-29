@@ -17,6 +17,7 @@ const OrderComplete = () => import("@/views/OrderComplete.vue");
 const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
 const AdminPage = () => import("@/views/AdminPage.vue");
 const OAuthCallback = () => import("@/pages/OAuthCallback.vue");
+const ComingSoon = () => import("@/views/ComingSoon.vue");
 
 /* 새로 추가한 경로(페이지 스텁 가능) */
 const CalendarView = () => import("@/views/CalendarPage.vue");
@@ -33,28 +34,27 @@ const MyPageWish = () => import("@/components/mypage/MyPageWish.vue");
 
 /* ===== Cart ===== */
 const ShoppingCart = () => import("@/views/ShoppingCart.vue");
+
+/* ===== Dex & Category Views ===== */
 const Dex = () => import("@/views/Dex.vue");
+const BlackPink = () => import("@/components/dex/BlackPink.vue");
+const Kimetsu = () => import("@/components/dex/Kimetsu.vue");
+const ChimCollection = () => import("@/components/dex/ChimCollection.vue");
+const KiaCollection = () => import("@/components/dex/KiaCollection.vue");
+const Pokemon = () => import("@/components/dex/Pokemon.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
-  // Pinia store에서 사용하는 키와 통일: 'accessToken'
   return !!localStorage.getItem("AuthToken");
 }
 
-const ItemList = () => import("@/components/ItemList.vue");
-
 /* ===== routes ===== */
 const routes: RouteRecordRaw[] = [
-
   {
-    path: '/items',
-    name: 'items',
-    component: ItemList
-  },
-  {
-    path:"/CalendarManager",
-    name:'CalendarManager',
-    component: CalendarManager
+    path: "/CalendarManager",
+    name: "CalendarManager",
+    component: CalendarManager,
+    meta: { header: "none", footer: true, chatbot: false },
   },
 
   // 홈
@@ -92,21 +92,30 @@ const routes: RouteRecordRaw[] = [
       topbtn: true,
     },
   },
+
+  // 마이페이지
   {
     path: "/mypage",
     name: "mypage",
     component: MyPage,
     meta: { requiresAuth: false, header: "main", footer: true, utilbar: true },
     children: [
-      { path: "", name: "mypage-index", redirect: { name: "mypage-orders" } },
       { path: "orders", name: "mypage-orders", component: MyPageOrders },
       { path: "sales", name: "mypage-sales", component: MyPageSales },
       { path: "ship", name: "mypage-ship", component: MyPageShip },
       { path: "storage", name: "mypage-storage", component: MyPageStorage },
-      { path: "wish", name: "mypage-wish", component: MyPageWish },
     ],
   },
-
+  {
+    path: "/mypage/wish",
+    name: "mypage-wish",
+    component: MyPageWish,
+    meta: {
+      header: "main",
+      footer: true,
+      utilbar: true /* requiresAuth: true? */,
+    },
+  },
   // 결제 플로우
   {
     path: "/checkout",
@@ -146,7 +155,7 @@ const routes: RouteRecordRaw[] = [
     path: "/admin",
     name: "admin",
     component: AdminPage,
-    meta: { header: "main", footer: true },
+    meta: { header: "none", footer: true, chatbot: false },
   },
   {
     path: "/oauth2/callback",
@@ -160,17 +169,51 @@ const routes: RouteRecordRaw[] = [
     path: "/cart",
     name: "cart",
     component: ShoppingCart,
-    meta: { header: "main", footer: true, utilbar: true },
+    meta: { requiresAuth: true, header: "main", footer: true, utilbar: true },
   },
 
-  // 도감/캘린더/검수기준 (페이지 스텁 가능)
-
+  /* ===== 도감/컬렉션 ===== */
+  // 기본 도감: Dex.vue (포켓몬)
   {
     path: "/dex",
-    name: "dex",
-    component: () => import("@/views/Dex.vue"),
+    name: "Dex",
+    component: Dex,
     meta: { header: "main", footer: true },
   },
+
+  // 카테고리별 뷰(팀원 컴포넌트를 페이지로 사용)
+  {
+    path: "/dex/blackpink",
+    name: "BlackPink",
+    component: BlackPink,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/kimetsu",
+    name: "Kimetsu",
+    component: Kimetsu,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/chim",
+    name: "Chim",
+    component: ChimCollection,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/kia",
+    name: "Kia",
+    component: KiaCollection,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/dex/pokemon",
+    name: "Pokemon",
+    component: Pokemon,
+    meta: { header: "main", footer: true },
+  },
+
+  // 캘린더/검수
   {
     path: "/calendar",
     name: "calendar",
@@ -191,15 +234,43 @@ const routes: RouteRecordRaw[] = [
     component: SearchResult,
     meta: { header: "main", footer: true },
   },
+  {
+    path: "/about",
+    name: "about",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/notices",
+    name: "notices",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/terms",
+    name: "terms",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/privacy",
+    name: "privacy",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
+  {
+    path: "/support",
+    name: "support",
+    component: ComingSoon,
+    meta: { header: "main", footer: true },
+  },
 ];
 
 /* ===== router ===== */
 const router = createRouter({
-  // ✅ BASE_URL 반영: 배포 서브경로에서도 안전
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(_to, _from, saved) {
-    // 저장된 스크롤 위치가 있으면 복원, 없으면 최상단
     return saved ?? { top: 0 };
   },
 });

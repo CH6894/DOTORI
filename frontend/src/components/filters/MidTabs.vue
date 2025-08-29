@@ -56,6 +56,8 @@ const emit = defineEmits<{ (e: 'update:modelValue', v: string): void }>()
   cursor: pointer;
   padding: 10px 16px;
   transition: background-color .15s ease, color .15s ease;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
 }
 
 .mid_category_link:hover {
@@ -71,5 +73,4 @@ const emit = defineEmits<{ (e: 'update:modelValue', v: string): void }>()
   outline: 2px dashed #a83b32;
   outline-offset: 2px;
 }
-
 </style>

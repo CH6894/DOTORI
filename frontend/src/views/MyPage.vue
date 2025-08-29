@@ -175,13 +175,6 @@
           </ul>
         </div>
       </div>
-
-      <!-- 도감 탭 -->
-      <div v-show="currentTab === 'dex'" class="card">
-        <h2 class="card__title">도감</h2>
-        <p class="muted">도감 화면은 이후에 구성됩니다.</p>
-      </div>
-
       <!-- 문의 탭 -->
       <div v-show="currentTab === 'qna'" class="card">
         <h2 class="card__title">문의 내역</h2>
@@ -215,6 +208,7 @@ import imgKozumeFigure from '@/assets/list/코즈메 켄마 피규어.svg'
 import imgMikuFigure from '@/assets/list/하츠네 미쿠 피규어.svg'
 import imgHinataSoyoFigure from '@/assets/list/히나타 소요 피규어.svg'
 
+/* ✅ 라우터 이름 매핑 */
 const ROUTE_NAME_MAP = {
   ShipPage: 'mypage-ship',
   OrdersPage: 'mypage-orders',
@@ -228,9 +222,10 @@ export default {
 
   data() {
     return {
+      /* 탭(토글): URL과 무관한 로컬 상태 */
+      currentTab: 'profile',
       tabs: [
         { key: 'profile', label: '내 정보' },
-        { key: 'dex', label: '도감' },
         { key: 'qna', label: '문의내역' },
       ],
 
@@ -258,13 +253,7 @@ export default {
         { id: 'st2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
       ],
 
-      wishlist: [
-        { id: 'w1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
-        { id: 'w2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
-        { id: 'w3', title: '코즈메 켄마 피규어', image: imgKozumeFigure, price: 59000 },
-        { id: 'w4', title: '하츠네 미쿠 피규어', image: imgMikuFigure, price: 53000 },
-        { id: 'w5', title: '히나타 소요 피규어', image: imgHinataSoyoFigure, price: 67000 },
-      ],
+      wishlist: [],
 
       toast: { open: false, message: '', _t: null },
       store: useOrderStore(),
@@ -273,9 +262,7 @@ export default {
   },
 
   computed: {
-    currentTab() {
-      return (this.$route.query.tab ?? 'profile')
-    },
+    /* 자식 라우트 판별: /mypage의 children이면 true */
     isChildRoute() {
       const n = this.$route.name || ''
       return n.startsWith('mypage-') && n !== 'mypage'
@@ -285,40 +272,32 @@ export default {
     },
   },
 
-  mounted() {
-    if (!this.$route.query.tab) {
-      this.$router.replace({ name: 'mypage', query: { tab: 'profile' } })
-    }
-    this.loadProfile()
-  },
-
   methods: {
-    loadProfile() {
-      api.get('/me').then(response => {
-        this.user = response.data
-      }).catch(error => {
-        if (error.response?.status === 401) {
-          this.authStore.logout()
-          this.$router.replace('/login')
+    async fetchMe() {
+      try {
+        const { data } = await api.get('/me')
+        if (data && data.id) {
+          this.user = data
         }
-      })
+      } catch (e) { /* noop */ }
     },
-
-    updateProfile() {
-      const updateData = {
-        nickName: this.form.nickname
+    async fetchWishlist() {
+      try {
+        const { data } = await api.get('/wishlist')
+        this.wishlist = (data || []).map(x => ({
+          id: x.itemId,
+          title: x.title,
+          image: x.itemImg,
+          price: 0,
+        }))
+      } catch (e) {
+        this.wishlist = []
       }
-      api.put('/me', updateData).then(response => {
-        this.user = response.data
-        alert('저장되었습니다!')
-      }).catch(error => {
-        console.log('업데이트 오류:', error)
-      })
     },
-
+    /* 탭 변경: URL 건드리지 않음 */
     setTab(key) {
       if (this.currentTab === key) return
-      this.$router.push({ name: 'mypage', query: { tab: key } })
+      this.currentTab = key
     },
 
     
@@ -339,6 +318,7 @@ export default {
        this.isEditing = false
      },
 
+    /* ✅ 섹션 타이틀 클릭 시 자식 라우트로 이동 (기존 유지) */
     go(name) {
       const real = ROUTE_NAME_MAP[name]
       if (real) {
@@ -383,8 +363,12 @@ export default {
 
 
   },
+  async created() {
+    await Promise.all([this.fetchMe(), this.fetchWishlist()])
+  },
 }
 </script>
+
 
 <style scoped>
 .container {
@@ -410,12 +394,12 @@ export default {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   width: min(420px, 100%);
   margin: 0 auto;
   border-bottom: 2px solid #e5dcc9;
+  gap: 0; /* 필요시 간격 조절 */
 }
-
 .tab {
   appearance: none;
   background: transparent;
@@ -443,7 +427,7 @@ export default {
 }
 
 .card {
-  margin-top: 18px;
+  margin-top: 1.5rem;
   padding: 22px;
   background: #fff;
   border: 1px solid #e8e1d4;
@@ -487,6 +471,7 @@ export default {
 }
 
 .profile-card {
+  margin-top: 1.5rem;
   position: relative;
 }
 
@@ -664,7 +649,7 @@ export default {
 }
 
 .step__label {
-  margin-top: 6px;
+  margin-top: 1rem;
   font-size: 12px;
   color: #8f8577;
 }

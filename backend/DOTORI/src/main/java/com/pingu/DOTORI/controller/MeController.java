@@ -1,5 +1,6 @@
 package com.pingu.DOTORI.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public class MeController {
                 
                 Users user = myPageService.getProfileByEmail(email);
                 if (user != null) {
-                    return ResponseEntity.ok(user);
+                    return ResponseEntity.ok(toProfile(user));
                 }
             } catch (Exception e) {
                 System.out.println("JWT 파싱 실패: " + e.getMessage());
@@ -56,7 +57,7 @@ public class MeController {
                 if (nickName != null && !nickName.trim().isEmpty()) {
                     Users updatedUser = myPageService.updateProfileByEmail(email, nickName);
                     if (updatedUser != null) {
-                        return ResponseEntity.ok(updatedUser);
+                        return ResponseEntity.ok(toProfile(updatedUser));
                     }
                 }
             }
@@ -65,5 +66,17 @@ public class MeController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "프로필 업데이트 중 오류가 발생했습니다"));
         }
+    }
+
+    private Map<String, Object> toProfile(Users u) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("id", u.getId());
+        m.put("userName", u.getUserName());
+        m.put("nickName", u.getNickName());
+        m.put("email", u.getEmail());
+        m.put("phone", u.getPhone());
+        m.put("gender", u.getGender());
+        m.put("userImg", u.getUserImg());
+        return m;
     }
 }

@@ -2,8 +2,11 @@ package com.pingu.DOTORI.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository; // ✅ 추가
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.*;
@@ -32,6 +35,13 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .cors(cors -> {})
         .addFilterBefore(jwtAuthenticationFilter, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter.class)
+        .exceptionHandling(ex -> ex
+            // API 요청은 401을 반환하여 프론트에서 로그인 유도 (리다이렉트 X)
+            .defaultAuthenticationEntryPointFor(
+                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                new AntPathRequestMatcher("/api/**")
+            )
+        )
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/", "/health", "/public/**").permitAll()
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
