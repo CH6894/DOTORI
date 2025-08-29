@@ -1,124 +1,363 @@
+<!-- frontend/src/views/MyPageWish.vue -->
 <template>
-  <main class="mypage">
+  <main class="wish-page">
     <section class="container">
-      <h1 class="section__title section__title--center">위시리스트</h1>
+      <header class="wish-header">
+        <h1 class="section__title">위시리스트</h1>
+        <div class="wish-header__meta">
+          <span class="count">총 {{ wishlist.length }}개</span>
+          <button
+            v-if="wishlist.length"
+            class="btn btn--ghost btn--thin"
+            @click="clearWishlist"
+          >
+            전체 비우기
+          </button>
+        </div>
+      </header>
 
-      <div class="panel panel--center">
-        <ul class="wish">
-          <li v-for="w in wish" :key="w.id" class="wish__item">
-            <figure class="wish__fig"><img :src="w.image" :alt="w.title" /></figure>
-            <div class="wish__meta">
-              <p class="wish__title">{{ w.title }}</p>
-              <p class="wish__sub">{{ w.price.toLocaleString() }}원</p>
+      <div class="panel">
+        <template v-if="wishlist.length">
+          <div class="wish-grid">
+            <div
+              v-for="w in wishlist"
+              :key="w.id"
+              class="wish-card"
+              @click="goProduct(w)"
+              role="button"
+              tabindex="0"
+            >
+              <div class="wish-image-container">
+                <img
+                  :src="w.image || '/img/placeholder.jpg'"
+                  :alt="w.title"
+                  class="wish-image"
+                />
+              </div>
+
+              <div class="wish-info">
+                <p class="wish-title">{{ w.title }}</p>
+                <p class="wish-price">{{ w.price.toLocaleString() }}원</p>
+              </div>
+
+              <div class="wish-actions">
+                <!-- 하트: 장바구니 왼쪽, 위시 제거 -->
+                <button
+                  class="icon-heart-inline"
+                  aria-label="위시에서 제거"
+                  title="위시에서 제거"
+                  @click.stop="removeFromWishlist(w.id)"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                    <path d="M12 21s-6.716-4.146-9.193-7.142C.61 11.41 1.077 8.5 3.2 6.9c1.86-1.42 4.46-1.17 6.11.44L12 10l2.69-2.66c1.65-1.61 4.25-1.86 6.11-.44 2.12 1.6 2.59 4.51.393 6.958C18.716 16.854 12 21 12 21z"/>
+                  </svg>
+                </button>
+
+                <button class="btn btn--thin" @click.stop="addToCart(w.id)">
+                  장바구니
+                </button>
+              </div>
             </div>
-            <div class="wish__actions">
-              <button class="btn btn--ghost btn--thin">상세</button>
-              <button class="btn btn--thin" @click="addToCart(w)">장바구니</button>
-            </div>
-          </li>
-        </ul>
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="empty">
+            <p>위시리스트가 비어 있어요.</p>
+            <p class="muted">상품 상세 페이지에서 하트를 눌러 담아보세요.</p>
+          </div>
+        </template>
       </div>
     </section>
-    <div v-if="toast.open" class="toast">장바구니에 담겼습니다</div>
+
+    <!-- 토스트 -->
+    <div v-if="toast.open" class="toast">{{ toast.message }}</div>
   </main>
 </template>
 
 <script>
-const LS_KEY = 'dotori_cart_v1'
+/* eslint-disable */
+import { useWishlistStore } from '@/stores/wishlist'
+
+/* 더미 이미지 (처음 진입 시 비어 있으면 시딩용) */
+import imgRengokuKeyring from '@/assets/list/렌고쿠 코쥬로 키링.svg'
+import imgAkazaDoll from '@/assets/list/아카자 인형.svg'
+import imgKozumeFigure from '@/assets/list/코즈메 켄마 피규어.svg'
+import imgMikuFigure from '@/assets/list/하츠네 미쿠 피규어.svg'
+import imgHinataSoyoFigure from '@/assets/list/히나타 소요 피규어.svg'
+
+/* 장바구니는 이 페이지에서만 로컬스토리지 사용 */
+const LS_CART_KEY = 'dotori_cart_v1'
 
 export default {
   name: 'MyPageWish',
+
   data() {
     return {
-      // 더미 위시리스트
-      wish: [
-        { id:'w1', title:'키링',          image:'https://picsum.photos/seed/w1/400/400', price:10000 },
-        { id:'w2', title:'지브리 피규어', image:'https://picsum.photos/seed/w2/400/400', price:48000 },
-        { id:'w3', title:'이치고 피규어', image:'https://picsum.photos/seed/w3/400/400', price:59000 },
-        { id:'w4', title:'루피 피규어',   image:'https://picsum.photos/seed/w4/400/400', price:53000 },
-        { id:'w5', title:'미쿠 스페셜',   image:'https://picsum.photos/seed/w5/400/400', price:67000 },
-      ],
-      toast: { open:false, _t:null },
+      wish: useWishlistStore(),
+      toast: { open: false, message: '', _t: null },
     }
   },
+
+  created() {
+    // Pinia 스토어 로드 (LocalStorage에서 불러오기)
+    this.wish.load()
+
+    // 빈 경우에만 더미 데이터 시딩 (원치 않으면 이 블록 제거)
+    if (!this.wish.count) {
+      this.wish.replace([
+        { id: 'w1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
+        { id: 'w2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
+        { id: 'w3', title: '코즈메 켄마 피규어', image: imgKozumeFigure, price: 59000 },
+        { id: 'w4', title: '하츠네 미쿠 피규어', image: imgMikuFigure, price: 53000 },
+        { id: 'w5', title: '히나타 소요 피규어', image: imgHinataSoyoFigure, price: 67000 },
+        { id: 'w6', title: '미쿠 넨도로이드', image: imgMikuFigure, price: 42000 },
+        { id: 'w7', title: '렌고쿠 미니 피규어', image: imgRengokuKeyring, price: 15000 },
+        { id: 'w8', title: '아카자 미니 봉제', image: imgAkazaDoll, price: 22000 },
+      ])
+    }
+  },
+
+  computed: {
+    // 템플릿 호환: v-for="w in wishlist"
+    wishlist() { return this.wish.items },
+  },
+
   methods: {
-    currency(n){
-      return new Intl.NumberFormat('ko-KR',{style:'currency',currency:'KRW',maximumFractionDigits:0}).format(n)
+    /* ===== 라우팅 ===== */
+    goProduct(w) {
+      // 프로젝트 라우터 네임/파라미터에 맞게 조정
+      this.$router.push({ name: 'ProductInfo', params: { id: w.id } })
     },
 
-    getCart(){
-      try{ const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : [] }
-      catch(e){ return [] }
+    /* ===== 위시리스트 (Pinia 스토어 사용) ===== */
+    removeFromWishlist(id) {
+      this.wish.remove(id)
+      this.showToast('위시에서 제거되었습니다')
     },
-    saveCart(list){ localStorage.setItem(LS_KEY, JSON.stringify(list)) },
-    upsert(cart, item){
-      const i = cart.findIndex(x=>x.id===item.id)
-      if(i>=0) cart[i].qty += item.qty
+    clearWishlist() {
+      if (!this.wish.count) return
+      if (!confirm('위시리스트를 모두 비울까요?')) return
+      this.wish.clear()
+      this.showToast('위시리스트가 비워졌습니다')
+    },
+
+    /* ===== 장바구니 ===== */
+    getCart() {
+      try {
+        const raw = localStorage.getItem(LS_CART_KEY)
+        return raw ? JSON.parse(raw) : []
+      } catch { return [] }
+    },
+    saveCart(list) {
+      localStorage.setItem(LS_CART_KEY, JSON.stringify(list))
+    },
+    upsert(cart, item) {
+      const i = cart.findIndex(x => x.id === item.id)
+      if (i >= 0) cart[i].qty += item.qty
       else cart.push(item)
       return cart
     },
+    addToCart(id) {
+      const w = this.wish.byId(id)
+      if (!w) { this.showToast('상품을 찾을 수 없습니다'); return }
+      const item = { id: w.id, title: w.title, price: w.price, qty: 1, shipping: 0, thumb: w.image }
+      const next = this.upsert(this.getCart(), item)
+      this.saveCart(next)
+      this.showToast('장바구니에 담겼습니다')
+    },
 
-    // 위시
-    asCartItem(w){ return { id:w.id, title:w.title, price:w.price, qty:1, shipping:0, thumb:w.image } },
-
-    showToast(){
+    /* ===== Toast ===== */
+    showToast(message = '완료되었습니다') {
+      this.toast.message = message
       this.toast.open = true
       clearTimeout(this.toast._t)
-      this.toast._t = setTimeout(()=>{ this.toast.open = false }, 2000)
+      this.toast._t = setTimeout(() => { this.toast.open = false }, 2000)
     },
-
-    addToCart(w){
-      const item = this.asCartItem(w)
-      this.saveCart(this.upsert(this.getCart(), item))
-      this.showToast()
-    },
-
-    goCart(){ this.$router.push('/cart') },
-  }
+  },
 }
 </script>
 
+
 <style scoped>
-.container{ width:min(1160px,92%); margin:0 auto; padding-bottom:120px; }
-.section__title{ margin:22px 4px 12px; font-size:22px; font-weight:800; color:#2d251c; }
-.section__title--center{ text-align:center; }
-.panel{ background:#fff; border:1.5px solid #e9e4db; border-radius:12px; padding:16px 18px; }
-.panel--center{ max-width:980px; margin:0 auto 18px; }
+/* 컨테이너 */
+.container {
+  width: clamp(20rem, 96vw, 82.5rem);
+  margin: 0 auto;
+}
 
-.wish{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; list-style:none; padding:0; margin:0; }
-.wish__item{ background:#fff; border:1px solid #e8e1d4; border-radius:10px; overflow:hidden; display:grid; grid-template-rows:120px auto auto; }
-.wish__fig{ background:#f4f3e6; display:grid; place-items:center; }
-.wish__fig img{ width:100%; height:100%; object-fit:cover; }
-.wish__meta{ padding:10px 12px 5px; margin-top:10px; }
-.wish__title{ font-weight:800; }
-.wish__sub{ font-size:12px; color:#7b6d5d; }
-.wish__actions{ display:flex; gap:6px; padding:8px 8px 8px; }
+/* 헤더 */
+.wish-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: .75rem;
+  margin: 1.25rem 0 .75rem;
+}
+.section__title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  color: #2d251c;
+}
+.wish-header__meta {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.count {
+  font-size: .875rem;
+  color: #7b6d5d;
+}
 
-.btn{ appearance:none; border:0; background:#f4f4f4; color:black; padding:10px 14px; border-radius:8px; font-weight:700; cursor:pointer; }
-.btn--ghost{ background:#f4f3e6; color:#5f5346; border:1px solid #d9d9d9; }
-.btn--thin{ padding:6px 10px; border-radius:7px; border:1px solid #d9d9d9;}
+/* 패널 */
+.panel {
+  background: #fff;
+  border: .09375rem solid #e9e4db;
+  border-radius: .75rem;
+  padding: 1rem 1.125rem;
+}
 
-@media (max-width:1024px){ .wish{ grid-template-columns:repeat(3,1fr); } }
-@media (max-width:640px){ .wish{ grid-template-columns:repeat(2,1fr); } }
+/* 버튼 */
+.btn {
+  appearance: none;
+  border: 0;
+  background: #f4f4f4;
+  color: #000;
+  padding: .625rem .875rem;
+  border-radius: .5rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn--ghost {
+  background: #f4f3e6;
+  color: #5f5346;
+  border: .0625rem solid #d9d9d9;
+}
+.btn--thin {
+  padding: .375rem .625rem;
+  border-radius: .4375rem;
+  border: .0625rem solid #d9d9d9;
+}
 
-.toast{
+/* 카드 그리드 */
+.wish-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; /* 16px */
+}
+.wish-card {
+  background: #fff;
+  border-radius: .5rem;
+  border: 1px solid #f0f0f0;
+  flex: 1 1 clamp(8rem, 20%, 11.25rem); /* 128px ~ 180px */
+  max-width: 11.25rem;                  /* 180px */
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+.wish-card:hover {
+  transform: translateY(-.375rem);
+  box-shadow: 0 .5rem 1.875rem rgba(0,0,0,.12);
+  border-color: #FC703C;
+}
+
+/* 이미지 */
+.wish-image-container {
+  width: 100%;
+  aspect-ratio: 1/1;
+  background: #f8f9fa;
+  overflow: hidden;
+}
+.wish-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+.wish-card:hover .wish-image {
+  transform: scale(1.05);
+}
+
+/* 정보 */
+.wish-info {
+  padding: .625rem;
+}
+.wish-title {
+  font-size: .875rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 .25rem 0;
+  line-height: 1.3;
+}
+.wish-price {
+  font-size: .8125rem;
+  color: #17a2b8;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* 액션 */
+.wish-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: .375rem;
+  padding: .625rem;
+}
+
+/* 하트(인라인) */
+.icon-heart-inline {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem; height: 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #fff;
+  color: #dc2626;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.icon-heart-inline:hover {
+  transform: scale(1.04);
+  background: #fff5f5;
+  border-color: #fecaca;
+}
+
+/* 빈 상태 */
+.empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #5f5346;
+}
+.muted { color: #7b6d5d; }
+
+/* 토스트 */
+.toast {
   position: fixed;
-  top: 50%;
-  left: 50%;
+  inset: 50% auto auto 50%;
   transform: translate(-50%, -50%);
-  background:#f4f4f4;
-  color:#7b6d5d;
-  padding:14px 20px;
-  border-radius:12px;
-  font-weight:600;
-  text-align:center;
-  z-index:9999;
+  background: #f4f4f4;
+  color: #7b6d5d;
+  padding: .875rem 1.25rem;
+  border-radius: .75rem;
+  font-weight: 600;
+  text-align: center;
+  z-index: 9999;
   animation: fadeInOut 2.2s ease forwards;
 }
-@keyframes fadeInOut{
-  0%{ opacity:0; transform:translate(-50%,-60%) }
-  15%{ opacity:1; transform:translate(-50%,-50%) }
-  85%{ opacity:1; transform:translate(-50%,-50%) }
-  100%{ opacity:0; transform:translate(-50%,-40%) }
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -60%); }
+  15% { opacity: 1; transform: translate(-50%, -50%); }
+  85% { opacity: 1; transform: translate(-50%, -50%); }
+  100% { opacity: 0; transform: translate(-50%, -40%); }
+}
+
+/* 반응형 */
+@media (max-width: 64rem) { /* <= 1024px */
+  .wish-grid { gap: .75rem; }
+  .wish-card { flex: 1 1 calc(33.333% - .75rem); max-width: none; }
+}
+@media (max-width: 40rem) { /* <= 640px */
+  .wish-card { flex: 1 1 calc(50% - .5rem); }
 }
 </style>

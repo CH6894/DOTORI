@@ -133,9 +133,14 @@
               </div>
 
               <!-- 이미지 미리보기 그리드 -->
-              <h3 class="section-title">이미지 ({{ current.photos.length }})</h3>
-              <div class="grid">
-                <figure v-for="p in current.photos" :key="p.id" class="pic" @click="openViewer(p)">
+              <h3 class="section-title">이미지 ({{ Math.min(current.photos.length, 5) }})</h3>
+              <div class="thumb-row">
+                <figure
+                  v-for="p in current.photos.slice(0, 5)"
+                  :key="p.id"
+                  class="thumb"
+                  @click="openViewer(p)"
+                >
                   <img :src="p.url" :alt="`photo ${p.id}`" />
                   <figcaption>
                     <span v-if="p.isCover" class="chip">대표</span>
@@ -143,6 +148,13 @@
                   </figcaption>
                 </figure>
               </div>
+
+              <!-- 판매자 메모 표시 -->
+              <h3 class="section-title">판매자 메모</h3>
+              <div v-if="current?.memo && current.memo.trim()" class="memo-view">
+                <p class="memo-text">{{ current.memo }}</p>
+              </div>
+              <div v-else class="memo-empty">메모 없음</div>
 
               <!-- 의사결정 영역 -->
               <h3 class="section-title">검수 결정</h3>
@@ -209,6 +221,8 @@ import {
   type Status,
 } from "@/api/inspection"
 import { toDegrees } from "chart.js/helpers"
+type InspectionEx = Inspection & { memo?: string }
+
 
 // ---------------------
 // 상태
@@ -223,7 +237,7 @@ const page = ref(1)
 const pageSize = ref(12)
 
 const panelOpen = ref(false)
-const current = ref<Inspection | null>(null)
+const current = ref<InspectionEx | null>(null)
 
 const decision = ref<Status | null>(null)
 const rejectReasons = ref<string[]>([])
@@ -871,6 +885,53 @@ onMounted(async () => {
 .slide-enter-from,
 .slide-leave-to {
   transform: translateX(100%);
+}
+/* === 한 줄 썸네일 행 === */
+.thumb-row {
+  display: flex;
+  overflow-x: auto;
+  font-size: 0;
+  padding-bottom: 6px;
+}
+.thumb {
+  margin: 0.6rem;  
+  flex: 0 0 140px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fafafa;
+  cursor: zoom-in;
+}
+.thumb img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+.thumb figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #6b7280;
+}
+/* === 판매자 메모 표시 === */
+.memo-view {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+}
+.memo-text {
+  white-space: pre-wrap;   /* 줄바꿈 유지 */
+  line-height: 1.5;
+  color: #111827;
+}
+.memo-empty {
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 8px 0;
 }
 
 @media (max-width: 640px) {
