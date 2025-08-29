@@ -1,15 +1,16 @@
 import { NumberLiteralType } from "typescript"
 
 export interface Item{
-    ean: string
-    name: string
-    title: string
-    manufacturer: string | null
-    texture: string | null
-    size: string
-    imgUrl: string | null
-    storageFees: number
-    genre: string
+  itemCode: string 
+  title: string
+  cost?: number
+  genre?: string
+  size?: string
+  manufacturer?: string
+  material?: string
+  information?: string
+  releaseDate?: string
+  ean?: string
 }
 
 export interface PageResponse<T> {

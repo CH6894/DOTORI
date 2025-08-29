@@ -277,7 +277,7 @@ import { computed, nextTick, ref, reactive } from 'vue'
 import { createInspection } from '@/api/inspection' // 경로는 프로젝트에 맞게
 
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
-type Item = { id: string | number; title: string; images?: string[]; condition?: Condition; price?: number }
+type Item = { id: string | number; itemCode: string; title: string; images?: string[]; condition?: Condition; price?: number }
 type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'seller' | 'buyer' | number }
 
 const MAX_PRICE = 1_000_000_000 - 1
@@ -520,6 +520,7 @@ async function submitAll() {
   try {
     const fd = new FormData()
     fd.append('userId', String(userId))
+    fd.append('itemCode', props.item.itemCode) 
     fd.append('productTitle', props.item.title)
     fd.append("price", String(price.value ?? 0))
     fd.append('unpacked', selectedChip.value === '미개봉' ? '0' : '1')

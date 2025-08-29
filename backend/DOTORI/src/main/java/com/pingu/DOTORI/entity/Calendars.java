@@ -33,8 +33,11 @@ public class Calendars {
 	@Column(name = "Schedule_ID", nullable = false)
 	private Long id;
 
-	@Column(name = "Schedule_Date", nullable = false)
-	private LocalDateTime scheduleDate;
+	@Column(name = "schedule_date", nullable = false)
+    private LocalDateTime scheduleDate;
+	
+	//@Column(name = "user_id")
+    //private Long userId; 
 
 	@Column(name = "Schedule_Name", nullable = false, length = 255)
 	private String scheduleName;

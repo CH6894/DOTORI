@@ -27,7 +27,7 @@ public class SecurityConfig {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
   }
 
-  @Bean
+  @Bean(name = "mainSecurityFilterChain")
   SecurityFilterChain filterChain(HttpSecurity http,
       ClientRegistrationRepository repo) throws Exception {
     http
@@ -37,18 +37,22 @@ public class SecurityConfig {
         .addFilterBefore(jwtAuthenticationFilter,
             org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth
-        	    .requestMatchers("/", "/health", "/public/**").permitAll()
-        	    .requestMatchers("/oauth2/**", "/login/**").permitAll()
-        	    .requestMatchers("/static/**").permitAll()
-        	    .requestMatchers("/api/inspections/**").authenticated() // ✅ 로그인 필요
-        	    .requestMatchers("/api/**").permitAll()
-        	    .anyRequest().authenticated()
+            .requestMatchers("/", "/health", "/public/**").permitAll()
+            .requestMatchers("/oauth2/**", "/login/**").permitAll()
+            .requestMatchers("/static/**").permitAll()
+            .requestMatchers("/open/**").permitAll()
+            .requestMatchers("/api/**").authenticated()
+            .anyRequest().authenticated()
+            )
+           .oauth2Login(oauth -> oauth
+            .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))
+            .successHandler(oAuth2SuccessHandler) // 로그인 성공 후 JWT 발급
         );
 
     return http.build();
   }
 
-  @Bean
+  @Bean(name = "apiCorsConfigurationSource")
   CorsConfigurationSource corsConfigurationSource() {
     var config = new CorsConfiguration();
     config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8081"));

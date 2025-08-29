@@ -4,6 +4,9 @@ import com.pingu.DOTORI.entity.Users;
 import com.pingu.DOTORI.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -11,6 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,18 +27,21 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
   private final JwtProvider jwtProvider;
   private final UsersRepository userRepository;
+  private final OAuth2AuthorizedClientService clientService; // ✅ 추가
 
   @Value("${app.oauth2.success-redirect:http://localhost:5173/oauth2/callback}")
   private String frontendCallback;
 
-  public OAuth2SuccessHandler(JwtProvider jwtProvider, UsersRepository userRepository) {
+  public OAuth2SuccessHandler(JwtProvider jwtProvider, UsersRepository userRepository,
+                              OAuth2AuthorizedClientService clientService) {
     this.jwtProvider = jwtProvider;
     this.userRepository = userRepository;
+    this.clientService = clientService; // ✅ 주입
   }
 
   @Override
   public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res,
-      Authentication authentication)
+                                      Authentication authentication)
       throws IOException, ServletException {
 
     OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
@@ -98,6 +106,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
       }
     }
 
+    // ✅ AccessToken 세션에 저장 (로그아웃 때 사용)
+    if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
+      OAuth2AuthorizedClient client =
+          clientService.loadAuthorizedClient(oauthToken.getAuthorizedClientRegistrationId(),
+              oauthToken.getName());
+      if (client != null) {
+        String accessToken = client.getAccessToken().getTokenValue();
+        HttpSession session = req.getSession(true);
+        session.setAttribute("NAVER_ACCESS_TOKEN", accessToken);
+      }
+    }
+
+    // JWT 발급 후 프론트로 전달
     String token = jwtProvider.createToken(subject);
 
     String targetUrl = UriComponentsBuilder
@@ -111,19 +132,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
   // 성별 변환 (F/M -> 1/2)
   private Byte convertGender(String gender) {
-    if (gender == null)
-      return (byte) 1;
-    switch (gender.toUpperCase()) {
-      case "M":
-        return (byte) 1;
-      case "F":
-        return (byte) 2;
-      default:
-        return (byte) 1;
-    }
+    if (gender == null) return (byte) 1;
+    return switch (gender.toUpperCase()) {
+      case "M" -> (byte) 1;
+      case "F" -> (byte) 2;
+      default -> (byte) 1;
+    };
   }
 
-  // 생일 변환 (MM-DD -> LocalDate)
   private LocalDate convertBirthday(String birthday, String birthyear) {
     if (birthday == null || birthyear == null) {
       return LocalDate.of(1900, 1, 1);
@@ -136,7 +152,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
   }
 
-  // 출생년도 변환 (YYYY -> LocalDate)
   private LocalDate convertBirthYear(String birthyear) {
     if (birthyear == null) {
       return LocalDate.of(1900, 1, 1);

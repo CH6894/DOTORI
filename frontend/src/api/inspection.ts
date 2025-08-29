@@ -15,6 +15,8 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
+export default axios;
+
 // ===== 뷰 모델 =====
 export type Status = "PENDING" | "APPROVED" | "REJECTED";
 

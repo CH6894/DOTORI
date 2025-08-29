@@ -25,6 +25,7 @@ public class InspectionService {
   /** 판매자 검수 신청 생성 */
   @Transactional
   public CreateResult createInspection(Long userId,
+		  							   String itemCode,  
                                        String productTitle, // 필요 시 별도 테이블/필드로 확장
                                        BigDecimal price,
                                        Byte unpacked,       // 0 미개봉 / 1 개봉
@@ -36,7 +37,7 @@ public class InspectionService {
     // 1) 사용자 조회(필수)
     Users user = usersRepo.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
     
-    Item baseItem = itemRepo.findById("ITEM001")   // ⚠️ 실제 존재하는 itemCode 넣으세요
+    Item baseItem = itemRepo.findById("itemCode")   // ⚠️ 실제 존재하는 itemCode 넣으세요
     	    .orElseThrow(() -> new IllegalArgumentException("Item not found"));
     
     // 2) ItemDetails 생성
