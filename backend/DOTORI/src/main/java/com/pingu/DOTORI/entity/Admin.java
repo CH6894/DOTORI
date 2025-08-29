@@ -22,9 +22,6 @@ public class Admin {
 	@JoinColumn(name = "Item_ID", nullable = false)
 	private ItemDetails itemDetails; // ✅ 서비스에서 getItemDetails()
 
-	@Column(name = "Unpacked") // 0/1
-	private Byte unpacked;
-
 	@Column(name = "Quality") // 등급(1/2/3 등)
 	private Integer quality;
 
