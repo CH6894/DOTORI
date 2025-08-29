@@ -48,12 +48,8 @@ function isAuthenticated(): boolean {
   return !!localStorage.getItem("AuthToken");
 }
 
-const ItemList = () => import("@/components/ItemList.vue");
-
 /* ===== routes ===== */
 const routes: RouteRecordRaw[] = [
-  { path: "/items", name: "items", component: ItemList },
-
   {
     path: "/CalendarManager",
     name: "CalendarManager",

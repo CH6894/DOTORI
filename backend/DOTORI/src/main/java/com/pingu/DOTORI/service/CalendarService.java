@@ -39,7 +39,6 @@ public class CalendarService {
         if (patch.getScheduleName() != null) cur.setScheduleName(patch.getScheduleName());
         if (patch.getScheduleInfo() != null) cur.setScheduleInfo(patch.getScheduleInfo());
         if (patch.getScheduleDate() != null) cur.setScheduleDate(patch.getScheduleDate());
-        if (patch.getUserId() != null) cur.setUserId(patch.getUserId());
 
         return cur; // 영속 객체 → 트랜잭션 종료 시 자동 UPDATE flush
     }

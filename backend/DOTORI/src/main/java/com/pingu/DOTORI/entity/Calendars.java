@@ -36,9 +36,6 @@ public class Calendars {
 	@Column(name = "schedule_date", nullable = false)
     private LocalDateTime scheduleDate;
 	
-	@Column(name = "user_id")
-    private Long userId; 
-
 	@Column(name = "Schedule_Name", nullable = false, length = 255)
 	private String scheduleName;
 

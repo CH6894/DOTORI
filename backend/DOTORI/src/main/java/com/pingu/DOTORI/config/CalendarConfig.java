@@ -19,8 +19,9 @@ import java.util.List;
 public class CalendarConfig {
 
  // (기존 CORS Bean은 유지)
- @Bean
- public CorsConfigurationSource corsConfigurationSource() {
+ @Bean(name = "calendarCorsConfigurationSource")
+ @Order(199)
+ CorsConfigurationSource corsConfigurationSource() {
      CorsConfiguration cfg = new CorsConfiguration();
      cfg.setAllowedOrigins(List.of("http://localhost:5173","http://127.0.0.1:5173","http://localhost:8080"));
      cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
@@ -34,7 +35,7 @@ public class CalendarConfig {
  // ✅ 이름 변경 + 경로 범위 분리 + (선택) 순서 지정
  @Bean(name = "apiSecurityFilterChain")
  @Order(200)
- public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+ SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
      http
          .securityMatcher("/api/**")              // 이 체인은 /api/** 에만 적용
          .csrf(csrf -> csrf.disable())

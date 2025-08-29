@@ -32,6 +32,14 @@ const TopCategoryData: string[] = (TopCat as any).default ?? TopCat.TopCategoryD
 const ItemData: Item[] = (Items as any).default ?? Items.ItemData ?? []
 const midOptions = computed<string[]>(() => MidCategoryMap[top.value] ?? [])
 
+// 데이터 불러오기
+export type Item = {
+  id : number | string
+  title?: string
+  name?: string
+  price?: number
+}
+
 // 필터링 → 정렬
 const { filtered } = useCatalog(ItemData, top, mid)
 const sorted = computed(() => {
