@@ -26,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class ItemController {
 	private final ItemService itemService;
 	
-	@GetMapping
-	public ResponseEntity<Page<ItemDTO>> getItems(@PageableDefault(size = 20) Pageable pageable){
-		return ResponseEntity.ok(itemService.findAll(pageable));
+	@GetMapping("/genre/{genre}")
+	public ResponseEntity<Page<ItemDTO>> byGenre(@PathVariable String genre, @PageableDefault(size = 20) Pageable pageable){
+		return ResponseEntity.ok(itemService.findByGenre(genre, pageable));
 	}
 }

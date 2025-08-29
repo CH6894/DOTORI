@@ -17,8 +17,8 @@ import com.pingu.DOTORI.repository.ItemRepository;
 public class ItemService {
 	private final ItemRepository itemRepository;
 	
-	public Page<ItemDTO> findAll(Pageable pageable) {
-		return itemRepository.findAll(pageable).map(this::toDto);
+	public Page<ItemDTO> findByGenre(String genre, Pageable pageable) {
+		return itemRepository.findByGenreIgnoreCase(genre, pageable).map(this::toDto);
 	}
 	
 	private ItemDTO toDto(Item i) {
