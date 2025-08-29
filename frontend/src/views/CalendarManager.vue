@@ -309,6 +309,7 @@ function renderAgenda() {
       const time = ev.allDay ? '종일' : timeRange(ev.start, ev.end)
       const title = escapeHtml(ev.title || '(제목 없음)')
       return `
+
         <li class="agenda__item" style="--dot-color:${color}">
           <span class="agenda__time">${time}</span>
           <span class="agenda__title">${title}</span>
@@ -457,87 +458,3 @@ onBeforeUnmount(() => { if (calendar) calendar.destroy() })
 
 <!-- 전역 캘린더/모달/FC 커스텀 (네가 만든 calendar.css) -->
 <style src="../assets/calendar.css"></style>
-
-<!-- 이 파일 전용 보조 스타일 -->
-<style scoped>
-/* 모달 본문이 길어질 경우 스크롤 */
-.modal__body { max-height: 70vh; overflow: auto; }
-
-/* ===== Summary ===== */
-.summary {
-  width: var(--cal-fixed-width, 1280px);
-  max-width: 100%;
-  margin: 16px auto 0;
-}
-.summary__title {
-  margin: 12px 0 10px;
-  font-size: 16px;
-  font-weight: 800;
-  color: #111;
-}
-.summary__list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 8px;
-}
-.summary__item {
-  display: grid;
-  grid-template-columns: 10px 110px 96px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border: 1px solid #e9e9e9;
-  border-radius: 10px;
-  background: #fff;
-}
-.summary__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--dot-color, #999);
-}
-.summary__date, .summary__when {
-  font-size: 13px;
-  color: #444;
-}
-.summary__text {
-  font-size: 14px;
-  color: #111;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.summary__actions {
-  display: flex;
-  gap: 6px;
-}
-.btn.btn--tiny {
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-.btn.btn--tiny:hover { background: #f5f5f5; }
-.btn--danger { color: #dc2626; border-color: #fecaca; }
-.summary__empty {
-  padding: 14px;
-  text-align: center;
-  color: #666;
-  border: 1px dashed #e5e7eb;
-  border-radius: 10px;
-  background: #fff;
-}
-/* 모바일 대응 */
-@media (max-width: 640px) {
-  .summary__item {
-    grid-template-columns: 10px 92px 72px 1fr auto;
-    gap: 8px;
-  }
-  .summary__date, .summary__when { font-size: 12px; }
-  .summary__text { font-size: 13px; }
-}
-</style>
