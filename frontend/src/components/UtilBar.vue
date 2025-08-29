@@ -7,7 +7,7 @@
         <a v-if="!isAuthed" href="javascript:;" @click="loginNaver">로그인</a>
         <a v-else href="javascript:;" @click="logout">로그아웃</a>
         <span aria-hidden="true">/</span>
-        <a href="#">고객센터</a>
+        <RouterLink to="/support">고객센터</RouterLink>
       </nav>
    </div>
   </div>

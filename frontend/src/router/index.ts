@@ -27,9 +27,7 @@ const InspectionView = () => import("@/views/InspectionPage.vue");
 /* ===== MyPage & children ===== */
 const MyPage = () => import("@/views/MyPage.vue");
 const MyPageShip = () => import("@/components/mypage/MyPageShip.vue");
-const MyPageOrders = () => import("@/components/mypage/MyPageOrders.vue");
-const MyPageSales = () => import("@/components/mypage/MyPageSales.vue");
-const MyPageStorage = () => import("@/components/mypage/MyPageStorage.vue");
+const MyPageTrade = () => import("@/components/mypage/MyPageTrade.vue");
 const MyPageWish = () => import("@/components/mypage/MyPageWish.vue");
 
 /* ===== Cart ===== */
@@ -104,10 +102,8 @@ const routes: RouteRecordRaw[] = [
     component: MyPage,
     meta: { requiresAuth: false, header: "main", footer: true, utilbar: true },
     children: [
-      { path: "orders", name: "mypage-orders", component: MyPageOrders },
-      { path: "sales", name: "mypage-sales", component: MyPageSales },
+      { path: "trade", name: "mypage-trade", component: MyPageTrade },
       { path: "ship", name: "mypage-ship", component: MyPageShip },
-      { path: "storage", name: "mypage-storage", component: MyPageStorage },
     ],
   },
   {
@@ -173,7 +169,7 @@ const routes: RouteRecordRaw[] = [
     path: "/cart",
     name: "cart",
     component: ShoppingCart,
-    meta: { requiresAuth: true, header: "main", footer: true, utilbar: true },
+    meta: { requiresAuth: false, header: "main", footer: true, utilbar: true },
   },
 
   /* ===== 도감/컬렉션 ===== */

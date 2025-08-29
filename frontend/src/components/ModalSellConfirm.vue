@@ -284,8 +284,8 @@ const MAX_PRICE = 1_000_000_000 - 1
 const STAGES = ['신청 확인 중', '입고 확인', '검수 중', '등록 대기중', '등록'] as const
 
 /* 업로드 제약 */
-const MIN_FILES = 3
-const MAX_FILES = 8
+const MIN_FILES = 2
+const MAX_FILES = 5
 const MAX_MB = 10
 
 const step = ref<1 | 2 | 3 | 4>(1)
