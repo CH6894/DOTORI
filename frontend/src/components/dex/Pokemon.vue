@@ -722,7 +722,6 @@ function handleImageError(e: Event) {
   text-align: center;
   margin-bottom: 2.5rem;
   padding: 2rem;
-  width: 98%;
   max-width: 1240px;
   margin: 0 auto 1.25rem;
   padding: 1.5rem;

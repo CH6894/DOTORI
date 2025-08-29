@@ -97,7 +97,7 @@ const categories = ref<Category[]>([
 const subCategories = ref<Record<string, SubCategory[]>>({
   animation: [{ id: 'kimetsu', name: '귀멸의 칼날' }],
   creater:   [{ id: 'chim',    name: '침착맨' }],
-  game:      [{ id: 'pokemon', name: '포켓몬스터' }, { id: 'zelda', name: '젤다의 전설' }],
+  game:      [{ id: 'pokemon', name: '포켓몬스터' }, ],
   kpop:      [{ id: 'blackpink', name: 'BLACKPINK' }],
   sports:    [{ id: 'kia', name: 'KIA' }],
   webtoon:   [{ id: 'tower', name: '신의 탑' }, { id: 'noblesse', name: '마루는 강쥐' }],
