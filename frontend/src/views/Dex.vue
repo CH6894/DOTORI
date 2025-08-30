@@ -11,8 +11,12 @@
           <TopTabsAdapter v-model="currentCategory" :items="categories" aria-label="상위 카테고리" />
         </div>
         <div class="container-1280">
-          <MidTabsAdapter v-model="currentSubCategory" :items="currentSubCategories" aria-label="중위 카테고리"
-            :visible="currentSubCategories.length > 0" :include-all="false" />
+<MidTabsAdapter
+  v-model="currentSubCategory"
+  :items="currentSubCategories"
+  :include-all="false"  
+  aria-label="중위 카테고리"
+/>
         </div>
       </div>
     </section>
@@ -43,10 +47,11 @@ import { useDex } from '@/stores/useDex'
 
 /* ✅ 동적 컴포넌트 */
 import PokemonCollection from '@/components/dex/Pokemon.vue'
-import BlackPink from '@/components/dex/BlackPink.vue'
-import ChimCollection from '@/components/dex/ChimCollection.vue'
-import KiaCollection from '@/components/dex/KiaCollection.vue'
+// import BlackPink from '@/components/dex/BlackPink.vue'
+// import ChimCollection from '@/components/dex/ChimCollection.vue'
+// import KiaCollection from '@/components/dex/KiaCollection.vue'
 import Kimetsu from '@/components/dex/Kimetsu.vue'
+import Onepiece from '@/components/dex/Onepiece.vue'
 
 type Category = { id: string; name: string }
 type SubCategory = { id: string; name: string }
@@ -87,7 +92,7 @@ const categories = ref<Category[]>([
 ])
 
 const subCategories = ref<Record<string, SubCategory[]>>({
-  animation: [{ id: 'kimetsu', name: '귀멸의 칼날' }],
+  animation: [{ id: 'kimetsu', name: '귀멸의 칼날' }, { id: 'onepiece', name: '원피스' }],
   creater: [{ id: 'chim', name: '침착맨' }],
   game: [{ id: 'pokemon', name: '포켓몬스터' },],
   kpop: [{ id: 'blackpink', name: 'BLACKPINK' }],
@@ -103,10 +108,11 @@ const currentCategoryName = computed(() => categories.value.find(c => c.id === c
 
 const registry: Record<string, any> = {
   'game:pokemon': PokemonCollection,
-  'kpop:blackpink': BlackPink,
-  'creater:chim': ChimCollection,
-  'sports:kia': KiaCollection,
+  // 'kpop:blackpink': BlackPink,
+  // 'creater:chim': ChimCollection,
+  // 'sports:kia': KiaCollection,
   'animation:kimetsu': Kimetsu,
+  'animation:onepiece': Onepiece,
 }
 
 const activeViewComponent = computed(() => {

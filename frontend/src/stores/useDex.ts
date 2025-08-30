@@ -1,9 +1,7 @@
 // src/stores/useDex.ts
 import { defineStore } from 'pinia'
 import { http as axios } from '@/lib/http'
-
-/** 공통 키 포맷: category:sub:id (예: game:pokemon:001) */
-export type DexKey = string
+import { PREFIX, MAX_LOCAL, pad3, keyOf, type DexKey } from './dexKey'
 
 export type UserItemState = {
   itemKey: DexKey
@@ -22,16 +20,22 @@ const __FORCE_LOCAL_DUMMY__ = true
 
 /** 더미 인증 코드 매핑(고정 키) */
 const DUMMY_MAP: Record<string, DexKey> = {
-  TEST1: 'game:pokemon:001',
-  TEST2: 'game:pokemon:002',
-  TEST3: 'game:pokemon:003',
-  TEST4: 'game:pokemon:004',
-  TEST5: 'game:pokemon:005',
-  TEST6: 'game:pokemon:006',
+  // 포켓몬
+  TEST1: keyOf(PREFIX.pokemon, 1),
+  TEST2: keyOf(PREFIX.pokemon, 2),
+  TEST3: keyOf(PREFIX.pokemon, 3),
+  TEST4: keyOf(PREFIX.pokemon, 4),
+  TEST5: keyOf(PREFIX.pokemon, 5),
+  TEST6: keyOf(PREFIX.pokemon, 6),
+
+  // 원피스(고정 샘플)
+  OP001: keyOf(PREFIX.onepiece, 1),
+  OP002: keyOf(PREFIX.onepiece, 2),
+  OP003: keyOf(PREFIX.onepiece, 3),
 }
 
-/** 귀멸 인증 허용 개수(로컬 한정) */
-const KIMETSU_MAX = 11
+/** (하위 호환) 귀멸 인증 허용 개수(로컬 한정) */
+const KIMETSU_MAX = MAX_LOCAL.kimetsu
 
 /** 로컬 스토리지 키 */
 const LS_KEY = 'dex_state_v1'
@@ -46,13 +50,9 @@ function loadFromLS(): Partial<DexState> | null {
 }
 function saveToLS(state: DexState) {
   try {
-    localStorage.setItem(
-      LS_KEY,
-      JSON.stringify({ userId: state.userId, items: state.items })
-    )
+    localStorage.setItem(LS_KEY, JSON.stringify({ userId: state.userId, items: state.items }))
   } catch {}
 }
-const pad3 = (n: number | string) => String(n).padStart(3, '0')
 
 export const useDex = defineStore('dex', {
   state: (): DexState => ({
@@ -73,9 +73,7 @@ export const useDex = defineStore('dex', {
     /** 주어진 키 배열 기준 완성도(%) */
     completionByKeys: (s) => (keys: DexKey[]): number => {
       const total = keys.length || 1
-      const verifiedSet = new Set(
-        s.items.filter((i) => i.verified).map((i) => i.itemKey)
-      )
+      const verifiedSet = new Set(s.items.filter((i) => i.verified).map((i) => i.itemKey))
       let verified = 0
       for (const k of keys) if (verifiedSet.has(k)) verified++
       return Math.round((verified / total) * 100)
@@ -118,10 +116,7 @@ export const useDex = defineStore('dex', {
         }
 
         // 실제 서버 사용 시
-        const { data } = await axios.get<{
-          userId: string
-          items: UserItemState[]
-        }>('/api/dex/state')
+        const { data } = await axios.get<{ userId: string; items: UserItemState[] }>('/api/dex/state')
         this.userId = data?.userId ?? ''
         this.items = Array.isArray(data?.items) ? data.items : []
       } catch (e) {
@@ -151,9 +146,7 @@ export const useDex = defineStore('dex', {
       const cur = this.items.find((i) => i.itemKey === itemKey)
       const isVerified = !!cur?.verified
       const next = !cur?.activated
-
-      /** ★ 인증된 항목은 비활성화 불가 → 조용히 무시(필요시 UI 토스트) */
-      if (isVerified && !next) return
+      if (isVerified && !next) return // 인증된 항목은 비활성화 불가
 
       this._upsert(itemKey, { activated: next })
       if (__FORCE_LOCAL_DUMMY__) return
@@ -163,15 +156,10 @@ export const useDex = defineStore('dex', {
     /** ✅ (버튼용) 귀멸 로컬 인증: 1..KIMETSU_MAX 범위에서만 성공 */
     async verifyKimetsuLocal(id: number, max = KIMETSU_MAX): Promise<DexKey> {
       const n = Number(id)
-      if (!Number.isFinite(n) || n < 1 || n > max) {
-        throw new Error('INVALID_RANGE')
-      }
-      const key = `animation:kimetsu:${pad3(n)}` as DexKey
-      /** ★ 인증과 동시에 활성화 */
+      if (!Number.isFinite(n) || n < 1 || n > max) throw new Error('INVALID_RANGE')
+      const key = `${PREFIX.kimetsu}${pad3(n)}` as DexKey
       this._upsert(key, { verified: true, activated: true })
-      if (!__FORCE_LOCAL_DUMMY__) {
-        await axios.post('/api/dex/verify-kimetsu', { itemKey: key })
-      }
+      if (!__FORCE_LOCAL_DUMMY__) await axios.post('/api/dex/verify-kimetsu', { itemKey: key })
       return key
     },
 
@@ -185,27 +173,29 @@ export const useDex = defineStore('dex', {
           // 1) 고정 더미 맵
           if (DUMMY_MAP[normalized]) {
             const key = DUMMY_MAP[normalized]
-            /** ★ 인증과 동시에 활성화 */
             this._upsert(key, { verified: true, activated: true })
             return key
           }
 
-          // 2) 귀멸 패턴: KIMETSU### (1..KIMETSU_MAX만 허용)
-          const mK = normalized.match(/^KIMETSU[-_]?(\d{1,3})$/)
-          if (mK) {
-            const n = Number(mK[1])
-            if (Number.isFinite(n) && n >= 1 && n <= KIMETSU_MAX) {
-              const key = `animation:kimetsu:${pad3(n)}` as DexKey
-              /** ★ 인증과 동시에 활성화 */
-              this._upsert(key, { verified: true, activated: true })
-              return key
-            }
-            throw new Error('INVALID_RANGE')
-          }
+          // 2) 공통 패턴 (POKEMON/PKM/KIMETSU/KIM/ONEPIECE/OP)
+          //    예) POKEMON-7, PKM007, KIM_11, OP12, ONEPIECE001
+          const m = normalized.match(/^(POKEMON|PKM|KIMETSU|KIM|ONEPIECE|OP)[-_]?(\d{1,3})$/)
+          if (m) {
+            const tag = m[1]
+            const n = Number(m[2])
+            if (!Number.isFinite(n) || n < 1) throw new Error('INVALID_RANGE')
 
-          // (포켓몬 패턴 필요시 여기에 추가)
-          // const mP = normalized.match(/^POKEMON[-_]?(\d{1,3})$/)
-          // if (mP) { ... }
+            let prefix = ''
+            let max = Infinity
+            if (tag === 'POKEMON' || tag === 'PKM')     { prefix = PREFIX.pokemon;  max = MAX_LOCAL.pokemon }
+            if (tag === 'KIMETSU' || tag === 'KIM')     { prefix = PREFIX.kimetsu;  max = MAX_LOCAL.kimetsu }
+            if (tag === 'ONEPIECE' || tag === 'OP')     { prefix = PREFIX.onepiece; max = MAX_LOCAL.onepiece }
+
+            if (n > max) throw new Error('INVALID_RANGE')
+            const key = keyOf(prefix, n)
+            this._upsert(key, { verified: true, activated: true })
+            return key
+          }
 
           // 매칭 실패
           throw new Error('INVALID_CODE')
@@ -218,7 +208,6 @@ export const useDex = defineStore('dex', {
         )
         if (!data?.ok || !data?.itemKey) throw new Error('INVALID_CODE')
 
-        /** ★ 인증과 동시에 활성화 */
         const key = data.itemKey
         this._upsert(key, { verified: true, activated: true })
         return key
@@ -234,9 +223,7 @@ export const useDex = defineStore('dex', {
     purgeInvalid(validKeys: DexKey[]) {
       const valid = new Set(validKeys)
       const before = this.items.length
-      this.items = this.items.filter((it) =>
-        valid.has(it.itemKey) ? true : !it.itemKey.startsWith('animation:kimetsu:')
-      )
+      this.items = this.items.filter((it) => valid.has(it.itemKey))
       const diff = before - this.items.length
       if (diff > 0) console.info(`[dex] purged ${diff} invalid items`)
       if (__FORCE_LOCAL_DUMMY__) saveToLS(this.$state)

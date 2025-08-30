@@ -4,7 +4,7 @@
     <!-- 헤더: 로고 + 통계 + 인증 입력 -->
     <div class="figure-header">
       <h2 class="dictionary-title">
-        <img :src="kimetsuLogo" alt="귀멸의 칼날" class="title-img" />
+        <img :src="onepiece" alt="원피스" class="title-img" />
       </h2>
       <div class="collection-stats">
         <span>총 수집품: {{ verifiedCount }}/{{ total }}</span>
@@ -47,8 +47,8 @@
 
 <script setup lang="ts">
 // @ts-expect-error: JS 모듈에 d.ts 없음
-import rawKimetsuFigures from '@/data/kimetsuFigures.js'
-import logoKimetsu from '@/assets/ani/kimetsu.webp'
+import rawOnepieceFigures from '@/data/onepiece.js'
+import onepiece from '@/assets/onepiece/logo/onepiece.webp'
 import VerifiedBadge from '@/components/dex/VerifiedBadge.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useDex } from '@/stores/useDex'
@@ -75,7 +75,7 @@ type Figure = {
 }
 
 const dex = useDex()
-const kimetsuLogo = logoKimetsu
+const onepieceLogo = onepiece
 
 
 /** 1) 데이터 정규화 (id undefined 방지) */
@@ -93,14 +93,14 @@ const normalizeFigures = (input: RawFigure[]): Figure[] => {
   }
   return tmp
 }
-const figures = normalizeFigures(rawKimetsuFigures as RawFigure[])
+const figures = normalizeFigures(rawOnepieceFigures as RawFigure[])
 const total = figures.length
 
 /** 2) 안전 키 생성기 */
 function makeKeySafe(id: number | string | undefined): DexKey {
   const n = Number(id)
-  if (!Number.isFinite(n)) return 'animation:kimetsu:INVALID' as DexKey
-  return `animation:kimetsu:${String(n).padStart(3, '0')}` as DexKey
+  if (!Number.isFinite(n)) return 'animation:onepiece:INVALID' as DexKey
+  return `animation:onepiece:${String(n).padStart(3, '0')}` as DexKey
 }
 
 /** 3) 상태 판정(Set 캐싱) */
@@ -131,7 +131,7 @@ const code = ref('')
 async function onSubmitCode() {
   const raw = code.value.trim()
   if (!raw) {
-    alert('인증코드를 입력하세요. 예: KIMETSU011 / TEST1')
+    alert('인증코드를 입력하세요.')
     return
   }
   try {
@@ -159,19 +159,29 @@ onMounted(() => {
   const valid = new Set(itemKeys.value)
   const before = dex.items.length
   dex.items = dex.items.filter(it => {
-    if (!it.itemKey.startsWith('animation:kimetsu:')) return true
+    if (!it.itemKey.startsWith('animation:onepiece:')) return true
     return valid.has(it.itemKey)
   })
   const diff = before - dex.items.length
-  if (diff > 0) console.info(`[Kimetsu] cleaned ${diff} invalid items from store`)
+  if (diff > 0) console.info(`[Onepiece] cleaned ${diff} invalid items from store`)
 
   const dups = itemKeys.value.filter((k, i, arr) => arr.indexOf(k) !== i)
-  if (dups.length) console.warn('[Kimetsu] duplicate keys detected:', dups)
+  if (dups.length) console.warn('[Onepiece] duplicate keys detected:', dups)
 })
 </script>
 
 <style scoped>
 @import '@/assets/styles/collection.css';
+.figure-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #addeff, #3d6285, #3123f8);
+  border-radius: 20px;
+  color: #fdfdfd;
+  box-shadow: inset 0 3px 10px rgba(255,255,255,0.1),
+              0 8px 20px rgba(0,0,0,0.4);
+}
 
 /* 헤더 로고 중앙 정렬 */
 .title-img {
