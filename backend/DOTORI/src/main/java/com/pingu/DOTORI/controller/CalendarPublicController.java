@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/public/calendars")
+@RequestMapping("/calendarmanager")
 public class CalendarPublicController {
 
     private final CalendarService service;
