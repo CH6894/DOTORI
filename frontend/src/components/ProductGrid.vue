@@ -1,3 +1,4 @@
+<!-- src/components/ProductGrid.vue -->
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import { RouterLink } from 'vue-router'
