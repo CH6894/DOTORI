@@ -81,7 +81,7 @@ async function loadByTitle(title: string) {
   try {
     loading.value = true
     error.value = null
-    const res: Page<ItemDTO> = await fetchTitle(top.value, title, 0, 60)
+    const res: Page<ItemDTO> = await fetchTitle(top.value, title, {page: 0, size : 60} )
     items.value = (res.content ?? []).map(adapt)
   } catch (e: any) {
     error.value = e?.message ?? '목록을 불러오지 못했습니다.'
