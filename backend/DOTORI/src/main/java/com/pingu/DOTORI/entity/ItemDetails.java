@@ -36,7 +36,7 @@ public class ItemDetails {
 	private Boolean status; // 판매 상태
 
 	@Column(name = "Unpacked") // 0/1
-	private Byte unpacked;
+	private Boolean unpacked;
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

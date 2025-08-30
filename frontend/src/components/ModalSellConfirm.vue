@@ -508,7 +508,7 @@ function onClose() { emit('close') }
 /* 최종 제출 → 4단계 */
 const isSubmitting = ref(false)
 const step = ref<1 | 2 | 3 | 4>(1)
-const userId = 1
+const userId = 2
 
 const normalizedPrice = price.toString().replace(/,/g, "")
 
@@ -523,9 +523,9 @@ async function submitAll() {
     fd.append('itemCode', "DT-ADP-0001") 
     fd.append('productTitle', "ALLDAY PROJECT (올데이 프로젝트) - PIN BUTTON SET [FAMOUS] OFFICIAL MERCH")
     fd.append("price", String(price.value ?? 0))
-    // fd.append('unpacked', selectedChip.value === '미개봉' ? '0' : '1')
+    fd.append('unpacked', (selectedChip.value === '미개봉' ? '0' : '1'))
     fd.append('memo', memo.value ?? '')
-    
+    fd.append("filmingTime", new Date().toISOString());
     items.value.forEach(i => fd.append('images', i.file))
 
     for (const [key, value] of fd.entries()) {

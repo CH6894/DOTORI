@@ -32,25 +32,23 @@ public class SecurityConfig {
   @Bean(name = "mainSecurityFilterChain")
   SecurityFilterChain filterChain(HttpSecurity http,
       ClientRegistrationRepository repo) throws Exception {
-    http
-        .cors(Customizer.withDefaults())
-        .csrf(csrf -> csrf.disable())
-        .cors(cors -> {
-        })
-        .addFilterBefore(jwtAuthenticationFilter,
-            org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter.class)
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/", "/health", "/public/**").permitAll()
-            .requestMatchers("/oauth2/**", "/login/**").permitAll()
-            .requestMatchers("/static/**").permitAll()
-            .requestMatchers("/open/**").permitAll()
-            .requestMatchers("/api/**").authenticated()
-            .anyRequest().authenticated()
-            )
-           .oauth2Login(oauth -> oauth
-            .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))
-            .successHandler(oAuth2SuccessHandler) // 로그인 성공 후 JWT 발급
-        );
+	  http
+	    .cors(Customizer.withDefaults())  // 여기만 있으면 충분함
+	    .csrf(csrf -> csrf.disable())
+	    .addFilterBefore(jwtAuthenticationFilter,
+	        org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter.class)
+	    .authorizeHttpRequests(auth -> auth
+	        .requestMatchers("/", "/health", "/public/**").permitAll()
+	        .requestMatchers("/oauth2/**", "/login/**").permitAll()
+	        .requestMatchers("/static/**").permitAll()
+	        .requestMatchers("/open/**").permitAll()
+	        .requestMatchers("/api/**").authenticated()
+	        .anyRequest().authenticated()
+	    )
+	   .oauth2Login(oauth -> oauth
+	        .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))
+	        .successHandler(oAuth2SuccessHandler)  // 로그인 성공 후 JWT 발급
+	   );
 
     return http.build();
   }
@@ -58,14 +56,16 @@ public class SecurityConfig {
   @Bean(name = "apiCorsConfigurationSource")
   CorsConfigurationSource corsConfigurationSource() {
     var config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8081"));
+    config.setAllowedOrigins(List.of("http://localhost:5173"));
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);
     config.setExposedHeaders(List.of("Authorization"));
 
-    var source = new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/api/**", config);
+    source.registerCorsConfiguration("/oauth2/**", config);
+    source.registerCorsConfiguration("/login/**", config);
     return source;
   }
 }

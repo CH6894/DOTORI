@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,5 +18,6 @@ public class InspectionRequest {
     private BigDecimal price;         // 가격
     private int unpacked;             // 개봉 여부 (0=미개봉, 1=개봉)
     private String memo;              // 메모
+    private String filmingTime;  
     private List<MultipartFile> images; // 첨부 이미지
 }

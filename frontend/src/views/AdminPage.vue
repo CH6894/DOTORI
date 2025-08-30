@@ -66,13 +66,10 @@
                 <span class="chip chip--internal" v-if="ins.capturedAtInternal">{{ fmt(ins.capturedAtInternal) }}</span>
                 <span class="chip chip--muted" v-else>없음</span>
               </td>
-              <td>{{ ins.photos.length }}</td>
+              <td>{{ ins.photos?.length || 0 }}</td>
               <td>
                 <span :class="['badge', `badge--${ins.status.toLowerCase()}`]">{{ toKrStatus(ins.status) }}</span>
               </td>
-              <!-- <td>
-                <button class="btn btn--small" @click.stop="openReview(ins)">검토</button>
-              </td> -->
               <td>
                 <span v-if="ins.grade" :class="['badge-grade', `badge-grade--${ins.grade.toLowerCase()}`]">
                   {{ ins.grade }}
@@ -81,7 +78,7 @@
               </td>
             </tr>
             <tr v-if="!paged.length">
-              <td colspan="8" class="empty">검색 조건에 맞는 항목이 없습니다.</td>
+              <td colspan="10" class="empty">검색 조건에 맞는 항목이 없습니다.</td>
             </tr>
           </tbody>
         </table>
@@ -91,7 +88,7 @@
       <div class="pagination" v-if="totalPages > 1">
         <button class="btn btn--ghost" :disabled="page === 1" @click="page--">이전</button>
         <span class="page-indicator">{{ page }} / {{ totalPages }}</span>
-        <button class="btn btn--ghost" :disabled="page === totalPages" @click="page++ ">다음</button>
+        <button class="btn btn--ghost" :disabled="page === totalPages" @click="page++">다음</button>
       </div>
     </section>
 
@@ -113,8 +110,7 @@
                   <div class="meta__sub">판매자: {{ current.sellerName }} · 등록일: {{ fmt(current.submittedAt) }}</div>
                 </div>
                 <div class="meta__right">
-                  <span :class="['badge', `badge--${current.status.toLowerCase()}`]">{{ toKrStatus(current.status)
-                  }}</span>
+                  <span :class="['badge', `badge--${current.status.toLowerCase()}`]">{{ toKrStatus(current.status) }}</span>
                 </div>
               </div>
 
@@ -122,20 +118,19 @@
               <div class="internal">
                 <span class="lock" aria-hidden="true">🔒</span>
                 <div class="internal__content">
-                  <div><strong>촬영시각:</strong> <span>{{ current.capturedAtInternal ? fmt(current.capturedAtInternal)
-                    : '없음' }}</span></div>
-                  <div v-if="current.warnings?.length"><strong>자동 경고:</strong>
-                    <ul class="warnings">
-                      <li v-for="(w, i) in current.warnings" :key="i">⚠ {{ w }}</li>
-                    </ul>
-                  </div>
+                  <div><strong>촬영시각:</strong> <span>{{ current.capturedAtInternal ? fmt(current.capturedAtInternal) : '없음' }}</span></div>
                 </div>
               </div>
 
               <!-- 이미지 미리보기 그리드 -->
-              <h3 class="section-title">이미지 ({{ current.photos.length }})</h3>
-              <div class="grid">
-                <figure v-for="p in current.photos" :key="p.id" class="pic" @click="openViewer(p)">
+              <h3 class="section-title">이미지 ({{ Math.min(current.photos?.length || 0, 5) }})</h3>
+              <div class="thumb-row">
+                <figure
+                  v-for="p in (current.photos?.slice(0, 5) || [])"
+                  :key="p.id"
+                  class="thumb"
+                  @click="openViewer(p)"
+                >
                   <img :src="p.url" :alt="`photo ${p.id}`" />
                   <figcaption>
                     <span v-if="p.isCover" class="chip">대표</span>
@@ -144,6 +139,13 @@
                 </figure>
               </div>
 
+              <!-- 판매자 메모 표시 -->
+              <h3 class="section-title">판매자 메모</h3>
+              <div v-if="current?.memo && current.memo.trim()" class="memo-view">
+                <p class="memo-text">{{ current.memo }}</p>
+              </div>
+              <div v-else class="memo-empty">메모 없음</div>
+
               <!-- 의사결정 영역 -->
               <h3 class="section-title">검수 결정</h3>
               <div class="decision">
@@ -151,8 +153,9 @@
                   <div class="reasons" v-if="decision === 'REJECTED'">
                     <span class="label">반려 사유</span>
                     <div class="checks">
-                      <label v-for="r in defaultReasons" :key="r" class="check"><input type="checkbox" :value="r"
-                          v-model="rejectReasons" /> {{ r }}</label>
+                      <label v-for="r in defaultReasons" :key="r" class="check">
+                        <input type="checkbox" :value="r" v-model="rejectReasons" /> {{ r }}
+                      </label>
                     </div>
                     <textarea v-model="rejectNote" class="note" placeholder="추가 메모(선택)"></textarea>
                   </div>
@@ -167,14 +170,11 @@
                       <option value="C">C</option>
                     </select>
                   </div>
-
                 </div>
                 <div class="decision__right">
                   <div class="buttons">
-                    <button class="btn btn--ghost danger" :class="{ active: decision === 'REJECTED' }"
-                      @click="setReject">반려</button>
-                    <button class="btn btn--primary" :class="{ active: decision === 'APPROVED' }"
-                      @click="setApprove">승인</button>
+                    <button class="btn btn--ghost danger" :class="{ active: decision === 'REJECTED' }" @click="setReject">반려</button>
+                    <button class="btn btn--primary" :class="{ active: decision === 'APPROVED' }" @click="setApprove">승인</button>
                   </div>
                 </div>
               </div>
@@ -203,16 +203,17 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue"
 import {
-  fetchInspections,
+  fetchInspectionsFromAdmin,
   type Inspection,
   type Photo,
   type Status,
 } from "@/api/inspection"
-import { toDegrees } from "chart.js/helpers"
+import axios from "axios"
 
-// ---------------------
-// 상태
-// ---------------------
+const API_BASE = "http://localhost:8081/api/inspections"
+
+type InspectionEx = Inspection & { memo?: string }
+
 const list = ref<Inspection[]>([])
 const q = ref("")
 const status = ref<"" | Status>("")
@@ -223,7 +224,7 @@ const page = ref(1)
 const pageSize = ref(12)
 
 const panelOpen = ref(false)
-const current = ref<Inspection | null>(null)
+const current = ref<InspectionEx | null>(null)
 
 const decision = ref<Status | null>(null)
 const rejectReasons = ref<string[]>([])
@@ -241,7 +242,7 @@ const viewerOpen = ref(false)
 const viewerSrc = ref("")
 
 // ---------------------
-// 파생 값 & 페이지네이션
+// 필터 + 페이지네이션
 // ---------------------
 const filtered = computed(() => {
   const qv = q.value.toLowerCase()
@@ -262,8 +263,8 @@ const filtered = computed(() => {
 
     return hitQ && hitStatus && hitFrom && hitTo
   })
-    .sort((a, b) => Number(b.id.replace("ins_", "")) - Number(a.id.replace("ins_", "")))
 })
+
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(filtered.value.length / pageSize.value))
@@ -283,7 +284,7 @@ const canSubmitDecision = computed(() => {
 })
 
 // ---------------------
-// 유틸/포맷터
+// 유틸
 // ---------------------
 function fmt(iso?: string) {
   if (!iso) return ""
@@ -296,11 +297,7 @@ function fmt(iso?: string) {
   return `${yyyy}-${mm}-${dd} ${hh}:${mi}`
 }
 function toKrStatus(s: Status) {
-  return s === "PENDING"
-    ? "대기"
-    : s === "APPROVED"
-      ? "승인"
-      : "반려"
+  return s === "PENDING" ? "대기" : s === "APPROVED" ? "승인" : "반려"
 }
 
 // ---------------------
@@ -316,7 +313,6 @@ function resetFilters() {
   dateTo.value = ""
   page.value = 1
 }
-
 function openReview(ins: Inspection) {
   current.value = { ...ins }
   panelOpen.value = true
@@ -338,31 +334,48 @@ function setApprove() {
 function setReject() {
   decision.value = "REJECTED"
 }
-
 async function submitDecision() {
   if (!current.value || !decision.value) return
-  alert(
-    `결정 저장: ${toKrStatus(decision.value)}\n등급: ${grade.value || "없음"}\n사유: ${rejectReasons.value.join(", ")
-    }\n메모: ${rejectNote.value}`
-  )
-  const idx = list.value.findIndex((x) => x.id === current.value!.id)
-  if (idx >= 0) {
-    list.value[idx].status = decision.value
+
+  try {
     if (decision.value === "APPROVED") {
-      list.value[idx].grade = grade.value || undefined
+      await axios.post(`${API_BASE}/${current.value.id}/approve`, {
+        grade: grade.value || null,
+      })
+    } else if (decision.value === "REJECTED") {
+      await axios.post(`${API_BASE}/${current.value.id}/reject`, {
+        reasons: rejectReasons.value,
+        note: rejectNote.value,
+      })
     }
+
+    const { items } = await fetchInspectionsFromAdmin({
+      page: 0,
+      size: 50,
+    })
+    list.value = items
+
+    closePanel()
+  } catch (error) {
+    console.error("결정 저장 실패:", error)
+    alert("저장 실패! 콘솔 확인하세요.")
   }
-  closePanel()
 }
 
 // ---------------------
-// 데이터 로딩
+// ✅ DB에서 불러오기
 // ---------------------
 onMounted(async () => {
-  list.value = await fetchInspections({ status: "", q: "" })
+  const { items } = await fetchInspectionsFromAdmin({
+    state: undefined,
+    from: undefined,
+    to: undefined,
+    page: 0,
+    size: 50,
+  })
+  list.value = items
 })
 </script>
-
 
 <style scoped>
 .admin-page {
@@ -872,6 +885,53 @@ onMounted(async () => {
 .slide-leave-to {
   transform: translateX(100%);
 }
+/* === 한 줄 썸네일 행 === */
+.thumb-row {
+  display: flex;
+  overflow-x: auto;
+  font-size: 0;
+  padding-bottom: 6px;
+}
+.thumb {
+  margin: 0.6rem;  
+  flex: 0 0 140px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fafafa;
+  cursor: zoom-in;
+}
+.thumb img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+.thumb figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #6b7280;
+}
+/* === 판매자 메모 표시 === */
+.memo-view {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+}
+.memo-text {
+  white-space: pre-wrap;   /* 줄바꿈 유지 */
+  line-height: 1.5;
+  color: #111827;
+}
+.memo-empty {
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 8px 0;
+}
 
 @media (max-width: 640px) {
   .filters {
@@ -883,3 +943,4 @@ onMounted(async () => {
   }
 }
 </style>
+

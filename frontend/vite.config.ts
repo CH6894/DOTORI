@@ -15,6 +15,7 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8081',
         changeOrigin: true,        
+        secure: false,
       },
       '/open': {
         // /api 경로는 로그인과 같은 인증에 사용하니 새로운 접근 주소를 만들어줌.

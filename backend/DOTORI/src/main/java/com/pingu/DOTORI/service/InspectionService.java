@@ -1,12 +1,17 @@
 package com.pingu.DOTORI.service;
 
 import com.pingu.DOTORI.dto.InspectionRequest;
+import com.pingu.DOTORI.dto.AdminListRow;
 import com.pingu.DOTORI.entity.*;
 import com.pingu.DOTORI.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +19,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class InspectionService {
+	
+	
 
     private final ItemDetailsRepository itemDetailsRepo;
     private final ItemImgRepository itemImgRepo;
@@ -21,6 +28,21 @@ public class InspectionService {
     private final UsersRepository usersRepo;
     private final FileStorageService storage;
     private final ItemRepository itemRepo;
+    
+    // 필터링된 검수 신청 목록을 반환
+    public ResponseEntity<Page<AdminListRow>> getAdminInspections(Integer state, String from, String to, Integer page, Integer size) {
+        LocalDateTime fromDate = (from != null) ? LocalDateTime.parse(from) : null;
+        LocalDateTime toDate = (to != null) ? LocalDateTime.parse(to) : null;
+
+        Pageable pageable = Pageable.ofSize(size != null ? size : 10).withPage(page != null ? page : 0);
+
+        // Page 객체 반환
+        Page<AdminListRow> resultPage = adminRepo.findByFilters(state, fromDate, toDate, pageable);
+
+        // ResponseEntity로 반환
+        return ResponseEntity.ok(resultPage);
+
+    }
 
     /** 판매자 검수 신청 생성 */
     @Transactional
@@ -45,13 +67,14 @@ public class InspectionService {
                 .deliveryDate(null)
                 .status(false) // 아직 판매중 아님
                 .user(user)
-                .ean("UNKNOWN")
                 .item(baseItem)
                 .build();
         item = itemDetailsRepo.save(item);
 
         // 4) 이미지 저장
-        LocalDateTime captured = storage.readExifDateTime(dto.getImages().get(0));
+        LocalDateTime captured = (dto.getFilmingTime() != null)
+        		? LocalDateTime.parse(dto.getFilmingTime().replace("Z", ""))
+                : storage.readExifDateTime(dto.getImages().get(0));
         List<String> urls = storage.saveItemImages(item.getItemId(), dto.getImages());
 
         for (int i = 0; i < urls.size(); i++) {
@@ -67,7 +90,6 @@ public class InspectionService {
         // 5) Admin(검수 신청) 생성
         Admin ins = Admin.builder()
                 .itemDetails(item)
-                .unpacked((byte) dto.getUnpacked())
                 .quality(null)
                 .itemExplanation(dto.getMemo())
                 .registrationDate(LocalDateTime.now())
@@ -107,6 +129,48 @@ public class InspectionService {
                     + "[REJECT] " + note);
         }
         adminRepo.save(ins);
+    }
+    
+    @Transactional
+    public void updateStatusAndGrade(Long inspectionId, String status, String grade) {
+        // 1. Admin(검수 신청) 조회
+        Admin ins = adminRepo.findById(inspectionId)
+                .orElseThrow(() -> new IllegalArgumentException("❌ 검수 신청을 찾을 수 없습니다."));
+
+        // 2. 상태 업데이트
+        switch (status) {
+            case "PENDING":
+                ins.setAdmissionState(0);  // 대기
+                break;
+            case "APPROVED":
+                ins.setAdmissionState(2);  // 승인
+                break;
+            case "REJECTED":
+                ins.setAdmissionState(1);  // 반려
+                break;
+            default:
+                throw new IllegalArgumentException("❌ 유효하지 않은 상태입니다.");
+        }
+
+        // 3. 등급 업데이트 (null이면 등급을 설정하지 않음)
+        if (grade != null && !grade.isEmpty()) {
+            // 등급 값에 대한 검증
+            if (!grade.matches("S|A|B|C")) {
+                throw new IllegalArgumentException("❌ 유효하지 않은 등급입니다.");
+            }
+            // 등급을 정수로 변환하여 저장
+            ins.setQuality(Integer.parseInt(grade));
+        }
+
+        // 4. 업데이트된 Admin 저장
+        adminRepo.save(ins);
+
+        // 5. 승인 상태일 경우 ItemDetails 상태를 변경
+        if (ins.getAdmissionState() == 2) {  // 승인 상태일 때
+            ItemDetails item = ins.getItemDetails();
+            item.setStatus(true);  // 판매 가능 상태로 변경
+            itemDetailsRepo.save(item);
+        }
     }
 
     // 결과 DTO
