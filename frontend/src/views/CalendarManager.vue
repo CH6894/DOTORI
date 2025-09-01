@@ -4,7 +4,7 @@
     <h2 class="calendar-title">
       {{ pageDate.getFullYear() }}년 {{ pageDate.getMonth() + 1 }}월
     </h2>
-
+    <router-link to="/admin" class="back-btn" role="button">검수관리</router-link>
     <div class="calendar-wrap">
       <div ref="calendarEl" id="calendar"></div>
     </div>
@@ -540,4 +540,61 @@ onBeforeUnmount(() => { if (calendar) calendar.destroy() })
   .summary__date, .summary__when { font-size: 12px; }
   .summary__text { font-size: 13px; }
 }
+/* 기본 버튼 */
+.back-btn{
+  margin-left : 7rem;
+  margin-top: -5rem;
+  appearance:none;
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.625rem 1rem;            /* 10px 16px */
+  border:1px solid #e5dcc9;
+  border-radius:.5rem;              /* 8px */
+  background:#ffffff;
+  color:#5f5346;
+  font-weight:700;
+  font-size:.9375rem;               /* 15px */
+  line-height:1;
+  cursor:pointer;
+  transition:background .2s ease, border-color .2s ease, transform .02s ease;
+}
+
+.back-btn:hover{
+  background:#f9f6ef;
+  border-color:#d8cdb3;
+}
+
+.back-btn:active{
+  transform:translateY(1px);
+}
+
+.back-btn:focus-visible{
+  outline:2px solid transparent;
+  box-shadow:0 0 0 3px rgba(252,112,60,.25); /* 테마 오렌지 포커스 링 */
+  border-color:#fc703c;
+}
+
+.back-btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+/* 아이콘 들어갈 때 간격 정리 (옵션) */
+.back-btn svg,
+.back-btn i{
+  width:1rem; height:1rem; flex:0 0 auto;
+}
+
+/* 오렌지 포인트용 변형 (옵션) */
+.back-btn--primary{
+  background:#fc703c;
+  border-color:#fc703c;
+  color:#fff;
+}
+.back-btn--primary:hover{
+  background:#e5633a;
+  border-color:#e5633a;
+}
+
 </style>

@@ -37,11 +37,15 @@ public class ItemDetails {
 
 	@Column(name = "Unpacked") // 0/1
 	private Boolean unpacked;
-
 	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "Item_Code", nullable = false)
+	private Item item;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "User_ID", nullable = false)
-	private Users user; // 유저 고유 번호 (단방향으로 충분)
+	private Users user; // 유저 고유 번호 (단방향으로 충분
 
 	// --- 양방향 매핑 ---
 	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -58,10 +62,6 @@ public class ItemDetails {
 
 	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = false)
 	private List<WishList> wishLists = new ArrayList<>();
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "Item_Code", nullable = false)
-	private Item item;
 
 	// --- 편의 메서드 ---
 	public void addImage(ItemImg image) {

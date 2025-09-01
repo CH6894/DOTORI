@@ -2,11 +2,7 @@
 <template>
   <div class="dex-view">
     <!-- ✅ 전 카테고리 공용 등록 바 -->
-    <RegisterBar
-      v-model:code="registerCode"
-      @register="handleRegister"
-      @clear="handleClear"
-    />
+    <RegisterBar v-model:code="registerCode" @register="handleRegister" @clear="handleClear" />
 
     <!-- 카테고리 탭 -->
     <section class="product_list_wrap">
@@ -15,12 +11,8 @@
           <TopTabsAdapter v-model="currentCategory" :items="categories" aria-label="상위 카테고리" />
         </div>
         <div class="container-1280">
-          <MidTabsAdapter
-            v-model="currentSubCategory"
-            :items="currentSubCategories"
-            aria-label="중위 카테고리"
-            :visible="currentSubCategories.length > 0"
-          />
+          <MidTabsAdapter v-model="currentSubCategory" :items="currentSubCategories" aria-label="중위 카테고리"
+            :visible="currentSubCategories.length > 0" :include-all="false" />
         </div>
       </div>
     </section>
@@ -87,34 +79,34 @@ function handleClear() { registerCode.value = '' }
 /* 탭 목록 */
 const categories = ref<Category[]>([
   { id: 'animation', name: 'Animation' },
-  { id: 'creater',  name: 'Creater'  },
-  { id: 'game',     name: 'Game'     },
-  { id: 'kpop',     name: 'Kpop'     },
-  { id: 'sports',   name: 'Sports'   },
-  { id: 'webtoon',  name: 'Webtoon'  },
+  { id: 'creater', name: 'Creater' },
+  { id: 'game', name: 'Game' },
+  { id: 'kpop', name: 'Kpop' },
+  { id: 'sports', name: 'Sports' },
+  { id: 'webtoon', name: 'Webtoon' },
 ])
 
 const subCategories = ref<Record<string, SubCategory[]>>({
   animation: [{ id: 'kimetsu', name: '귀멸의 칼날' }],
-  creater:   [{ id: 'chim',    name: '침착맨' }],
-  game:      [{ id: 'pokemon', name: '포켓몬스터' }, ],
-  kpop:      [{ id: 'blackpink', name: 'BLACKPINK' }],
-  sports:    [{ id: 'kia', name: 'KIA' }],
-  webtoon:   [{ id: 'tower', name: '신의 탑' }, { id: 'noblesse', name: '마루는 강쥐' }],
+  creater: [{ id: 'chim', name: '침착맨' }],
+  game: [{ id: 'pokemon', name: '포켓몬스터' },],
+  kpop: [{ id: 'blackpink', name: 'BLACKPINK' }],
+  sports: [{ id: 'kia', name: 'KIA' }],
+  webtoon: [{ id: 'tower', name: '신의 탑' }, { id: 'noblesse', name: '마루는 강쥐' }],
 })
 
-const currentCategory = ref<string>('game')
-const currentSubCategory = ref<string>('pokemon')
+const currentCategory = ref<string>('animation')
+const currentSubCategory = ref<string>('kimetsu')
 
 const currentSubCategories = computed(() => subCategories.value[currentCategory.value] || [])
 const currentCategoryName = computed(() => categories.value.find(c => c.id === currentCategory.value)?.name || '')
 
 const registry: Record<string, any> = {
-  'game:pokemon':       PokemonCollection,
-  'kpop:blackpink':     BlackPink,
-  'creater:chim':       ChimCollection,
-  'sports:kia':         KiaCollection,
-  'animation:kimetsu':  Kimetsu,
+  'game:pokemon': PokemonCollection,
+  'kpop:blackpink': BlackPink,
+  'creater:chim': ChimCollection,
+  'sports:kia': KiaCollection,
+  'animation:kimetsu': Kimetsu,
 }
 
 const activeViewComponent = computed(() => {
@@ -131,9 +123,23 @@ watch(currentCategory, () => {
 </script>
 
 <style scoped>
-.product_list_wrap { width: 100%; display: flex; justify-content: center; }
-.product_list_area { width: 100%; }
-.container-1280 { width: 100%; max-width: 1280px; margin: 0 auto; padding-left: 16px; padding-right: 16px; }
+.product_list_wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.product_list_area {
+  width: 100%;
+}
+
+.container-1280 {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
 
 .main-content {
   width: 100%;
@@ -143,15 +149,34 @@ watch(currentCategory, () => {
   flex-direction: column;
   align-items: center;
 }
-.view-container { width: 100%; }
 
-.empty-state { text-align: center; padding: 4rem 2rem; color: #666; }
-.empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: .3; }
+.view-container {
+  width: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: .3;
+}
 </style>
 
 <style>
-a { text-decoration: none; color: inherit; }
-a:visited { text-decoration: none; color: inherit; }
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:visited {
+  text-decoration: none;
+  color: inherit;
+}
 
 /* 모달 스크롤 락 (하위 컴포넌트에서 사용) */
 html.scroll-lock,

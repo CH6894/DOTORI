@@ -26,8 +26,9 @@ export type Inspection = {
   isOpened: string
   submittedAt: string
   status: Status
-  photos: any[]        // ✅ 항상 배열
-  grade?: string       // ✅ 등급 필드 추가
+  photos: any[]        
+  grade?: string     
+  memo?: string
   capturedAtInternal?: string
 }
 
@@ -44,13 +45,17 @@ export type Page<T> = {
 export type AdminListRow = {
   inspectionId: number
   itemId: number
+  title: string
+  sellerName: string
   registrationDate: string
   unpacked: number
   admissionState: number
   quality: number | null
+  itemExplanation: string | null
   imageCount: number
-  firstFilmingTime: string | null
+  FilmingTime: string | null
   cost: number
+  imageUrls: string[]
 }
 
 // 상태 매핑
@@ -63,15 +68,16 @@ function rowToInspection(r: AdminListRow): Inspection {
   return {
     id: String(r.inspectionId),
     listingId: String(r.itemId),
-    listingTitle: `상품 ${r.itemId}`,
-    sellerName: "-",                       // 판매자명은 백엔드 연결 시 교체
+    listingTitle: `상품 ${r.title}`,
+    sellerName: r.sellerName,                     // 판매자명은 백엔드 연결 시 교체
     sellPrice: r.cost,
     isOpened: r.unpacked === 0 ? "미개봉" : "개봉",
     submittedAt: r.registrationDate,
     status: mapState(r.admissionState),
-    photos: [],                            // ✅ 항상 빈 배열로 초기화
+    memo: r.itemExplanation ?? "",
+    photos: r.imageUrls?.map((url, idx) => ({ id: idx, url })) ?? [] ,                        // ✅ 항상 빈 배열로 초기화
     grade: r.quality !== null ? mapGrade(r.quality) : undefined,
-    capturedAtInternal: r.firstFilmingTime ?? undefined,
+    capturedAtInternal: r.FilmingTime ?? undefined,
   }
 }
 

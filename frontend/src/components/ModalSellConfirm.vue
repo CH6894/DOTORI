@@ -275,6 +275,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, reactive } from 'vue'
 import { createInspection } from '@/api/inspection' // 경로는 프로젝트에 맞게
+import { jwtDecode } from 'jwt-decode'
 
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
 type Item = { id: string | number; itemCode: string; title: string; images?: string[]; condition?: Condition; price?: number }
@@ -284,8 +285,8 @@ const MAX_PRICE = 1_000_000_000 - 1
 const STAGES = ['신청 확인 중', '입고 확인', '검수 중', '등록 대기중', '등록'] as const
 
 /* 업로드 제약 */
-const MIN_FILES = 3
-const MAX_FILES = 8
+const MIN_FILES = 2
+const MAX_FILES = 5
 const MAX_MB = 10
 
 /* 0-2: 헤더 뒤로가기 */
@@ -508,9 +509,6 @@ function onClose() { emit('close') }
 /* 최종 제출 → 4단계 */
 const isSubmitting = ref(false)
 const step = ref<1 | 2 | 3 | 4>(1)
-const userId = 2
-
-const normalizedPrice = price.toString().replace(/,/g, "")
 
 async function submitAll() {
   if (!allAgreed.value || isSubmitting.value) {
@@ -519,9 +517,13 @@ async function submitAll() {
   }
   try {
     const fd = new FormData()
-    fd.append('userId', String(userId))
-    fd.append('itemCode', "DT-ADP-0001") 
-    fd.append('productTitle', "ALLDAY PROJECT (올데이 프로젝트) - PIN BUTTON SET [FAMOUS] OFFICIAL MERCH")
+
+    // 임시로 하드코딩된 사용자 ID
+    const userId = "2"
+
+    fd.append('userId', userId)
+    fd.append('itemCode', "DT-ADP-0001") // 임시로 하드코딩된 아이템 코드
+    fd.append('productTitle', "ALLDAY PROJECT (올데이 프로젝트) - PIN BUTTON SET [FAMOUS] OFFICIAL MERCH") // 임시 상품명
     fd.append("price", String(price.value ?? 0))
     fd.append('unpacked', (selectedChip.value === '미개봉' ? '0' : '1'))
     fd.append('memo', memo.value ?? '')
@@ -531,16 +533,15 @@ async function submitAll() {
     for (const [key, value] of fd.entries()) {
       console.log("FormData:", key, value)
     }
-    items.value.forEach(i => fd.append('images', i.file))
 
     const res = await createInspection(fd)
     console.log('created:', res) // { inspectionId, itemId, status }
 
     step.value = 4 // 완료 페이지로 이동
     await nextTick()
-  } catch (e) {
-    console.error(e)
-    alert('판매 신청 중 오류가 발생했습니다.')
+  } catch (e: any) { // Add ': any' to the catch parameter for better type handling
+    console.error('Error submitting inspection:', e)
+    alert(`판매 신청 중 오류가 발생했습니다: ${e.message || e}`) // Display the error message to the user
   } finally {
     isSubmitting.value = false
   }

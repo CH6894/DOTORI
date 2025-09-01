@@ -43,6 +43,7 @@ public class SecurityConfig {
 	        .requestMatchers("/static/**").permitAll()
 	        .requestMatchers("/open/**").permitAll()
 	        .requestMatchers("/api/**").authenticated()
+	        .requestMatchers("/uploads/**").permitAll() // 이미지 접근 허용
 	        .anyRequest().authenticated()
 	    )
 	   .oauth2Login(oauth -> oauth

@@ -1,51 +1,98 @@
 
 package com.pingu.DOTORI.service;
 
+import com.pingu.DOTORI.dto.CalendarRequest;
+import com.pingu.DOTORI.dto.CalendarResponse;
 import com.pingu.DOTORI.entity.Calendars;
+import com.pingu.DOTORI.entity.Users;
 import com.pingu.DOTORI.repository.CalendarRepository;
+import com.pingu.DOTORI.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CalendarService {
 
-    private final CalendarRepository repo;
+    private final CalendarRepository calendarRepository; // ✅ 리포지토리 주입
+    private final UsersRepository usersRepository;       // (필요 시)
 
-    public Calendars create(Calendars in) {
-        if (in.getScheduleName() == null || in.getScheduleName().isBlank()) {
-            throw new IllegalArgumentException("schedule_name은 필수이다.");
+    /** 기간 조회 */
+    public List<CalendarResponse> findInRange(LocalDateTime start, LocalDateTime end) {
+        // Repository에 맞춰 호출 (메소드명은 너희 레포지토리에 맞게 사용)
+        // 예시1) 사용자 정의 쿼리 있을 때: calendarRepository.findStartingBefore(end)
+        // 예시2) 메소드 쿼리로 대체:
+        List<Calendars> rows = calendarRepository
+                .findByScheduleDateBetween(start, end); // ← 없으면 아래 레포지토리 예시도 참고
+
+        return rows.stream()
+                .map(c -> new CalendarResponse(
+                        c.getId(),
+                        c.getScheduleName(),                  // title
+                        c.getScheduleDate().toString(),       // start (String or ISO 필요시 포맷터 적용)
+                        null,                                 // end (없으면 null)
+                        false,                                // allDay (필요시 엔티티/메타에서 꺼내기)
+                        c.getScheduleInfo(),                  // description
+                        null                                  // color
+                ))
+                .toList();
+    }
+
+    /** 생성 */
+    public CalendarResponse create(CalendarRequest req) {
+        Users user = usersRepository.findById(req.getUserId()).orElseThrow();
+
+        Calendars c = Calendars.builder()
+                .scheduleDate(req.getScheduleDate())
+                .scheduleName(req.getScheduleName())
+                .scheduleInfo(req.getScheduleInfo())
+                .user(user)
+                .build();
+
+        c = calendarRepository.save(c);
+
+        return new CalendarResponse(
+                c.getId(),
+                c.getScheduleName(),
+                c.getScheduleDate().toString(),
+                null,
+                false,
+                c.getScheduleInfo(),
+                null
+        );
+    }
+
+    /** 부분 수정 */
+    public CalendarResponse update(Long id, CalendarRequest req) {
+        Calendars c = calendarRepository.findById(id).orElseThrow();
+
+        if (req.getScheduleDate() != null) c.setScheduleDate(req.getScheduleDate());
+        if (req.getScheduleName() != null) c.setScheduleName(req.getScheduleName());
+        if (req.getScheduleInfo() != null) c.setScheduleInfo(req.getScheduleInfo());
+        if (req.getUserId() != null) {
+            Users user = usersRepository.findById(req.getUserId()).orElseThrow();
+            c.setUser(user);
         }
-        if (in.getScheduleDate() == null) {
-            throw new IllegalArgumentException("schedule_date는 필수이다.");
-        }
-        return repo.save(in);  // LocalDateTime 그대로 저장됨
+
+        c = calendarRepository.save(c);
+
+        return new CalendarResponse(
+                c.getId(),
+                c.getScheduleName(),
+                c.getScheduleDate().toString(),
+                null,
+                false,
+                c.getScheduleInfo(),
+                null
+        );
     }
 
-    @Transactional(readOnly = true)
-    public List<Calendars> getList(LocalDateTime start, LocalDateTime end) {
-        return repo.findInRange(start, end);
-    }
-
-    public Calendars update(Long id, Calendars patch) {
-        Calendars cur = repo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("일정을 찾을 수 없다: " + id));
-
-        if (patch.getScheduleName() != null) cur.setScheduleName(patch.getScheduleName());
-        if (patch.getScheduleInfo() != null) cur.setScheduleInfo(patch.getScheduleInfo());
-        if (patch.getScheduleDate() != null) cur.setScheduleDate(patch.getScheduleDate());
-
-        return cur; // 영속 객체 → 트랜잭션 종료 시 자동 UPDATE flush
-    }
-
+    /** 삭제 */
     public void delete(Long id) {
-        repo.deleteById(id);
+        calendarRepository.deleteById(id);
     }
 }
 

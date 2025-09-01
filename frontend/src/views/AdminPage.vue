@@ -933,6 +933,99 @@ onMounted(async () => {
   padding: 8px 0;
 }
 
+/* === 이미지 뷰어 모달 === */
+.image-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-viewer {
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.image-viewer__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.image-viewer__close:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.image-viewer__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.image-viewer__main {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.image-viewer__controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.image-viewer__counter {
+  color: #fff;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+}
+
+.image-viewer__thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.image-viewer__thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.image-viewer__thumb:hover {
+  opacity: 0.8;
+}
+
+.image-viewer__thumb.active {
+  opacity: 1;
+  border: 2px solid #fff;
+}
+
 @media (max-width: 640px) {
   .filters {
     gap: 8px;

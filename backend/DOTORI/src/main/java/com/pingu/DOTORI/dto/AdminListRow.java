@@ -2,103 +2,55 @@ package com.pingu.DOTORI.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import lombok.Data;
+
+@Data
 public class AdminListRow {
     private Long inspectionId;
     private Long itemId;
-    private LocalDateTime registrationDate;
+    private String title;
+    private String sellerName;
+    private BigDecimal cost;
     private Boolean unpacked;
+    private LocalDateTime registrationDate;
     private Integer admissionState;
     private Integer quality;
+    private String itemExplanation;
     private Long imageCount;
     private LocalDateTime filmingTime;
-    private BigDecimal cost;
+    private List<String> imageUrls;
 
-    // 생성자
-    public AdminListRow(Long inspectionId, Long itemId, LocalDateTime registrationDate, Boolean unpacked, 
-                         Integer admissionState, Integer quality, Long imageCount, LocalDateTime filmingTime, BigDecimal cost) {
+
+    // ✅ JPQL과 100% 매칭되는 생성자
+    public AdminListRow(Long inspectionId,
+                        Long itemId,
+                        String title,
+                        String userName,
+                        BigDecimal cost,
+                        Boolean unpacked,
+                        LocalDateTime registrationDate,
+                        Integer admissionState,
+                        Integer quality,
+                        String itemExplanation,
+                        Long imageCount,
+                        LocalDateTime filmingTime,
+                        List<String> imageUrls) {
         this.inspectionId = inspectionId;
         this.itemId = itemId;
-        this.registrationDate = registrationDate;
+        this.title = title;
+        this.sellerName = userName;   // userName → sellerName 매핑
+        this.cost = cost;
         this.unpacked = unpacked;
+        this.registrationDate = registrationDate;
         this.admissionState = admissionState;
         this.quality = quality;
+        this.itemExplanation = itemExplanation;
         this.imageCount = imageCount;
         this.filmingTime = filmingTime;
-        this.cost = cost;
+        this.imageUrls = imageUrls;
     }
 
-    // Getter and Setter methods
-    public Long getInspectionId() {
-        return inspectionId;
-    }
-
-    public void setInspectionId(Long inspectionId) {
-        this.inspectionId = inspectionId;
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
-    }
-
-    public LocalDateTime getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(LocalDateTime registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public Boolean getUnpacked() {
-        return unpacked;
-    }
-
-    public void setUnpacked(Boolean unpacked) {
-        this.unpacked = unpacked;
-    }
-
-    public Integer getAdmissionState() {
-        return admissionState;
-    }
-
-    public void setAdmissionState(Integer admissionState) {
-        this.admissionState = admissionState;
-    }
-
-    public Integer getQuality() {
-        return quality;
-    }
-
-    public void setQuality(Integer quality) {
-        this.quality = quality;
-    }
-
-    public Long getImageCount() {
-        return imageCount;
-    }
-
-    public void setImageCount(Long imageCount) {
-        this.imageCount = imageCount;
-    }
-
-    public LocalDateTime getFilmingTime() {
-        return filmingTime;
-    }
-
-    public void setFilmingTime(LocalDateTime filmingTime) {
-        this.filmingTime = filmingTime;
-    }
-
-    public BigDecimal getCost() {
-        return cost;
-    }
-
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
-    }
+    // 제거된 오버로드 생성자: 오토박싱으로 인해 모호성 유발
 }
-

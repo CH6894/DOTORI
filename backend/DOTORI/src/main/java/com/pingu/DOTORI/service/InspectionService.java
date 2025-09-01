@@ -1,182 +1,289 @@
 package com.pingu.DOTORI.service;
 
-import com.pingu.DOTORI.dto.InspectionRequest;
 import com.pingu.DOTORI.dto.AdminListRow;
-import com.pingu.DOTORI.entity.*;
-import com.pingu.DOTORI.repository.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import com.pingu.DOTORI.dto.InspectionRequest;
+import com.pingu.DOTORI.entity.Admin;
+import com.pingu.DOTORI.entity.ItemDetails;
+import com.pingu.DOTORI.entity.ItemImg;
+import com.pingu.DOTORI.repository.AdminRepository;
+import com.pingu.DOTORI.repository.ItemDetailsRepository;
+import com.pingu.DOTORI.repository.ItemImgRepository;
+import jakarta.transaction.Transactional;
+import lombok.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.file.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import com.pingu.DOTORI.util.ImageMetadataUtil;
 
 @Service
-@RequiredArgsConstructor
 public class InspectionService {
-	
-	
 
-    private final ItemDetailsRepository itemDetailsRepo;
-    private final ItemImgRepository itemImgRepo;
-    private final AdminRepository adminRepo;
-    private final UsersRepository usersRepo;
-    private final FileStorageService storage;
-    private final ItemRepository itemRepo;
-    
-    // 필터링된 검수 신청 목록을 반환
-    public ResponseEntity<Page<AdminListRow>> getAdminInspections(Integer state, String from, String to, Integer page, Integer size) {
-        LocalDateTime fromDate = (from != null) ? LocalDateTime.parse(from) : null;
-        LocalDateTime toDate = (to != null) ? LocalDateTime.parse(to) : null;
+    private final AdminRepository adminRepository;
+    private final ItemDetailsRepository itemDetailsRepository;
+    private final ItemImgRepository itemImgRepository;
 
-        Pageable pageable = Pageable.ofSize(size != null ? size : 10).withPage(page != null ? page : 0);
-
-        // Page 객체 반환
-        Page<AdminListRow> resultPage = adminRepo.findByFilters(state, fromDate, toDate, pageable);
-
-        // ResponseEntity로 반환
-        return ResponseEntity.ok(resultPage);
-
+    public InspectionService(AdminRepository adminRepository,
+                             ItemDetailsRepository itemDetailsRepository,
+                             ItemImgRepository itemImgRepository) {
+        this.adminRepository = adminRepository;
+        this.itemDetailsRepository = itemDetailsRepository;
+        this.itemImgRepository = itemImgRepository;
     }
 
-    /** 판매자 검수 신청 생성 */
-    @Transactional
-    public CreateResult createInspection(InspectionRequest dto) throws Exception {
-
-        if (dto.getImages() == null || dto.getImages().size() < 3) {
-            throw new IllegalArgumentException("이미지는 최소 3장이 필요합니다.");
-        }
-
-        // 1) 사용자 조회
-        Users user = usersRepo.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("❌ 유저가 존재하지 않습니다."));
-
-        // 2) 상품 기본 정보 조회
-        Item baseItem = itemRepo.findById(dto.getItemCode())
-                .orElseThrow(() -> new IllegalArgumentException("❌ Item not found: " + dto.getItemCode()));
-
-        // 3) ItemDetails 생성
-        ItemDetails item = ItemDetails.builder()
-                .cost(dto.getPrice())
-                .storageDate(LocalDateTime.now())
-                .deliveryDate(null)
-                .status(false) // 아직 판매중 아님
-                .user(user)
-                .item(baseItem)
-                .build();
-        item = itemDetailsRepo.save(item);
-
-        // 4) 이미지 저장
-        LocalDateTime captured = (dto.getFilmingTime() != null)
-        		? LocalDateTime.parse(dto.getFilmingTime().replace("Z", ""))
-                : storage.readExifDateTime(dto.getImages().get(0));
-        List<String> urls = storage.saveItemImages(item.getItemId(), dto.getImages());
-
-        for (int i = 0; i < urls.size(); i++) {
-            ItemImg img = ItemImg.builder()
-                    .imgUrl(urls.get(i))
-                    .imgType((byte) (i == 0 ? 0 : 1)) // 첫 번째 이미지는 대표
-                    .filmingTime(captured)
-                    .itemDetails(item)
-                    .build();
-            itemImgRepo.save(img);
-        }
-
-        // 5) Admin(검수 신청) 생성
-        Admin ins = Admin.builder()
-                .itemDetails(item)
-                .quality(null)
-                .itemExplanation(dto.getMemo())
-                .registrationDate(LocalDateTime.now())
-                .admissionState(0) // 대기
-                .rejectionReason(null)
-                .build();
-        ins = adminRepo.save(ins);
-
-        return new CreateResult(ins.getInspectionId(), item.getItemId());
-    }
-
-    /** 승인 */
-    @Transactional
-    public void approve(Long inspectionId, Integer quality, String note) {
-        Admin ins = adminRepo.findById(inspectionId).orElseThrow();
-        ins.setAdmissionState(2); // 승인
-        ins.setQuality(quality);
-        if (note != null) {
-            ins.setItemExplanation((ins.getItemExplanation() == null ? "" : ins.getItemExplanation() + "\n")
-                    + "[ADMIN] " + note);
-        }
-        adminRepo.save(ins);
-
-        ItemDetails item = ins.getItemDetails();
-        item.setStatus(true);
-        itemDetailsRepo.save(item);
-    }
-
-    /** 반려 */
-    @Transactional
-    public void reject(Long inspectionId, Integer reasonCode, String note) {
-        Admin ins = adminRepo.findById(inspectionId).orElseThrow();
-        ins.setAdmissionState(1); // 반려
-        ins.setRejectionReason(reasonCode);
-        if (note != null) {
-            ins.setItemExplanation((ins.getItemExplanation() == null ? "" : ins.getItemExplanation() + "\n")
-                    + "[REJECT] " + note);
-        }
-        adminRepo.save(ins);
-    }
-    
-    @Transactional
-    public void updateStatusAndGrade(Long inspectionId, String status, String grade) {
-        // 1. Admin(검수 신청) 조회
-        Admin ins = adminRepo.findById(inspectionId)
-                .orElseThrow(() -> new IllegalArgumentException("❌ 검수 신청을 찾을 수 없습니다."));
-
-        // 2. 상태 업데이트
-        switch (status) {
-            case "PENDING":
-                ins.setAdmissionState(0);  // 대기
-                break;
-            case "APPROVED":
-                ins.setAdmissionState(2);  // 승인
-                break;
-            case "REJECTED":
-                ins.setAdmissionState(1);  // 반려
-                break;
-            default:
-                throw new IllegalArgumentException("❌ 유효하지 않은 상태입니다.");
-        }
-
-        // 3. 등급 업데이트 (null이면 등급을 설정하지 않음)
-        if (grade != null && !grade.isEmpty()) {
-            // 등급 값에 대한 검증
-            if (!grade.matches("S|A|B|C")) {
-                throw new IllegalArgumentException("❌ 유효하지 않은 등급입니다.");
-            }
-            // 등급을 정수로 변환하여 저장
-            ins.setQuality(Integer.parseInt(grade));
-        }
-
-        // 4. 업데이트된 Admin 저장
-        adminRepo.save(ins);
-
-        // 5. 승인 상태일 경우 ItemDetails 상태를 변경
-        if (ins.getAdmissionState() == 2) {  // 승인 상태일 때
-            ItemDetails item = ins.getItemDetails();
-            item.setStatus(true);  // 판매 가능 상태로 변경
-            itemDetailsRepo.save(item);
-        }
-    }
-
-    // 결과 DTO
-    @lombok.Value
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class CreateResult {
-        Long inspectionId;
-        Long itemId;
+        private Long inspectionId;
+        private String message;
+    }
+
+    // ================== 검수 신청 생성 ==================
+    @Transactional
+    public CreateResult createInspection(InspectionRequest dto) throws IOException {
+        // 1. ItemDetails 조회
+    	ItemDetails itemDetails = itemDetailsRepository
+    		    .findFirstByItem_ItemCodeAndUser_Id(dto.getItemCode(), dto.getUserId())
+    		    .orElseThrow(() -> new IllegalArgumentException(
+    		        "잘못된 아이템 코드 또는 유저 ID: " + dto.getItemCode() + ", user=" + dto.getUserId()
+    		    ));
+
+        // 2. Admin 엔티티 생성
+        Admin admin = Admin.builder()
+                .itemDetails(itemDetails)
+                .registrationDate(LocalDateTime.now())
+                .admissionState(0) // 0 = 대기
+                .quality(null)     // 등급은 관리자 승인 때 업데이트
+                .itemExplanation(dto.getMemo())
+                .build();
+
+        adminRepository.save(admin);
+
+        // 3. 이미지 저장
+        saveImages(dto.getImages(), itemDetails, dto.getFilmingTime());
+
+        return new CreateResult(admin.getInspectionId(), "검수 신청이 완료되었습니다.");
+    }
+
+    // ================== 이미지 저장 ==================
+    public void saveImages(List<MultipartFile> images, ItemDetails item, OffsetDateTime requestFilmingTime) {
+        for (MultipartFile image : images) {
+            if (image.isEmpty()) continue;
+
+            String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+
+            try {
+                Path savePath = Paths.get("C:/uploads/items/" + filename);
+                Files.createDirectories(savePath.getParent());
+                image.transferTo(savePath);
+            } catch (IOException e) {
+                throw new RuntimeException("이미지 저장 실패", e);
+            }
+
+            // EXIF 메타데이터에서 촬영시각 추출 → 없으면 requestFilmingTime 사용 → 그것도 없으면 현재시간
+            LocalDateTime filmingTime = ImageMetadataUtil.extractFilmingTime(image);
+            if (filmingTime == null && requestFilmingTime != null) {
+                filmingTime = requestFilmingTime.toLocalDateTime();
+            }
+            if (filmingTime == null) {
+                filmingTime = LocalDateTime.now();
+            }
+
+            ItemImg itemImg = ItemImg.builder()
+                    .itemDetails(item)
+                    .imgUrl(filename)
+                    .imgType((byte) 0)
+                    .filmingTime(filmingTime)
+                    .build();
+
+            itemImgRepository.save(itemImg);
+        }
+    }
+
+
+    // ================== 상태 및 등급 업데이트 ==================
+    @Transactional
+    public void updateStatusAndGrade(Long inspectionId, Integer status, Integer grade) {
+        Admin admin = adminRepository.findById(inspectionId)
+                .orElseThrow(() -> new IllegalArgumentException("검수 ID를 찾을 수 없음: " + inspectionId));
+
+        admin.setAdmissionState(status);
+        admin.setQuality(grade);
+        adminRepository.save(admin);
+    }
+
+    // ================== 관리자 검수 목록 조회 ==================
+    public Page<AdminListRow> getAdminInspections(Integer state, String from, String to, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        LocalDateTime fromDate = (from != null && !from.isBlank()) ? LocalDateTime.parse(from) : null;
+        LocalDateTime toDate = (to != null && !to.isBlank()) ? LocalDateTime.parse(to) : null;
+
+        Page<Object[]> results = adminRepository.findByFiltersNative(state, fromDate, toDate, pageable);
+
+        return results.map(row -> {
+            String baseUrl = "http://localhost:8081/uploads/items/";
+
+            List<String> imageUrls = row[12] != null
+                    ? Arrays.stream(row[12].toString().split(","))
+                            .map(url -> baseUrl + url) // prefix 붙여줌
+                            .toList()
+                    : Collections.emptyList();
+
+            Long imageCount;
+            if (row[10] instanceof java.math.BigInteger bi) {
+                imageCount = bi.longValue();
+            } else if (row[10] instanceof Long l) {
+                imageCount = l;
+            } else if (row[10] instanceof Integer iVal) {
+                imageCount = iVal.longValue();
+            } else {
+                imageCount = 0L;
+            }
+
+            Long inspectionId;
+            Object id0 = row[0];
+            if (id0 instanceof java.math.BigInteger bi0) inspectionId = bi0.longValue();
+            else if (id0 instanceof Long l0) inspectionId = l0;
+            else if (id0 instanceof Integer i0) inspectionId = i0.longValue();
+            else inspectionId = 0L;
+
+            Long itemId;
+            Object id1 = row[1];
+            if (id1 instanceof java.math.BigInteger bi1) itemId = bi1.longValue();
+            else if (id1 instanceof Long l1) itemId = l1;
+            else if (id1 instanceof Integer i1) itemId = i1.longValue();
+            else itemId = 0L;
+
+            return new AdminListRow(
+                    Long.valueOf(inspectionId),
+                    Long.valueOf(itemId),
+                    (String) row[2],
+                    (String) row[3],
+                    (BigDecimal) row[4],
+                    convertToBoolean(row[5]),
+                    convertToLocalDateTime(row[6]),
+                    (Integer) row[7],
+                    (Integer) row[8],
+                    (String) row[9],
+                    Long.valueOf(imageCount),
+                    convertToLocalDateTime(row[11]),
+                    imageUrls
+            );
+        });
+    }
+
+    // ================== AdminInspectionController 전용 ==================
+    public Page<AdminListRow> getFilteredAdminList(Integer state, LocalDateTime from, LocalDateTime to, PageRequest pageRequest) {
+        Page<Object[]> results = adminRepository.findByFiltersNative(state, from, to, pageRequest);
+
+        return results.map(row -> {
+            String baseUrl = "http://localhost:8081/uploads/items/";
+
+            List<String> imageUrls = row[12] != null
+                    ? Arrays.stream(row[12].toString().split(","))
+                            .map(url -> baseUrl + url)
+                            .toList()
+                    : Collections.emptyList();
+
+            Long imageCount;
+            if (row[10] instanceof java.math.BigInteger bi) {
+                imageCount = bi.longValue();
+            } else if (row[10] instanceof Long l) {
+                imageCount = l;
+            } else if (row[10] instanceof Integer iVal) {
+                imageCount = iVal.longValue();
+            } else {
+                imageCount = 0L;
+            }
+
+            Long inspectionId;
+            Object id0 = row[0];
+            if (id0 instanceof java.math.BigInteger bi0) inspectionId = bi0.longValue();
+            else if (id0 instanceof Long l0) inspectionId = l0;
+            else if (id0 instanceof Integer i0) inspectionId = i0.longValue();
+            else inspectionId = 0L;
+
+            Long itemId;
+            Object id1 = row[1];
+            if (id1 instanceof java.math.BigInteger bi1) itemId = bi1.longValue();
+            else if (id1 instanceof Long l1) itemId = l1;
+            else if (id1 instanceof Integer i1) itemId = i1.longValue();
+            else itemId = 0L;
+
+            return new AdminListRow(
+                    Long.valueOf(inspectionId),
+                    Long.valueOf(itemId),
+                    (String) row[2],
+                    (String) row[3],
+                    (BigDecimal) row[4],
+                    convertToBoolean(row[5]),
+                    convertToLocalDateTime(row[6]),
+                    (Integer) row[7],
+                    (Integer) row[8],
+                    (String) row[9],
+                    Long.valueOf(imageCount),
+                    convertToLocalDateTime(row[11]),
+                    imageUrls
+            );
+        });
+    }
+
+    private LocalDateTime convertToLocalDateTime(Object value) {
+        if (value == null) return null;
+        if (value instanceof LocalDateTime ldt) return ldt;
+        if (value instanceof java.sql.Timestamp ts) return ts.toLocalDateTime();
+        if (value instanceof java.util.Date d) {
+            return Instant.ofEpochMilli(d.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        }
+        if (value instanceof CharSequence cs) {
+            String s = cs.toString();
+            if (s.contains(" ") && !s.contains("T")) s = s.replace(' ', 'T');
+            try { return LocalDateTime.parse(s); } catch (Exception ignored) {}
+        }
+        return null;
+    }
+
+    private Boolean convertToBoolean(Object value) {
+        if (value == null) return null;
+        if (value instanceof Boolean b) return b;
+        if (value instanceof Number n) return n.intValue() != 0;
+        if (value instanceof CharSequence cs) {
+            String s = cs.toString();
+            return "1".equals(s) || Boolean.parseBoolean(s);
+        }
+        return false;
+    }
+
+    @Transactional
+    public void approve(Long inspectionId, Integer grade, String reason) {
+        Admin admin = adminRepository.findById(inspectionId)
+                .orElseThrow(() -> new IllegalArgumentException("검수 ID를 찾을 수 없음: " + inspectionId));
+
+        admin.setAdmissionState(1); // 1 = 승인
+        admin.setQuality(grade);
+        adminRepository.save(admin);
+    }
+
+    @Transactional
+    public void reject(Long inspectionId, Integer grade, String reason) {
+        Admin admin = adminRepository.findById(inspectionId)
+                .orElseThrow(() -> new IllegalArgumentException("검수 ID를 찾을 수 없음: " + inspectionId));
+
+        admin.setAdmissionState(2); // 2 = 반려
+        admin.setQuality(grade);
+        admin.setItemExplanation(reason);
+        adminRepository.save(admin);
     }
 }

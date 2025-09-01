@@ -1,3 +1,4 @@
+// src/main/java/com/pingu/DOTORI/repository/CalendarRepository.java
 package com.pingu.DOTORI.repository;
 
 import com.pingu.DOTORI.entity.Calendars;
@@ -10,13 +11,12 @@ import java.util.List;
 
 public interface CalendarRepository extends JpaRepository<Calendars, Long> {
 
-    // 기간 조회(달력 범위)
-	@Query("""
-		    SELECT c FROM Calendars c
-		     WHERE c.scheduleDate BETWEEN :start AND :end
-		     ORDER BY c.scheduleDate ASC
-		""")
-		List<Calendars> findInRange(@Param("start") LocalDateTime start,
-		                            @Param("end") LocalDateTime end);
-
+    @Query("""
+           select c
+           from Calendars c
+           where c.scheduleDate between :start and :end
+           order by c.scheduleDate asc
+           """)
+    List<Calendars> findByScheduleDateBetween(@Param("start") LocalDateTime start,
+                                              @Param("end")   LocalDateTime end);
 }
