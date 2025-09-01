@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const cats = [
-  { key: "Animation", img: "/img/category/Anime.jpg" },
+  { key: "Anime", img: "/img/category/Anime.jpg" },
   { key: "Webtoon",   img: "/img/category/Webtoon.jpg" },
   { key: "Game",      img: "/img/category/Game.webp" },
   { key: "Sports",    img: "/img/category/Sports.webp" },

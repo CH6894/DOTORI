@@ -1,6 +1,5 @@
 package com.pingu.DOTORI.service;
 
-
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 
@@ -16,19 +15,26 @@ import com.pingu.DOTORI.repository.ItemRepository;
 @RequiredArgsConstructor
 public class ItemService {
 	private final ItemRepository itemRepository;
-	
-	public Page<ItemDTO> findAll(Pageable pageable){
+
+	public Page<ItemDTO> findAll(Pageable pageable) {
 		return itemRepository.findAll(pageable).map(this::toDto);
 	}
-	
+
+	public ItemDTO findById(String itemCode) {
+		Item item = itemRepository.findByItemCode(itemCode)
+				.orElseThrow(() -> new RuntimeException("Item not found with itemCode: " + itemCode));
+		return toDto(item);
+	}
+
 	public Page<ItemDTO> findByGenre(String genre, Pageable pageable) {
 		return itemRepository.findByGenreIgnoreCase(genre, pageable).map(this::toDto);
 	}
-	
-	public Page<ItemDTO> findByGenreAndTitle(String genre, String title, Pageable pageable){
-		return itemRepository.findByGenreIgnoreCaseAndTitleContainingIgnoreCase(genre, title, pageable).map(this::toDto);
+
+	public Page<ItemDTO> findByGenreAndTitle(String genre, String title, Pageable pageable) {
+		return itemRepository.findByGenreIgnoreCaseAndTitleContainingIgnoreCase(genre, title, pageable)
+				.map(this::toDto);
 	}
-	
+
 	private ItemDTO toDto(Item i) {
 		return ItemDTO.builder()
 				.itemCode(i.getItemCode())

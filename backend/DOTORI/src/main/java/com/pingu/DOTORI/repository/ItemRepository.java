@@ -11,8 +11,10 @@ import com.pingu.DOTORI.entity.Item;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, String> {
-	// 
+	//
+	Optional<Item> findByItemCode(String itemCode);
+
 	Page<Item> findByGenreIgnoreCase(String genre, Pageable pageable);
-	
+
 	Page<Item> findByGenreIgnoreCaseAndTitleContainingIgnoreCase(String genre, String title, Pageable pageable);
 }

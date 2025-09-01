@@ -1,6 +1,5 @@
 package com.pingu.DOTORI.controller;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -27,20 +26,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ItemController {
 	private final ItemService itemService;
-	
+
 	@GetMapping
-	public ResponseEntity<Page<ItemDTO>> findAll(@PageableDefault(size=18) Pageable pageable){
+	public ResponseEntity<Page<ItemDTO>> findAll(@PageableDefault(size = 18) Pageable pageable) {
 		return ResponseEntity.ok(itemService.findAll(pageable));
 	}
-	
+
+	@GetMapping("/{id}")
+	public ResponseEntity<ItemDTO> findById(@PathVariable String id) {
+		return ResponseEntity.ok(itemService.findById(id));
+	}
+
 	@GetMapping("/genre/{genre}")
-	public ResponseEntity<Page<ItemDTO>> byGenre(@PathVariable String genre, @PageableDefault(size = 20) Pageable pageable){
+	public ResponseEntity<Page<ItemDTO>> byGenre(@PathVariable String genre,
+			@PageableDefault(size = 20) Pageable pageable) {
 		return ResponseEntity.ok(itemService.findByGenre(genre, pageable));
 	}
-	
+
 	@GetMapping("/genre/{genre}/title/{title}")
-	public ResponseEntity<Page<ItemDTO>> byGenreAndTitle(@PathVariable String genre, @PathVariable(required = false) String title, @PageableDefault(size = 20) Pageable pageable){
+	public ResponseEntity<Page<ItemDTO>> byGenreAndTitle(@PathVariable String genre,
+			@PathVariable(required = false) String title, @PageableDefault(size = 20) Pageable pageable) {
 		return ResponseEntity.ok(itemService.findByGenreAndTitle(genre, title, pageable));
 	}
-	
+
 }
