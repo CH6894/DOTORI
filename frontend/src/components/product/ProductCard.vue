@@ -53,63 +53,107 @@ const priceText = computed(() =>
 </template>
 
 <style scoped>
-/* 카드 전체 */
-.product-card {
+/* 그리드 컨테이너: 192px 고정 칼럼을 가로에 꽉 차게 배치 */
+.products-grid {
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-columns: repeat(auto-fill, minmax(192px, 192px));
+  justify-content: center;
+  gap: 16px;
+  align-items: start;
+}
+
+/* 기본 수축 허용(말줄임 등 동작) */
+.products-grid>* {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ===== 카드: 폭을 192로 고정 + 첫 행(썸네일) 192로 고정 ===== */
+.product-card {
+  width: 192px;
+  display: grid;
+  grid-template-rows: 192px auto;
   background: #fff;
   border: 1px solid #eee;
-  border-radius: 2px;
+  border-radius: 8px;
   overflow: hidden;
   color: inherit;
   text-decoration: none;
-  transition: transform .12s ease, box-shadow .12s ease;
-}
-.product-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
-  text-decoration: none;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  outline: none;
 }
 
-/* 썸네일 */
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .06);
+  text-decoration: none;
+  border-color: #e6e6e6;
+}
+
+.product-card:focus-visible {
+  box-shadow: 0 0 0 3px #1a73e8;
+  transform: translateY(-1px);
+}
+
+/* 링크 :visited 요구사항 */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===== 썸네일: 정확히 192×192, 이미지 채우기 ===== */
 .product-card__thumb {
-  display: block;
-  aspect-ratio: 1 / 1;
+  width: 192px;
+  height: 192px;
   background: #f6f6f6;
   overflow: hidden;
 }
+
 .product-card__thumb picture,
 .product-card__thumb img {
   width: 100%;
   height: 100%;
   display: block;
 }
-.product-card__thumb img { object-fit: cover; }
 
-/* 메타 */
+.product-card__thumb img {
+  object-fit: cover;
+}
+
+/* 잘리는 걸 허용하고 꽉 채움 */
+
+/* ===== 메타: 이름 2줄 + 가격 1줄로 고정감을 줌 ===== */
 .product-card__meta {
   padding: 10px 12px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
+
 .product-card__name {
   font-size: 14px;
   line-height: 1.35;
   font-weight: 700;
   color: #333;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-.product-card__price {
-  font-weight: 700;
-  font-size: 14px;
-  color: #333;
-}
+  white-space: normal;
+  min-height: calc(1.35 * 14px * 2);
 
-/* 링크 규칙(요구사항) */
-a { color: inherit; text-decoration: none; }
-a:visited { color: inherit; text-decoration: none; }
-a:hover { text-decoration: none; }
+  .product-card__price {
+    font-weight: 700;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 </style>

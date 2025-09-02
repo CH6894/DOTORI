@@ -7,7 +7,7 @@
   import ProductGrid from '@/components/product/ProductGrid.vue'
   import type { CatalogItem } from '@/composables/useCatalog'
   import { fetchGenre, fetchTitle } from '@/api/items'
-  import type { Item as ItemDTO } from '@/types/item'
+  import type { ItemDTO } from '@/types/item'
   import type { Page } from '@/types/common'
   import TopCategoryData from '@/assets/TopCategoryData.js'
   import { MidCategoryMap } from '@/assets/MidCategoryMap'

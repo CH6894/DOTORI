@@ -1,11 +1,9 @@
+<!-- src/components/HeaderWithQuickbar.vue -->
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
 import { useRouter } from 'vue-router'
-// (상단 import 근처)
-import { computed } from 'vue'
 // import { useAuth } from '@/stores/useAuth' // 실제 스토어 사용 시
 
-// ▼ 실제 로그인 상태로 교체하세요.
 // const auth = useAuth()
 // const isLoggedIn = computed(() => auth.isLoggedIn)
 const isLoggedIn = computed(() => false) // 임시: 나중에 실제 값으로 교체
@@ -21,6 +19,10 @@ const quickOpen = ref(false)
 const headerEl = ref<HTMLElement | null>(null)
 const quickTop = ref<number>(64)
 
+// 햄버거/퀵바 ref (바깥 클릭 닫기용)
+const hamburgerBtn = ref<HTMLElement | null>(null)
+const quickBarEl = ref<HTMLElement | null>(null)
+
 function toggleQuick() { quickOpen.value = !quickOpen.value }
 function measureQuickTop() {
   const el = headerEl.value
@@ -31,10 +33,19 @@ function measureQuickTop() {
   document.documentElement.style.setProperty('--quickbar-top', `${bottom}px`)
 }
 
+/* 문서 아무 곳이나 클릭 시 퀵바 닫기 (햄버거/퀵바 내부는 제외) */
+function onDocClickCloseQuick(ev: MouseEvent) {
+  if (!quickOpen.value) return
+  const target = ev.target as Node
+  if (hamburgerBtn.value?.contains(target)) return
+  if (quickBarEl.value?.contains(target)) return
+  quickOpen.value = false
+}
+
 /* 퀵바 카테고리 → /search?top=키 */
 const quickCats = [
   { label: 'Anime', key: 'Anime' },
-  { label: 'Kpop', key: 'Kpop' },
+  { label: 'KPOP', key: 'Kpop' },
   { label: 'Game', key: 'Game' },
   { label: 'Sports', key: 'Sports' },
   { label: 'Webtoon', key: 'Webtoon' },
@@ -75,7 +86,6 @@ function loadRecent() {
   }
 }
 function saveRecent() {
-  // 항상 10개 이내로 잘라 저장
   const trimmed = recent.value.slice(0, 10)
   recent.value = trimmed
   getKV().setItem(RECENT_KEY, JSON.stringify(trimmed))
@@ -83,7 +93,6 @@ function saveRecent() {
 function addRecent(term: string) {
   const t = term.trim()
   if (!t) return
-  // 중복은 맨 앞으로, 10개 초과는 뒤에서 잘림
   recent.value = [{ term: t, ts: Date.now() }, ...recent.value.filter(r => r.term !== t)]
   saveRecent()
 }
@@ -93,10 +102,8 @@ function removeRecent(term: string) {
 }
 function clearRecent() {
   recent.value = []
-  // 비로그인/로그인 모두 동일 키를 쓰니 현재 저장소에서만 지워도 됨
   getKV().removeItem(RECENT_KEY)
 }
-
 
 /* 등락 표기 */
 function delta(item: PopularItem) {
@@ -131,12 +138,17 @@ function selectTerm(term: string) {
 
 /* 포커스/열고닫기 */
 function openPanel() { searchOpen.value = true }
+
 function onDocClick(ev: MouseEvent) {
   const root = searchWrapEl.value
   if (root && !root.contains(ev.target as Node)) searchOpen.value = false
 }
+
 function onEscKey(ev: KeyboardEvent) {
-  if (ev.key === 'Escape') searchOpen.value = false
+  if (ev.key === 'Escape') {
+    searchOpen.value = false
+    quickOpen.value = false
+  }
 }
 
 onMounted(async () => {
@@ -146,18 +158,20 @@ onMounted(async () => {
 
   window.addEventListener('resize', measureQuickTop, { passive: true })
   window.addEventListener('scroll', measureQuickTop, { passive: true })
-  ;(document as any).fonts?.ready?.then?.(measureQuickTop)
+    ; (document as any).fonts?.ready?.then?.(measureQuickTop)
+
   document.addEventListener('click', onDocClick)
+  document.addEventListener('click', onDocClickCloseQuick) // 👈 문서 아무곳 클릭 시 퀵바 닫기
   document.addEventListener('keydown', onEscKey)
 
-  // 비로그인 시, 탭 이탈/새로고침 시에도 확실히 지우고 싶다면:
+  // 비로그인 시 세션 저장소 정리(선택)
   window.addEventListener('beforeunload', () => {
     if (!isLoggedIn.value) {
-      try { sessionStorage.removeItem(RECENT_KEY) } catch {}
+      try { sessionStorage.removeItem(RECENT_KEY) } catch { }
     }
   })
 
-  // (선택) 로그인 상태에서는 다중 탭 동기화
+  // 로그인 상태에서는 탭 간 동기화(선택)
   window.addEventListener('storage', (e) => {
     if (!isLoggedIn.value) return
     if (e.key === RECENT_KEY) {
@@ -170,11 +184,10 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', measureQuickTop)
   window.removeEventListener('scroll', measureQuickTop)
   document.removeEventListener('click', onDocClick)
+  document.removeEventListener('click', onDocClickCloseQuick)
   document.removeEventListener('keydown', onEscKey)
-  window.removeEventListener('beforeunload', () => {}) // 익명 핸들러면 스킵해도 무해
-  window.removeEventListener('storage', () => {})
+  // 익명 핸들러 해제는 생략 가능
 })
-
 </script>
 
 <template>
@@ -190,7 +203,7 @@ onBeforeUnmount(() => {
 
         <div class="header__bottom">
           <!-- 햄버거 버튼 -->
-          <button id="hamburgerBtn" class="icon-btn header__hamburger" :aria-expanded="quickOpen"
+          <button id="hamburgerBtn" ref="hamburgerBtn" class="icon-btn header__hamburger" :aria-expanded="quickOpen"
             aria-controls="quickBar" aria-label="메뉴 열기" @click="toggleQuick">
             <svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true">
               <rect width="22" height="2" y="0" rx="1" />
@@ -292,9 +305,12 @@ onBeforeUnmount(() => {
       </div>
     </header>
 
+    <!-- ===== 오버레이: 퀵바 열렸을 때 아무곳이나 클릭 시 닫힘 ===== -->
+    <div v-show="quickOpen" class="quickbar-overlay" aria-hidden="true" @click="quickOpen = false" />
+
     <!-- ===== 퀵바 ===== -->
-    <div id="quickBar" class="quick-bar" :class="{ 'is-open': quickOpen }" :style="{ top: `${quickTop}px` }"
-      role="region" aria-label="빠른 작업 바">
+    <div id="quickBar" ref="quickBarEl" class="quick-bar" :class="{ 'is-open': quickOpen }"
+      :style="{ top: `${quickTop}px` }" role="region" aria-label="빠른 작업 바">
       <nav class="quick-bar__inner container">
         <RouterLink v-for="c in quickCats" :key="c.key" class="quick-link"
           :to="{ name: 'search', query: { top: c.key } }" @click="quickOpen = false">
@@ -313,16 +329,18 @@ onBeforeUnmount(() => {
   z-index: 50;
   width: 100%;
   background: linear-gradient(180deg, rgba(247, 242, 230, 0.85), rgba(247, 242, 230, 0.85));
-  backdrop-filter: blur(0.375rem);               /* 6px */
-  border-bottom: 0.0625rem solid #f4f3e6;        /* 1px */
+  backdrop-filter: blur(0.375rem);
+  border-bottom: 0.0625rem solid #f4f3e6;
 }
 
 /* 헤더 하단 커튼 */
 .header::after {
   content: "";
   position: absolute;
-  left: 0; right: 0; bottom: -0.0625rem;         /* -1px */
-  height: 0.75rem;                                /* 12px */
+  left: 0;
+  right: 0;
+  bottom: -0.0625rem;
+  height: 0.75rem;
   background: linear-gradient(to bottom, #f7f2e6 70%, rgba(247, 242, 230, 0));
   pointer-events: none;
 }
@@ -330,7 +348,8 @@ onBeforeUnmount(() => {
 /* 퀵바 */
 .quick-bar {
   position: fixed;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   top: var(--quickbar-top, 0);
   height: var(--quickbar-height);
   background: rgba(45, 37, 28, 0.96);
@@ -341,10 +360,11 @@ onBeforeUnmount(() => {
   pointer-events: none;
   transition: transform .28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity .28s, visibility 0s .28s;
   z-index: 49;
-  box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.18);   /* 8px 20px */
-  backdrop-filter: saturate(160%) blur(0.5rem);   /* 8px */
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, .18);
+  backdrop-filter: saturate(160%) blur(0.5rem);
   overflow: hidden;
 }
+
 .quick-bar.is-open {
   transform: translateY(0);
   opacity: 1;
@@ -352,38 +372,56 @@ onBeforeUnmount(() => {
   pointer-events: auto;
   transition: transform .28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity .28s;
 }
+
 .quick-bar__inner {
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 2.25rem;                                   /* 36px */
-  padding: 0 1rem;                                /* 16px */
+  gap: 2.25rem;
+  padding: 0 1rem;
   white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
+/* 클릭 오버레이 (시각 영향 없이 클릭만 받음) */
+.quickbar-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 48;
+  /* .quick-bar(49) 바로 아래 */
+  background: transparent;
+}
+
 /* 아이콘 버튼 */
 .icon-btn {
   display: inline-grid;
   place-items: center;
-  width: 2.25rem; height: 2.25rem;                /* 36px */
-  border-radius: 0.75rem;                         /* 12px */
-  border: 0.0625rem solid #e7dfcd;                /* 1px */
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid #e7dfcd;
   background: #fff7ea;
-  box-shadow: 0 0.125rem 0 rgba(0,0,0,.02) inset; /* 2px */
+  box-shadow: 0 0.125rem 0 rgba(0, 0, 0, .02) inset;
   cursor: pointer;
   color: var(--ink);
 }
-.icon-btn svg { width: 1.375rem; height: 1.375rem; display: block; } /* 22px */
+
+.icon-btn svg {
+  width: 1.375rem;
+  height: 1.375rem;
+  display: block;
+}
+
+/* 22px */
 
 /* 헤더 아이콘 영역 */
 .header__icons {
   display: flex;
-  gap: 0.625rem;                                  /* 10px */
-  margin-left: 2.5rem;                            /* 40px */
+  gap: 0.625rem;
+  margin-left: 2.5rem;
   fill: #505050;
 }
 
@@ -393,84 +431,124 @@ onBeforeUnmount(() => {
   align-items: center;
   white-space: nowrap;
   font-weight: 700;
-  padding: 0.375rem 0.5rem;                       /* 6px 8px */
-  border-radius: 0.625rem;                        /* 10px */
-  font-size: 1.25rem;                             /* 20px */
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.625rem;
+  font-size: 1.25rem;
 }
+
 .nav-link:hover {
   background: #fff0df;
   text-decoration: none;
 }
 
 /* 로고 */
-.logo { display: flex; align-items: center; gap: 0.5rem; margin-left: 0.5rem; } /* 8px */
-.logo__mark { display: inline-block; width: 12.5rem; }                           /* 200px */
-.logo__mark img { width: 100%; height: auto; }
-.logo.-small .logo__mark { font-size: 1.375rem; }                                /* 22px */
-.logo.-small .logo__text { font-weight: 800; font-size: 0.875rem; }              /* 14px */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.logo__mark {
+  display: inline-block;
+  width: 12.5rem;
+}
+
+.logo__mark img {
+  width: 100%;
+  height: auto;
+}
+
+.logo.-small .logo__mark {
+  font-size: 1.375rem;
+}
+
+.logo.-small .logo__text {
+  font-weight: 800;
+  font-size: 0.875rem;
+}
 
 /* 헤더 레이아웃 */
 .header__inner {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;                                   /* 12px */
-  max-width: 80rem;                               /* 1280px */
+  gap: 0.75rem;
+  max-width: 80rem;
+  /* 1280px */
   margin: 0 auto;
-  padding: 0.75rem 0;                              /* 12px */
+  padding: 0.75rem 0;
 }
-.header__logo { display: flex; justify-content: center; }
+
+.header__logo {
+  display: flex;
+  justify-content: center;
+}
+
 .header__bottom {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 1.25rem;                                    /* 20px */
-  margin-left: 0.75rem;                            /* 12px */
-  margin-top: 0.75rem;                             /* 12px */
+  gap: 1.25rem;
+  margin-left: 0.75rem;
+  margin-top: 0.75rem;
   background: transparent !important;
 }
+
 .header__nav {
-  margin-bottom: 0.5rem;                           /* 8px */
+  margin-bottom: 0.5rem;
   display: flex;
-  gap: 6.25rem;                                    /* 100px */
+  gap: 6.25rem;
+  /* 100px */
   white-space: nowrap;
   font-weight: 700;
-  font-size: 1.125rem;                             /* 18px */
+  font-size: 1.125rem;
+  /* 18px */
 }
 
 /* 검색 래퍼(패널 기준) */
-.search-wrap { position: relative; }
+.search-wrap {
+  position: relative;
+}
 
 /* 검색 폼 */
 .search {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 0.5rem;                                     /* 8px */
+  gap: 0.5rem;
   align-items: center;
-  width: 25rem;                                     /* 400px */
-  margin-left: 7.5rem;                              /* 120px */
-  margin-right: 1.875rem;                           /* 30px */
+  width: 25rem;
+  /* 400px */
+  margin-left: 7.5rem;
+  /* 120px */
+  margin-right: 1.875rem;
+  /* 30px */
 }
 
 /* 검색 input */
 .search input,
 .search input[type="search"] {
   width: 100%;
-  height: 2.5rem;                                   /* 40px */
-  padding: 0 0.875rem;                              /* 14px */
+  height: 2.5rem;
+  padding: 0 0.875rem;
   border-radius: 999px;
-  border: 0.0625rem solid #eadfc9;                  /* 1px */
+  border: 0.0625rem solid #eadfc9;
 }
 
 /* 검색 버튼 */
 .search__btn {
-  width: 2.5rem; height: 2.5rem;                    /* 40px */
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 999px;
-  border: 0.0625rem solid #eadfc9;                  /* 1px */
+  border: 0.0625rem solid #eadfc9;
   background: #fff;
   cursor: pointer;
 }
-.search__btn svg { stroke: var(--ink); }
+
+.search__btn svg {
+  stroke: var(--ink);
+}
+
 .search__btn svg * {
   fill: none !important;
   stroke: currentColor !important;
@@ -480,13 +558,14 @@ onBeforeUnmount(() => {
 /* 검색 패널 */
 .search-panel {
   position: absolute;
-  top: calc(100% + 0.5rem);                         /* +8px */
-  left: 0; right: 0;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
   background: #fff;
-  border: 0.0625rem solid #eee;                     /* 1px */
-  border-radius: 0.75rem;                           /* 12px */
-  box-shadow: 0 0.75rem 1.75rem rgba(0,0,0,.12);    /* 12px 28px */
-  padding: 0.75rem;                                 /* 12px */
+  border: 0.0625rem solid #eee;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, .12);
+  padding: 0.75rem;
   z-index: 2000;
 }
 
@@ -494,89 +573,177 @@ onBeforeUnmount(() => {
 .panel-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;                                     /* 12px */
+  gap: 0.75rem;
 }
-.panel-section { min-width: 0; }
+
+.panel-section {
+  min-width: 0;
+}
+
 .panel-title {
-  font: 700 0.8125rem/1 "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; /* 13px */
+  font: 700 0.8125rem/1 "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: #333;
-  margin: 0.375rem 0 0.625rem;                      /* 6px 0 10px */
+  margin: 0.375rem 0 0.625rem;
 }
-.panel-title.row { display: flex; align-items: center; justify-content: space-between; }
+
+.panel-title.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 /* 인기 검색어 */
-.pop-list { list-style: none; margin: 0; padding: 0; }
-.pop-item + .pop-item { margin-top: 0.375rem; }     /* 6px */
+.pop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pop-item+.pop-item {
+  margin-top: 0.375rem;
+}
+
 .pop-link {
   width: 100%;
   display: grid;
-  grid-template-columns: 1.5rem 1fr auto;           /* 24px */
+  grid-template-columns: 1.5rem 1fr auto;
+  /* 24px */
   align-items: center;
-  gap: 0.5rem;                                      /* 8px */
-  padding: 0.5rem 0.625rem;                         /* 8px 10px */
-  border-radius: 0.5rem;                            /* 8px */
-  border: 0.0625rem solid transparent;              /* 1px */
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.5rem;
+  border: 0.0625rem solid transparent;
   background: #fafafa;
   color: inherit;
   cursor: pointer;
   text-align: left;
 }
-.pop-link:hover { background: #f5f5f5; }
-.rank { font-weight: 700; color: #666; text-align: right; }
-.term { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.delta { font-size: 0.75rem; color: #888; display: inline-flex; align-items: center; gap: 0.25rem; } /* 12px, 4px */
-.delta.up { color: #0ea35a; }
-.delta.down { color: #e54848; }
-.delta.same { color: #9aa0a6; }
+
+.pop-link:hover {
+  background: #f5f5f5;
+}
+
+.rank {
+  font-weight: 700;
+  color: #666;
+  text-align: right;
+}
+
+.term {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.delta {
+  font-size: 0.75rem;
+  color: #888;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.delta.up {
+  color: #0ea35a;
+}
+
+.delta.down {
+  color: #e54848;
+}
+
+.delta.same {
+  color: #9aa0a6;
+}
 
 /* 최근 검색어 */
-.recent-list { list-style: none; margin: 0; padding: 0; }
+.recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .recent-empty {
-  padding: 0.5rem 0.625rem;                         /* 8px 10px */
+  padding: 0.5rem 0.625rem;
   color: #9aa0a6;
   background: #fafafa;
-  border-radius: 0.5rem;                            /* 8px */
+  border-radius: 0.5rem;
 }
+
 .recent-item {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 0.5rem;                                      /* 8px */
+  gap: 0.5rem;
   align-items: center;
-  padding: 0.375rem 0;                              /* 6px */
+  padding: 0.375rem 0;
 }
+
 .recent-link {
   max-width: 100%;
-  padding: 0.5rem 0.625rem;                         /* 8px 10px */
-  border-radius: 0.5rem;                            /* 8px */
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.5rem;
   background: #fafafa;
-  border: 0.0625rem solid transparent;              /* 1px */
+  border: 0.0625rem solid transparent;
   text-align: left;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.recent-link:hover { background: #f5f5f5; }
+
+.recent-link:hover {
+  background: #f5f5f5;
+}
+
 .recent-del {
-  width: 1.75rem; height: 1.75rem;                  /* 28px */
-  border: 0.0625rem solid #eee;                     /* 1px */
-  border-radius: 0.375rem;                          /* 6px */
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0.0625rem solid #eee;
+  border-radius: 0.375rem;
   background: #fff;
   color: #666;
   cursor: pointer;
 }
-.recent-del:hover { background: #f8f8f8; }
-.clear-all {
-  border: none; background: transparent; cursor: pointer;
-  color: #888; font-size: 0.75rem;                  /* 12px */
+
+.recent-del:hover {
+  background: #f8f8f8;
 }
-.clear-all:hover { color: #555; }
+
+.clear-all {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.clear-all:hover {
+  color: #555;
+}
 
 /* 작은 화면에서 1열 */
-@media (max-width: 48rem) {                          /* 768px */
-  .panel-grid { grid-template-columns: 1fr; }
-  /* 검색 영역 폭을 화면에 맞게 */
-  .search { width: min(92vw, 25rem); margin-left: 0.75rem; margin-right: 0.75rem; }
-  .header__icons { margin-left: 0; }
-  .header__nav { gap: 2rem; font-size: 1rem; }      /* 간격·크기 완화 */
+@media (max-width: 48rem) {
+  .panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search {
+    width: min(92vw, 25rem);
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+  }
+
+  .header__icons {
+    margin-left: 0;
+  }
+
+  .header__nav {
+    gap: 2rem;
+    font-size: 1rem;
+  }
+}
+
+/* 요구사항: :visited 스타일 */
+a:visited {
+  text-decoration: none;
+  color: inherit;
 }
 </style>
