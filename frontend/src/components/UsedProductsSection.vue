@@ -18,9 +18,9 @@
                 :alt="`중고상품 - #${item.id}`"
                 class="product-image"
               />
-              <!-- 상태 배지 -->
-              <div class="condition-badge" :class="item.condition">
-                {{ getConditionText(item.condition) }}
+              <!-- 등급 배지 -->
+              <div class="grade-badge" :class="getGradeClass(item.quality)">
+                {{ getGradeText(item.quality) }}
               </div>
             </div>
             
@@ -52,6 +52,16 @@ const props = defineProps({
 const emit = defineEmits(['openUsedItemDetail'])
 
 // 유틸리티 함수들
+const getGradeText = (quality) => {
+  const map = { 1: 'S', 2: 'A', 3: 'B', 4: 'C' }
+  return map[quality] || '미정'
+}
+
+const getGradeClass = (quality) => {
+  const map = { 1: 'badge-grade--s', 2: 'badge-grade--a', 3: 'badge-grade--b', 4: 'badge-grade--c' }
+  return map[quality] || 'badge-grade--none'
+}
+
 const getConditionText = (condition) => {
   const conditionMap = {
     'excellent': '최상',
@@ -80,6 +90,8 @@ const openUsedItemDetail = (item) => {
   // 개별 중고상품 상세 모달로 바로 연결
   emit('openUsedItemDetail', item)
   console.log('상품 정보:', props.productInfo) // props 사용
+  console.log('중고상품 아이템:', item) // 디버깅용
+  console.log('아이템 quality:', item.quality) // quality 값 확인
 }
 </script>
 
@@ -172,7 +184,7 @@ const openUsedItemDetail = (item) => {
   transform: scale(1.05);
 }
 
-.condition-badge {
+.grade-badge {
   position: absolute;
   top: 8px;
   left: 8px;
@@ -183,21 +195,25 @@ const openUsedItemDetail = (item) => {
   color: white;
 }
 
-.condition-badge.excellent {
-  background: #28a745;
+/* 등급 배지 스타일 - 모달과 동일 */
+.badge-grade--s {
+  background: linear-gradient(45deg, #9333ea, #f43f5e);
 }
 
-.condition-badge.good {
-  background: #ffc107;
-  color: #333;
+.badge-grade--a {
+  background: #2563eb;
 }
 
-.condition-badge.fair {
-  background: #fd7e14;
+.badge-grade--b {
+  background: #16a34a;
 }
 
-.condition-badge.poor {
-  background: #bbb;
+.badge-grade--c {
+  background: #f59e0b;
+}
+
+.badge-grade--none {
+  background: #9ca3af;
 }
 
 .product-info {

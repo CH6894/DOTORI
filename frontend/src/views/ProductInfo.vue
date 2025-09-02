@@ -18,6 +18,7 @@
         <ProductInfo 
           :product="product" 
           :productType="productType"
+          :approvedUnpackedDetails="unpackedItems"
           @purchase="handlePurchase"
           @addToCart="handleAddToCart"
         />
@@ -72,6 +73,7 @@ import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
 import RecommendedProducts from '@/components/RecommendedProducts.vue'
 import RelatedProducts from '@/components/RelatedProducts.vue'
 import { fetchItemById } from '@/api/items'
+import { fetchApprovedUnpackedItemDetails, fetchApprovedOpenedItemDetails } from '@/api/items'
 import type { ItemDTO } from '@/types/item'
 
 const route = useRoute()
@@ -83,6 +85,7 @@ const error = ref<string | null>(null)
 const product = ref<any>({})
 const priceData = ref<any[]>([])
 const usedItems = ref<any[]>([])
+const unpackedItems = ref<any[]>([]) // 미개봉 상품용
 const recommendedProducts = ref<any[]>([])
 const relatedProducts = ref<any[]>([])
 const showUsedItemDetail = ref(false)
@@ -150,80 +153,78 @@ const fetchPriceData = async () => {
 
 const fetchUsedItems = async () => {
   try {
-    // const response = await fetch(`/api/products/${productId}/used-items`)
-    // const data = await response.json()
+    // 승인된 개봉 상품의 ItemDetails 조회 (unpacked = 1)
+    const approvedOpenedDetails = await fetchApprovedOpenedItemDetails(productId)
+    console.log('승인된 개봉 상품 데이터:', approvedOpenedDetails)
     
-    // 임시 데이터 (DB 연동 시 삭제) - 각각 고유한 개별 중고상품들
-    usedItems.value = [
-      {
-        id: 1,
-        title: '세가 귀멸의 칼날 피규어',
-        description: 'dmdkkkkkkkkkkkk',
-        price: 22000,
-        originalPrice: 25000,
-        condition: 'excellent',
-        createdAt: new Date(),
-        images: ['/img/예시1.jpg', '/img/test.jpg'],
-        conditionDetails: '박스 외관 미세한 눌림, 내용물 완벽'
-      },
-      {
-        id: 2,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '한번 사용 후 보관된 최상급 상품입니다.',
-        price: 24000,
-        originalPrice: 25000,
-        condition: 'excellent',
-        createdAt: new Date(Date.now() - 86400000),
-        images: ['/img/used002.jpg'],
-        conditionDetails: '흠집 전무'
-      },
-      {
-        id: 3,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '박스 개봉했으나 피규어 자체는 새상품 수준입니다.',
-        price: 20000,
-        originalPrice: 25000,
-        condition: 'poor',
-        createdAt: new Date(Date.now() - 172800000),
-        images: ['/img/used003.jpg'],
-        conditionDetails: '더러움 아주 더러움 세상에서 이것보다 더 더러운 것은 없을거임'
-      },
-      {
-        id: 4,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '약간의 사용감이 있지만 전체적으로 양호한 상태입니다.',
-        price: 18000,
-        originalPrice: 25000,
-        condition: 'good',
-        createdAt: new Date(Date.now() - 259200000),
-        images: ['/img/used004.jpg'],
-        conditionDetails: '미세한 스크래치, 기능상 문제없음'
-      },
-      {
-        id: 5,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '일반적인 사용감이 있는 중고상품입니다.',
-        price: 15000,
-        originalPrice: 25000,
-        condition: 'fair',
-        createdAt: new Date(Date.now() - 345600000),
-        images: ['/img/used005.jpg'],
-        conditionDetails: '사용감 있으나 정상 작동'
-      },
-      {
-        id: 6,
-        title: '세가 귀멸의 칼날 피규어',
-        description: '약간의 기스와 사용감이 있지만 저렴한 가격입니다.',
-        price: 17000,
-        originalPrice: 25000,
-        condition: 'good',
-        createdAt: new Date(Date.now() - 432000000),
-        images: ['/img/used006.jpg'],
-        conditionDetails: '약간의 기스, 전체적으로 양호'
-      }
-    ]
+    // 백엔드에서 받은 데이터를 프론트엔드 형식으로 변환
+    if (approvedOpenedDetails && approvedOpenedDetails.length > 0) {
+      usedItems.value = approvedOpenedDetails.map((detail: any) => {
+        const mappedItem = {
+          id: detail.itemId,
+          title: detail.itemName || '상품명 미정',
+          description: detail.productCondition || '상품 설명 없음',
+          price: detail.cost || 0,
+          originalPrice: detail.cost || 0,
+          condition: getConditionFromQuality(detail.quality), // Admin의 quality로 등급 결정
+          createdAt: detail.registrationDate ? new Date(detail.registrationDate) : new Date(),
+          images: detail.itemImgUrl ? [detail.itemImgUrl] : ['/img/placeholder.jpg'],
+          conditionDetails: detail.productCondition || '상품 상태 상세 정보 없음',
+          // 추가 정보
+          quality: detail.quality,
+          registrationDate: detail.registrationDate,
+          itemExplanation: detail.itemExplanation
+        }
+        console.log('매핑된 중고상품 아이템:', mappedItem) // 디버깅용
+        return mappedItem
+      })
+      console.log('최종 usedItems:', usedItems.value) // 디버깅용
+    } else {
+      // 데이터가 없으면 빈 배열
+      usedItems.value = []
+      console.log('승인된 개봉 상품이 없습니다.') // 디버깅용
+    }
   } catch (error) {
     console.error('중고상품 목록 로드 실패:', error)
+    usedItems.value = []
+  }
+}
+
+const fetchUnpackedItems = async () => {
+  try {
+    // 승인된 미개봉 상품의 ItemDetails 조회 (unpacked = 0)
+    const approvedUnpackedDetails = await fetchApprovedUnpackedItemDetails(productId)
+    console.log('승인된 미개봉 상품 데이터:', approvedUnpackedDetails)
+    
+    // 백엔드에서 받은 데이터를 프론트엔드 형식으로 변환
+    if (approvedUnpackedDetails && approvedUnpackedDetails.length > 0) {
+      unpackedItems.value = approvedUnpackedDetails.map((detail: any) => ({
+        itemId: detail.itemId,
+        cost: detail.cost || 0,
+        status: detail.status,
+        unpacked: detail.unpacked,
+        productCondition: detail.productCondition,
+        itemName: detail.itemName,
+        itemImgUrl: detail.itemImgUrl
+      }))
+    } else {
+      // 데이터가 없으면 빈 배열
+      unpackedItems.value = []
+    }
+  } catch (error) {
+    console.error('미개봉 상품 목록 로드 실패:', error)
+    unpackedItems.value = []
+  }
+}
+
+// Admin의 quality 값으로 등급 결정
+const getConditionFromQuality = (quality: number) => {
+  switch (quality) {
+    case 1: return 'excellent' // S등급
+    case 2: return 'good'      // A등급
+    case 3: return 'fair'      // B등급
+    case 4: return 'poor'      // C등급
+    default: return 'fair'
   }
 }
 
@@ -297,6 +298,7 @@ const initializePage = async () => {
       fetchProductDetail(),
       fetchPriceData(),
       fetchUsedItems(),
+      fetchUnpackedItems(), // 미개봉 상품 데이터도 로드
     ])
   } catch (error) {
     console.error('페이지 초기화 실패:', error)
