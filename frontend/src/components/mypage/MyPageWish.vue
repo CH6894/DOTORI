@@ -126,8 +126,19 @@ export default {
   methods: {
     /* ===== 라우팅 ===== */
     goProduct(w) {
-      // 프로젝트 라우터 네임/파라미터에 맞게 조정
-      this.$router.push({ name: 'ProductInfo', params: { id: w.id } })
+      // 위시리스트 아이템의 ID를 사용하여 상품 상세 페이지로 이동
+      this.$router.push({ 
+        name: 'ProductInfo', 
+        params: { id: String(w.id) } 
+      }).catch(err => {
+        console.error('라우터 이동 실패:', err)
+        // 대안: 쿼리 파라미터 사용
+        this.$router.push({ 
+          path: `/product/${w.id}` 
+        }).catch(() => {
+          console.error('대안 라우터도 실패')
+        })
+      })
     },
 
     /* ===== 위시리스트 (Pinia 스토어 사용) ===== */

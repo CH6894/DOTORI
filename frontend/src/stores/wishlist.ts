@@ -26,10 +26,20 @@ function normId(id: MaybeId) {
 function normalize(item: any): WishItem | null {
   // id가 없으면 스킵(런타임 에러 방지)
   if (!isValidId(item?.id)) return null
+  
+  // 가격을 숫자로 정규화 (문자열에서 "원" 제거)
+  let price = item.price ?? 0
+  if (typeof price === 'string') {
+    // "원" 단위 제거하고 숫자로 변환
+    price = Number(price.replace(/[원,]/g, '')) || 0
+  } else {
+    price = Number(price) || 0
+  }
+  
   return {
     id: item.id as WishId,
     title: item.title ?? item.name ?? '',
-    price: Number(item.price ?? 0),
+    price: price,
     image: item.image ?? item.thumb ?? item.images?.[0],
     ...item,
   }
@@ -59,7 +69,9 @@ export const useWishlistStore = defineStore('wishlist', {
         this.items = arr
           .map(normalize)
           .filter(Boolean) as WishItem[]
-      } catch {
+        console.log('위시리스트 로드:', this.items.length, '개 아이템')
+      } catch (error) {
+        console.error('위시리스트 로드 실패:', error)
         this.items = []
       } finally {
         this._loaded = true
@@ -80,12 +92,15 @@ export const useWishlistStore = defineStore('wishlist', {
       if (this.has(w.id)) return
       this.items.push(w)
       this.persist()
+      console.log('위시리스트 추가:', w, '현재 개수:', this.items.length)
     },
 
     remove(id: MaybeId) {
       if (id == null) return
+      const beforeCount = this.items.length
       this.items = this.items.filter(i => normId(i.id) !== normId(id))
       this.persist()
+      console.log('위시리스트 제거:', id, '이전 개수:', beforeCount, '현재 개수:', this.items.length)
     },
 
     toggle(item: any) {

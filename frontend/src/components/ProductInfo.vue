@@ -49,11 +49,11 @@
           <div class="price-info">
             <div class="original-price">
               <span class="label">발매가</span>
-              <span class="value">{{ product.originalPrice || 0 }}</span>
+              <span class="value">{{ product.originalPrice || 0 }}{{ typeof product.originalPrice === 'number' ? '원' : '' }}</span>
             </div>
             <div class="current-price">
               <span class="label">현재가</span>
-              <span class="price">{{ product.currentPrice }}</span>
+              <span class="price">{{ product.currentPrice }}{{ typeof product.currentPrice === 'number' ? '원' : '' }}</span>
             </div>
           </div>
         </div>
@@ -73,7 +73,14 @@
         <!-- 액션 버튼들 -->
         <div class="action-buttons">
           <button :class="['wish-heart', { active: wish.has(product.id) }]"
-            @click="wish.toggle({ id: product.id, title: product.title, price: product.price, image: product.images?.[0] })"
+            @click="wish.toggle({ 
+              id: product.id, 
+              title: product.title || product.name, 
+              price: typeof product.price === 'number' ? product.price : 
+                     typeof product.currentPrice === 'number' ? product.currentPrice : 
+                     Number(product.cost || 0), 
+              image: product.images?.[0] 
+            })"
             aria-label="위시 토글" title="위시 토글">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
               <path

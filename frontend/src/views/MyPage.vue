@@ -271,7 +271,9 @@ export default {
   created() {
     /* 위시리스트 로드 + 비어있으면 더미 시딩 */
     this.wish.load()
+    console.log('마이페이지 위시리스트 상태:', this.wish.items)
     if (!this.wish.count) {
+      console.log('위시리스트가 비어있어서 더미 데이터 추가')
       this.wish.replace([
         { id: 'w1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
         { id: 'w2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
@@ -349,7 +351,19 @@ export default {
       this.$router.push('/mypage')
     },
     goProduct(w) {
-      this.$router.push({ name: 'ProductInfo', params: { id: w.id } })
+      // 위시리스트 아이템의 ID를 사용하여 상품 상세 페이지로 이동
+      this.$router.push({ 
+        name: 'ProductInfo', 
+        params: { id: String(w.id) } 
+      }).catch(err => {
+        console.error('라우터 이동 실패:', err)
+        // 대안: 쿼리 파라미터 사용
+        this.$router.push({ 
+          path: `/product/${w.id}` 
+        }).catch(() => {
+          console.error('대안 라우터도 실패')
+        })
+      })
     },
 
     /* ===== 유틸 ===== */

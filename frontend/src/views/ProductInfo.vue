@@ -15,7 +15,7 @@
       <!-- 상품 정보가 로드된 후 -->
       <div v-else-if="product.id">
         <!-- 상품 기본 정보 섹션 -->
-        <ProductInfo 
+        <ProductDetailInfo 
           :product="product" 
           :productType="productType"
           @purchase="handlePurchase"
@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import ProductInfo from '@/components/ProductInfo.vue'
+import ProductDetailInfo from '@/components/ProductInfo.vue'
 import PriceChart from '@/components/PriceChart.vue'
 import UsedProductsSection from '@/components/UsedProductsSection.vue'
 import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
@@ -100,8 +100,8 @@ function adaptProduct(dto: ItemDTO) {
     name: dto.name,
     title: dto.title,
     brand: dto.manufacturer || '브랜드 미정',
-    originalPrice: dto.cost ? `${dto.cost.toLocaleString()}원` : '발매가 미정',
-    currentPrice: `${(dto.cost ?? 0).toLocaleString()}원`,
+    originalPrice: dto.cost ? dto.cost.toLocaleString() : '발매가 미정',
+    currentPrice: (dto.cost ?? 0).toLocaleString(),
     type: 'new', // 기본은 미개봉 상품
     images: dto.imgUrl ? [dto.imgUrl] : ['/img/placeholder.jpg'],
     description: dto.information || `${dto.name || dto.title} 상품입니다.`,
