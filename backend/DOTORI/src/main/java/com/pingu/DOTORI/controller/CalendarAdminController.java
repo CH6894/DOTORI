@@ -11,16 +11,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin/calendars")
 @CrossOrigin( // ✅ 프론트(vite)에서 오는 요청 허용
-        origins = "http://localhost:5173",
-        allowedHeaders = {"*"},
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.OPTIONS},
-        allowCredentials = "true",
-        maxAge = 3600
-)
+    origins = "http://localhost:5173", allowedHeaders = { "*" }, methods = { RequestMethod.GET, RequestMethod.POST,
+        RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.PATCH,
+        RequestMethod.OPTIONS }, allowCredentials = "true", maxAge = 3600)
 public class CalendarAdminController {
   private final CalendarService service;
 
-  public CalendarAdminController(CalendarService service) { this.service = service; }
+  public CalendarAdminController(CalendarService service) {
+    this.service = service;
+  }
 
   @PostMapping
   public ResponseEntity<CalendarResponse> create(@RequestBody CalendarRequest req) {
@@ -35,5 +34,7 @@ public class CalendarAdminController {
   }
 
   @GetMapping("/ping")
-  public String ping() { return "ok"; }
+  public String ping() {
+    return "ok";
+  }
 }

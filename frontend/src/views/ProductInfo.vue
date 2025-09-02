@@ -12,6 +12,12 @@
         <button @click="goBack" class="back-btn">이전 페이지로</button>
       </div>
       
+      <!-- 에러 상태 -->
+      <div v-else-if="error" class="error-container">
+        <h2>{{ error }}</h2>
+        <button @click="goBack" class="back-btn">이전 페이지로</button>
+      </div>
+      
       <!-- 상품 정보가 로드된 후 -->
       <div v-else-if="product.id">
         <!-- 상품 기본 정보 섹션 -->

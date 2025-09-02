@@ -22,23 +22,23 @@ interface Message {
 const messages = ref<Message[]>([])
 const inputText = ref('')
 const isLoading = ref(false)
-const userId = ref('default') // 사용자 ID (필요시 변경 가능)
+const userId = ref('default')
 const chatBody = ref<HTMLElement>()
 
 // 제안 버튼들
 const suggestions = [
-  '기본질문1',
-  '기본질문2',
-  '기본질문3',
-  '기본질문4',
-  '기본질문5',
-  '기본질문6'
+  '뉴진스 콜라보 굿즈 있어?',
+  '원피스 조로 피규어',
+  '블랙핑크 응원봉',
+  '검수 등급이 뭐야?',
+  'S급이랑 A급 차이는?',
+  'c등급 쓰는데 문제 없어?'
 ]
 
 // === 메시지 관리 함수들 ===
 const addMessage = (text: string, isUser: boolean) => {
   const message: Message = {
-    id: Date.now().toString(),
+    id: Date.now().toString() + Math.random(),
     text,
     isUser,
     timestamp: new Date()
@@ -54,17 +54,21 @@ const addMessage = (text: string, isUser: boolean) => {
 }
 
 // === API 호출 함수 ===
-const sendMessageToAPI = (userMessage: string): Promise<string> => {
-  return chatAPI.sendMessage(userMessage, userId.value)
-    .then(response => response.answer)
-    .catch(error => {
-      console.error('API 호출 실패:', error)
-      return '죄송해요, 일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요!'
-    })
+const sendMessageToAPI = async (userMessage: string) => {
+  try {
+    return await chatAPI.sendMessage(userMessage, userId.value)
+  } catch (error) {
+    console.error('API 호출 실패:', error)
+    return {
+      answer: '죄송해요, 일시적인 오류가 발생했어요. 잠시 후 다시 시도해주세요!',
+      is_multiple: false,
+      messages: []
+    }
+  }
 }
 
 // === 메시지 전송 ===
-const sendMessage = (text?: string) => {
+const sendMessage = async (text?: string) => {
   const messageText = text || inputText.value.trim()
   if (!messageText || isLoading.value) return
 
@@ -73,18 +77,27 @@ const sendMessage = (text?: string) => {
   inputText.value = ''
   isLoading.value = true
 
-  // API 호출
-  sendMessageToAPI(messageText)
-    .then(aiResponse => {
-      // AI 응답 추가
-      addMessage(aiResponse, false)
-    })
-    .catch(() => {
-      addMessage('죄송해요, 오류가 발생했어요.', false)
-    })
-    .finally(() => {
-      isLoading.value = false
-    })
+  try {
+    // API 호출
+    const response = await sendMessageToAPI(messageText)
+    
+    // 첫 번째 메시지 추가
+    addMessage(response.answer, false)
+    
+    // 추가 메시지들이 있으면 순차적으로 표시
+    if (response.is_multiple && response.messages && Array.isArray(response.messages)) {
+      response.messages.forEach((message: string, index: number) => {
+        setTimeout(() => {
+          addMessage(message, false)
+        }, (index + 1) * 1000) // 1초 간격으로 조정
+      })
+    }
+  } catch (error) {
+    console.error('메시지 전송 오류:', error)
+    addMessage('죄송해요, 오류가 발생했어요.', false)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 // === 제안 버튼 클릭 ===
@@ -98,6 +111,20 @@ const handleKeyPress = (e: KeyboardEvent) => {
     e.preventDefault()
     sendMessage()
   }
+}
+
+// 텍스트에서 마크다운 링크를 HTML로 변환
+const formatMessage = (text: string) => {
+  // 마크다운 링크를 HTML로 변환
+  let formatted = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="product-link">$1</a>')
+  
+  // 마크다운 볼드 텍스트를 HTML로 변환
+  formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+  
+  // 줄바꿈을 <br>로 변환
+  formatted = formatted.replace(/\n/g, '<br>')
+  
+  return formatted
 }
 </script>
 
@@ -167,7 +194,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
                 }]"
               >
                 <div class="message-bubble" :class="{ 'user-bubble': message.isUser }">
-                  <p>{{ message.text }}</p>
+                  <div v-html="formatMessage(message.text)"></div>
                   <small class="timestamp">
                     {{ message.timestamp.toLocaleTimeString('ko-KR', { 
                       hour: '2-digit', 
@@ -191,7 +218,6 @@ const handleKeyPress = (e: KeyboardEvent) => {
           </main>
 
           <footer class="foot">
-            <!-- 불필요한 첨부 버튼 제거 원하시면 여기 삭제 가능 -->
             <button class="btn-attach" title="첨부" aria-label="첨부">+</button>
             <input 
               class="input" 
@@ -201,20 +227,21 @@ const handleKeyPress = (e: KeyboardEvent) => {
               @keypress="handleKeyPress"
               :disabled="isLoading"
             />
-             <button
-                class="btn-send"
-                type="button"
-                @click="() => sendMessage()"
-                :disabled="isLoading || !inputText.trim()"
-              >
-                {{ isLoading ? '전송중...' : '전송' }}
-              </button>
+            <button
+              class="btn-send"
+              type="button"
+              @click="sendMessage"
+              :disabled="isLoading || !inputText.trim()"
+            >
+              {{ isLoading ? '전송중...' : '전송' }}
+            </button>
           </footer>
         </section>
       </div>
     </transition>
   </div>
 </template>
+
 <style scoped>
 /* 기존 스타일은 그대로 유지하되, 단위만 반응형으로 정리 */
 .chatbot{
@@ -338,7 +365,7 @@ const handleKeyPress = (e: KeyboardEvent) => {
   background: #fff; color: #333; position: relative;
   border-bottom: 0;
 }
-.message-bubble:not(.loading) p {
+.message-bubble:not(.loading) div {
   margin: 0.9375rem 0.3125rem 0.125rem 0.3125rem;       /* 15px 5px 2px 5px */
 }
 .user-bubble {
@@ -423,6 +450,41 @@ const handleKeyPress = (e: KeyboardEvent) => {
 }
 .btn-send:disabled {
   background: #ccc; cursor: not-allowed;
+}
+
+/* 메시지 안의 링크 스타일 */
+.message-bubble a {
+  color: inherit;
+  text-decoration: underline;
+}
+.user-bubble a {
+  color: #fff;
+}
+
+/* 상품 링크 스타일 */
+.product-link {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none !important;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.product-link:hover {
+  background: #e66a2a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* 메시지 내 강조 텍스트 */
+.message-bubble strong {
+  color: var(--brand);
+  font-weight: 700;
 }
 
 /* 스크롤바 */

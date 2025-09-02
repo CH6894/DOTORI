@@ -56,7 +56,7 @@ public class ItemController {
 		List<ItemDetailsDTO> details = itemService.findApprovedUnpackedItemDetailsByItemCodeAsDTO(itemCode);
 		return ResponseEntity.ok(details);
 	}
-	
+
 	@GetMapping("/{itemCode}/approved-opened-details")
 	public ResponseEntity<List<ItemDetailsDTO>> getApprovedOpenedItemDetails(@PathVariable String itemCode) {
 		List<ItemDetailsDTO> details = itemService.findApprovedOpenedItemDetailsByItemCode(itemCode);

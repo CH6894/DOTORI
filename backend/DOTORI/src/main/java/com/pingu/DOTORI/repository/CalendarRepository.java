@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CalendarRepository extends JpaRepository<Calendars, Long> {
-    @Query("""
-      select c
-      from Calendars c
-      where c.scheduleDate between :start and :end
-      order by c.scheduleDate asc
-    """)
-    List<Calendars> findByScheduleDateBetween(@Param("start") LocalDateTime start,
-                                              @Param("end") LocalDateTime end);
+  @Query("""
+        select c
+        from Calendars c
+        where c.scheduleDate between :start and :end
+        order by c.scheduleDate asc
+      """)
+  List<Calendars> findByScheduleDateBetween(@Param("start") LocalDateTime start,
+      @Param("end") LocalDateTime end);
 }
