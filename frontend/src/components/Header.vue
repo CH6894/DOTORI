@@ -44,8 +44,8 @@ function onDocClickCloseQuick(ev: MouseEvent) {
 
 /* 퀵바 카테고리 → /search?top=키 */
 const quickCats = [
-  { label: 'Anime', key: 'Animation' },
-  { label: 'KPOP', key: 'Kpop' },
+  { label: 'Anime', key: 'Anime' },
+  { label: 'Kpop', key: 'Kpop' },
   { label: 'Game', key: 'Game' },
   { label: 'Sports', key: 'Sports' },
   { label: 'Webtoon', key: 'Webtoon' },

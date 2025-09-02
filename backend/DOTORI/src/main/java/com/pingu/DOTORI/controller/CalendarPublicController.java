@@ -25,3 +25,4 @@ public class CalendarPublicController {
         return service.findInRange(start, end);
     }
 }
+

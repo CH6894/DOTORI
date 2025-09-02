@@ -27,7 +27,4 @@ public class WishList {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ItemDetails_ID", nullable = false)
 	private ItemDetails itemDetails;
-
-	@Column(name = "Is_Liked", nullable = false)
-	private Boolean isLiked;
 }

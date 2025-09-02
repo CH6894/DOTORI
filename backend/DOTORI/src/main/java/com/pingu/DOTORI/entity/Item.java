@@ -60,5 +60,6 @@ public class Item {
 	private List<ItemDetails> itemDetails = new ArrayList<>();
 
 //	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = false)
-//	private Set<Collections> collections = new HashSet<>();
+//	private Set<CollectionMapping> collections = new HashSet<>();
 }
+

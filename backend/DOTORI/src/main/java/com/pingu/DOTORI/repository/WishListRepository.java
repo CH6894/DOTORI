@@ -23,5 +23,3 @@ public interface WishListRepository extends JpaRepository<WishList, Long> {
            "WHERE w.user.id = :userId AND w.isLiked = true")
     List<WishList> findAllLikedWithJoinsByUserId(@Param("userId") Long userId);
 }
-
-

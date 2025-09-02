@@ -1,91 +1,33 @@
+<!-- src/components/ProductGrid.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
-/** 1) 탭 라벨 & 키 */
-const tabs = ['Anime', 'KPOP', 'Sports', 'Webtoon', 'Game', 'Creator']
-const tabKeys = ['anime', 'kpop', 'sports', 'webtoon', 'game', 'creator'] as const
-const active = ref(0)
-const activeKey = computed(() => tabKeys[active.value])
-
-/** 2) 데모 상품 */
-type Product = {
-  id: number
+type Item = {
+  id: number | string
   name: string
-  price: string
-  tags: string[]
-  thumb: string
+  price: number
+  top_category: string
+  mid_category?: string
+  thumbWebp?: string
+  thumbJpg?: string
 }
 
-const products = ref<Product[]>(
-  Array.from({ length: 300 }, (_, i) => {
-    const group = i % tabKeys.length
-    return {
-      id: i + 1,
-      name: `제품 ${i + 1}`,
-      price: `${((i % 20) + 1) * 1000}원`,
-      tags: [tabKeys[group]],
-      thumb: new URL(`../assets/products/${(i % 12) + 1}.webp`, import.meta.url).href
-    }
-  })
-)
+const props = defineProps<{ items: Item[] }>()
 
-/** 3) 탭별 필터링 */
-const filtered = computed(() => products.value.filter(p => p.tags.includes(activeKey.value)))
-
-/** 4) More 버튼 (페이지네이션: 6개씩 추가) */
-const pageSize = 6
-const visibleCount = ref(pageSize)
-const visibleProducts = computed(() => filtered.value.slice(0, visibleCount.value))
-const hasMore = computed(() => visibleCount.value < filtered.value.length)
-const loadMore = () => { visibleCount.value = Math.min(visibleCount.value + pageSize, filtered.value.length) }
-watch(active, () => { visibleCount.value = pageSize })
-
-/** 5) 인디케이터/트랙 계산 (중앙 정렬 대응) */
-const tabRefs = ref<HTMLElement[]>([])
-const setTabRef = (el: HTMLElement | null, idx: number) => { if (el) tabRefs.value[idx] = el }
-
-const indicator = ref<{ left: string; width: string }>({ left: '0px', width: '0px' })
-const track = ref<{ left: string; width: string }>({ left: '0px', width: '0px' })
-
-const updateBars = () => {
-  const list = tabRefs.value.filter(Boolean)
-  const current = tabRefs.value[active.value]
-  if (!current || list.length === 0) return
-
-  indicator.value = { left: `${current.offsetLeft}px`, width: `${current.offsetWidth}px` }
-
-  const first = list[0]
-  const last = list[list.length - 1]
-  const left = first.offsetLeft
-  const width = last.offsetLeft + last.offsetWidth - left
-  track.value = { left: `${left}px`, width: `${width}px` }
+const formatPrice = (n: number) => {
+  try { return n?.toLocaleString?.() ?? String(n) }
+  catch { return String(n) }
 }
-
-onMounted(async () => { await nextTick(); updateBars(); window.addEventListener('resize', updateBars) })
-onBeforeUnmount(() => window.removeEventListener('resize', updateBars))
-watch(active, async () => { await nextTick(); updateBars() })
 </script>
 
 <template>
   <section class="best">
-    <!-- 탭 -->
-    <div class="tabs" role="tablist" aria-label="상품 태그">
-      <button v-for="(t, i) in tabs" :key="t" class="tab" role="tab" :aria-selected="active === i" @click="active = i"
-        :ref="el => setTabRef(el as HTMLElement, i)">
-        {{ t }}
-      </button>
-
-      <div class="tabs__track" :style="track" aria-hidden="true"></div>
-      <div class="tabs__indicator" :style="indicator" aria-hidden="true"></div>
-    </div>
-
     <!-- 상품 그리드 -->
     <div class="product-grid">
-      <RouterLink v-for="p in visibleProducts" :key="p.id" class="product-card"
+      <RouterLink v-for="p in props.items" :key="p.id" class="product-card"
         :to="{ name: 'product', params: { id: String(p.id) } }" aria-label="상품 상세로 이동">
         <div class="product-card__thumb">
-          <img :src="p.thumb" :alt="p.name" loading="lazy" />
+          <img :src="p.thumbJpg" :alt="p.name" loading="lazy" />
         </div>
         <div class="product-card__meta">
           <div class="product-card__name">{{ p.name }}</div>
@@ -93,12 +35,9 @@ watch(active, async () => { await nextTick(); updateBars() })
         </div>
       </RouterLink>
 
-      <div v-if="visibleProducts.length === 0" class="empty">해당 태그의 상품이 없어요.</div>
+      <div v-if="props.items.length === 0" class="empty">해당 태그의 상품이 없어요.</div>
     </div>
 
-    <div class="center" v-if="hasMore">
-      <button class="btn-more" type="button" @click="loadMore">More</button>
-    </div>
   </section>
 </template>
 

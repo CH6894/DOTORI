@@ -27,7 +27,7 @@ public class ItemImg {
 	@Column(name = "Img_Type")
 	private Byte imgType; // 대표/보조 구분 (대표:0, 보조:1)
 
-	@Column(name = "Filming_time")
+	@Column(name = "Filming_time", nullable = false)
 	private LocalDateTime filmingTime; // 촬영 시간
 
 	// --- 양방향 매핑 ---

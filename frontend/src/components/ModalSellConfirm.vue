@@ -27,8 +27,8 @@
               <img :src="currentImage" :alt="item.title" class="main-image" />
               <button v-if="images.length > 1" class="nav-btn prev-btn" :disabled="idx === 0" @click="prev"
                 aria-label="이전 이미지">‹</button>
-              <button v-if="images.length > 1" class="nav-btn next-btn" :disabled="idx === images.length - 1" @click="next"
-                aria-label="다음 이미지">›</button>
+              <button v-if="images.length > 1" class="nav-btn next-btn" :disabled="idx === images.length - 1"
+                @click="next" aria-label="다음 이미지">›</button>
               <div v-if="images.length > 1" class="image-indicators">
                 <span v-for="(img, i) in images" :key="img + '-' + i" class="indicator" :class="{ active: i === idx }"
                   @click="setIdx(i)"></span>
@@ -142,8 +142,8 @@
                 <div class="uploader__actions">
                   <button class="btn btn--ghost" @click="move(idx2, -1)" :disabled="idx2 === 0 || uploading"
                     aria-label="왼쪽으로">←</button>
-                  <button class="btn btn--ghost" @click="move(idx2, 1)" :disabled="idx2 === items.length - 1 || uploading"
-                    aria-label="오른쪽으로">→</button>
+                  <button class="btn btn--ghost" @click="move(idx2, 1)"
+                    :disabled="idx2 === items.length - 1 || uploading" aria-label="오른쪽으로">→</button>
                   <button class="btn btn--ghost danger" @click="remove(idx2)" :disabled="uploading">삭제</button>
                 </div>
                 <label class="uploader__caption">
@@ -275,9 +275,9 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, reactive } from 'vue'
 import { createInspection } from '@/api/inspection' // 경로는 프로젝트에 맞게
+import type { Item } from '@/types/item'
 
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
-type Item = { id: string | number; title: string; images?: string[]; condition?: Condition; price?: number }
 type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'seller' | 'buyer' | number }
 
 const MAX_PRICE = 1_000_000_000 - 1
@@ -287,8 +287,6 @@ const STAGES = ['신청 확인 중', '입고 확인', '검수 중', '등록 대�
 const MIN_FILES = 2
 const MAX_FILES = 5
 const MAX_MB = 10
-
-const step = ref<1 | 2 | 3 | 4>(1)
 
 /* 0-2: 헤더 뒤로가기 */
 function goBack() {
@@ -509,16 +507,52 @@ function onClose() { emit('close') }
 
 /* 최종 제출 → 4단계 */
 const isSubmitting = ref(false)
+const step = ref<1 | 2 | 3 | 4>(1)
+const userId = 3
+
+const normalizedPrice = price.toString().replace(/,/g, "")
+
 async function submitAll() {
   if (!allAgreed.value || isSubmitting.value) {
     if (!allAgreed.value) alert('필수 항목에 모두 동의해주세요.');
     return isSubmitting.value = true
   }
-  isSubmitting.value = true
-  step.value = 4
-  await nextTick()
-  const filesPayload = items.value.map((i, idx) => ({ file: i.file, caption: i.caption || undefined, isCover: idx === 0 }))
-  isSubmitting.value = false
+  try {
+    console.log("=== 판매 신청 디버깅 ===")
+    console.log("props.item:", props.item)
+    console.log("props.item?.itemCode:", props.item?.itemCode)
+    console.log("props.item?.name:", props.item?.name)
+    console.log("price.value:", price.value)
+    console.log("selectedChip.value:", selectedChip.value)
+    console.log("memo.value:", memo.value)
+    console.log("items.value.length:", items.value.length)
+    
+    const fd = new FormData()
+    fd.append('userId', String(userId))
+    fd.append('itemCode', props.item?.itemCode || props.item?.id || '')
+    fd.append('productTitle', props.item?.name || props.item?.title || '')
+    fd.append("price", String(price.value ?? 0))
+    fd.append('unpacked', (selectedChip.value === '미개봉' ? '0' : '1'))
+    fd.append('memo', memo.value ?? '')
+    fd.append("filmingTime", new Date().toISOString());
+    items.value.forEach(i => fd.append('images', i.file))
+
+    for (const [key, value] of fd.entries()) {
+      console.log("FormData:", key, value)
+    }
+    items.value.forEach(i => fd.append('images', i.file))
+
+    const res = await createInspection(fd)
+    console.log('created:', res) // { inspectionId, itemId, status }
+
+    step.value = 4 // 완료 페이지로 이동
+    await nextTick()
+  } catch (e) {
+    console.error(e)
+    alert('판매 신청 중 오류가 발생했습니다.')
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 

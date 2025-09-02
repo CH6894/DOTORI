@@ -1,3 +1,4 @@
+
 package com.pingu.DOTORI.config;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -55,3 +56,4 @@ public class CalendarConfig {
 
     // ⛔ SecurityFilterChain 여기서 만들지 말 것
 }
+

@@ -1,22 +1,20 @@
-import { NumberLiteralType } from "typescript"
+// item 반환 타입 지정용
+// item entity 컬럼 자료형과 동일하게 작성.
 
-export interface Item{
-    ean: string
-    name: string
-    title: string
-    manufacturer: string | null
-    texture: string | null
-    size: string
-    imgUrl: string | null
-    storageFees: number
-    genre: string
-}
-
-export interface PageResponse<T> {
-    content: T[]
-    page: number
-    size: number
-    totalElements: number
-    totalPages: number
-    last: boolean
+export interface Item {
+  id?: string;        // 상품 ID (fallback용)
+  itemCode: string;
+  name: string;
+  title: string;
+  cost?: number;
+  price?: number;
+  genre?: string;
+  size?: string;
+  manufacturer?: string;
+  material?: string;
+  information?: string;
+  releaseMonth?: string;
+  imgUrl?: string;
+  images?: string[];
+  storageFees?: number;
 }
