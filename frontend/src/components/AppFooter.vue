@@ -37,22 +37,22 @@ export default {
 <style>
 .footer {
   position: relative;
-  margin-top: 60px;
+  margin-top: 3.75rem;            /* 60px */
   background: #f4f3e6;
   border-top: 1px solid #e5dcc9;
-  padding: 20px 0;
-  font-size: 14px;
+  padding: 1.25rem 0;             /* 20px */
+  font-size: 0.875rem;            /* 14px */
   color: #555;
   overflow: visible;
 }
 
 .footer-wave {
   position: absolute;
-  top: -150px;
+  top: -9.375rem;                 /* -150px */
   left: 0;
   right: 0;
   width: 100%;
-  height: 150px;
+  height: 9.375rem;               /* 150px */
   background-image: url('@/assets/Down_BG.svg');
   background-repeat: no-repeat;
   background-position: left top;
@@ -64,8 +64,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 24px 0;
+  gap: 1.25rem;                   /* 20px */
+  padding: 1.5rem 0;              /* 24px */
   flex-wrap: wrap;
 }
 
@@ -77,7 +77,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 14px 20px;
+  gap: 0.875rem 1.25rem;          /* 14px 20px */
 }
 
 .footer__nav a {
@@ -92,12 +92,12 @@ export default {
 }
 
 .footer .logo img {
-  width: 160px;
+  width: 10rem;                   /* 160px */
   height: auto;
 }
 
 .logo__mark.-small {
-  width: 120px;
+  width: 7.5rem;                  /* 120px */
   display: inline-block;
 }
 
@@ -109,25 +109,25 @@ export default {
 .footer__info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;                  /* 10px */
   color: #7b6d5d;
-  font-size: 12px;
+  font-size: 0.75rem;             /* 12px */
   line-height: 1.4;
   flex: 1 1 auto;
-  min-width: 240px;
+  min-width: 15rem;               /* 240px */
 }
 
 .footer__notice {
   display: block;
-  font-size: 12px;
+  font-size: 0.75rem;             /* 12px */
   color: #888;
-  margin-top: 5px;
+  margin-top: 0.313rem;           /* 5px */
   opacity: 0.95;
 }
 
 .footer__copy {
-  margin: 8px 0 0;
-  font-size: 12px;
+  margin: 0.5rem 0 0;             /* 8px */
+  font-size: 0.75rem;             /* 12px */
   color: #9a8d7c;
   line-height: 1.6;
 }
@@ -136,11 +136,11 @@ export default {
   opacity: 0.4;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48rem) {       /* 768px */
   .footer__info {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: 0.25rem;                 /* 4px */
   }
 
   .footer__sep {

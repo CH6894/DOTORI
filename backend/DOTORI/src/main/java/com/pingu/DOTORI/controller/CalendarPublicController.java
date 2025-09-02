@@ -23,10 +23,13 @@ public class CalendarPublicController {
 
     @GetMapping
     public List<CalendarResponse> list(
+
         @RequestParam("start") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime start,
         @RequestParam("end")   @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime end
+
     ) {
         List<Calendars> found = service.findInRange(start, end);
         return found.stream().map(CalendarResponse::from).toList();
     }
 }
+

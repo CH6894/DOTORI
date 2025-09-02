@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.3</version>
+        <version>3.5.5</version>
         <relativePath />
     </parent>
     
@@ -102,6 +102,20 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.11.0</version>
 		</dependency>
+		
+		    <!-- metadata-extractor (EXIF 메타데이터 읽기) -->
+    <dependency>
+        <groupId>com.drewnoakes</groupId>
+        <artifactId>metadata-extractor</artifactId>
+        <version>2.18.0</version>
+    </dependency>
+    
+        <!-- Thumbnailator (이미지 리사이즈/포맷 변환) -->
+    <dependency>
+        <groupId>net.coobird</groupId>
+        <artifactId>thumbnailator</artifactId>
+        <version>0.4.20</version>
+    </dependency>
     </dependencies>
     
     <build>

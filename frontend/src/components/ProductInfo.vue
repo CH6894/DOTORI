@@ -35,7 +35,7 @@
 
       <!-- 오른쪽: 상품 정보 -->
       <div class="product-details-area">
-        <h1 class="product-title">{{ product.title }}</h1>
+        <h1 class="product-title">{{ product.name }}</h1>
 
         <div class="product-meta">
           <div class="brand-info">
@@ -43,13 +43,13 @@
             <span class="value">{{ product.brand }}</span>
           </div>
           <div class="series-info">
-            <span class="label">작품명</span>
-            <span class="value">{{ product.series || '귀멸의 칼날' }}</span>
+            <span class="label">타이틀</span>
+            <span class="value">{{ product.title }}</span>
           </div>
           <div class="price-info">
             <div class="original-price">
               <span class="label">발매가</span>
-              <span class="value">{{ product.originalPrice }}</span>
+              <span class="value">{{ product.originalPrice || 0 }}</span>
             </div>
             <div class="current-price">
               <span class="label">현재가</span>
@@ -81,11 +81,11 @@
             </svg>
           </button>
           <button class="sell-btn" @click="handleSell">판매</button>
-          <button class="purchase-btn" @click="buyNowDirect">구매</button>
+          <button class="purchase-btn" @click="buyNowDirect">미개봉 상품 구매</button>
         </div>
 
         <div class="cart-section">
-          <button class="cart-btn" @click="addToCartAndNotify">장바구니</button>
+          <button class="cart-btn" @click="addToCartAndNotify">장바구니 담기</button>
         </div>
       </div>
     </div>
@@ -123,6 +123,7 @@ wish.load()
 /* ===== 타입 정의 ===== */
 interface Product {
   id?: string | number
+  name?: string,
   title?: string
   brand?: string
   series?: string
