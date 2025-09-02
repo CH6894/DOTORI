@@ -39,6 +39,7 @@
     }
   }
 
+// 이거지워질때까지
   const items = ref<CatalogItem[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)

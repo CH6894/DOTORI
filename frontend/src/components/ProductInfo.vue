@@ -171,7 +171,18 @@ interface CartItem {
 }
 
 /* ===== props / emits ===== */
-const props = defineProps<{ product: Product }>()
+const props = defineProps<{ 
+  product: Product
+  approvedUnpackedDetails?: Array<{
+    itemId: number
+    cost: number | string // BigDecimal을 number 또는 string으로 받음
+    status: boolean
+    unpacked: boolean
+    productCondition?: string
+    itemName?: string
+    itemImgUrl?: string
+  }>
+}>()
 const emit = defineEmits<{
   (e: 'purchase', p: Product): void
   (e: 'addToCart', p: Product): void
@@ -199,6 +210,47 @@ const images = computed<string[]>(() => {
   const arr = props.product?.images
   return Array.isArray(arr) ? (arr.filter(Boolean) as string[]) : []
 })
+
+/* ===== 현재가 계산 ===== */
+const computedCurrentPrice = computed(() => {
+  console.log('ProductInfo - approvedUnpackedDetails:', props.approvedUnpackedDetails)
+  
+  // 승인된 미개봉 상품이 있으면 그 중 최저가를 현재가로 표시
+  if (props.approvedUnpackedDetails && props.approvedUnpackedDetails.length > 0) {
+    console.log('ProductInfo - 각 detail의 구조:')
+    props.approvedUnpackedDetails.forEach((detail, index) => {
+      console.log(`Detail ${index}:`, {
+        itemId: detail.itemId,
+        cost: detail.cost,
+        unpacked: detail.unpacked,
+        status: detail.status,
+        itemName: detail.itemName
+      })
+    })
+    
+    // unpacked = 0 (미개봉)이고 cost가 0보다 큰 상품만 필터링
+    const validDetails = props.approvedUnpackedDetails.filter(detail => {
+      const costValue = Number(detail.cost)
+      return detail.unpacked === false && costValue > 0
+    })
+    
+    console.log('ProductInfo - 유효한 미개봉 상품:', validDetails)
+    
+    if (validDetails.length > 0) {
+      const minPrice = Math.min(...validDetails.map(detail => Number(detail.cost)))
+      console.log('ProductInfo - 최저가 계산:', minPrice)
+      return `${minPrice.toLocaleString()}원`
+    }
+  }
+  
+  // 승인된 미개봉 상품이 없으면 기존 현재가 또는 발매가 표시
+  const fallbackPrice = props.product.currentPrice || props.product.originalPrice || '0원'
+  console.log('ProductInfo - fallback 가격:', fallbackPrice)
+  return fallbackPrice
+})
+
+// props 기본값 설정
+const approvedUnpackedDetails = computed(() => props.approvedUnpackedDetails || [])
 
 /* ===== 판매 모달용 데이터 ===== */
 const sellItem = computed(() => {

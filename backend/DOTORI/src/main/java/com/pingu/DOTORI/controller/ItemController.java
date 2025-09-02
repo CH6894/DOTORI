@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pingu.DOTORI.dto.ItemDTO;
+import com.pingu.DOTORI.dto.ItemDetailsDTO;
 import com.pingu.DOTORI.entity.Item;
+import com.pingu.DOTORI.entity.ItemDetails;
 import com.pingu.DOTORI.repository.ItemRepository;
 import com.pingu.DOTORI.service.ItemService;
 
@@ -39,14 +41,26 @@ public class ItemController {
 
 	@GetMapping("/genre/{genre}")
 	public ResponseEntity<Page<ItemDTO>> byGenre(@PathVariable String genre,
-			@PageableDefault(size = 20) Pageable pageable) {
+			@PageableDefault(size = 24) Pageable pageable) {
 		return ResponseEntity.ok(itemService.findByGenre(genre, pageable));
 	}
 
 	@GetMapping("/genre/{genre}/title/{title}")
 	public ResponseEntity<Page<ItemDTO>> byGenreAndTitle(@PathVariable String genre,
-			@PathVariable(required = false) String title, @PageableDefault(size = 20) Pageable pageable) {
+			@PathVariable(required = false) String title, @PageableDefault(size = 24) Pageable pageable) {
 		return ResponseEntity.ok(itemService.findByGenreAndTitle(genre, title, pageable));
+	}
+
+	@GetMapping("/{itemCode}/approved-unpacked-details")
+	public ResponseEntity<List<ItemDetailsDTO>> getApprovedUnpackedItemDetails(@PathVariable String itemCode) {
+		List<ItemDetailsDTO> details = itemService.findApprovedUnpackedItemDetailsByItemCodeAsDTO(itemCode);
+		return ResponseEntity.ok(details);
+	}
+	
+	@GetMapping("/{itemCode}/approved-opened-details")
+	public ResponseEntity<List<ItemDetailsDTO>> getApprovedOpenedItemDetails(@PathVariable String itemCode) {
+		List<ItemDetailsDTO> details = itemService.findApprovedOpenedItemDetailsByItemCode(itemCode);
+		return ResponseEntity.ok(details);
 	}
 
 }
