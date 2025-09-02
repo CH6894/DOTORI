@@ -3,7 +3,7 @@
     <main class="product-detail-container">
       <!-- 로딩 상태 -->
       <div v-if="loading" class="loading-container">
-        <div class="loading-spinner">로딩 중...</div>
+        <div class="loading-spinner"></div>
       </div>
       
       <!-- 에러 상태 -->
@@ -74,7 +74,7 @@ import RecommendedProducts from '@/components/RecommendedProducts.vue'
 import RelatedProducts from '@/components/RelatedProducts.vue'
 import { fetchItemById } from '@/api/items'
 import { fetchApprovedUnpackedItemDetails, fetchApprovedOpenedItemDetails } from '@/api/items'
-import type { Item as ItemDTO } from '@/types/item'
+import type { ItemDTO } from '@/types/item'
 
 const route = useRoute()
 const productId = String(route.params.id)
@@ -98,6 +98,12 @@ const productType = computed(() => {
 
 // ItemDTO를 화면용 product 객체로 변환
 function adaptProduct(dto: ItemDTO) {
+  const base = import.meta.env.VITE_ASSET_BASE
+  const codeImg = dto.itemCode ? `${base}${dto.itemCode}.jpg` : undefined
+  const images = Array.isArray(dto.images) && dto.images.length
+    ? dto.images
+    : (codeImg ? [codeImg] : ['/img/placeholder.jpg'])
+  console.log(images)
   return {
     id: dto.itemCode,
     name: dto.name,
@@ -106,7 +112,7 @@ function adaptProduct(dto: ItemDTO) {
     originalPrice: dto.cost ? `${dto.cost.toLocaleString()}원` : '발매가 미정',
     currentPrice: `${(dto.cost ?? 0).toLocaleString()}원`,
     type: 'new', // 기본은 미개봉 상품
-    images: dto.imgUrl ? [dto.imgUrl] : ['/img/placeholder.jpg'],
+    images,
     description: dto.information || `${dto.name || dto.title} 상품입니다.`,
     // 추가 필드들
     manufacturer: dto.manufacturer,
@@ -153,24 +159,30 @@ const fetchUsedItems = async () => {
     
     // 백엔드에서 받은 데이터를 프론트엔드 형식으로 변환
     if (approvedOpenedDetails && approvedOpenedDetails.length > 0) {
-      usedItems.value = approvedOpenedDetails.map((detail: any) => ({
-        id: detail.itemId,
-        title: detail.itemName || '상품명 미정',
-        description: detail.productCondition || '상품 설명 없음',
-        price: detail.cost || 0,
-        originalPrice: detail.cost || 0,
-        condition: getConditionFromQuality(detail.quality), // Admin의 quality로 등급 결정
-        createdAt: detail.registrationDate ? new Date(detail.registrationDate) : new Date(),
-        images: detail.itemImgUrl ? [detail.itemImgUrl] : ['/img/placeholder.jpg'],
-        conditionDetails: detail.productCondition || '상품 상태 상세 정보 없음',
-        // 추가 정보
-        quality: detail.quality,
-        registrationDate: detail.registrationDate,
-        itemExplanation: detail.itemExplanation
-      }))
+      usedItems.value = approvedOpenedDetails.map((detail: any) => {
+        const mappedItem = {
+          id: detail.itemId,
+          title: detail.itemName || '상품명 미정',
+          description: detail.productCondition || '상품 설명 없음',
+          price: detail.cost || 0,
+          originalPrice: detail.cost || 0,
+          condition: getConditionFromQuality(detail.quality), // Admin의 quality로 등급 결정
+          createdAt: detail.registrationDate ? new Date(detail.registrationDate) : new Date(),
+          images: detail.itemImgUrl ? [detail.itemImgUrl] : ['/img/placeholder.jpg'],
+          conditionDetails: detail.productCondition || '상품 상태 상세 정보 없음',
+          // 추가 정보
+          quality: detail.quality,
+          registrationDate: detail.registrationDate,
+          itemExplanation: detail.itemExplanation
+        }
+        console.log('매핑된 중고상품 아이템:', mappedItem) // 디버깅용
+        return mappedItem
+      })
+      console.log('최종 usedItems:', usedItems.value) // 디버깅용
     } else {
       // 데이터가 없으면 빈 배열
       usedItems.value = []
+      console.log('승인된 개봉 상품이 없습니다.') // 디버깅용
     }
   } catch (error) {
     console.error('중고상품 목록 로드 실패:', error)

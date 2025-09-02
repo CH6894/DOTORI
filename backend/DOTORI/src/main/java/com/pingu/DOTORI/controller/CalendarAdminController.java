@@ -2,44 +2,38 @@ package com.pingu.DOTORI.controller;
 
 import com.pingu.DOTORI.dto.CalendarRequest;
 import com.pingu.DOTORI.dto.CalendarResponse;
+import com.pingu.DOTORI.entity.Calendars;
 import com.pingu.DOTORI.service.CalendarService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/calendar")
-@RequiredArgsConstructor
+@RequestMapping("/api/admin/calendars")
+@CrossOrigin( // ✅ 프론트(vite)에서 오는 요청 허용
+        origins = "http://localhost:5173",
+        allowedHeaders = {"*"},
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.OPTIONS},
+        allowCredentials = "true",
+        maxAge = 3600
+)
 public class CalendarAdminController {
+  private final CalendarService service;
 
-    private final CalendarService service;
+  public CalendarAdminController(CalendarService service) { this.service = service; }
 
-    @PostMapping
-    public ResponseEntity<CalendarResponse> create(@RequestBody CalendarRequest body) {
-        try {
-            return ResponseEntity.ok(service.create(body));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);  // 예외 처리 추가
-        }
-    }
+  @PostMapping
+  public ResponseEntity<CalendarResponse> create(@RequestBody CalendarRequest req) {
+    Calendars saved = service.create(req);
+    return ResponseEntity.status(HttpStatus.CREATED).body(CalendarResponse.from(saved));
+  }
 
-    // 부분 수정
-    @PatchMapping("/{id}")
-    public ResponseEntity<CalendarResponse> patch(@PathVariable Long id,
-                                                  @RequestBody CalendarRequest body) {
-        return ResponseEntity.ok(service.update(id, body));
-    }
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    service.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 
-    // 전체 수정이 꼭 필요하면 주석 해제해 사용 (Service 재사용)
-    // @PutMapping("/{id}")
-    // public ResponseEntity<CalendarResponse> put(@PathVariable Long id,
-    //                                             @RequestBody CalendarRequest body) {
-    //     return ResponseEntity.ok(service.update(id, body));
-    // }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  @GetMapping("/ping")
+  public String ping() { return "ok"; }
 }

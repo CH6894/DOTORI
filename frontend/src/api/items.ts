@@ -2,7 +2,7 @@
 // rest api에서 물건 리스트 불러오기
 import openApi from './axiosPublic'
 import type { Page, PageParams } from '@/types/common'
-import type { Item as ItemDTO } from '@/types/item'
+import type { ItemDTO } from '@/types/item'
 
 // 탑 카테고리로 아이템 찾기
 export const fetchGenre = (genre : string, params?: PageParams) =>

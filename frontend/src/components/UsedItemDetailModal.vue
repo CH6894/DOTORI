@@ -59,8 +59,8 @@
               <div class="item-details">
                 <div class="detail-row">
                   <span class="label">상품 상태</span>
-                  <span class="value condition-text" :class="item.condition">
-                    {{ getConditionText(item.condition) }}
+                  <span class="value condition-text" :class="getGradeClass(item.quality)">
+                    {{ getGradeText(item.quality) }}
                   </span>
                 </div>
                 <div class="detail-row">
@@ -69,14 +69,14 @@
                 </div>
                 <div class="detail-row">
                   <span class="label">등록일</span>
-                  <span class="value">{{ formatDate(item.createdAt) }}</span>
+                  <span class="value">{{ formatDate(item.registrationDate) }}</span>
                 </div>
               </div>
 
               <!-- 설명 -->
               <div class="description-section">
                 <h4 class="section-title">상품 설명</h4>
-                <p class="description-text">{{ item.description }}</p>
+                <p class="description-text">{{ getItemExplanation(item.itemExplanation) }}</p>
               </div>
 
               <!-- 액션 -->
@@ -195,23 +195,50 @@ const addToCart = () => {
 const toggleWishlist = () => { isWishlisted.value = !isWishlisted.value }
 
 // ---------- 유틸 ----------
+const getGradeText = (quality) => {
+  const map = { 1: 'S', 2: 'A', 3: 'B', 4: 'C' }
+  return map[quality] || '미정'
+}
+
+const getGradeClass = (quality) => {
+  const map = { 1: 'badge-grade--s', 2: 'badge-grade--a', 3: 'badge-grade--b', 4: 'badge-grade--c' }
+  return map[quality] || 'badge-grade--none'
+}
+
 const getConditionText = (condition) => {
   const map = { excellent: '최상', good: '상', fair: '중', poor: '하' }
   return map[condition] || '미정'
 }
+
 const getConditionDetails = (details) => details || '상태 양호'
+
+const getItemExplanation = (explanation) => explanation || '판매자 코멘트가 없습니다.'
+
 const formatPrice = (price) =>
   new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 0 }).format(Number(price || 0))
+
 const formatDate = (dateString) => {
   if (!dateString) return '-'
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffDays = Math.floor(Math.abs(+now - +date) / 86400000)
-  if (diffDays === 0) return '오늘'
-  if (diffDays === 1) return '어제'
-  if (diffDays < 7) return `${diffDays}일 전`
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}주 전`
-  return `${Math.floor(diffDays / 30)}개월 전`
+  
+  try {
+    const date = new Date(dateString)
+    
+    // 유효한 날짜인지 확인
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date:', dateString)
+      return '-'
+    }
+    
+    // 한국 시간대로 변환하여 YYYY-MM-DD 형식으로 표시
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    
+    return `${year}-${month}-${day}`
+  } catch (error) {
+    console.error('Date formatting error:', error)
+    return '-'
+  }
 }
 </script>
 
@@ -422,6 +449,52 @@ const formatDate = (dateString) => {
   color: #666;
   line-height: 1.5;
   margin: 0;
+}
+
+/* 등급 배지 스타일 */
+.badge-grade--s {
+  background: linear-gradient(45deg, #9333ea, #f43f5e);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.badge-grade--a {
+  background: #2563eb;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.badge-grade--b {
+  background: #16a34a;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.badge-grade--c {
+  background: #f59e0b;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.badge-grade--none {
+  background: #9ca3af;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
 }
 
 /* 액션 */
