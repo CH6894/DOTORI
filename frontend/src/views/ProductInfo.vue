@@ -95,6 +95,12 @@ const productType = computed(() => {
 
 // ItemDTO를 화면용 product 객체로 변환
 function adaptProduct(dto: ItemDTO) {
+  const base = import.meta.env.VITE_ASSET_BASE
+  const codeImg = dto.itemCode ? `${base}${dto.itemCode}.jpg` : undefined
+  const images = Array.isArray(dto.images) && dto.images.length
+    ? dto.images
+    : (codeImg ? [codeImg] : ['/img/placeholder.jpg'])
+  console.log(images)
   return {
     id: dto.itemCode,
     name: dto.name,
@@ -103,7 +109,7 @@ function adaptProduct(dto: ItemDTO) {
     originalPrice: dto.cost ? `${dto.cost.toLocaleString()}원` : '발매가 미정',
     currentPrice: `${(dto.cost ?? 0).toLocaleString()}원`,
     type: 'new', // 기본은 미개봉 상품
-    images: dto.imgUrl ? [dto.imgUrl] : ['/img/placeholder.jpg'],
+    images,
     description: dto.information || `${dto.name || dto.title} 상품입니다.`,
     // 추가 필드들
     manufacturer: dto.manufacturer,
