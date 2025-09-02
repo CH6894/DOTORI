@@ -26,6 +26,16 @@
       <div v-else class="summary__empty">현재 화면 범위에 일정이 없습니다.</div>
     </section>
 
+    <!-- 상세일정: 이벤트 있는 날짜를 클릭했을 때만 보임 -->
+    <section class="agenda" v-show="showAgenda">
+      <h3 class="agenda__title">
+        상세일정
+        <small v-if="selectedDate">— {{ selectedDate.toLocaleDateString('ko-KR') }}</small>
+        <button v-if="selectedDate" class="btn btn--tiny" @click="clearSelected">닫기</button>
+      </h3>
+      <div class="agenda__body" v-html="agendaHtml"></div>
+    </section>
+
     <!-- 모달 -->
     <div v-if="isModalOpen" class="modal" @click.self="closeModal" aria-hidden="false">
       <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -84,7 +94,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 
-/* API (상대경로 프록시) */
+/* API */
 const PUB_URL = '/api/public/calendars'
 const ADM_URL = '/api/admin/calendars'
 
@@ -119,12 +129,12 @@ function rangeLabelKR(start, endExclusive, allDay){
     : `${dateLabelKR(start)}부터 ${dateLabelKR(endInc)}까지`
 }
 
-/* datetime-local 문자열 헬퍼 (타임존 밀림 방지) */
+/* datetime-local */
 const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
 const toLocalDateInput00 = (dateObj) => `${ymd(new Date(dateObj))}T00:00`
 const toLocalDateInput2359 = (dateObj) => `${ymd(new Date(dateObj))}T23:59`
 
-/* 종일 기간 정규화: 시작 00:00 ~ 종료 23:59로 저장 */
+/* 종일 기간 정규화 */
 function normalizeAllDayRange(startInputStr, endInputStr) {
   const s = new Date(startInputStr)
   const e = endInputStr ? new Date(endInputStr) : new Date(startInputStr)
@@ -140,6 +150,12 @@ function normalizeAllDayRange(startInputStr, endInputStr) {
 function packInfo(obj){ try{return JSON.stringify(obj)}catch{return null} }
 function unpackInfo(info){ try{return info?JSON.parse(info):{}}catch{return{}} }
 
+/* ===== 날짜 헤더 포맷터 ===== */
+const koDayHeader = (date) => {
+  const yo = '일월화수목금토'[date.getDay()]
+  return `${date.getMonth() + 1}월 ${date.getDate()}일 (${yo})`
+}
+
 /* 상태 */
 const calendarEl = ref(null)
 let calendar
@@ -150,7 +166,14 @@ const summary = ref([])
 const ADMIN_USER_ID = 1
 const form = reactive({ id:'', title:'', start:'', end:'', allDay:false, color:'#7c3aed' })
 
-/* 종일 토글 시 즉시 00:00/23:59로 스냅 (하루 밀림 방지) */
+/* 상세일정 상태: 처음엔 숨김 */
+const showAgenda = ref(false)
+const selectedDate = ref(null)
+const agendaHtml   = ref('')
+// 사용자가 드래그로 선택한 원본 구간(FullCalendar select의 end는 exclusive)
+const pendingSelect = ref(null)
+
+/* 종일 토글 스냅 */
 watch(() => form.allDay, (v) => {
   if (v) {
     const s = fromLocalInputValue(form.start) || new Date()
@@ -172,7 +195,7 @@ async function updateEventToServer(id, { title, start, info }) {
 }
 async function deleteEventFromServer(id){ await axios.delete(`${ADM_URL}/${encodeURIComponent(id)}`) }
 
-/* 조회: endInclusive(포함)를 화면 end(배타/그대로)로 변환 */
+/* 조회 변환 */
 async function fetchEventsForRange(startDate, endDate){
   const start = isoLocal(startDate).slice(0,19)
   const end   = isoLocal(endDate).slice(0,19)
@@ -206,7 +229,7 @@ async function fetchEventsForRange(startDate, endDate){
   }
 }
 
-/* 캘린더 즉시 반영(수정 시 같은 줄 유지) */
+/* 캘린더 즉시 반영 */
 function patchCalendarEventLocal(id, { title, color, allDay, start, endExclusive }) {
   const ev = calendar.getEventById(id)
   if (!ev) return
@@ -219,7 +242,8 @@ function patchCalendarEventLocal(id, { title, color, allDay, start, endExclusive
   if (endExclusive) ev.setEnd(endExclusive)
 }
 
-/* 저장: 선택 기간 그대로 저장(앞뒤 확장 X) */
+/* 저장 */
+/* 저장 */
 async function onSave(){
   try{
     if(!form.title){ alert('제목을 입력하세요.'); return }
@@ -227,14 +251,29 @@ async function onSave(){
     let startDate, endInclusive
 
     if (form.allDay) {
-      const { start00, end2359 } = normalizeAllDayRange(form.start, form.end || form.start)
-      startDate    = start00
-      endInclusive = end2359
+      // ✅ 드래그 선택이 있었다면 그것을 기준으로 (셀 개수 기반으로 마지막날 확정)
+      if (pendingSelect.value?.allDay) {
+        const DAY   = 24*60*60*1000
+        const sSel0 = new Date(
+          pendingSelect.value.start.getFullYear(),
+          pendingSelect.value.start.getMonth(),
+          pendingSelect.value.start.getDate()
+        )
+        const rawEnd   = pendingSelect.value.end ? new Date(pendingSelect.value.end) : new Date(pendingSelect.value.start)
+        const dayCount = Math.max(1, Math.round((rawEnd - sSel0) / DAY))
+        startDate      = sSel0
+        endInclusive   = endOfDayInclusive(new Date(sSel0.getFullYear(), sSel0.getMonth(), sSel0.getDate() + (dayCount - 1)))
+      } else {
+        // 폼 수동 입력 케이스(안전망): 마지막날 23:59:59.999
+        const { start00, end2359 } = normalizeAllDayRange(form.start, form.end || form.start)
+        startDate    = start00
+        endInclusive = end2359
+      }
     } else {
+      // 시간형 이벤트
       const s = fromLocalInputValue(form.start)
       const e = form.end ? fromLocalInputValue(form.end) : s
       startDate    = s
-      // 시간 이벤트는 같은 날까지만
       endInclusive = (e.getFullYear()===s.getFullYear() && e.getMonth()===s.getMonth() && e.getDate()===s.getDate())
         ? e : endOfDayInclusive(s)
     }
@@ -247,21 +286,14 @@ async function onSave(){
     })
 
     if (form.id) {
-      // 같은 id로 업데이트 시도
       try {
         await updateEventToServer(form.id, { title: form.title, start: startIso, info })
-        const endExclusive = form.allDay
-          ? addDays(startOfDay(endInclusive), 1)
-          : endInclusive
+        const endExclusive = form.allDay ? addDays(startOfDay(endInclusive), 1) : endInclusive
         patchCalendarEventLocal(form.id, {
-          title: form.title,
-          color: form.color,
-          allDay: !!form.allDay,
-          start: new Date(startIso),
-          endExclusive
+          title: form.title, color: form.color, allDay: !!form.allDay,
+          start: new Date(startIso), endExclusive
         })
       } catch {
-        // PUT 미구현 시 폴백
         try { await deleteEventFromServer(form.id) } catch {}
         await createEventToServer({ title: form.title, start: startIso, info })
       }
@@ -270,6 +302,8 @@ async function onSave(){
     }
 
     await refetchFromServer()
+    // 저장 후 드래그 정보 초기화
+    pendingSelect.value = null
     closeModal()
     alert('저장 완료.')
   }catch(e){
@@ -298,25 +332,72 @@ function refreshSummary(){
     .filter(ev => (ev.end || ev.start) > rs && ev.start < re)
     .map(ev=>{
       const color = ev.extendedProps?.color || ev.backgroundColor || '#7c3aed'
-      const whenLabel = ev.allDay
-        ? rangeLabelKR(ev.start, ev.end, true)
-        : timeRange(ev.start, ev.end || ev.start)
+      const whenLabel = ev.allDay ? rangeLabelKR(ev.start, ev.end, true) : timeRange(ev.start, ev.end || ev.start)
       return {
-        id: ev.id,
-        title: ev.title || '(제목 없음)',
-        start: ev.start,
-        end: ev.end || ev.start,
-        allDay: ev.allDay,
-        color,
-        ymd: fmtYmd(ev.start),
-        whenLabel,
+        id: ev.id, title: ev.title || '(제목 없음)',
+        start: ev.start, end: ev.end || ev.start, allDay: ev.allDay, color,
+        ymd: fmtYmd(ev.start), whenLabel,
       }
     })
     .sort((a,b)=>(a.start?.getTime()||0)-(b.start?.getTime()||0))
   summary.value = list
 }
-function editFromSummary(id){ const ev = calendar.getEventById(id); if(ev) openModal('edit', ev) }
-async function deleteFromSummary(id){ try{ await deleteEventFromServer(id); await refetchFromServer() }catch(e){ alert('삭제 실패: '+(e.message||e)) } }
+
+/* ===== 상세일정 보임 규칙 ===== */
+function hasEventsOn(date){
+  if(!calendar) return false
+  const s0 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0,0,0,0)
+  const e0 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23,59,59,999)
+  return calendar.getEvents().some(ev => (ev.end || ev.start) > s0 && ev.start < e0)
+}
+
+/* 상세일정 렌더: 선택된 하루만 */
+function renderAgenda(){
+  if(!calendar || !selectedDate.value){ agendaHtml.value = ''; return }
+  const d = selectedDate.value
+  const s0 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0,0,0,0)
+  const e0 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59,999)
+  const items = calendar.getEvents()
+    .filter(ev => (ev.end || ev.start) > s0 && ev.start < e0)
+    .sort((a,b)=>(a.start - b.start))
+
+  if(!items.length){ agendaHtml.value = `<div class="agenda__empty">표시할 일정이 없습니다.</div>`; return }
+
+  const html = items.map(ev=>{
+    const color = ev.extendedProps?.color || ev.backgroundColor || '#7c3aed'
+    const time  = ev.allDay ? rangeLabelKR(ev.start, ev.end, true) : timeRange(ev.start, ev.end || ev.start)
+    const safe  = (ev.title || '(제목 없음)').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))
+    return `<li class="agenda__item" style="--dot-color:${color}">
+              <span class="agenda__date">${fmtYmd(ev.start)}</span>
+              <span class="agenda__time">${time}</span>
+              <span class="agenda__title">${safe}</span>
+            </li>`
+  }).join('')
+  agendaHtml.value = `<ul class="agenda__list">${html}</ul>`
+}
+function clearSelected(){
+  selectedDate.value = null
+  showAgenda.value   = false
+  agendaHtml.value   = ''
+}
+
+/* ===== 요약에서 수정/삭제 ===== */
+function editFromSummary(id){
+  if(!calendar) return
+  const ev = calendar.getEventById(String(id))
+  if(!ev){ alert('이벤트를 찾을 수 없습니다.'); return }
+  openModal('edit', ev)
+}
+async function deleteFromSummary(id){
+  try{
+    const ev = calendar.getEventById(String(id))
+    if(!ev){ alert('이벤트를 찾을 수 없습니다.'); return }
+    await deleteEventFromServer(ev.id)
+    await refetchFromServer()
+  }catch(e){
+    alert('삭제 실패: ' + (e.message || e))
+  }
+}
 
 /* 렌더링 */
 async function refetchFromServer(){
@@ -325,6 +406,15 @@ async function refetchFromServer(){
   calendar.removeAllEvents()
   events.forEach(e=>calendar.addEvent(e))
   refreshSummary()
+
+  // 선택된 날짜가 있고 그 날에 이벤트가 있을 때만 상세일정 표시
+  if (selectedDate.value && hasEventsOn(selectedDate.value)) {
+    showAgenda.value = true
+    renderAgenda()
+  } else {
+    showAgenda.value = false
+    agendaHtml.value = ''
+  }
 }
 
 /* 모달 열고 닫기 */
@@ -332,16 +422,15 @@ function openModal(mode, ev){
   isModalOpen.value = true
   if(mode==='create'){
     modalTitle.value='일정 등록'
-    const today = new Date()
+    const today = selectedDate.value || new Date()
     Object.assign(form, {
       id:'', title:'', color:'#7c3aed', allDay:true,
-      start: toLocalDateInput00(today),     // 종일은 문자열로 고정
+      start: toLocalDateInput00(today),
       end:   toLocalDateInput2359(today)
     })
   }else{
     modalTitle.value='일정 수정'
     if (ev?.allDay) {
-      // ev.end(배타, 다음날 00:00) → 1ms 빼서 '마지막 포함일' 23:59 표시
       const endShown = ev.end ? new Date(ev.end.getTime() - 1) : ev.start
       Object.assign(form, {
         id: ev?.id ?? '',
@@ -364,7 +453,7 @@ function openModal(mode, ev){
     }
   }
 }
-function closeModal(){ isModalOpen.value=false }
+function closeModal(){ isModalOpen.value=false; pendingSelect.value = null }
 
 /* 캘린더 초기화 */
 onMounted(()=>{
@@ -374,27 +463,72 @@ onMounted(()=>{
     initialView:'dayGridMonth',
     headerToolbar:{ left:'prev today next', center:'', right:'dayGridMonth,dayGridWeek,dayGridDay,listMonth addEventButton' },
     customButtons:{ addEventButton:{ text:'일정 등록', click:()=>openModal('create') } },
+
+    // 월 그리드 날짜 숫자만
     dayCellContent:(arg)=>({ html: arg.dayNumberText.replace('일','') }),
+
+    // day/week 헤더 'M월 D일 (요일)'
+    views:{
+      dayGridWeek:{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },
+      dayGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }
+    },
 
     selectable:true, selectMirror:true, unselectAuto:true, selectLongPressDelay:200,
 
-    /* 날짜 클릭: 1일 종일(문자열 00:00/23:59) */
+    // 날짜 클릭 → 이벤트 있는 날이면 상세일정 표시
     dateClick:(info)=>{
+      // 단일 클릭 시 기존 드래그 선택 정보 초기화
+      pendingSelect.value = null;
+      const d = new Date(info.date)
+      selectedDate.value = d
+
+      if (hasEventsOn(d)) {
+        showAgenda.value = true
+        renderAgenda()
+      } else {
+        showAgenda.value = false
+        agendaHtml.value = ''
+      }
+
+      // 등록 모달 (원하면 제거 가능)
       openModal('create')
       form.allDay = true
       form.start = toLocalDateInput00(info.date)
       form.end   = toLocalDateInput2359(info.date)
     },
 
-    /* 드래그 선택 (종일: 배타 end → 포함 마지막일 23:59 문자열) */
+    // 드래그 선택 → 시작일 기준으로 판정
     select:(arg)=>{
-      openModal('create')
-      form.allDay = arg.allDay === true
+      const d = new Date(arg.start)
+      selectedDate.value = d
 
+      if (hasEventsOn(d)) {
+        showAgenda.value = true
+        renderAgenda()
+      } else {
+        showAgenda.value = false
+        agendaHtml.value = ''
+      }
+
+      openModal('create')
+
+      // ✅ 원본 선택 구간 저장 (FullCalendar select의 end는 보통 exclusive)
+      pendingSelect.value = {
+        start: new Date(arg.start),
+        end: new Date(arg.end || arg.start),
+        allDay: arg.allDay === true
+      }
+
+      form.allDay = arg.allDay === true
       if (form.allDay) {
-        const endShown = new Date((arg.end ?? new Date(arg.start)).getTime() - 1)
-        form.start = toLocalDateInput00(arg.start)
-        form.end   = toLocalDateInput2359(endShown)
+        // ✅ 마지막 칸까지 확실히 포함: 셀 개수 기반(lastDay = start0 + (dayCount-1)일)
+        const DAY = 24*60*60*1000
+        const start0 = new Date(arg.start.getFullYear(), arg.start.getMonth(), arg.start.getDate())
+        const rawEnd = arg.end ? new Date(arg.end) : new Date(arg.start)
+        const dayCount = Math.max(1, Math.round((rawEnd - start0) / DAY))
+        const lastDay = new Date(start0.getFullYear(), start0.getMonth(), start0.getDate() + (dayCount - 1))
+        form.start = toLocalDateInput00(start0)
+        form.end   = toLocalDateInput2359(lastDay)
       } else {
         const eInc = new Date((arg.end || arg.start).getTime() - 1)
         form.start = toLocalInputValue(arg.start)
@@ -419,7 +553,7 @@ onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 
 <style src="../assets/calendar.css"></style>
 <style scoped>
-/* 모달 footer: 삭제는 왼쪽, 취소/저장은 오른쪽 */
+/* 모달 footer */
 .modal__footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid #eee;}
 .modal__footer .left{display:flex;align-items:center;gap:8px;}
 .modal__footer .right{display:flex;align-items:center;gap:8px;}
@@ -438,9 +572,17 @@ onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 .btn--danger{ color:#dc2626; border-color:#fecaca; }
 
 /* back button */
-.back-btn{ margin-left:7rem; margin-top:-5rem; appearance:none; display:inline-flex; align-items:center; gap:.5rem; padding:.625rem 1rem; border:1px solid #e5dcc9; border-radius:.5rem; background:#fff; color:#5f5346; font-weight:700; font-size:.9375rem; line-height:1; cursor:pointer; transition:background .2s ease, border-color .2s ease, transform .02s ease; }
+.back-btn{ margin-left:7rem; margin-top:-5rem; appearance:none; display:inline-flex; align-items:center; gap:.5rem; padding:.625rem 1rem; border:1px solid #e5dcc9; border-radius:.5rem; background:#fff; color:#5f5346; font-weight:700; font-size:.9375rem; line-height:1; cursor:pointer; transition:background .2s, border-color .2s, transform .02s; }
 .back-btn:hover{ background:#f9f6ef; border-color:#d8cdb3; }
 .back-btn:active{ transform:translateY(1px); }
 .back-btn:focus-visible{ outline:2px solid transparent; box-shadow:0 0 0 3px rgba(252,112,60,.25); border-color:#fc703c; }
 .back-btn:disabled{ opacity:.55; cursor:not-allowed; }
+
+/* 상세일정 */
+.agenda{ width: var(--cal-fixed-width, 1280px); max-width:100%; margin:16px auto 0; }
+.agenda__title{ margin:12px 0 10px; font-size:16px; font-weight:800; color:#111; display:flex; align-items:center; gap:8px; }
+.agenda__body{ background:#fff; border:1px solid #e9e9e9; border-radius:8px; padding:12px; }
+.agenda__empty{ padding:14px; color:#666; font-size:14px; text-align:center; }
+.agenda__list{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.agenda__item{ display:grid; grid-template-columns:110px 140px 1fr; align-items:center; gap:10px; padding:8px 10px; border:1px solid #eee; border-radius:10px; }
 </style>
