@@ -10,6 +10,8 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
+    is_multiple: bool = False
+    messages: list[str] = []
 
 @router.post("/chat")
 def chat(request: ChatRequest):
@@ -20,9 +22,15 @@ def chat(request: ChatRequest):
         if not request.query or not request.query.strip():
             raise HTTPException(status_code=400, detail="질문을 입력해주세요.")
         
-        # 답변 생성
-        answer = chatbot_service.get_answer(request.query.strip(), request.user_id)
-        return ChatResponse(answer=answer)
+        # 답변 생성 (이제 dict 반환)
+        result = chatbot_service.get_answer(request.query.strip(), request.user_id)
+        
+        # result가 dict인지 확인
+        if isinstance(result, dict):
+            return ChatResponse(**result)
+        else:
+            # 기존 string 반환인 경우 (하위 호환성)
+            return ChatResponse(answer=result)
         
     except HTTPException:
         raise

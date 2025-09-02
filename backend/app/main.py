@@ -70,8 +70,12 @@ class ChatbotService:
             ("system", """다람이 챗봇입니다. 상품 검색 결과에 따라 다르게 답변합니다.
 
 검색 결과 판단:
-- 5개 이하 상품: 앞머리에 [사용자 검색어명] 검색 결과입니다. 하고 찾은 상품들 자연스럽게 나열 (상품명은 1,2 숫자를 앞에 붙여서 구분 표시)
+- 매칭된 상품이 없습니다: "죄송해요, [검색어] 관련 상품을 찾지 못했어요. 다른 상품명으로 검색해보시겠어요?"
+- 5개 이하 상품: 앞머리에 [사용자 검색어명] 검색 결과입니다. 하고 찾은 상품들 자연스럽게 나열
 - 5개 초과: [사용자 검색어명].. 검색 실패. 더 구체적 검색 유도
+
+매칭된 상품이 없을 때:
+"죄송해요, [검색어] 관련 상품을 찾지 못했어요. 다른 상품명으로 검색해보시겠어요?"
 
 5개 초과일 때 답변 형식:
 "더 자세히 말씀해주시면 제가 더 잘 찾아 줄 수 있어요!
@@ -81,12 +85,18 @@ class ChatbotService:
 - [그룹/작품명] [멤버/캐릭터명] (예: 블핑 제니)
 - [그룹/작품명] [의류/키링/굿즈] (예: 블핑 티셔츠)"
 
+상품 답변 형식 (매칭 점수 2점 이상):
+각 상품마다 개별 메시지로 분리해서:
+"[상품명]
+재고는 S등급 O개, A등급 O개, B등급 O개, C등급 O개 있어요!
+[여기서 상품 보기](링크주소)"
+
 주의사항:
-- 상품을 찾은 뒤에 "추가로 수량을 알고 싶으시다면 상품명과 수량을 입력해주시면 남은 수량을 알려드려요"
-             아님 다른 정보도 궁금하신가요? 하고 물어봐 그것만 해
-- 상품 정보를 제시한 뒤에 부가 정보를 붙이지 않기 
+- 매칭 점수 2점 이상만 수량과 링크 제공
+- 1점 제품은 상품명만 간단히
+- 각 상품을 개별 말풍선으로 분리
+- 마지막에 "다른 상품도 궁금하신가요?" 추가
 - 사용자가 고맙다는 등 긍정적인 답변을 하면 "아닙니다! 추가로 궁금하신 점이 있다면 언제든 말해주세요!" 라고 해
-             
 
 상품 정보:
 {context}"""),
@@ -104,6 +114,7 @@ class ChatbotService:
 - 사용자가 물어본 질문의 요약된 정보로 제공하고 사용자가 물어본 것 이상을 말하지 말 것 
 - 말의 끝에 사용자가 더 물어볼 수 있도록 유도해
 - 사용자가 고맙다던지 답변에 만족하는 긍정적인 말을 하면 "감사합니다! 더 자세한 내용은 검수 내역란에서 확인하실 수 있습니다." 라고 해
+
 검수 정보:
 {context}"""),
             ("human", "{query}")
@@ -165,7 +176,7 @@ FAQ 정보:
         if current_product:
             self.products.append(current_product)
 
-    def _search_products(self, query: str) -> str:
+    def _search_products(self, query: str) -> dict:
         """직접 텍스트 매칭으로 상품 검색"""
         query_words = query.lower().split()
         
@@ -178,7 +189,7 @@ FAQ 정보:
                 filtered_words.append(word)
         
         if not filtered_words:
-            return "더 구체적인 상품명이나 캐릭터 이름을 알려주시면 찾아드릴게요!"
+            return {"answer": "더 구체적인 상품명이나 캐릭터 이름을 알려주시면 찾아드릴게요!"}
         
         matched_products = []
         
@@ -203,11 +214,11 @@ FAQ 정보:
         high_score_products = [(product, score) for product, score in matched_products if score >= 2]
         low_score_products = [(product, score) for product, score in matched_products if score == 1]
         
-        # 2점 이상 제품이 있으면 보여줌
+        # 2점 이상 제품이 있으면 수량과 링크 포함해서 보여줌
         if high_score_products:
             final_products = [product for product, score in high_score_products[:8]]
             context = "\n\n".join(final_products)
-            context += f"\n\n[지시: 검색 결과가 {len(high_score_products)}개입니다. 찾은 상품들을 자연스럽게 소개하세요.]"
+            context += f"\n\n[지시: 검색 결과가 {len(high_score_products)}개입니다. 찾은 상품들을 자연스럽게 소개하고, 각 상품의 수량과 링크 정보도 함께 제공하세요.]"
         
         # 2점 이상이 없고 1점만 5개 이상이면 유도
         elif len(low_score_products) >= 5:
@@ -222,29 +233,32 @@ FAQ 정보:
         
         # 매칭된 제품이 없음
         else:
-            return "아직 해당 상품이 존재하지 않아요! 다른 키워드로 검색해보시겠어요?"
+            return {"answer": "아직 해당 상품이 존재하지 않아요! 다른 키워드로 검색해보시겠어요?"}
         
         # LLM으로 답변 생성
         chain = self.product_search_prompt | self.llm | StrOutputParser()
-        return chain.invoke({"context": context, "query": query})
+        answer = chain.invoke({"context": context, "query": query})
+        return {"answer": answer}
 
-    def _search_inspection(self, query: str) -> str:
+    def _search_inspection(self, query: str) -> dict:
         """검수 기준 처리 - 벡터 검색 사용"""
         docs = self.retriever.invoke(f"검수 기준 {query}")
         context = "\n\n".join([doc.page_content for doc in docs[:3]])
         
         chain = self.inspection_prompt | self.llm | StrOutputParser()
-        return chain.invoke({"context": context, "query": query})
+        answer = chain.invoke({"context": context, "query": query})
+        return {"answer": answer}
 
-    def _search_faq(self, query: str) -> str:
+    def _search_faq(self, query: str) -> dict:
         """FAQ 처리 - 벡터 검색 사용"""
         docs = self.retriever.invoke(f"FAQ {query}")
         context = "\n\n".join([doc.page_content for doc in docs[:3]])
         
         chain = self.faq_prompt | self.llm | StrOutputParser()
-        return chain.invoke({"context": context, "query": query})
+        answer = chain.invoke({"context": context, "query": query})
+        return {"answer": answer}
 
-    def get_answer(self, query: str, user_id: str = "default") -> str:
+    def get_answer(self, query: str, user_id: str = "default") -> dict:
         """메인 답변 생성 함수"""
         # 쿼리 타입 분류
         query_type = self._classify_query(query)
@@ -269,6 +283,8 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
+    is_multiple: bool = False
+    messages: list[str] = []
 
 
 app = FastAPI(title="다람이 챗봇", version="2.0.0")
