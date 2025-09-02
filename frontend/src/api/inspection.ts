@@ -1,4 +1,4 @@
-import axios from "axios";
+import { http as axios } from '@/lib/http'
 
 export type Status = "PENDING" | "APPROVED" | "REJECTED";
 

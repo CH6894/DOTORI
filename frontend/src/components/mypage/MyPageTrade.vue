@@ -23,32 +23,33 @@
                         </li>
                     </ul>
                 </div>
-                <!-- 거래 테이블 -->
-                <div class="panel panel--center" v-if="filteredTrades.length">
-                    <!-- 필터 -->
-                    <div class="panel panel--center">
-                        <div class="filter-bar" role="tablist" aria-label="거래 유형 필터">
-                            <div class="tabs">
-                                <button class="tab" :class="{ 'is-active': selectedKind === 'all' }" role="tab"
-                                    :aria-selected="selectedKind === 'all'" @click="setKind('all')">
-                                    전체 ({{ summary.total }})
-                                </button>
-                                <button class="tab" :class="{ 'is-active': selectedKind === 'sell' }" role="tab"
-                                    :aria-selected="selectedKind === 'sell'" @click="setKind('sell')">
-                                    판매 ({{ summary.sell }})
-                                </button>
-                                <button class="tab" :class="{ 'is-active': selectedKind === 'buy' }" role="tab"
-                                    :aria-selected="selectedKind === 'buy'" @click="setKind('buy')">
-                                    구매 ({{ summary.buy }})
-                                </button>
-                            </div>
+                <!-- 필터 (항상 표시) -->
+                <div class="panel panel--center">
+                    <div class="filter-bar" role="tablist" aria-label="거래 유형 필터">
+                        <div class="tabs">
+                            <button class="tab" :class="{ 'is-active': selectedKind === 'all' }" role="tab"
+                                :aria-selected="selectedKind === 'all'" @click="setKind('all')">
+                                전체 ({{ summary.total }})
+                            </button>
+                            <button class="tab" :class="{ 'is-active': selectedKind === 'sell' }" role="tab"
+                                :aria-selected="selectedKind === 'sell'" @click="setKind('sell')">
+                                판매 ({{ summary.sell }})
+                            </button>
+                            <button class="tab" :class="{ 'is-active': selectedKind === 'buy' }" role="tab"
+                                :aria-selected="selectedKind === 'buy'" @click="setKind('buy')">
+                                구매 ({{ summary.buy }})
+                            </button>
+                        </div>
 
-                            <div class="search-wrap">
-                                <input v-model.trim="searchKeyword" class="search-input" type="text"
-                                    placeholder="거래번호 또는 상품명 검색" aria-label="검색" />
-                            </div>
+                        <div class="search-wrap">
+                            <input v-model.trim="searchKeyword" class="search-input" type="text"
+                                placeholder="거래번호 또는 상품명 검색" aria-label="검색" />
                         </div>
                     </div>
+                </div>
+
+                <!-- 거래 테이블 (결과가 있을 때만) -->
+                <div class="panel panel--center" v-if="filteredTrades.length">
                     <div class="table-wrap">
                         <table class="tbl tbl--fixed">
                             <colgroup>
@@ -108,7 +109,14 @@
                     </nav>
                 </div>
 
-                <!-- 빈 상태 -->
+                <!-- 빈 상태 (검색 결과가 없을 때만) -->
+                <div v-else-if="searchKeyword || selectedKind !== 'all'" class="panel panel--center">
+                    <div class="empty-state">
+                        <p class="empty-message">검색 결과가 없습니다.</p>
+                    </div>
+                </div>
+
+                <!-- 빈 상태 (전체 거래내역이 없을 때) -->
                 <div v-else class="panel panel--center">
                     <div class="empty-state">
                         <p class="empty-message">거래 내역이 없습니다.</p>

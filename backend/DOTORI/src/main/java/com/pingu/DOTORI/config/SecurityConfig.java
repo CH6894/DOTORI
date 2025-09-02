@@ -41,6 +41,11 @@ public class SecurityConfig {
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
             .requestMatchers("/static/**").permitAll()
             .requestMatchers("/open/**").permitAll()
+            .requestMatchers(
+                "/api/collection/test/**",
+                "/api/collection/verify-code",
+                "/api/collection/dex-state"
+            ).permitAll()
             .requestMatchers("/api/**").authenticated()
             .anyRequest().authenticated()
             )

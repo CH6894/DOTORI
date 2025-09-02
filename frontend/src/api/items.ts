@@ -1,6 +1,6 @@
 // src/api/items.js
 // rest api에서 물건 리스트 불러오기
-import openApi from './axiosPublic'
+import { http as openApi } from '@/lib/http'
 
 export const fetchItems = (params) =>
     openApi.get('/open/items', { params }).then(r => r.data)

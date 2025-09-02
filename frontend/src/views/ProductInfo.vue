@@ -5,48 +5,31 @@
       <div v-if="loading" class="loading-container">
         <div class="loading-spinner">로딩 중...</div>
       </div>
-      
+
       <!-- 상품 정보가 로드된 후 -->
       <div v-else-if="product.id">
         <!-- 상품 기본 정보 섹션 -->
-        <ProductInfo 
-          :product="product" 
-          :productType="productType"
-          @purchase="handlePurchase"
-          @addToCart="handleAddToCart"
-        />
-        
+        <ProductInfo :product="product" :productType="productType" @purchase="handlePurchase"
+          @addToCart="handleAddToCart" />
+
         <!-- 가격 차트 섹션 (미개봉 상품만) -->
-        <PriceChart 
-          v-if="productType === 'new'" 
-          :priceData="priceData" 
-          :productId="product.id"
-        />
-        
+        <PriceChart v-if="productType === 'new'" :priceData="priceData" :productId="product.id" />
+
         <!-- 중고상품 섹션 (카드 형태로 표시) -->
-        <UsedProductsSection 
-          :usedItems="usedItems"
-          :productInfo="product"
-          @openUsedItemDetail="handleUsedItemDetailDirect"
-        />
-        
+        <UsedProductsSection :usedItems="usedItems" :productInfo="product"
+          @openUsedItemDetail="handleUsedItemDetailDirect" />
+
         <!-- 개별 중고상품 상세 모달 -->
-        <UsedItemDetailModal
-          v-if="showUsedItemDetail"
-          :item="selectedUsedItem"
-          :productInfo="product"
-          @close="showUsedItemDetail = false"
-          @purchase="handleUsedItemPurchase"
-          @addToCart="handleUsedItemAddToCart"
-        />
-        
+        <UsedItemDetailModal v-if="showUsedItemDetail" :item="selectedUsedItem" :productInfo="product"
+          @close="showUsedItemDetail = false" @purchase="handleUsedItemPurchase" @addToCart="handleUsedItemAddToCart" />
+
         <!-- 추천상품 섹션 -->
         <RecommendedProducts :products="recommendedProducts" />
-        
+
         <!-- 함께 본 상품 섹션 -->
         <RelatedProducts :products="relatedProducts" />
       </div>
-      
+
       <!-- 상품을 찾을 수 없는 경우 -->
       <div v-else class="error-container">
         <h2>상품을 찾을 수 없습니다.</h2>
@@ -89,7 +72,7 @@ const fetchProductDetail = async () => {
   try {
     // const response = await fetch(`/api/products/${productId}`)
     // const data = await response.json()
-    
+
     // 임시 데이터 (DB 연동 시 삭제)
     product.value = {
       id: productId,
@@ -100,8 +83,8 @@ const fetchProductDetail = async () => {
       type: 'new', // 기본은 미개봉 상품
       images: [
         '/img/예시1.jpg',
-         '/img/예시1.jpg',
-         '/img/예시1.jpg',
+        '/img/예시1.jpg',
+        '/img/예시1.jpg',
       ],
       description: '세가에서 출시한 귀멸의 칼날 피규어입니다.'
     }
@@ -112,11 +95,11 @@ const fetchProductDetail = async () => {
 
 const fetchPriceData = async () => {
   if (productType.value !== 'new') return
-  
+
   try {
     // const response = await fetch(`/api/products/${productId}/price-chart`)
     // const data = await response.json()
-    
+
     // 임시 데이터 (DB 연동 시 삭제)
     priceData.value = [
       { date: '24/07/28', price: 20000 },
@@ -133,7 +116,7 @@ const fetchUsedItems = async () => {
   try {
     // const response = await fetch(`/api/products/${productId}/used-items`)
     // const data = await response.json()
-    
+
     // 임시 데이터 (DB 연동 시 삭제) - 각각 고유한 개별 중고상품들
     usedItems.value = [
       {
@@ -212,7 +195,7 @@ const fetchRecommendedProducts = async () => {
   try {
     // const response = await fetch(`/api/products/${productId}/recommended`)
     // const data = await response.json()
-    
+
     // 임시 데이터 (DB 연동 시 삭제)
     recommendedProducts.value = [
       { id: 1, title: '추천상품1', image: '/img/rec1.jpg', price: '15,000원' },
@@ -220,7 +203,7 @@ const fetchRecommendedProducts = async () => {
       { id: 3, title: '추천상품3', image: '/img/rec3.jpg', price: '22,000원' },
       { id: 4, title: '추천상품4', image: '/img/rec4.jpg', price: '25,000원' },
       { id: 4, title: '추천상품5', image: '/img/rec4.jpg', price: '25,000원' },
-     { id: 4, title: '추천상품', image: '/img/rec4.jpg', price: '25,000원' },
+      { id: 4, title: '추천상품', image: '/img/rec4.jpg', price: '25,000원' },
     ]
   } catch (error) {
     console.error('추천 상품 로드 실패:', error)
@@ -231,7 +214,7 @@ const fetchRelatedProducts = async () => {
   try {
     // const response = await fetch(`/api/products/${productId}/related`)
     // const data = await response.json()
-    
+
     // 임시 데이터 (DB 연동 시 삭제)
     relatedProducts.value = [
       { id: 1, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
@@ -296,7 +279,7 @@ const goBack = () => {
 // 페이지 초기화
 const initializePage = async () => {
   loading.value = true
-  
+
   try {
     // 병렬로 데이터 로드
     await Promise.all([
@@ -313,6 +296,16 @@ const initializePage = async () => {
   }
 }
 
+const handleAddToCart = () => {
+  try {
+    // TODO: 장바구니 스토어/LS 연동 (원하면 여기 연결)
+    alert('장바구니에 담겼습니다.')
+  } catch (e) {
+    console.error(e)
+    alert('장바구니 담기 중 오류가 발생했습니다.')
+  }
+}
+
 // 컴포넌트 마운트 시 데이터 로드
 onMounted(() => {
   initializePage()
@@ -325,6 +318,7 @@ onMounted(() => {
 * {
   font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
+
 .product-detail-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -353,8 +347,13 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-container {
@@ -383,5 +382,4 @@ onMounted(() => {
 .back-btn:hover {
   background: #e55a2b;
 }
-
 </style>

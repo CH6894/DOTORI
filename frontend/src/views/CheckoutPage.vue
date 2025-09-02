@@ -31,12 +31,7 @@
         <button class="btn-outline" @click="addrModalOpen = true">주소변경</button>
       </div>
 
-      <AddressEdit
-        v-model="addrModalOpen"
-        :value="address"
-        @save="updateAddress"
-        @search-postcode="openPostcode"
-      />
+      <AddressEdit v-model="addrModalOpen" :value="address" @save="updateAddress" @search-postcode="openPostcode" />
 
       <button class="btn-primary note" @click="isNoteOpen = !isNoteOpen" :class="{ open: isNoteOpen }">
         {{ displayNote }}
@@ -47,12 +42,8 @@
 
       <transition name="collapse">
         <div v-show="isNoteOpen" class="note-panel" role="region" aria-label="배송 요청사항 입력">
-          <textarea
-            v-model="tempNote"
-            class="note-textarea"
-            rows="3"
-            placeholder="예) 경비실에 맡겨주세요 / 부재 시 문앞에 두세요"
-          ></textarea>
+          <textarea v-model="tempNote" class="note-textarea" rows="3"
+            placeholder="예) 경비실에 맡겨주세요 / 부재 시 문앞에 두세요"></textarea>
           <div class="note-actions">
             <button class="btn-subtle" @click="onClearNote">지우기</button>
             <div class="note-actions-right">
@@ -99,10 +90,10 @@
       <div class="pay-methods" v-if="items.length">
         <h3>결제 수단</h3>
 
-        <label class="radio"><input type="radio" value="bank" v-model="payMethod" /><span>무통장 결제</span></label>
+        <label class="radio"><input type="radio" value="bank" v-model="payMethod" checked /><span>무통장 입금</span></label>
 
         <transition name="collapse">
-          <div v-if="payMethod === 'bank'" class="bank-box" role="region" aria-label="무통장 결제 정보">
+          <div v-if="payMethod === 'bank'" class="bank-box" role="region" aria-label="무통장 입금 정보">
             <div class="field">
               <label>입금은행 <span class="req">*</span></label>
               <div class="inline">
@@ -110,12 +101,14 @@
                   <option v-for="b in banks" :key="b.code" :value="b">{{ b.label }}</option>
                 </select>
               </div>
-              <div class="hint">계좌번호: <b>{{ selectedBank.account }}</b><span v-if="selectedBank.holder"> / 예금주: {{ selectedBank.holder }}</span></div>
+              <div class="hint">계좌번호: <b>{{ selectedBank.account }}</b><span v-if="selectedBank.holder"> / 예금주: {{
+                  selectedBank.holder }}</span></div>
             </div>
 
             <div class="field">
               <label>입금자명 <span class="req">*</span></label>
-              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" @input="onInputDepositor" />
+              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능"
+                @input="onInputDepositor" />
             </div>
 
             <div class="notice">
@@ -132,32 +125,28 @@
     </section>
   </div>
 
-<!-- 하단 고정 결제 바 -->
-<div class="paybar">
-  <div class="agree">
-    약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.
+  <!-- 하단 고정 결제 바 -->
+  <div class="paybar">
+    <div class="agree">
+      약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.
+    </div>
+
+    <!-- ✅ 무통장 + 유효할 때만 '이동 가능한' 링크 -->
+    <button v-if="payMethod === 'bank' && isBankFormValid" @click="onPay" class="btn-pay">
+      <b>{{ formatCurrency(total) }}</b>원 결제하기
+    </button>
+
+    <!-- ❌ 그 외에는 항상 비활성 버튼만 -->
+    <button v-else class="btn-pay" disabled @click.prevent>
+      <b>{{ formatCurrency(total) }}</b>원 결제하기
+    </button>
   </div>
-
-  <!-- ✅ 무통장 + 유효할 때만 '이동 가능한' 링크 -->
-  <router-link
-    v-if="payMethod === 'bank' && isBankFormValid"
-    :to="{ name: 'ordercomplete' }"
-    class="btn-pay"
-  >
-    <b>{{ formatCurrency(total) }}</b>원 결제하기
-  </router-link>
-
-  <!-- ❌ 그 외에는 항상 비활성 버튼만 -->
-  <button v-else class="btn-pay" disabled @click.prevent>
-    <b>{{ formatCurrency(total) }}</b>원 결제하기
-  </button>
-</div>
 
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AddressEdit from '@/components/AddressEdit.vue'
 
 /* ───────── 결제바 높이만큼 body 하단 패딩 부여(이 페이지에서만 적용) ───────── */
@@ -212,6 +201,7 @@ const onClearNote = () => { tempNote.value = ''; note.value = ''; isNoteOpen.val
 
 /* 장바구니 → 체크아웃 데이터 */
 const route = useRoute()
+const router = useRouter()
 type RawItem = {
   id: number | string
   title?: string
@@ -251,7 +241,7 @@ onMounted(() => {
 
 /* 금액 계산 */
 const discount = computed(() => items.value.reduce((s, it) => s + (Number((it as any).discount) || 0), 0))
-const subtotal  = computed(() => items.value.reduce((sum, it) => sum + it.price * it.qty, 0))
+const subtotal = computed(() => items.value.reduce((sum, it) => sum + it.price * it.qty, 0))
 const shippingFee = computed(() => items.value.reduce((sum, it) => sum + (it.shipping || 0), 0))
 const total = computed(() => subtotal.value - discount.value + shippingFee.value)
 const formatCurrency = (n: number) => n.toLocaleString('ko-KR', { maximumFractionDigits: 0 })
@@ -262,7 +252,7 @@ const banks = [
   { code: 'SHIN', label: '신한은행', account: '110-123-456789', holder: '도토리' },
   { code: 'WOORI', label: '우리은행', account: '1002-123-456789', holder: '도토리' },
 ]
-const payMethod = ref<'bank' | 'easy' | 'card' | 'mobile'>('easy')
+const payMethod = ref<'bank' | 'easy' | 'card' | 'mobile'>('bank')
 const selectedBank = ref(banks[0])
 const depositorName = ref('')
 const depositDeadlineHours = ref(3)
@@ -280,7 +270,10 @@ const isBankFormValid = computed(() => {
 
 const isPayEnabled = computed(() => {
   if (!items.value.length) return false
-  return payMethod.value === 'bank' ? isBankFormValid.value : true
+  if (payMethod.value === 'bank') {
+    return isBankFormValid.value
+  }
+  return false // 다른 결제 수단은 아직 구현되지 않음
 })
 
 const onPay = () => {
@@ -289,129 +282,431 @@ const onPay = () => {
     else alert('결제할 상품이 없습니다.')
     return
   }
-  alert(`${payMethod.value} 방식으로 ${total.value.toLocaleString()}원 결제합니다.`)
+
+  // 주문 정보를 localStorage에 저장
+  const orderData = {
+    items: items.value,
+    address: { ...address },
+    note: note.value,
+    payMethod: payMethod.value,
+    selectedBank: payMethod.value === 'bank' ? selectedBank.value : null,
+    depositorName: payMethod.value === 'bank' ? depositorName.value : '',
+    subtotal: subtotal.value,
+    discount: discount.value,
+    shippingFee: shippingFee.value,
+    total: total.value,
+    orderDate: new Date().toISOString(),
+    orderNo: generateOrderNo()
+  }
+
+  localStorage.setItem('dotori_order_data', JSON.stringify(orderData))
+
+  // 결제 완료 페이지로 이동
+  router.push({ name: 'ordercomplete' })
+}
+
+// 주문번호 생성 함수
+const generateOrderNo = () => {
+  const now = new Date()
+  const year = now.getFullYear().toString().slice(-2)
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+  return `DT${year}${month}${day}${random}`
 }
 </script>
 
 <style scoped>
 .checkout {
   max-width: 720px;
-  margin: 24px auto; /* 결제바 때문에 여백은 body 패딩으로 처리 */
+  margin: 24px auto;
+  /* 결제바 때문에 여백은 body 패딩으로 처리 */
   padding: 0 16px;
 }
 
-.title { text-align: center; font-size: 22px; margin: 8px 0 16px; }
+.title {
+  text-align: center;
+  font-size: 22px;
+  margin: 8px 0 16px;
+}
 
 .card {
-  background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.04);
-  padding: 16px; margin-bottom: 16px; border: 1px solid #eee;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #eee;
 
   /* 가운데 넓게 쓰려면 유지 */
   width: 140%;
-  position: relative; left: 50%; transform: translateX(-50%);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.row { display: flex; align-items: center; justify-content: space-between; }
-.left { min-width: 0; }
-.label { font-weight: 600; margin-bottom: 6px; }
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-.addr-line { display: flex; margin-top: 6px; }
-.addr-label { width: 70px; font-weight: 600; color: #555; flex-shrink: 0; text-align: left; margin-right: 12px; }
-.addr-value { flex: 1; line-height: 1.5; word-break: keep-all; overflow-wrap: anywhere; }
-.addr-lines>div { line-height: 1.7; }
+.left {
+  min-width: 0;
+}
 
-.muted { color: #8a8a8a; font-weight: 400; }
+.label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.addr-line {
+  display: flex;
+  margin-top: 6px;
+}
+
+.addr-label {
+  width: 70px;
+  font-weight: 600;
+  color: #555;
+  flex-shrink: 0;
+  text-align: left;
+  margin-right: 12px;
+}
+
+.addr-value {
+  flex: 1;
+  line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.addr-lines>div {
+  line-height: 1.7;
+}
+
+.muted {
+  color: #8a8a8a;
+  font-weight: 400;
+}
 
 .btn-outline {
-  border: 1px solid #ff7a2e; color: #ff7a2e; background: #fff;
-  border-radius: 999px; padding: 6px 12px; font-weight: 600; cursor: pointer; margin-top: -70px;
+  border: 1px solid #ff7a2e;
+  color: #ff7a2e;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: -70px;
 }
-.btn-outline:hover { background: #fff6f0; }
+
+.btn-outline:hover {
+  background: #fff6f0;
+}
 
 .btn-primary.note {
-  width: 100%; margin-top: 12px; background: #ff7a2e; color: #fff; border: none; border-radius: 10px;
-  padding: 12px 20px; font-weight: 700; display: flex; align-items: center; justify-content: space-between;
+  width: 100%;
+  margin-top: 12px;
+  background: #ff7a2e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.note .chev { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.5; fill: none; display: block; line-height: 0;
-  transform-box: fill-box; transform-origin: 40% 50%; transition: transform .2s ease; }
-.note.open .chev { transform: rotate(180deg); }
 
-.note-panel { margin-top: 10px; background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px; }
-.note-textarea { width: 100%; resize: vertical; border: 1px solid #e6e6e6; border-radius: 8px; padding: 10px 12px; box-sizing: border-box; font-size: 14px; }
-.note-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
-.note-actions-right { display: flex; gap: 8px; }
-.btn-subtle { background: #f6f6f6; border: 1px solid #e6e6e6; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
-.btn-save { background: #ff7a2e; color: #fff; border: none; border-radius: 8px; padding: 8px 14px; font-weight: 700; cursor: pointer; }
+.note .chev {
+  width: 18px;
+  height: 18px;
+  stroke: #fff;
+  stroke-width: 2.5;
+  fill: none;
+  display: block;
+  line-height: 0;
+  transform-box: fill-box;
+  transform-origin: 40% 50%;
+  transition: transform .2s ease;
+}
 
-.collapse-enter-active, .collapse-leave-active { transition: all .18s ease; }
-.collapse-enter-from, .collapse-leave-to { opacity: 0; transform: translateY(-4px); }
+.note.open .chev {
+  transform: rotate(180deg);
+}
 
-.section-title { font-size: 16px; margin: 0 0 12px; }
+.note-panel {
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 12px;
+}
 
-.order-items { display: grid; grid-template-columns: 72px 1fr auto; gap: 12px; align-items: center; }
-.thumb img { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #eee; }
-.info .name { font-weight: 700; }
-.info .meta { color: #8a8a8a; font-size: 13px; margin-top: 4px; }
-.price { font-weight: 700; }
+.note-textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
 
-.amount { margin-top: 8px; }
-.amount .row { padding: 10px 0; }
-.amount .row + .row { border-top: 1px solid #eee; }
-.amount .row.total { border-top: 2px solid #eee; font-size: 16px; }
+.note-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
 
-.pay-methods { margin-top: 8px; }
-.pay-methods h3 { font-size: 15px; margin: 12px 0; }
-.radio { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+.note-actions-right {
+  display: flex;
+  gap: 8px;
+}
 
-.bank-box { margin-top: 10px; background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 12px; display: grid; gap: 12px; }
-.field { display: grid; gap: 6px; }
-.field>label { font-size: 13px; color: #555; }
-.req { color: #ff4d4f; }
-.inline { display: flex; gap: 20px; align-items: center; }
-.select, .input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; background: #fff; }
+.btn-subtle {
+  background: #f6f6f6;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.btn-save {
+  background: #ff7a2e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.collapse-enter-active,
+.collapse-leave-active {
+  transition: all .18s ease;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.section-title {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+
+.order-items {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.thumb img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.info .name {
+  font-weight: 700;
+}
+
+.info .meta {
+  color: #8a8a8a;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.price {
+  font-weight: 700;
+}
+
+.amount {
+  margin-top: 8px;
+}
+
+.amount .row {
+  padding: 10px 0;
+}
+
+.amount .row+.row {
+  border-top: 1px solid #eee;
+}
+
+.amount .row.total {
+  border-top: 2px solid #eee;
+  font-size: 16px;
+}
+
+.pay-methods {
+  margin-top: 8px;
+}
+
+.pay-methods h3 {
+  font-size: 15px;
+  margin: 12px 0;
+}
+
+.radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.bank-box {
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field>label {
+  font-size: 13px;
+  color: #555;
+}
+
+.req {
+  color: #ff4d4f;
+}
+
+.inline {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
 .select {
-  appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='black'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center;
-  background-size: 30px; padding-right: 32px;
+  background-size: 30px;
+  padding-right: 32px;
 }
-.btn-ghost.sm { padding: 8px 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; }
-.hint { font-size: 13px; color: #666; }
-.notice { background: #fff7f1; border: 1px solid #ffd7bf; color: #000; padding: 10px 12px; border-radius: 8px; line-height: 1.5; font-size: 14px; }
+
+.btn-ghost.sm {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.hint {
+  font-size: 13px;
+  color: #666;
+}
+
+.notice {
+  background: #fff7f1;
+  border: 1px solid #ffd7bf;
+  color: #000;
+  padding: 10px 12px;
+  border-radius: 8px;
+  line-height: 1.5;
+  font-size: 14px;
+}
 
 /* ===== 결제바 (항상 화면 하단) ===== */
 .paybar {
-  position: fixed; left: 0; right: 0; bottom: 0;
-  background: #ff7a2e; border-top: 1px solid #ffd7bf;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 100px; gap: 12px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ff7a2e;
+  border-top: 1px solid #ffd7bf;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 100px;
+  gap: 12px;
   z-index: 50;
 }
 
 /* 텍스트/버튼 */
-.agree { color: #fff; margin-left: 250px; white-space: nowrap; }
+.agree {
+  color: #fff;
+  margin-left: 250px;
+  white-space: nowrap;
+}
+
 .btn-pay {
-  white-space: nowrap; background: #fff; color: #000; border: none; border-radius: 10px; 
-  padding: 12px 25px; font-weight: 700; cursor: pointer; margin-right: 250px; text-decoration: none;
-    /* 추가 */
-  display: inline-flex;      /* 내부 텍스트 크기 변화에도 고정 */
+  white-space: nowrap;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 25px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 250px;
+  text-decoration: none;
+  /* 추가 */
+  display: inline-flex;
+  /* 내부 텍스트 크기 변화에도 고정 */
   align-items: center;
   justify-content: center;
-  height: 45px;              /* 원하는 높이 고정 */
-  min-width: 220px;          /* 원하는 최소 너비 고정 */
-  line-height: 1; 
+  height: 45px;
+  /* 원하는 높이 고정 */
+  min-width: 220px;
+  /* 원하는 최소 너비 고정 */
+  line-height: 1;
   font-size: 15px;
-  font-variant-numeric: tabular-nums; 
-}
-.btn-pay .amount{
   font-variant-numeric: tabular-nums;
 }
-.btn-pay:hover { filter: brightness(0.98); }
-.btn-pay:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; filter:none;}
+
+.btn-pay .amount {
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-pay:hover {
+  filter: brightness(0.98);
+}
+
+.btn-pay:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: none;
+}
 
 /* 모바일 */
 @media (max-width: 480px) {
-  .order-items { grid-template-columns: 56px 1fr auto; }
-  .thumb img { width: 56px; height: 56px; }
+  .order-items {
+    grid-template-columns: 56px 1fr auto;
+  }
+
+  .thumb img {
+    width: 56px;
+    height: 56px;
+  }
 }
 
 /* ───── 전역 바디 패딩을 '이 페이지에서만' 적용 ─────

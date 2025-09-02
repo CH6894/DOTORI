@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import { http as axios } from '@/lib/http'
 import { PREFIX, MAX_LOCAL, pad3, keyOf, type DexKey } from './dexKey'
+import type { DexStateResponse, CollectionVerifyResponse } from '@/types/api'
 
 export type UserItemState = {
   itemKey: DexKey
@@ -16,7 +17,7 @@ type DexState = {
 }
 
 /** ★ 개발용: 백엔드 없이 동작 (네트워크 호출 X) */
-const __FORCE_LOCAL_DUMMY__ = true
+const __FORCE_LOCAL_DUMMY__ = import.meta.env.VITE_USE_DUMMY_API === 'true'
 
 /** 더미 인증 코드 매핑(고정 키) */
 const DUMMY_MAP: Record<string, DexKey> = {
@@ -116,7 +117,7 @@ export const useDex = defineStore('dex', {
         }
 
         // 실제 서버 사용 시
-        const { data } = await axios.get<{ userId: string; items: UserItemState[] }>('/api/dex/state')
+        const { data } = await axios.get<DexStateResponse>('/api/collection/dex-state')
         this.userId = data?.userId ?? ''
         this.items = Array.isArray(data?.items) ? data.items : []
       } catch (e) {
@@ -135,7 +136,7 @@ export const useDex = defineStore('dex', {
       try {
         this._upsert(itemKey, { activated: true })
         if (__FORCE_LOCAL_DUMMY__) return
-        await axios.post('/api/dex/activate', { itemKey })
+        await axios.post('/api/collection/activate', { itemKey })
       } catch (e) {
         console.error('[dex] activate failed', e)
       }
@@ -150,17 +151,17 @@ export const useDex = defineStore('dex', {
 
       this._upsert(itemKey, { activated: next })
       if (__FORCE_LOCAL_DUMMY__) return
-      await axios.post('/api/dex/activate', { itemKey, activated: next })
+      await axios.post('/api/collection/activate', { itemKey, activated: next })
     },
 
     /** ✅ (버튼용) 귀멸 로컬 인증: 1..KIMETSU_MAX 범위에서만 성공 */
     async verifyKimetsuLocal(id: number, max = KIMETSU_MAX): Promise<DexKey> {
       const n = Number(id)
       if (!Number.isFinite(n) || n < 1 || n > max) throw new Error('INVALID_RANGE')
-      const key = `${PREFIX.kimetsu}${pad3(n)}` as DexKey
-      this._upsert(key, { verified: true, activated: true })
-      if (!__FORCE_LOCAL_DUMMY__) await axios.post('/api/dex/verify-kimetsu', { itemKey: key })
-      return key
+      
+      // 귀멸의 칼날 테스트 코드 형식으로 변환하여 인증
+      const code = `KIMETSU${n}`
+      return await this.verifyByCode(code)
     },
 
     /** 인증코드 검증 → 해당 itemKey 인증 (로컬도 범위 체크) */
@@ -202,13 +203,13 @@ export const useDex = defineStore('dex', {
         }
 
         // 실제 서버 사용 시
-        const { data } = await axios.post<{ ok: boolean; itemKey: DexKey }>(
-          '/api/dex/verify',
+        const { data } = await axios.post<CollectionVerifyResponse>(
+          '/api/collection/verify-code',
           { code }
         )
         if (!data?.ok || !data?.itemKey) throw new Error('INVALID_CODE')
 
-        const key = data.itemKey
+        const key = data.itemKey as DexKey
         this._upsert(key, { verified: true, activated: true })
         return key
       } catch (e) {
