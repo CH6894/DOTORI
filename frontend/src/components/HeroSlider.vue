@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { RouterLink } from 'vue-router'
 
 /** 슬라이드 데이터 */
 const slides = [
@@ -50,19 +51,31 @@ onBeforeUnmount(stopAuto)
     <!-- 슬라이드 -->
     <div class="hero-viewport">
       <div class="hero-track" :style="{ transform: `translateX(-${index * 100}%)` }">
-        <a v-for="(s, i) in slides" :key="i" class="hero hero-slide" :href="s.href">
-          <!-- 배경 이미지 -->
+        <!-- ✅ RouterLink로 변경해서 SPA 네비게이션 -->
+        <RouterLink
+          v-for="(s, i) in slides"
+          :key="i"
+          class="hero hero-slide"
+          :to="s.href"
+        >
           <div class="hero__art" aria-hidden="true">
             <img :src="s.image" alt="" loading="lazy" decoding="async" />
           </div>
-        </a>
+        </RouterLink>
       </div>
     </div>
 
     <!-- 점 네비 -->
     <div class="hero-dots" role="tablist" aria-label="배너 선택">
-      <button v-for="(s, i) in slides" :key="i" class="dot" :class="{ active: i === index }" @click="go(i)"
-        :aria-label="`${i + 1}번째 배너로 이동`"></button>
+      <button
+        v-for="(s, i) in slides"
+        :key="i"
+        class="dot"
+        :class="{ active: i === index }"
+        :aria-selected="i === index"
+        @click="go(i)"
+        :aria-label="`${i + 1}번째 배너로 이동`"
+      ></button>
     </div>
   </section>
 </template>
@@ -71,12 +84,12 @@ onBeforeUnmount(stopAuto)
 /* ---------- Hero Slider ---------- */
 .hero-slider {
   position: relative;
-  padding-top: 12px;
+  padding-top: 0.75rem; /* 12px */
 }
 
 .hero-viewport {
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 1.5rem; /* 24px */
 }
 
 .hero-track {
@@ -91,10 +104,9 @@ onBeforeUnmount(stopAuto)
   min-width: 100%;
   position: relative;
   display: block;
-  height: 360px;
+  height: 22.5rem; /* 360px */
   overflow: hidden;
   text-decoration: none;
-  /* 링크 밑줄 제거 */
 }
 
 .hero-slide:visited {
@@ -107,10 +119,9 @@ onBeforeUnmount(stopAuto)
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* 통일 */
-  border-radius: 18px;
-  background: radial-gradient(80px 80px at 20% 80%, #ffcfed33 0, transparent 60%),
-    radial-gradient(80px 80px at 70% 20%, #8ad3ff33 0, transparent 60%),
+  border-radius: 1.125rem; /* 18px */
+  background: radial-gradient(5rem 5rem at 20% 80%, #ffcfed33 0, transparent 60%),
+    radial-gradient(5rem 5rem at 70% 20%, #8ad3ff33 0, transparent 60%),
     linear-gradient(135deg, #2b262d, #1f1a23);
 }
 
@@ -134,34 +145,21 @@ onBeforeUnmount(stopAuto)
   position: relative;
   z-index: 1;
   color: #fff;
-  padding: 40px 6vw;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+  padding: 2.5rem 6vw; /* 40px → rem, 가로는 vw 유지 */
+  text-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, .35); /* 2px 8px */
   align-self: center;
 }
 
 .hero h1 {
-  font-size: 40px;
+  font-size: 2.5rem; /* 40px */
   line-height: 1.15;
-  margin: 0 0 10px;
-  letter-spacing: -0.5px;
+  margin: 0 0 0.625rem; /* 10px */
+  letter-spacing: -0.031rem; /* -0.5px */
 }
 
 .hero__sub {
   margin: 0;
   color: #d6cde8;
-}
-
-/* Hero 장식 */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(2px 2px at 10% 20%, #fff8 50%, transparent 51%) repeat,
-    radial-gradient(1.5px 1.5px at 80% 30%, #fff6 50%, transparent 51%) repeat,
-    radial-gradient(1.5px 1.5px at 45% 70%, #fff7 50%, transparent 51%) repeat;
-  background-size: 180px 140px, 220px 160px, 200px 140px;
-  pointer-events: none;
 }
 
 /* 좌우 버튼 */
@@ -173,44 +171,58 @@ onBeforeUnmount(stopAuto)
   border: 0;
   background: rgba(0, 0, 0, .3);
   color: #fff;
-  width: 44px;
-  height: 44px;
+  width: 2.75rem;  /* 44px */
+  height: 2.75rem; /* 44px */
   border-radius: 50%;
   cursor: pointer;
 }
 
 .hero-btn.prev {
-  left: 10px;
+  left: 0.625rem; /* 10px */
 }
 
 .hero-btn.next {
-  right: 10px;
+  right: 0.625rem; /* 10px */
 }
 
 .hero-btn:hover {
   filter: brightness(1.03);
 }
 
+
 /* 인디케이터 (dots) */
 .hero-dots {
   position: absolute;
   left: 50%;
-  bottom: 10px;
+  bottom: 0.625rem; /* 10px */
   transform: translateX(-50%);
   display: flex;
-  gap: 8px;
-  padding: 16px;
+  gap: 0.5rem; /* 8px */
+  padding: 1rem; /* 16px */
   z-index: 5;
 }
 
-.hero-dots button {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;      
+.hero-dots .dot{
+  width: 0.625rem;  /* 10px */
+  height: 0.625rem; /* 10px */
+  border-radius: 50%;
   border: 0;
-  background: #d7cbbb;    
+  background: #d1d1d1;           
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: transform .2s ease, background-color .2s ease;
+}
+
+.hero-dots .dot:hover{ transform: scale(1.1) }
+
+.hero-dots .dot.active,
+.hero-dots .dot[aria-selected="true"]{
+  background: #3b3b3b;          
+}
+
+/* 접근성: 키보드 포커스 링 */
+.hero-dots .dot:focus-visible{
+  outline: 0.125rem solid #0f0f0f; /* 2px */
+  outline-offset: 0.125rem;        /* 2px */
 }
 
 /* 모션 줄이기 선호 시 */

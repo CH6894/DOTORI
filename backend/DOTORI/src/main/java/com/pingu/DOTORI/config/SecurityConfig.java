@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository; // ✅ 추가
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.*;
+import org.springframework.security.config.Customizer;
 
 import com.pingu.DOTORI.security.OAuth2SuccessHandler;
 import com.pingu.DOTORI.security.JwtAuthenticationFilter;
@@ -40,11 +41,11 @@ public class SecurityConfig {
             .requestMatchers("/", "/health", "/public/**").permitAll()
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
             .requestMatchers("/static/**").permitAll()
+            .requestMatchers("/assets/**").permitAll()
             .requestMatchers("/open/**").permitAll()
             .requestMatchers("/api/**").authenticated()
-            .anyRequest().authenticated()
-            )
-        	.oauth2Login(oauth -> oauth
+            .anyRequest().authenticated())
+        .oauth2Login(oauth -> oauth
             .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))
             .successHandler(oAuth2SuccessHandler) // 로그인 성공 후 JWT 발급
         );
@@ -55,14 +56,16 @@ public class SecurityConfig {
   @Bean(name = "apiCorsConfigurationSource")
   CorsConfigurationSource corsConfigurationSource() {
     var config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:8081"));
+    config.setAllowedOrigins(List.of("http://localhost:5173"));
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);
     config.setExposedHeaders(List.of("Authorization"));
 
-    var source = new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/api/**", config);
+    source.registerCorsConfiguration("/oauth2/**", config);
+    source.registerCorsConfiguration("/login/**", config);
     return source;
   }
 }

@@ -154,9 +154,9 @@ const routes: RouteRecordRaw[] = [
     meta: { header: "none", footer: true, chatbot: false },
   },
   {
-    path: "/oauth2/callback",
-    name: "oauth-callback",
-    component: OAuthCallback,
+    path: '/oauth2/callback',
+    name: 'OAuth2Callback',
+    component: () => import('@/pages/OAuthCallback.vue'),
     meta: { header: "main", footer: false, utilbar: true },
   },
 

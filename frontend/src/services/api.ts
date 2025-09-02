@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // 백엔드 API 기본 URL
-const API_BASE_URL = 'http://127.0.0.1:8000'
+const API_BASE_URL = 'http://localhost:8000'
 
 // axios 인스턴스 생성
 const apiClient = axios.create({

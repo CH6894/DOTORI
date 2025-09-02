@@ -38,6 +38,9 @@ public class ItemDetails {
 	@Column(name = "Unpacked") // 0/1
 	private Boolean unpacked;
 	
+	@Lob
+	@Column(name = "Product_Condition")
+	private String productCondition; // 상품 상태 상세 메모
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "Item_Code", nullable = false)

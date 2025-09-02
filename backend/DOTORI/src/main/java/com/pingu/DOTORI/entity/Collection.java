@@ -23,5 +23,6 @@
 //
 //    // 양방향: 매핑 테이블
 //    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = false)
+//    @Builder.Default
 //    private Set<CollectionMapping> mappings = new HashSet<>();
 //}

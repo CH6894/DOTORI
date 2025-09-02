@@ -39,8 +39,8 @@
         <table class="table">
           <thead>
             <tr>
-              <th style="width: 170px">검수 ID</th>
-              <th style="width: 170px">상품명</th>
+              <th style="width: 150px">검수 ID</th>
+              <th style="width: 190px">상품명</th>
               <th style="width: 170px">판매자</th>
               <th style="width: 170px">판매 등록가</th>
               <th style="width: 170px">개봉 여부</th>
@@ -66,13 +66,10 @@
                 <span class="chip chip--internal" v-if="ins.capturedAtInternal">{{ fmt(ins.capturedAtInternal) }}</span>
                 <span class="chip chip--muted" v-else>없음</span>
               </td>
-              <td>{{ ins.photos.length }}</td>
+              <td>{{ ins.photos?.length || 0 }}</td>
               <td>
                 <span :class="['badge', `badge--${ins.status.toLowerCase()}`]">{{ toKrStatus(ins.status) }}</span>
               </td>
-              <!-- <td>
-                <button class="btn btn--small" @click.stop="openReview(ins)">검토</button>
-              </td> -->
               <td>
                 <span v-if="ins.grade" :class="['badge-grade', `badge-grade--${ins.grade.toLowerCase()}`]">
                   {{ ins.grade }}
@@ -81,7 +78,7 @@
               </td>
             </tr>
             <tr v-if="!paged.length">
-              <td colspan="8" class="empty">검색 조건에 맞는 항목이 없습니다.</td>
+              <td colspan="10" class="empty">검색 조건에 맞는 항목이 없습니다.</td>
             </tr>
           </tbody>
         </table>
@@ -113,8 +110,7 @@
                   <div class="meta__sub">판매자: {{ current.sellerName }} · 등록일: {{ fmt(current.submittedAt) }}</div>
                 </div>
                 <div class="meta__right">
-                  <span :class="['badge', `badge--${current.status.toLowerCase()}`]">{{ toKrStatus(current.status)
-                  }}</span>
+                  <span :class="['badge', `badge--${current.status.toLowerCase()}`]">{{ toKrStatus(current.status) }}</span>
                 </div>
               </div>
 
@@ -122,21 +118,15 @@
               <div class="internal">
                 <span class="lock" aria-hidden="true">🔒</span>
                 <div class="internal__content">
-                  <div><strong>촬영시각:</strong> <span>{{ current.capturedAtInternal ? fmt(current.capturedAtInternal)
-                    : '없음' }}</span></div>
-                  <div v-if="current.warnings?.length"><strong>자동 경고:</strong>
-                    <ul class="warnings">
-                      <li v-for="(w, i) in current.warnings" :key="i">⚠ {{ w }}</li>
-                    </ul>
-                  </div>
+                  <div><strong>촬영시각:</strong> <span>{{ current.capturedAtInternal ? fmt(current.capturedAtInternal) : '없음' }}</span></div>
                 </div>
               </div>
 
               <!-- 이미지 미리보기 그리드 -->
-              <h3 class="section-title">이미지 ({{ Math.min(current.photos.length, 5) }})</h3>
+              <h3 class="section-title">이미지 ({{ Math.min(current.photos?.length || 0, 5) }})</h3>
               <div class="thumb-row">
                 <figure
-                  v-for="p in current.photos.slice(0, 5)"
+                  v-for="p in (current.photos?.slice(0, 5) || [])"
                   :key="p.id"
                   class="thumb"
                   @click="openViewer(p)"
@@ -156,6 +146,8 @@
               </div>
               <div v-else class="memo-empty">메모 없음</div>
 
+
+
               <!-- 의사결정 영역 -->
               <h3 class="section-title">검수 결정</h3>
               <div class="decision">
@@ -163,10 +155,10 @@
                   <div class="reasons" v-if="decision === 'REJECTED'">
                     <span class="label">반려 사유</span>
                     <div class="checks">
-                      <label v-for="r in defaultReasons" :key="r" class="check"><input type="checkbox" :value="r"
-                          v-model="rejectReasons" /> {{ r }}</label>
+                      <label v-for="r in defaultReasons" :key="r" class="check">
+                        <input type="checkbox" :value="r" v-model="rejectReasons" /> {{ r }}
+                      </label>
                     </div>
-                    <textarea v-model="rejectNote" class="note" placeholder="추가 메모(선택)"></textarea>
                   </div>
 
                   <div v-if="decision === 'APPROVED'" class="grade-select">
@@ -178,15 +170,13 @@
                       <option value="B">B</option>
                       <option value="C">C</option>
                     </select>
+                    <textarea v-model="approveNote" class="note" placeholder="추가 메모(선택)"></textarea>
                   </div>
-
                 </div>
                 <div class="decision__right">
                   <div class="buttons">
-                    <button class="btn btn--ghost danger" :class="{ active: decision === 'REJECTED' }"
-                      @click="setReject">반려</button>
-                    <button class="btn btn--primary" :class="{ active: decision === 'APPROVED' }"
-                      @click="setApprove">승인</button>
+                    <button class="btn btn--ghost danger" :class="{ active: decision === 'REJECTED' }" @click="setReject">반려</button>
+                    <button class="btn btn--primary" :class="{ active: decision === 'APPROVED' }" @click="setApprove">승인</button>
                   </div>
                 </div>
               </div>
@@ -215,18 +205,19 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue"
 import {
-  fetchInspections,
+  fetchInspectionsFromAdmin,
+  approveInspection,
+  rejectInspection,
   type Inspection,
   type Photo,
   type Status,
 } from "@/api/inspection"
-import { toDegrees } from "chart.js/helpers"
+import axios from "axios"
+
+const API_BASE = "http://localhost:8081/api/inspections"
+
 type InspectionEx = Inspection & { memo?: string }
 
-
-// ---------------------
-// 상태
-// ---------------------
 const list = ref<Inspection[]>([])
 const q = ref("")
 const status = ref<"" | Status>("")
@@ -241,7 +232,7 @@ const current = ref<InspectionEx | null>(null)
 
 const decision = ref<Status | null>(null)
 const rejectReasons = ref<string[]>([])
-const rejectNote = ref("")
+const approveNote = ref("")
 const defaultReasons = [
   "촬영 각도/장면 부족",
   "해상도/초점 문제",
@@ -255,7 +246,7 @@ const viewerOpen = ref(false)
 const viewerSrc = ref("")
 
 // ---------------------
-// 파생 값 & 페이지네이션
+// 필터 + 페이지네이션
 // ---------------------
 const filtered = computed(() => {
   const qv = q.value.toLowerCase()
@@ -276,8 +267,8 @@ const filtered = computed(() => {
 
     return hitQ && hitStatus && hitFrom && hitTo
   })
-    .sort((a, b) => Number(b.id.replace("ins_", "")) - Number(a.id.replace("ins_", "")))
 })
+
 
 const totalPages = computed(() =>
   Math.max(1, Math.ceil(filtered.value.length / pageSize.value))
@@ -291,13 +282,13 @@ const paged = computed(() => {
 const canSubmitDecision = computed(() => {
   if (!current.value || !decision.value) return false
   if (decision.value === "REJECTED")
-    return rejectReasons.value.length > 0 || !!rejectNote.value.trim()
+    return rejectReasons.value.length > 0 || !!approveNote.value.trim()
   if (decision.value === "APPROVED") return true
   return false
 })
 
 // ---------------------
-// 유틸/포맷터
+// 유틸
 // ---------------------
 function fmt(iso?: string) {
   if (!iso) return ""
@@ -310,11 +301,7 @@ function fmt(iso?: string) {
   return `${yyyy}-${mm}-${dd} ${hh}:${mi}`
 }
 function toKrStatus(s: Status) {
-  return s === "PENDING"
-    ? "대기"
-    : s === "APPROVED"
-      ? "승인"
-      : "반려"
+  return s === "PENDING" ? "대기" : s === "APPROVED" ? "승인" : "반려"
 }
 
 // ---------------------
@@ -330,13 +317,12 @@ function resetFilters() {
   dateTo.value = ""
   page.value = 1
 }
-
 function openReview(ins: Inspection) {
   current.value = { ...ins }
   panelOpen.value = true
   decision.value = null
   rejectReasons.value = []
-  rejectNote.value = ""
+  approveNote.value = ""
 }
 function closePanel() {
   panelOpen.value = false
@@ -352,31 +338,58 @@ function setApprove() {
 function setReject() {
   decision.value = "REJECTED"
 }
-
 async function submitDecision() {
   if (!current.value || !decision.value) return
-  alert(
-    `결정 저장: ${toKrStatus(decision.value)}\n등급: ${grade.value || "없음"}\n사유: ${rejectReasons.value.join(", ")
-    }\n메모: ${rejectNote.value}`
-  )
-  const idx = list.value.findIndex((x) => x.id === current.value!.id)
-  if (idx >= 0) {
-    list.value[idx].status = decision.value
+
+  try {
     if (decision.value === "APPROVED") {
-      list.value[idx].grade = grade.value || undefined
+      // 승인 시: 등급만 설정, 반려사유는 빈 값
+      const gradeNumber = grade.value ? getGradeNumber(grade.value) : undefined
+      await approveInspection(current.value.id, gradeNumber)
+    } else if (decision.value === "REJECTED") {
+      // 반려 시: 등급은 null, 반려사유만 설정
+      const reason = rejectReasons.value.join(", ") + (approveNote.value ? ` - ${approveNote.value}` : "")
+      await rejectInspection(current.value.id, undefined, reason)
     }
+
+    const { items } = await fetchInspectionsFromAdmin({
+      page: 0,
+      size: 50,
+    })
+    list.value = items
+
+    closePanel()
+  } catch (error) {
+    console.error("결정 저장 실패:", error)
+    alert("저장 실패! 콘솔 확인하세요.")
   }
-  closePanel()
+}
+
+// 등급 문자를 숫자로 변환하는 헬퍼 함수
+function getGradeNumber(grade: string): number {
+  switch (grade) {
+    case "S": return 1
+    case "A": return 2
+    case "B": return 3
+    case "C": return 4
+    default: return 1
+  }
 }
 
 // ---------------------
-// 데이터 로딩
+// ✅ DB에서 불러오기
 // ---------------------
 onMounted(async () => {
-  list.value = await fetchInspections({ status: "", q: "" })
+  const { items } = await fetchInspectionsFromAdmin({
+    state: undefined,
+    from: undefined,
+    to: undefined,
+    page: 0,
+    size: 50,
+  })
+  list.value = items
 })
 </script>
-
 
 <style scoped>
 .admin-page {
@@ -934,6 +947,101 @@ onMounted(async () => {
   padding: 8px 0;
 }
 
+
+
+/* === 이미지 뷰어 모달 === */
+.image-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-viewer {
+  position: relative;
+  max-width: 95vw;
+  max-height: 95vh;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.image-viewer__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.image-viewer__close:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.image-viewer__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.image-viewer__main {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.image-viewer__controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.image-viewer__counter {
+  color: #fff;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+}
+
+.image-viewer__thumbs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.image-viewer__thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.image-viewer__thumb:hover {
+  opacity: 0.8;
+}
+
+.image-viewer__thumb.active {
+  opacity: 1;
+  border: 2px solid #fff;
+}
+
 @media (max-width: 640px) {
   .filters {
     gap: 8px;
@@ -944,3 +1052,4 @@ onMounted(async () => {
   }
 }
 </style>
+

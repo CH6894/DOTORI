@@ -35,7 +35,7 @@
 
       <!-- 오른쪽: 상품 정보 -->
       <div class="product-details-area">
-        <h1 class="product-title">{{ product.title }}</h1>
+        <h1 class="product-title">{{ product.name }}</h1>
 
         <div class="product-meta">
           <div class="brand-info">
@@ -43,17 +43,17 @@
             <span class="value">{{ product.brand }}</span>
           </div>
           <div class="series-info">
-            <span class="label">작품명</span>
-            <span class="value">{{ product.series || '귀멸의 칼날' }}</span>
+            <span class="label">타이틀</span>
+            <span class="value">{{ product.title }}</span>
           </div>
           <div class="price-info">
             <div class="original-price">
               <span class="label">발매가</span>
-              <span class="value">{{ product.originalPrice }}</span>
+              <span class="value">{{ product.originalPrice || 0 }}</span>
             </div>
             <div class="current-price">
               <span class="label">현재가</span>
-              <span class="price">{{ product.currentPrice }}</span>
+              <span class="price">{{ computedCurrentPrice }}</span>
             </div>
           </div>
         </div>
@@ -81,11 +81,11 @@
             </svg>
           </button>
           <button class="sell-btn" @click="handleSell">판매</button>
-          <button class="purchase-btn" @click="buyNowDirect">구매</button>
+          <button class="purchase-btn" @click="buyNowDirect">미개봉 상품 구매</button>
         </div>
 
         <div class="cart-section">
-          <button class="cart-btn" @click="addToCartAndNotify">장바구니</button>
+          <button class="cart-btn" @click="addToCartAndNotify">장바구니 담기</button>
         </div>
       </div>
     </div>
@@ -123,6 +123,8 @@ wish.load()
 /* ===== 타입 정의 ===== */
 interface Product {
   id?: string | number
+  itemCode?: string
+  name?: string,
   title?: string
   brand?: string
   series?: string
@@ -132,6 +134,13 @@ interface Product {
   condition?: string
   shipping?: number | string
   images?: string[]
+  genre?: string
+  size?: string
+  manufacturer?: string
+  material?: string
+  description?: string
+  releaseMonth?: string
+  storageFees?: number
 }
 
 interface UsedConfirmPayload {
@@ -155,7 +164,18 @@ interface CartItem {
 }
 
 /* ===== props / emits ===== */
-const props = defineProps<{ product: Product }>()
+const props = defineProps<{ 
+  product: Product
+  approvedUnpackedDetails?: Array<{
+    itemId: number
+    cost: number | string // BigDecimal을 number 또는 string으로 받음
+    status: boolean
+    unpacked: boolean
+    productCondition?: string
+    itemName?: string
+    itemImgUrl?: string
+  }>
+}>()
 const emit = defineEmits<{
   (e: 'purchase', p: Product): void
   (e: 'addToCart', p: Product): void
@@ -184,14 +204,72 @@ const images = computed<string[]>(() => {
   return Array.isArray(arr) ? (arr.filter(Boolean) as string[]) : []
 })
 
+/* ===== 현재가 계산 ===== */
+const computedCurrentPrice = computed(() => {
+  console.log('ProductInfo - approvedUnpackedDetails:', props.approvedUnpackedDetails)
+  
+  // 승인된 미개봉 상품이 있으면 그 중 최저가를 현재가로 표시
+  if (props.approvedUnpackedDetails && props.approvedUnpackedDetails.length > 0) {
+    console.log('ProductInfo - 각 detail의 구조:')
+    props.approvedUnpackedDetails.forEach((detail, index) => {
+      console.log(`Detail ${index}:`, {
+        itemId: detail.itemId,
+        cost: detail.cost,
+        unpacked: detail.unpacked,
+        status: detail.status,
+        itemName: detail.itemName
+      })
+    })
+    
+    // unpacked = 0 (미개봉)이고 cost가 0보다 큰 상품만 필터링
+    const validDetails = props.approvedUnpackedDetails.filter(detail => {
+      const costValue = Number(detail.cost)
+      return detail.unpacked === false && costValue > 0
+    })
+    
+    console.log('ProductInfo - 유효한 미개봉 상품:', validDetails)
+    
+    if (validDetails.length > 0) {
+      const minPrice = Math.min(...validDetails.map(detail => Number(detail.cost)))
+      console.log('ProductInfo - 최저가 계산:', minPrice)
+      return `${minPrice.toLocaleString()}원`
+    }
+  }
+  
+  // 승인된 미개봉 상품이 없으면 기존 현재가 또는 발매가 표시
+  const fallbackPrice = props.product.currentPrice || props.product.originalPrice || '0원'
+  console.log('ProductInfo - fallback 가격:', fallbackPrice)
+  return fallbackPrice
+})
+
+// props 기본값 설정
+const approvedUnpackedDetails = computed(() => props.approvedUnpackedDetails || [])
+
 /* ===== 판매 모달용 데이터 ===== */
-const sellItem = computed(() => ({
-  id: props.product?.id ?? 0,
-  title: props.product?.title ?? '',
-  images: images.value.length ? images.value : ['/img/placeholder.jpg'],
-  condition: undefined as unknown as undefined,
-  price: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
-}))
+const sellItem = computed(() => {
+  const base = import.meta.env.VITE_ASSET_BASE
+  const code = props.product?.itemCode || props.product?.id?.toString()
+  const codeImg = code ? `${base}${code}.jpg` : undefined
+  const resolvedImages = images.value.length ? images.value : [codeImg || '/img/placeholder.jpg']
+  return {
+    id: props.product?.id?.toString() ?? '0',
+    itemCode: code ?? '0',
+    name: props.product?.name ?? '',
+    title: props.product?.title ?? '',
+    images: resolvedImages,
+    condition: undefined as unknown as undefined,
+    price: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
+    cost: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
+    genre: props.product?.genre,
+    size: props.product?.size,
+    manufacturer: props.product?.manufacturer,
+    material: props.product?.material,
+    information: props.product?.description,
+    releaseMonth: props.product?.releaseMonth,
+    imgUrl: images.value[0] || codeImg || '/img/placeholder.jpg',
+    storageFees: props.product?.storageFees
+  }
+})
 
 const priceRows = ref<Array<{ option: string; price: number; date: string }>>([
   {
