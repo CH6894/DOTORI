@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount } from 'vue'
+import { onMounted, onBeforeUnmount, ref } from 'vue'
+import type { Item } from '@/composables/useCatalog'
 
 onMounted(() => document.body.classList.add('home'))
 onBeforeUnmount(() => document.body.classList.remove('home'))
@@ -8,6 +9,9 @@ import CategoryGrid from '../components/CategoryGrid.vue'
 import ProductGrid from '../components/ProductGrid.vue'
 import TopButton from '../components/TopButton.vue'
 import ChatbotFab from '../components/ChatbotFab.vue'
+
+// 베스트셀러 아이템 데이터 (임시)
+const bestSellerItems = ref<Item[]>([])
 
 </script>
 
@@ -33,7 +37,7 @@ import ChatbotFab from '../components/ChatbotFab.vue'
 <h2 class="section__title center">Best Seller</h2>
 <p class="filters">
 </p>
-<ProductGrid />
+<ProductGrid :items="bestSellerItems" />
 </section>
 </div>
 </main>
