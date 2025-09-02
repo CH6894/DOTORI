@@ -397,9 +397,6 @@ export default {
       this.toast._t = setTimeout(() => { this.toast.open = false }, 2000)
     },
   },
-  async created() {
-    await Promise.all([this.fetchMe(), this.fetchWishlist()])
-  },
 }
 </script>
 

@@ -1,150 +1,168 @@
-import axios from "axios";
+import axios from "axios"
 
-export type Status = "PENDING" | "APPROVED" | "REJECTED";
+// --- axios 기본 설정 ---
+const api = axios.create({
+  baseURL: "http://localhost:8081/api/inspections",
+  withCredentials: true,
+})
 
-export type Photo = {
-  id: string;
-  url: string;
-  isCover: boolean;
-  width: number;
-  height: number;
-};
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken")
+  if (token) {
+    config.headers = config.headers || {}
+    config.headers["Authorization"] = `Bearer ${token}`
+  }
+  return config
+})
+
+export type Status = "PENDING" | "APPROVED" | "REJECTED"
 
 export type Inspection = {
-  id: string;
-  listingId: string;
-  listingTitle: string;
-  sellerName: string;
-  sellPrice: number;
-  isOpened: string;
-  submittedAt: string;
-  status: Status;
-  photos: Photo[];
-  capturedAtInternal?: string;
-  warnings?: string[];
-  grade?: "S" | "A" | "B" | "C";
-};
-
-// 👉 API 호출 함수
-export async function fetchInspections(params: any): Promise<Inspection[]> {
-  // 나중에 백엔드 나오면 이 부분만 교체
-  // const { data } = await axios.get("/api/inspections", { params })
-  // return data
-
-  // 현재는 더미 데이터
-  return demoInspections();
-}
-
-// 👉 더미 데이터 생성기
-function demoInspections(): Inspection[] {
-  const now = Date.now();
-  const make = (i: number, st: Status): Inspection => ({
-    id: `ins_${1000 + i}`,
-    listingId: `list_${2000 + i}`,
-    listingTitle: `굿즈 상품 ${i}`,
-    sellerName: i % 2 ? "mango" : "peach",
-    sellPrice: 10000 + i * 500,
-    isOpened: i % 2 === 0 ? "개봉" : "미개봉",
-    submittedAt: new Date(now - i * 86400000).toISOString(),
-    status: st,
-    photos: Array.from({ length: 4 + (i % 3) }, (_, k) => ({
-      id: `ph_${i}_${k}`,
-      url: `https://picsum.photos/seed/${i}-${k}/640/640`,
-      isCover: k === 0,
-      width: 640,
-      height: 640,
-    })),
-    capturedAtInternal: new Date(now - (i + 1) * 3600000).toISOString(),
-    warnings:
-      i % 3 === 0
-        ? ["정면 샷 부족", "라벨 근접샷 없음"]
-        : i % 5 === 0
-        ? ["해상도 낮음"]
-        : [],
-  });
-
-  return [
-    make(1, "PENDING"),
-    make(2, "PENDING"),
-    make(3, "PENDING"),
-    make(4, "APPROVED"),
-    make(5, "REJECTED"),
-    make(6, "PENDING"),
-    make(7, "PENDING"),
-    make(8, "APPROVED"),
-    make(9, "PENDING"),
-    make(10, "PENDING"),
-    make(11, "PENDING"),
-    make(12, "PENDING"),
-    make(13, "APPROVED"),
-    make(14, "PENDING"),
-    make(15, "REJECTED"),
-  ];
-}
-
-// --- [추가] 판매 신청 생성(약관 동의 후 최종 전송) -----------------
-export async function createInspection(fd: FormData): Promise<{ inspectionId: string; status: string }> {
-  const { data } = await axios.post('/api/inspections', fd, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  })
-  return data
-}
-
-// --- [추가] 관리자용 조회(백엔드 붙일 때 fetchInspections 대체용) -----
-export type OpenState = 'UNOPENED' | 'OPENED' | 'PARTIAL'
-
-// 백엔드에서 내려줄 DTO 예시 타입(필드명이 다르면 여기만 맞춰주면 됨)
-type AdminInspectionDto = {
-  inspectionId: string
-  productId?: string
-  productTitle: string
+  id: string
+  listingId: string
+  listingTitle: string
   sellerName: string
-  price: number
-  openState: OpenState
-  uploadedAt: string
-  capturedAtInternal?: string
+  sellPrice: number
+  isOpened: string
+  submittedAt: string
   status: Status
-  photos?: Array<{ id?: string; url: string; isCover?: boolean; width?: number; height?: number }>
-  imageUrls?: string[] // 사진을 URL 배열로만 줄 수도 있으니 대비
+  photos: any[]        
+  grade?: string     
+  memo?: string
+  capturedAtInternal?: string
 }
 
-// DTO -> 프론트 `Inspection`으로 변환
-function adaptAdmin(dto: AdminInspectionDto): Inspection {
-  const mkId = () => Math.random().toString(36).slice(2)
+// Page 타입
+export type Page<T> = {
+  content: T[]
+  totalElements: number
+  totalPages: number
+  number: number
+  size: number
+}
 
-  const photos: Photo[] =
-    (dto.photos
-      ? dto.photos.map((p, i) => ({
-          id: p.id ?? `ph_${dto.inspectionId}_${i}`,
-          url: p.url,
-          isCover: p.isCover ?? i === 0,
-          width: p.width ?? 640,
-          height: p.height ?? 640,
-        }))
-      : (dto.imageUrls ?? []).map((u, i) => ({
-          id: `ph_${dto.inspectionId}_${i}`,
-          url: u,
-          isCover: i === 0,
-          width: 640,
-          height: 640,
-        }))) || []
+// AdminListRow -> Inspection 변환용 타입
+export type AdminListRow = {
+  inspectionId: number
+  itemId: number
+  title: string
+  sellerName: string
+  registrationDate: string
+  unpacked: boolean
+  admissionState: number
+  quality: number | null
+  itemExplanation: string | null
+  imageCount: number
+  filmingTime: string | null
+  cost: number
+  imageUrls: string[]
+}
 
+// 상태 매핑
+function mapState(s: number): Status {
+  return s === 1 ? "APPROVED" : s === 2 ? "REJECTED" : "PENDING"
+}
+
+// AdminListRow -> Inspection 변환
+function rowToInspection(r: AdminListRow): Inspection {
   return {
-    id: dto.inspectionId,
-    listingId: dto.inspectionId,                     // 관리자 테이블에서 ID로도 쓰고 있어서 동일 매핑
-    listingTitle: dto.productTitle,
-    sellerName: dto.sellerName,
-    sellPrice: dto.price,
-    isOpened: dto.openState === 'UNOPENED' ? '미개봉' : '개봉',
-    submittedAt: dto.uploadedAt,
-    status: dto.status,
-    photos,
-    capturedAtInternal: dto.capturedAtInternal,
+    id: String(r.inspectionId),
+    listingId: String(r.itemId),
+    listingTitle: r.title || "상품명 없음",
+    sellerName: r.sellerName || "판매자명 없음",
+    sellPrice: r.cost ? Number(r.cost) : 0,
+    isOpened: r.unpacked ? "개봉" : "미개봉",
+    submittedAt: r.registrationDate || new Date().toISOString(),
+    status: mapState(r.admissionState || 0),
+    memo: r.itemExplanation || "",
+    photos: r.imageUrls?.map((url, idx) => ({ 
+      id: idx, 
+      url: url.startsWith('http') ? url : `http://localhost:8081/uploads/items/${url}` 
+    })) || [],
+    grade: r.quality !== null ? mapGrade(r.quality) : undefined,
+    capturedAtInternal: r.filmingTime || undefined,
   }
 }
 
-// 실제 관리자 목록 호출 (백엔드 붙이면 이걸 사용)
-export async function fetchInspectionsFromAdmin(params?: any): Promise<Inspection[]> {
-  const { data } = await axios.get<AdminInspectionDto[]>('/api/inspections/admin', { params })
-  return data.map(adaptAdmin)
+// 등급 숫자 -> 문자 변환 (예시)
+function mapGrade(q: number): string {
+  switch (q) {
+    case 1: return "S"
+    case 2: return "A"
+    case 3: return "B"
+    case 4: return "C"
+    default: return "-"
+  }
+}
+
+// ✅ 판매 신청 목록 가져오기
+export async function fetchInspectionsFromAdmin(params?: {
+  state?: number
+  from?: string
+  to?: string
+  page?: number
+  size?: number
+}): Promise<{ page: Page<AdminListRow>; items: Inspection[] }> {
+  try {
+    const { data } = await api.get<Page<AdminListRow>>("", { params })
+    const items = data.content.map(rowToInspection)
+    return { page: data, items }
+  } catch (error) {
+    console.error("API 호출 오류:", error)
+    throw error
+  }
+  
+}
+
+export type Photo = {
+  id: number
+  url: string
+  isCover?: boolean
+  width?: number
+  height?: number
+}
+
+export async function createInspection(fd: FormData) {
+  try {
+    const { data } = await api.post("", fd, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    return data
+  } catch (error: any) {
+    console.error("검수 신청 생성 오류:", error)
+    console.error("오류 응답:", error.response?.data)
+    console.error("오류 상태:", error.response?.status)
+    console.error("오류 메시지:", error.response?.data?.message)
+    throw error
+  }
+}
+
+// 관리자 승인
+export async function approveInspection(inspectionId: string, grade?: number, reason?: string) {
+  try {
+    const params = new URLSearchParams()
+    if (grade !== undefined) params.append('grade', grade.toString())
+    if (reason) params.append('reason', reason)
+    
+    const { data } = await api.post(`/${inspectionId}/approve?${params.toString()}`)
+    return data
+  } catch (error: any) {
+    console.error("승인 처리 오류:", error)
+    throw error
+  }
+}
+
+// 관리자 반려
+export async function rejectInspection(inspectionId: string, grade?: number, reason?: string) {
+  try {
+    const params = new URLSearchParams()
+    if (grade !== undefined) params.append('grade', grade.toString())
+    if (reason) params.append('reason', reason)
+    
+    const { data } = await api.post(`/${inspectionId}/reject?${params.toString()}`)
+    return data
+  } catch (error: any) {
+    console.error("반려 처리 오류:", error)
+    throw error
+  }
 }

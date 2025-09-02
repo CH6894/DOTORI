@@ -52,7 +52,7 @@ import logoKimetsu from '@/assets/ani/kimetsu.webp'
 import VerifiedBadge from '@/components/dex/VerifiedBadge.vue'
 import { computed, onMounted, ref } from 'vue'
 import { useDex } from '@/stores/useDex'
-import type { DexKey } from '@/stores/useDex'
+import type { DexKey } from '@/stores/dexKey'
 
 /** 원본 데이터 타입 */
 type RawFigure = {

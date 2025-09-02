@@ -7,8 +7,10 @@
 //@Getter @Setter @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode
 //@Embeddable
 //public class CollectionMapping implements Serializable {
-//    @Column(name = "User_ID", nullable = false)
-//    private Long userId;
+//	private static final long serialVersionUID = 1L;
+//
+//    @Column(name = "Item_Code", nullable = false)
+//    private Long itemCode;
 //
 //    @Column(name = "Collection_ID", nullable = false)
 //    private Long collectionId;

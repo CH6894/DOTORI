@@ -44,7 +44,7 @@
     <div ref="sentinel" class="infinite-sentinel" aria-hidden="true"></div>
   </div>
 
-  <!-- 모달 -->
+  <!-- 모달
   <teleport to="body">
     <div v-if="selectedCard" class="game-modal-overlay" @click="closeModal">
       <div class="game-modal" role="dialog" aria-modal="true" aria-labelledby="dex-modal-title" @click.stop>
@@ -96,7 +96,7 @@
         </div>
       </div>
     </div>
-  </teleport>
+  </teleport> -->
 </template>
 
 <script setup lang="ts">
