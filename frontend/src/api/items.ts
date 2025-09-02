@@ -17,3 +17,11 @@ export const fetchTitle = (genre : string, title: string, params?: PageParams) =
 // 아이템 상세 페이지
 export const fetchItemById = (id : string) =>
     openApi.get<ItemDTO>(`/open/items/${id}`).then(r => r.data)
+
+// 승인된 미개봉 상품의 ItemDetails 조회
+export const fetchApprovedUnpackedItemDetails = (itemCode: string) =>
+    openApi.get(`/open/items/${itemCode}/approved-unpacked-details`).then(r => r.data)
+
+// 승인된 개봉 상품의 ItemDetails 조회
+export const fetchApprovedOpenedItemDetails = (itemCode: string) =>
+    openApi.get(`/open/items/${itemCode}/approved-opened-details`).then(r => r.data)

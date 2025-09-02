@@ -159,7 +159,6 @@
                         <input type="checkbox" :value="r" v-model="rejectReasons" /> {{ r }}
                       </label>
                     </div>
-                    <textarea v-model="rejectNote" class="note" placeholder="추가 메모(선택)"></textarea>
                   </div>
 
                   <div v-if="decision === 'APPROVED'" class="grade-select">
@@ -171,6 +170,7 @@
                       <option value="B">B</option>
                       <option value="C">C</option>
                     </select>
+                    <textarea v-model="approveNote" class="note" placeholder="추가 메모(선택)"></textarea>
                   </div>
                 </div>
                 <div class="decision__right">
@@ -232,7 +232,7 @@ const current = ref<InspectionEx | null>(null)
 
 const decision = ref<Status | null>(null)
 const rejectReasons = ref<string[]>([])
-const rejectNote = ref("")
+const approveNote = ref("")
 const defaultReasons = [
   "촬영 각도/장면 부족",
   "해상도/초점 문제",
@@ -282,7 +282,7 @@ const paged = computed(() => {
 const canSubmitDecision = computed(() => {
   if (!current.value || !decision.value) return false
   if (decision.value === "REJECTED")
-    return rejectReasons.value.length > 0 || !!rejectNote.value.trim()
+    return rejectReasons.value.length > 0 || !!approveNote.value.trim()
   if (decision.value === "APPROVED") return true
   return false
 })
@@ -322,7 +322,7 @@ function openReview(ins: Inspection) {
   panelOpen.value = true
   decision.value = null
   rejectReasons.value = []
-  rejectNote.value = ""
+  approveNote.value = ""
 }
 function closePanel() {
   panelOpen.value = false
@@ -348,7 +348,7 @@ async function submitDecision() {
       await approveInspection(current.value.id, gradeNumber)
     } else if (decision.value === "REJECTED") {
       // 반려 시: 등급은 null, 반려사유만 설정
-      const reason = rejectReasons.value.join(", ") + (rejectNote.value ? ` - ${rejectNote.value}` : "")
+      const reason = rejectReasons.value.join(", ") + (approveNote.value ? ` - ${approveNote.value}` : "")
       await rejectInspection(current.value.id, undefined, reason)
     }
 
