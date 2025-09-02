@@ -62,3 +62,4 @@ public class Item {
 //	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = false)
 //	private Set<CollectionMapping> collections = new HashSet<>();
 }
+

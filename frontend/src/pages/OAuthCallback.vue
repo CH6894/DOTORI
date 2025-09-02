@@ -1,52 +1,40 @@
-<script setup>
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
-const router = useRouter()
-const auth = useAuthStore()
+const route = useRoute();
+const router = useRouter();
 
 onMounted(() => {
-  const token = new URLSearchParams(location.search).get('token')
-  
+  // URL에서 token 추출
+  const token = route.query.token as string | null;
+
   if (token) {
-    auth.setToken(token)
-    router.replace('/')
+    try {
+      // 로컬스토리지에 저장 (accessToken으로 통일)
+      localStorage.setItem("accessToken", token);
+      console.log("[OAuth2Callback] 토큰 저장 성공:", token);
+
+      // ✅ 필요하다면 axios 디폴트 헤더에도 즉시 반영
+      // import axios from "axios"; (위에 추가)
+      // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      // 원하는 페이지로 리다이렉트 (예: 메인화면)
+      router.replace("/");
+    } catch (e) {
+      console.error("[OAuth2Callback] 토큰 저장 중 오류:", e);
+      router.replace("/login");
+    }
   } else {
-    alert('로그인 실패')
-    router.replace('/login')
+    console.error("[OAuth2Callback] 토큰이 없음 → 로그인 페이지로 이동");
+    router.replace("/login");
   }
-})
+});
 </script>
 
 <template>
-  <div class="oauth-callback">
-    <div class="loading-spinner"></div>
-    <p>로그인 처리 중...</p>
+  <div style="text-align:center; padding:40px;">
+    <h2>로그인 처리 중입니다...</h2>
+    <p>잠시만 기다려 주세요 ⏳</p>
   </div>
 </template>
-
-<style scoped>
-.oauth-callback {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  gap: 20px;
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>
