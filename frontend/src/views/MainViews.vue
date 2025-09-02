@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue'
-import type { Item } from '@/composables/useCatalog'
+import type { CatalogItem } from '@/composables/useCatalog'
 
 onMounted(() => document.body.classList.add('home'))
 onBeforeUnmount(() => document.body.classList.remove('home'))
@@ -11,7 +11,7 @@ import TopButton from '../components/TopButton.vue'
 import ChatbotFab from '../components/ChatbotFab.vue'
 
 // 베스트셀러 아이템 데이터 (임시)
-const bestSellerItems = ref<Item[]>([])
+const bestSellerItems = ref<CatalogItem[]>([])
 
 </script>
 

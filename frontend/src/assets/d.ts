@@ -10,7 +10,7 @@ declare module '@/assets/MidCategoryData.js' {
 }
 
 declare module '@/assets/ItemData.js' {
-  export type Item = {
+  export type AssetItem = {
     id: number | string
     name: string
     price: number
@@ -19,6 +19,6 @@ declare module '@/assets/ItemData.js' {
     thumbWebp?: string
     thumbJpg?: string
   }
-  export const ItemData: Item[]
+  export const ItemData: AssetItem[]
   export default ItemData
 }

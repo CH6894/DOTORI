@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.*;
 import java.time.ZoneId;
 import java.util.*;
@@ -24,7 +25,7 @@ public class FileStorageService {
   public List<String> saveItemImages(Long itemId, List<MultipartFile> files) throws IOException {
     if (files == null || files.isEmpty()) return List.of();
 
-    Path dir = Paths.get(uploadRoot, "items", String.valueOf(itemId)).toAbsolutePath().normalize();
+    Path dir = Path.of(uploadRoot, "items", String.valueOf(itemId)).toAbsolutePath().normalize();
     Files.createDirectories(dir);
 
     List<String> urls = new ArrayList<>();
