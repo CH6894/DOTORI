@@ -123,6 +123,7 @@ wish.load()
 /* ===== 타입 정의 ===== */
 interface Product {
   id?: string | number
+  itemCode?: string
   name?: string,
   title?: string
   brand?: string
@@ -193,24 +194,30 @@ const images = computed<string[]>(() => {
 })
 
 /* ===== 판매 모달용 데이터 ===== */
-const sellItem = computed(() => ({
-  id: props.product?.id?.toString() ?? '0',
-  itemCode: props.product?.id?.toString() ?? '0',
-  name: props.product?.name ?? '',
-  title: props.product?.title ?? '',
-  images: images.value.length ? images.value : ['/img/placeholder.jpg'],
-  condition: undefined as unknown as undefined,
-  price: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
-  cost: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
-  genre: props.product?.genre,
-  size: props.product?.size,
-  manufacturer: props.product?.manufacturer,
-  material: props.product?.material,
-  information: props.product?.description,
-  releaseMonth: props.product?.releaseMonth,
-  imgUrl: images.value[0] || '/img/placeholder.jpg',
-  storageFees: props.product?.storageFees
-}))
+const sellItem = computed(() => {
+  const base = import.meta.env.VITE_ASSET_BASE
+  const code = props.product?.itemCode || props.product?.id?.toString()
+  const codeImg = code ? `${base}${code}.jpg` : undefined
+  const resolvedImages = images.value.length ? images.value : [codeImg || '/img/placeholder.jpg']
+  return {
+    id: props.product?.id?.toString() ?? '0',
+    itemCode: code ?? '0',
+    name: props.product?.name ?? '',
+    title: props.product?.title ?? '',
+    images: resolvedImages,
+    condition: undefined as unknown as undefined,
+    price: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
+    cost: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
+    genre: props.product?.genre,
+    size: props.product?.size,
+    manufacturer: props.product?.manufacturer,
+    material: props.product?.material,
+    information: props.product?.description,
+    releaseMonth: props.product?.releaseMonth,
+    imgUrl: images.value[0] || codeImg || '/img/placeholder.jpg',
+    storageFees: props.product?.storageFees
+  }
+})
 
 const priceRows = ref<Array<{ option: string; price: number; date: string }>>([
   {
