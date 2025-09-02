@@ -2,10 +2,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import ProductCard from '@/components/product/ProductCard.vue'
-import type { Item } from '@/composables/useCatalog'
+import type { CatalogItem } from '@/composables/useCatalog'
 
 const props = defineProps<{
-  items: Item[]
+  items: CatalogItem[]
   pageSize?: number      // 한 번에 추가로 그릴 개수(기본 24)
   rootMargin?: string    // 미리 당겨서 로드 (기본 '400px')
 }>()

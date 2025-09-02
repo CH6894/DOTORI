@@ -21,7 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -59,8 +60,8 @@ public class InspectionService {
         if (emailFromDto == null || emailFromDto.isEmpty()) {
             // SecurityContext에서 현재 인증된 사용자 이메일 가져오기
             Object principal = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principal instanceof org.springframework.security.core.userdetails.User) {
-                userEmail = ((org.springframework.security.core.userdetails.User) principal).getUsername();
+            if (principal instanceof org.springframework.security.core.userdetails.User user) {
+                userEmail = user.getUsername();
             } else {
                 throw new IllegalArgumentException("사용자 이메일을 찾을 수 없음");
             }
@@ -108,7 +109,7 @@ public class InspectionService {
             String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
 
             try {
-                Path savePath = Paths.get("C:/uploads/items/" + filename);
+                Path savePath = Path.of("C:/uploads/items/" + filename);
                 Files.createDirectories(savePath.getParent());
                 image.transferTo(savePath);
             } catch (IOException e) {
@@ -239,14 +240,14 @@ public class InspectionService {
     // ================== 헬퍼 메서드 ==================
     private Long safeLongValue(Object value) {
         if (value == null) return 0L;
-        if (value instanceof BigInteger) return ((BigInteger) value).longValue();
-        if (value instanceof Long) return (Long) value;
-        if (value instanceof Integer) return ((Integer) value).longValue();
-        if (value instanceof Number) return ((Number) value).longValue();
+        if (value instanceof BigInteger integer) return integer.longValue();
+        if (value instanceof Long long1) return long1;
+        if (value instanceof Integer integer) return integer.longValue();
+        if (value instanceof Number number) return number.longValue();
         // String으로 들어온 경우도 처리
-        if (value instanceof String) {
+        if (value instanceof String string) {
             try {
-                return Long.parseLong((String) value);
+                return Long.parseLong(string);
             } catch (NumberFormatException e) {
                 return 0L;
             }
@@ -256,16 +257,16 @@ public class InspectionService {
 
     private LocalDateTime safeLocalDateTimeValue(Object value) {
         if (value == null) return null;
-        if (value instanceof LocalDateTime) return (LocalDateTime) value;
-        if (value instanceof java.sql.Timestamp) {
-            return ((java.sql.Timestamp) value).toLocalDateTime();
+        if (value instanceof LocalDateTime time) return time;
+        if (value instanceof java.sql.Timestamp timestamp) {
+            return timestamp.toLocalDateTime();
         }
-        if (value instanceof java.sql.Date) {
-            return ((java.sql.Date) value).toLocalDate().atStartOfDay();
+        if (value instanceof java.sql.Date date) {
+            return date.toLocalDate().atStartOfDay();
         }
-        if (value instanceof String) {
+        if (value instanceof String string) {
             try {
-                return LocalDateTime.parse((String) value);
+                return LocalDateTime.parse(string);
             } catch (Exception e) {
                 return null;
             }

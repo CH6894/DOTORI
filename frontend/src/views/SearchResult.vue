@@ -5,9 +5,9 @@
   import TopTabs from '@/components/filters/TopTabs.vue'
   import MidTabs from '@/components/filters/MidTabs.vue'
   import ProductGrid from '@/components/product/ProductGrid.vue'
-  import type { Item } from '@/composables/useCatalog'
+  import type { CatalogItem } from '@/composables/useCatalog'
   import { fetchGenre, fetchTitle } from '@/api/items'
-  import type { ItemDTO } from '@/types/item'
+  import type { Item as ItemDTO } from '@/types/item'
   import type { Page } from '@/types/common'
   import TopCategoryData from '@/assets/TopCategoryData.js'
   import { MidCategoryMap } from '@/assets/MidCategoryMap'
@@ -24,7 +24,7 @@
   const sortDir   = ref<SortDir>((route.query.sd as SortDir) || 'desc')
   const midOptions = computed<string[]>(() => MidCategoryMap[top.value] ?? [])
 
-  function adapt(dto: ItemDTO): Item {
+  function adapt(dto: ItemDTO): CatalogItem {
     const base = import.meta.env.VITE_ASSET_BASE
     const img = dto.itemCode ? `${base}${dto.itemCode}.jpg` : undefined
     console.log(img)
@@ -32,14 +32,14 @@
       id: dto.itemCode,
       name: dto.name || dto.title,
       price: Number(dto.cost ?? 0),
-      top_category: dto.genre,
+      top_category: dto.genre || '',
       mid_category: dto.title,
       thumbWebp: img,
       thumbJpg: img,
     }
   }
 
-  const items = ref<Item[]>([])
+  const items = ref<CatalogItem[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 

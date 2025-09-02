@@ -275,7 +275,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, reactive } from 'vue'
 import { createInspection } from '@/api/inspection' // 경로는 프로젝트에 맞게
-import type { Item } from '@/types/item'
+import type { Item as ItemDTO } from '@/types/item'
 
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
 type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'seller' | 'buyer' | number }
@@ -294,11 +294,11 @@ function goBack() {
   else if (step.value === 3) step.value = 2
 }
 
-const props = defineProps<{ item: Item; price?: number; feeConfig?: FeeConfig }>()
+const props = defineProps<{ item: ItemDTO; price?: number; feeConfig?: FeeConfig }>()
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'submit', payload: { item: Item; price: number; memo: string; total: number; selectedChip: string | null }): void
-  (e: 'submitted', payload: { item: Item; price: number; memo: string; total: number; selectedChip: string | null; files: Array<{ file: File; caption?: string; isCover: boolean }> }): void
+  (e: 'submit', payload: { item: ItemDTO; price: number; memo: string; total: number; selectedChip: string | null }): void
+  (e: 'submitted', payload: { item: ItemDTO; price: number; memo: string; total: number; selectedChip: string | null; files: Array<{ file: File; caption?: string; isCover: boolean }> }): void
 }>()
 
 /* 갤러리(좌측) */

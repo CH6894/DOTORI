@@ -24,7 +24,7 @@ public class CalendarConfig {
 
     // ✅ 공용 CORS
     @Bean(name = "calendarCorsSource")
-    public CorsConfigurationSource calendarCorsSource() {
+    CorsConfigurationSource calendarCorsSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOrigins(List.of(
                 "http://localhost:5173",
@@ -42,7 +42,7 @@ public class CalendarConfig {
 
     // ✅ Hibernate 부팅속성: 스키마 검증으로 죽지 않게 + boolean→BIT 매핑
     @Bean
-    public HibernatePropertiesCustomizer calendarHibernateCustomizer() {
+    HibernatePropertiesCustomizer calendarHibernateCustomizer() {
         return (Map<String, Object> props) -> {
             // 개발 중 추천: "none" (또는 "update")
             props.put("hibernate.hbm2ddl.auto", "none");

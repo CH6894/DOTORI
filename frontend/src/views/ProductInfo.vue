@@ -72,7 +72,7 @@ import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
 import RecommendedProducts from '@/components/RecommendedProducts.vue'
 import RelatedProducts from '@/components/RelatedProducts.vue'
 import { fetchItemById } from '@/api/items'
-import type { ItemDTO } from '@/types/item'
+import type { Item as ItemDTO } from '@/types/item'
 
 const route = useRoute()
 const productId = String(route.params.id)
