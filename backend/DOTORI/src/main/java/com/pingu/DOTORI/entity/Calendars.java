@@ -30,21 +30,20 @@ public class Calendars {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "Schedule_ID", nullable = false)
+	@Column(name = "schedule_id", nullable = false)
 	private Long id;
 
 	@Column(name = "schedule_date", nullable = false)
     private LocalDateTime scheduleDate;
 	
-
-	@Column(name = "Schedule_Name", nullable = false, length = 255)
+	@Column(name = "schedule_name", nullable = false, length = 255)
 	private String scheduleName;
 
 	@Lob
-	@Column(name = "Schedule_Info")
+	@Column(name = "schedule_info")
 	private String scheduleInfo;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "User_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_Users_TO_Calendar"))
+	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Users_TO_Calendar"))
 	private Users user;
 }
