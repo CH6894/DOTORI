@@ -39,8 +39,8 @@
         <table class="table">
           <thead>
             <tr>
-              <th style="width: 170px">검수 ID</th>
-              <th style="width: 170px">상품명</th>
+              <th style="width: 150px">검수 ID</th>
+              <th style="width: 190px">상품명</th>
               <th style="width: 170px">판매자</th>
               <th style="width: 170px">판매 등록가</th>
               <th style="width: 170px">개봉 여부</th>
@@ -146,6 +146,8 @@
               </div>
               <div v-else class="memo-empty">메모 없음</div>
 
+
+
               <!-- 의사결정 영역 -->
               <h3 class="section-title">검수 결정</h3>
               <div class="decision">
@@ -204,6 +206,8 @@
 import { computed, onMounted, ref } from "vue"
 import {
   fetchInspectionsFromAdmin,
+  approveInspection,
+  rejectInspection,
   type Inspection,
   type Photo,
   type Status,
@@ -339,14 +343,13 @@ async function submitDecision() {
 
   try {
     if (decision.value === "APPROVED") {
-      await axios.post(`${API_BASE}/${current.value.id}/approve`, {
-        grade: grade.value || null,
-      })
+      // 승인 시: 등급만 설정, 반려사유는 빈 값
+      const gradeNumber = grade.value ? getGradeNumber(grade.value) : undefined
+      await approveInspection(current.value.id, gradeNumber)
     } else if (decision.value === "REJECTED") {
-      await axios.post(`${API_BASE}/${current.value.id}/reject`, {
-        reasons: rejectReasons.value,
-        note: rejectNote.value,
-      })
+      // 반려 시: 등급은 null, 반려사유만 설정
+      const reason = rejectReasons.value.join(", ") + (rejectNote.value ? ` - ${rejectNote.value}` : "")
+      await rejectInspection(current.value.id, undefined, reason)
     }
 
     const { items } = await fetchInspectionsFromAdmin({
@@ -359,6 +362,17 @@ async function submitDecision() {
   } catch (error) {
     console.error("결정 저장 실패:", error)
     alert("저장 실패! 콘솔 확인하세요.")
+  }
+}
+
+// 등급 문자를 숫자로 변환하는 헬퍼 함수
+function getGradeNumber(grade: string): number {
+  switch (grade) {
+    case "S": return 1
+    case "A": return 2
+    case "B": return 3
+    case "C": return 4
+    default: return 1
   }
 }
 
@@ -932,6 +946,8 @@ onMounted(async () => {
   font-size: 14px;
   padding: 8px 0;
 }
+
+
 
 /* === 이미지 뷰어 모달 === */
 .image-viewer-overlay {

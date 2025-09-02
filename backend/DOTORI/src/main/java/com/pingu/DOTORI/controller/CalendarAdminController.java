@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin/calendars")
+@RequestMapping("/calendar")
 @RequiredArgsConstructor
 public class CalendarAdminController {
 
@@ -16,7 +16,11 @@ public class CalendarAdminController {
 
     @PostMapping
     public ResponseEntity<CalendarResponse> create(@RequestBody CalendarRequest body) {
-        return ResponseEntity.ok(service.create(body));
+        try {
+            return ResponseEntity.ok(service.create(body));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);  // 예외 처리 추가
+        }
     }
 
     // 부분 수정

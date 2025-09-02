@@ -1,3 +1,4 @@
+<!-- src/components/product/ProductGrid.vue -->
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import ProductCard from '@/components/product/ProductCard.vue'

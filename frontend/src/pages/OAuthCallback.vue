@@ -11,8 +11,8 @@ onMounted(() => {
 
   if (token) {
     try {
-      // 로컬스토리지에 저장
-      localStorage.setItem("AuthToken", token);
+      // 로컬스토리지에 저장 (accessToken으로 통일)
+      localStorage.setItem("accessToken", token);
       console.log("[OAuth2Callback] 토큰 저장 성공:", token);
 
       // ✅ 필요하다면 axios 디폴트 헤더에도 즉시 반영

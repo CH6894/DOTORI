@@ -6,13 +6,21 @@ import MidTabs from './MidTabs.vue'
 type Item = { id: string; name: string }
 
 const props = withDefaults(defineProps<{
+  /** 표시할 탭 목록: [{ id, name }] */
   items: Item[]
+  /** 현재 선택된 탭 id (v-model) */
   modelValue: string
+  /** 네비게이션 접근성 라벨 */
   ariaLabel?: string
+  /** 보이기/숨기기 */
   visible?: boolean
-  includeAll?: boolean     // ← 추가: 기본 true
-  allId?: string           // ← 추가: ‘전체’의 id
-  allName?: string         // ← 추가: ‘전체’의 라벨
+
+  /** '전체' 탭 포함 여부 (기본: true) */
+  includeAll?: boolean
+  /** '전체' 탭의 id (기본: 'all') */
+  allId?: string
+  /** '전체' 탭의 라벨 (기본: '전체') */
+  allName?: string
 }>(), {
   visible: true,
   includeAll: true,
@@ -20,57 +28,77 @@ const props = withDefaults(defineProps<{
   allName: '전체',
 })
 
-const emit = defineEmits<{ (e:'update:modelValue', v:string): void }>()
+const emit = defineEmits<{ (e: 'update:modelValue', v: string): void }>()
 
-/** ‘전체’ 숨김 여부에 따라 항목 필터링 */
+/** includeAll=false면 '전체'를 제거한 목록을 사용 (공백/대소문자까지 방어) */
 const filteredItems = computed<Item[]>(() => {
-  if (props.includeAll) return props.items
-  const nameLower = props.allName.toLowerCase()
-  return props.items.filter(i =>
-    i.id !== props.allId &&
-    i.name !== props.allName &&
-    i.name.toLowerCase() !== nameLower
-  )
+  const list = props.items ?? []
+  if (props.includeAll) return list
+  const norm = (v: string) => (v ?? '').toString().trim().toLowerCase()
+  const allId   = norm(props.allId || 'all')
+  const allName = norm(props.allName || '전체')
+  return list.filter(i => norm(i.id) !== allId && norm(i.name) !== allName)
 })
 
-/** 이름/ID 매핑은 필터된 목록 기준으로 생성 */
+/** 이름/ID 양방향 매핑 (필터된 목록 기준) */
 const nameById = computed(() => new Map(filteredItems.value.map(i => [i.id, i.name])))
 const idByName = computed(() => new Map(filteredItems.value.map(i => [i.name, i.id])))
 
+/** 하위 MidTabs는 name을 v-model로 받으므로, 내부 선택 값은 name으로 관리 */
 const selectedName = ref<string>('')
 
-/** props 변화에 맞춰 초기 선택값 세팅 */
+/** props 변화 시 내부/외부 선택 동기화 */
 watch(
-  () => [props.items, props.modelValue, props.includeAll] as const,
+  () => [props.items, props.modelValue, props.includeAll, props.allId, props.allName] as const,
   () => {
-    // modelValue가 유효하면 그 이름으로, 아니면 첫 번째 탭으로
-    const fromModel = nameById.value.get(props.modelValue)
+    const items = filteredItems.value
+    const first = items[0]
+
+    // modelValue가 유효한 경우 → 해당 name으로 설정
+    const fromModel = props.modelValue ? nameById.value.get(props.modelValue) : undefined
     if (fromModel) {
       selectedName.value = fromModel
+      return
+    }
+
+    // includeAll=false인데 modelValue가 '전체'를 가리키면 첫번째 유효 id로 보정
+    if (!props.includeAll && props.modelValue === props.allId && first?.id) {
+      emit('update:modelValue', first.id)
+      selectedName.value = first.name
+      return
+    }
+
+    // 모델이 비어있거나 유효하지 않으면 첫 항목으로 초기화
+    if (first) {
+      selectedName.value = first.name
+      if (props.modelValue !== first.id) emit('update:modelValue', first.id)
     } else {
-      selectedName.value = filteredItems.value[0]?.name ?? ''
-      // includeAll=false인데 modelValue가 ‘전체’를 가리키고 있으면 첫 탭 id로 교정
-      if (!props.includeAll && (props.modelValue === props.allId)) {
-        const firstId = filteredItems.value[0]?.id
-        if (firstId) emit('update:modelValue', firstId)
-      }
+      // 항목이 비어있는 경우 방어
+      selectedName.value = ''
     }
   },
   { immediate: true }
 )
 
-/** 하위 MidTabs에서 이름이 바뀌면 id로 역매핑해 상위로 올림 */
+/** 하위(MidTabs)에서 이름이 바뀌면 id로 역매핑해서 부모로 올림 */
 watch(selectedName, (next) => {
   const id = idByName.value.get(next)
-  if (id && id !== props.modelValue) emit('update:modelValue', id)
+  if (id && id !== props.modelValue) {
+    emit('update:modelValue', id)
+  } else if (!id && filteredItems.value[0]) {
+    // name→id 역매핑 실패 시 첫 항목으로 보정
+    emit('update:modelValue', filteredItems.value[0].id)
+    selectedName.value = filteredItems.value[0].name
+  }
 })
 </script>
 
 <template>
   <MidTabs
+    v-if="visible"
     :items="filteredItems.map(i => i.name)"
     v-model="selectedName"
-    :aria-label="props.ariaLabel"
-    :visible="props.visible"
+    :aria-label="ariaLabel || '중위 카테고리'"
+    :visible="visible"
   />
 </template>

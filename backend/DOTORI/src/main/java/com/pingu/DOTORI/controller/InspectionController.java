@@ -21,7 +21,17 @@ public class InspectionController {
     /** 판매자 검수 신청 생성 */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CreateResult> create(@ModelAttribute InspectionRequest dto) throws Exception {
+        System.out.println("=== 받은 데이터 디버깅 ===");
+        System.out.println("itemCode: " + dto.getItemCode());
+        System.out.println("productTitle: " + dto.getProductTitle());
+        System.out.println("userId: " + dto.getUserId());
+        System.out.println("price: " + dto.getPrice());
+        System.out.println("unpacked: " + dto.getUnpacked());
+        System.out.println("memo: " + dto.getMemo());
         System.out.println("FilmingTime: " + dto.getFilmingTime());
+        System.out.println("images count: " + (dto.getImages() != null ? dto.getImages().size() : 0));
+        System.out.println("========================");
+        
         CreateResult result = inspectionService.createInspection(dto);
         return ResponseEntity.ok(result);
     }
@@ -50,5 +60,27 @@ public class InspectionController {
                 inspectionService.getAdminInspections(state, from, to, page, size);
 
         return ResponseEntity.ok(adminList);
+    }
+
+    /** 관리자 승인 */
+    @PostMapping("/{inspectionId}/approve")
+    public ResponseEntity<Void> approveInspection(
+            @PathVariable Long inspectionId,
+            @RequestParam(required = false) Integer grade,
+            @RequestParam(required = false) String reason) {
+        
+        inspectionService.approve(inspectionId, grade, reason);
+        return ResponseEntity.ok().build();
+    }
+
+    /** 관리자 반려 */
+    @PostMapping("/{inspectionId}/reject")
+    public ResponseEntity<Void> rejectInspection(
+            @PathVariable Long inspectionId,
+            @RequestParam(required = false) Integer grade,
+            @RequestParam(required = false) String reason) {
+        
+        inspectionService.reject(inspectionId, grade, reason);
+        return ResponseEntity.ok().build();
     }
 }

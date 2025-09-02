@@ -2,19 +2,23 @@
 * {
   box-sizing: border-box;
 }
+
 html, body {
   font-family: "Pretendard Variable", "Pretendard",
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
     Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
+
 html {
   min-height: 100%;
 }
+
 img {
   display: block;
   max-width: 100%;
   height: auto;
 }
+
 /* 링크 전역 규칙 (요구사항) */
 a {
   color: inherit;
@@ -28,9 +32,23 @@ a:hover {
   text-decoration: underline;
 }
 a:focus-visible {
-  outline: 2px dashed #a83b32;
-  outline-offset: 3px;
+  outline: 0.125rem dashed #a83b32;  /* 2px */
+  outline-offset: 0.1875rem;         /* 3px */
 }
-html, body, #app { overflow-x: clip; }
-:root { --page-width: 1280px; --page-pad: 12px; }
-.container { width: min(100%, var(--page-width)); margin-inline: auto; padding-inline: var(--page-pad); }
+
+/* 레이아웃 기본값 */
+html, body, #app { 
+  overflow-x: clip; 
+}
+
+:root { 
+  --page-width: 80rem;   /* 1280px */
+  --page-pad: 0.75rem;   /* 12px */
+}
+
+/* 컨테이너: 최대폭 + 패딩 */
+.container { 
+  width: min(100%, var(--page-width));
+  margin-inline: auto;
+  padding-inline: var(--page-pad);
+}

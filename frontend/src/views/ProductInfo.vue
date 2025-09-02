@@ -6,6 +6,12 @@
         <div class="loading-spinner">로딩 중...</div>
       </div>
       
+      <!-- 에러 상태 -->
+      <div v-else-if="error" class="error-container">
+        <h2>{{ error }}</h2>
+        <button @click="goBack" class="back-btn">이전 페이지로</button>
+      </div>
+      
       <!-- 상품 정보가 로드된 후 -->
       <div v-else-if="product.id">
         <!-- 상품 기본 정보 섹션 -->
@@ -56,7 +62,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import ProductInfo from '@/components/ProductInfo.vue'
@@ -65,48 +71,59 @@ import UsedProductsSection from '@/components/UsedProductsSection.vue'
 import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
 import RecommendedProducts from '@/components/RecommendedProducts.vue'
 import RelatedProducts from '@/components/RelatedProducts.vue'
+import { fetchItemById } from '@/api/items'
+import type { ItemDTO } from '@/types/item'
 
 const route = useRoute()
-const productId = route.params.id
+const productId = String(route.params.id)
 
 // 반응형 데이터
 const loading = ref(true)
-const product = ref({})
-const priceData = ref([])
-const usedItems = ref([])
-const recommendedProducts = ref([])
-const relatedProducts = ref([])
+const error = ref<string | null>(null)
+const product = ref<any>({})
+const priceData = ref<any[]>([])
+const usedItems = ref<any[]>([])
+const recommendedProducts = ref<any[]>([])
+const relatedProducts = ref<any[]>([])
 const showUsedItemDetail = ref(false)
-const selectedUsedItem = ref(null)
+const selectedUsedItem = ref<any>(null)
 
 // 상품 타입 계산 (URL 파라미터나 상품 데이터 기반)
 const productType = computed(() => {
   return product.value.type || 'new' // 기본은 'new' (미개봉)
 })
 
-// API 호출 함수들 (DB 연동 준비)
+// ItemDTO를 화면용 product 객체로 변환
+function adaptProduct(dto: ItemDTO) {
+  return {
+    id: dto.itemCode,
+    name: dto.name,
+    title: dto.title,
+    brand: dto.manufacturer || '브랜드 미정',
+    originalPrice: dto.cost ? `${dto.cost.toLocaleString()}원` : '발매가 미정',
+    currentPrice: `${(dto.cost ?? 0).toLocaleString()}원`,
+    type: 'new', // 기본은 미개봉 상품
+    images: dto.imgUrl ? [dto.imgUrl] : ['/img/placeholder.jpg'],
+    description: dto.information || `${dto.name || dto.title} 상품입니다.`,
+    // 추가 필드들
+    manufacturer: dto.manufacturer,
+    material: dto.material,
+    releaseMonth: dto.releaseMonth,
+    size: dto.size,
+    genre: dto.genre,
+    storageFees: dto.storageFees,
+    cost: dto.cost
+  }
+}
+
+// API 호출 함수들
 const fetchProductDetail = async () => {
   try {
-    // const response = await fetch(`/api/products/${productId}`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제)
-    product.value = {
-      id: productId,
-      title: '세가 (SEGA) 귀멸의 칼날 Xross Link 피규어 렌고쿠 쿄쥬로 이카자',
-      brand: '세가',
-      originalPrice: '발매가 미정',
-      currentPrice: '20,000원',
-      type: 'new', // 기본은 미개봉 상품
-      images: [
-        '/img/예시1.jpg',
-         '/img/예시1.jpg',
-         '/img/예시1.jpg',
-      ],
-      description: '세가에서 출시한 귀멸의 칼날 피규어입니다.'
-    }
-  } catch (error) {
-    console.error('상품 정보 로드 실패:', error)
+    const data: ItemDTO = await fetchItemById(productId)
+    product.value = adaptProduct(data)
+  } catch (e: any) {
+    console.error('상품 정보 로드 실패:', e)
+    error.value = e?.message ?? '상품 정보를 불러오지 못했습니다.'
   }
 }
 
@@ -114,16 +131,12 @@ const fetchPriceData = async () => {
   if (productType.value !== 'new') return
   
   try {
+    // TODO: 실제 가격 차트 API 연동
     // const response = await fetch(`/api/products/${productId}/price-chart`)
-    // const data = await response.json()
+    // priceData.value = await response.json()
     
-    // 임시 데이터 (DB 연동 시 삭제)
-    priceData.value = [
-      { date: '24/07/28', price: 20000 },
-      { date: '24/08/04', price: 22000 },
-      { date: '24/08/11', price: 25000 },
-      { date: '24/08/18', price: 20000 },
-    ]
+    // 임시 빈 데이터
+    priceData.value = []
   } catch (error) {
     console.error('가격 차트 데이터 로드 실패:', error)
   }
@@ -208,46 +221,9 @@ const fetchUsedItems = async () => {
   }
 }
 
-const fetchRecommendedProducts = async () => {
-  try {
-    // const response = await fetch(`/api/products/${productId}/recommended`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제)
-    recommendedProducts.value = [
-      { id: 1, title: '추천상품1', image: '/img/rec1.jpg', price: '15,000원' },
-      { id: 2, title: '추천상품2', image: '/img/rec2.jpg', price: '18,000원' },
-      { id: 3, title: '추천상품3', image: '/img/rec3.jpg', price: '22,000원' },
-      { id: 4, title: '추천상품4', image: '/img/rec4.jpg', price: '25,000원' },
-      { id: 4, title: '추천상품5', image: '/img/rec4.jpg', price: '25,000원' },
-     { id: 4, title: '추천상품', image: '/img/rec4.jpg', price: '25,000원' },
-    ]
-  } catch (error) {
-    console.error('추천 상품 로드 실패:', error)
-  }
-}
-
-const fetchRelatedProducts = async () => {
-  try {
-    // const response = await fetch(`/api/products/${productId}/related`)
-    // const data = await response.json()
-    
-    // 임시 데이터 (DB 연동 시 삭제)
-    relatedProducts.value = [
-      { id: 1, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
-      { id: 2, title: '함께본상품2', image: '/img/rel2.jpg', price: '25,000원' },
-      { id: 3, title: '함께본상품3', image: '/img/rel3.jpg', price: '18,000원' },
-      { id: 4, title: '함께본상품4', image: '/img/rel4.jpg', price: '35,000원' },
-      { id: 5, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
-      { id: 6, title: '함께본상품1', image: '/img/test.jpg', price: '20,000원' },
-    ]
-  } catch (error) {
-    console.error('관련 상품 로드 실패:', error)
-  }
-}
 
 // 이벤트 핸들러들
-const handlePurchase = async (productData) => {
+const handlePurchase = async (productData: any) => {
   try {
     // 미개봉 상품 즉시 구매 API 호출
     console.log('구매 처리:', productData)
@@ -258,14 +234,25 @@ const handlePurchase = async (productData) => {
   }
 }
 
+const handleAddToCart = async (productData: any) => {
+  try {
+    // 장바구니 추가 API 호출
+    console.log('장바구니 추가:', productData)
+    // const response = await fetch('/api/cart/add', {...})
+    alert('장바구니에 추가되었습니다.')
+  } catch (error) {
+    console.error('장바구니 추가 실패:', error)
+    alert('장바구니 추가 중 오류가 발생했습니다.')
+  }
+}
 
 // 중고상품 관련 핸들러들
-const handleUsedItemDetailDirect = (item) => {
+const handleUsedItemDetailDirect = (item: any) => {
   selectedUsedItem.value = item
   showUsedItemDetail.value = true
 }
 
-const handleUsedItemPurchase = async (usedItem) => {
+const handleUsedItemPurchase = async (usedItem: any) => {
   try {
     // 중고상품 구매 API 호출
     console.log('중고상품 구매:', usedItem)
@@ -276,7 +263,7 @@ const handleUsedItemPurchase = async (usedItem) => {
   }
 }
 
-const handleUsedItemAddToCart = async (usedItem) => {
+const handleUsedItemAddToCart = async (usedItem: any) => {
   try {
     // 중고상품 장바구니 추가 API 호출
     console.log('중고상품 장바구니 추가:', usedItem)
@@ -296,6 +283,7 @@ const goBack = () => {
 // 페이지 초기화
 const initializePage = async () => {
   loading.value = true
+  error.value = null // 에러 상태 초기화
   
   try {
     // 병렬로 데이터 로드
@@ -303,8 +291,6 @@ const initializePage = async () => {
       fetchProductDetail(),
       fetchPriceData(),
       fetchUsedItems(),
-      fetchRecommendedProducts(),
-      fetchRelatedProducts()
     ])
   } catch (error) {
     console.error('페이지 초기화 실패:', error)

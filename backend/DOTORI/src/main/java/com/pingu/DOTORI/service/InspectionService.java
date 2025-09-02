@@ -3,11 +3,15 @@ package com.pingu.DOTORI.service;
 import com.pingu.DOTORI.dto.AdminListRow;
 import com.pingu.DOTORI.dto.InspectionRequest;
 import com.pingu.DOTORI.entity.Admin;
+import com.pingu.DOTORI.entity.Item;
 import com.pingu.DOTORI.entity.ItemDetails;
 import com.pingu.DOTORI.entity.ItemImg;
+import com.pingu.DOTORI.entity.Users;
 import com.pingu.DOTORI.repository.AdminRepository;
 import com.pingu.DOTORI.repository.ItemDetailsRepository;
 import com.pingu.DOTORI.repository.ItemImgRepository;
+import com.pingu.DOTORI.repository.ItemRepository;
+import com.pingu.DOTORI.repository.UsersRepository;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import org.springframework.data.domain.*;
@@ -18,27 +22,20 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import com.pingu.DOTORI.util.ImageMetadataUtil;
 
 @Service
+@RequiredArgsConstructor
 public class InspectionService {
 
     private final AdminRepository adminRepository;
     private final ItemDetailsRepository itemDetailsRepository;
     private final ItemImgRepository itemImgRepository;
-
-    public InspectionService(AdminRepository adminRepository,
-                             ItemDetailsRepository itemDetailsRepository,
-                             ItemImgRepository itemImgRepository) {
-        this.adminRepository = adminRepository;
-        this.itemDetailsRepository = itemDetailsRepository;
-        this.itemImgRepository = itemImgRepository;
-    }
+    private final ItemRepository itemRepository;
+    private final UsersRepository usersRepository;
 
     @Getter
     @Setter
@@ -52,14 +49,41 @@ public class InspectionService {
     // ================== 검수 신청 생성 ==================
     @Transactional
     public CreateResult createInspection(InspectionRequest dto) throws IOException {
-        // 1. ItemDetails 조회
-    	ItemDetails itemDetails = itemDetailsRepository
-    		    .findFirstByItem_ItemCodeAndUser_Id(dto.getItemCode(), dto.getUserId())
-    		    .orElseThrow(() -> new IllegalArgumentException(
-    		        "잘못된 아이템 코드 또는 유저 ID: " + dto.getItemCode() + ", user=" + dto.getUserId()
-    		    ));
+        // 1. Item 엔티티 조회
+        Item item = itemRepository.findById(dto.getItemCode())
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없음: " + dto.getItemCode()));
+        
+        // 2. User 엔티티 조회 (JWT에서 이메일 추출)
+        final String userEmail;
+        String emailFromDto = dto.getUserEmail();
+        if (emailFromDto == null || emailFromDto.isEmpty()) {
+            // SecurityContext에서 현재 인증된 사용자 이메일 가져오기
+            Object principal = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof org.springframework.security.core.userdetails.User) {
+                userEmail = ((org.springframework.security.core.userdetails.User) principal).getUsername();
+            } else {
+                throw new IllegalArgumentException("사용자 이메일을 찾을 수 없음");
+            }
+        } else {
+            userEmail = emailFromDto;
+        }
+        
+        Users user = usersRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음: " + userEmail));
 
-        // 2. Admin 엔티티 생성
+        // 3. ItemDetails 새로 생성
+        ItemDetails itemDetails = ItemDetails.builder()
+                .item(item)
+                .user(user)
+                .cost(dto.getPrice())
+                .status(true) // 활성 상태
+                .unpacked(dto.getUnpacked() == 1) // 0=미개봉, 1=개봉
+                .storageDate(LocalDateTime.now())
+                .build();
+        
+        itemDetailsRepository.save(itemDetails);
+
+        // 4. Admin 엔티티 생성
         Admin admin = Admin.builder()
                 .itemDetails(itemDetails)
                 .registrationDate(LocalDateTime.now())
@@ -70,7 +94,7 @@ public class InspectionService {
 
         adminRepository.save(admin);
 
-        // 3. 이미지 저장
+        // 5. 이미지 저장
         saveImages(dto.getImages(), itemDetails, dto.getFilmingTime());
 
         return new CreateResult(admin.getInspectionId(), "검수 신청이 완료되었습니다.");
@@ -141,45 +165,20 @@ public class InspectionService {
                             .toList()
                     : Collections.emptyList();
 
-            Long imageCount;
-            if (row[10] instanceof java.math.BigInteger bi) {
-                imageCount = bi.longValue();
-            } else if (row[10] instanceof Long l) {
-                imageCount = l;
-            } else if (row[10] instanceof Integer iVal) {
-                imageCount = iVal.longValue();
-            } else {
-                imageCount = 0L;
-            }
-
-            Long inspectionId;
-            Object id0 = row[0];
-            if (id0 instanceof java.math.BigInteger bi0) inspectionId = bi0.longValue();
-            else if (id0 instanceof Long l0) inspectionId = l0;
-            else if (id0 instanceof Integer i0) inspectionId = i0.longValue();
-            else inspectionId = 0L;
-
-            Long itemId;
-            Object id1 = row[1];
-            if (id1 instanceof java.math.BigInteger bi1) itemId = bi1.longValue();
-            else if (id1 instanceof Long l1) itemId = l1;
-            else if (id1 instanceof Integer i1) itemId = i1.longValue();
-            else itemId = 0L;
-
             return new AdminListRow(
-                    Long.valueOf(inspectionId),
-                    Long.valueOf(itemId),
-                    (String) row[2],
-                    (String) row[3],
-                    (BigDecimal) row[4],
-                    convertToBoolean(row[5]),
-                    convertToLocalDateTime(row[6]),
-                    (Integer) row[7],
-                    (Integer) row[8],
-                    (String) row[9],
-                    Long.valueOf(imageCount),
-                    convertToLocalDateTime(row[11]),
-                    imageUrls
+                    safeLongValue(row[0]),               // inspectionId
+                    safeLongValue(row[1]),               // itemId
+                    (String) row[2],                     // title
+                    (String) row[3],                     // sellerName
+                    (BigDecimal) row[4],                 // cost
+                    (Boolean) row[5],                    // unpacked
+                    safeLocalDateTimeValue(row[6]),      // registrationDate
+                    (Integer) row[7],                    // admissionState
+                    (Integer) row[8],                    // quality
+                    (String) row[9],                     // itemExplanation
+                    safeLongValue(row[10]),              // imageCount
+                    safeLocalDateTimeValue(row[11]),     // filmingTime
+                    imageUrls                            // imageUrls
             );
         });
     }
@@ -197,73 +196,22 @@ public class InspectionService {
                             .toList()
                     : Collections.emptyList();
 
-            Long imageCount;
-            if (row[10] instanceof java.math.BigInteger bi) {
-                imageCount = bi.longValue();
-            } else if (row[10] instanceof Long l) {
-                imageCount = l;
-            } else if (row[10] instanceof Integer iVal) {
-                imageCount = iVal.longValue();
-            } else {
-                imageCount = 0L;
-            }
-
-            Long inspectionId;
-            Object id0 = row[0];
-            if (id0 instanceof java.math.BigInteger bi0) inspectionId = bi0.longValue();
-            else if (id0 instanceof Long l0) inspectionId = l0;
-            else if (id0 instanceof Integer i0) inspectionId = i0.longValue();
-            else inspectionId = 0L;
-
-            Long itemId;
-            Object id1 = row[1];
-            if (id1 instanceof java.math.BigInteger bi1) itemId = bi1.longValue();
-            else if (id1 instanceof Long l1) itemId = l1;
-            else if (id1 instanceof Integer i1) itemId = i1.longValue();
-            else itemId = 0L;
-
             return new AdminListRow(
-                    Long.valueOf(inspectionId),
-                    Long.valueOf(itemId),
+                    safeLongValue(row[0]),
+                    safeLongValue(row[1]),
                     (String) row[2],
                     (String) row[3],
                     (BigDecimal) row[4],
-                    convertToBoolean(row[5]),
-                    convertToLocalDateTime(row[6]),
+                    (Boolean) row[5],
+                    safeLocalDateTimeValue(row[6]),
                     (Integer) row[7],
                     (Integer) row[8],
                     (String) row[9],
-                    Long.valueOf(imageCount),
-                    convertToLocalDateTime(row[11]),
+                    safeLongValue(row[10]),
+                    safeLocalDateTimeValue(row[11]),
                     imageUrls
             );
         });
-    }
-
-    private LocalDateTime convertToLocalDateTime(Object value) {
-        if (value == null) return null;
-        if (value instanceof LocalDateTime ldt) return ldt;
-        if (value instanceof java.sql.Timestamp ts) return ts.toLocalDateTime();
-        if (value instanceof java.util.Date d) {
-            return Instant.ofEpochMilli(d.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
-        }
-        if (value instanceof CharSequence cs) {
-            String s = cs.toString();
-            if (s.contains(" ") && !s.contains("T")) s = s.replace(' ', 'T');
-            try { return LocalDateTime.parse(s); } catch (Exception ignored) {}
-        }
-        return null;
-    }
-
-    private Boolean convertToBoolean(Object value) {
-        if (value == null) return null;
-        if (value instanceof Boolean b) return b;
-        if (value instanceof Number n) return n.intValue() != 0;
-        if (value instanceof CharSequence cs) {
-            String s = cs.toString();
-            return "1".equals(s) || Boolean.parseBoolean(s);
-        }
-        return false;
     }
 
     @Transactional
@@ -273,6 +221,7 @@ public class InspectionService {
 
         admin.setAdmissionState(1); // 1 = 승인
         admin.setQuality(grade);
+        admin.setRejectionReason(null); // 승인 시 반려사유는 null로 설정
         adminRepository.save(admin);
     }
 
@@ -282,8 +231,63 @@ public class InspectionService {
                 .orElseThrow(() -> new IllegalArgumentException("검수 ID를 찾을 수 없음: " + inspectionId));
 
         admin.setAdmissionState(2); // 2 = 반려
-        admin.setQuality(grade);
-        admin.setItemExplanation(reason);
+        admin.setQuality(null); // 반려 시 등급은 null로 설정
+        admin.setRejectionReason(parseRejectionReason(reason)); // 반려사유를 숫자로 변환하여 저장
         adminRepository.save(admin);
     }
+
+    // ================== 헬퍼 메서드 ==================
+    private Long safeLongValue(Object value) {
+        if (value == null) return 0L;
+        if (value instanceof BigInteger) return ((BigInteger) value).longValue();
+        if (value instanceof Long) return (Long) value;
+        if (value instanceof Integer) return ((Integer) value).longValue();
+        if (value instanceof Number) return ((Number) value).longValue();
+        // String으로 들어온 경우도 처리
+        if (value instanceof String) {
+            try {
+                return Long.parseLong((String) value);
+            } catch (NumberFormatException e) {
+                return 0L;
+            }
+        }
+        return 0L;
+    }
+
+    private LocalDateTime safeLocalDateTimeValue(Object value) {
+        if (value == null) return null;
+        if (value instanceof LocalDateTime) return (LocalDateTime) value;
+        if (value instanceof java.sql.Timestamp) {
+            return ((java.sql.Timestamp) value).toLocalDateTime();
+        }
+        if (value instanceof java.sql.Date) {
+            return ((java.sql.Date) value).toLocalDate().atStartOfDay();
+        }
+        if (value instanceof String) {
+            try {
+                return LocalDateTime.parse((String) value);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    // 반려사유 문자열을 숫자로 변환하는 헬퍼 메서드
+    private Integer parseRejectionReason(String reason) {
+        if (reason == null || reason.trim().isEmpty()) {
+            return null;
+        }
+        
+        // 반려사유 매핑 (프론트엔드의 defaultReasons 배열 순서와 일치)
+        if (reason.contains("촬영 각도/장면 부족")) return 1;
+        if (reason.contains("해상도/초점 문제")) return 2;
+        if (reason.contains("라벨/시리얼 확인 불가")) return 3;
+        if (reason.contains("상품 상태 설명 불충분")) return 4;
+        if (reason.contains("광고/워터마크 포함")) return 5;
+        
+        // 기본값
+        return 1;
+    }
+
 }
