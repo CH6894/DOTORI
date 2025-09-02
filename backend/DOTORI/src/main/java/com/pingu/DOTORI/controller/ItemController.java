@@ -41,13 +41,13 @@ public class ItemController {
 
 	@GetMapping("/genre/{genre}")
 	public ResponseEntity<Page<ItemDTO>> byGenre(@PathVariable String genre,
-			@PageableDefault(size = 24) Pageable pageable) {
+			@PageableDefault(size = 300) Pageable pageable) {
 		return ResponseEntity.ok(itemService.findByGenre(genre, pageable));
 	}
 
 	@GetMapping("/genre/{genre}/title/{title}")
 	public ResponseEntity<Page<ItemDTO>> byGenreAndTitle(@PathVariable String genre,
-			@PathVariable(required = false) String title, @PageableDefault(size = 24) Pageable pageable) {
+			@PathVariable(required = false) String title, @PageableDefault(size = 300) Pageable pageable) {
 		return ResponseEntity.ok(itemService.findByGenreAndTitle(genre, title, pageable));
 	}
 
