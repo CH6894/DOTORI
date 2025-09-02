@@ -275,7 +275,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, reactive } from 'vue'
 import { createInspection } from '@/api/inspection' // 경로는 프로젝트에 맞게
-import type { Item as ItemDTO } from '@/types/item'
+import type { ItemDTO } from '@/types/item'
 
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
 type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'seller' | 'buyer' | number }

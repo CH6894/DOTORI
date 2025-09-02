@@ -133,6 +133,13 @@ interface Product {
   condition?: string
   shipping?: number | string
   images?: string[]
+  genre?: string
+  size?: string
+  manufacturer?: string
+  material?: string
+  description?: string
+  releaseMonth?: string
+  storageFees?: number
 }
 
 interface UsedConfirmPayload {
@@ -187,11 +194,22 @@ const images = computed<string[]>(() => {
 
 /* ===== 판매 모달용 데이터 ===== */
 const sellItem = computed(() => ({
-  id: props.product?.id ?? 0,
+  id: props.product?.id?.toString() ?? '0',
+  itemCode: props.product?.id?.toString() ?? '0',
+  name: props.product?.name ?? '',
   title: props.product?.title ?? '',
   images: images.value.length ? images.value : ['/img/placeholder.jpg'],
   condition: undefined as unknown as undefined,
   price: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
+  cost: Number(props.product?.currentPrice ?? props.product?.price ?? 0),
+  genre: props.product?.genre,
+  size: props.product?.size,
+  manufacturer: props.product?.manufacturer,
+  material: props.product?.material,
+  information: props.product?.description,
+  releaseMonth: props.product?.releaseMonth,
+  imgUrl: images.value[0] || '/img/placeholder.jpg',
+  storageFees: props.product?.storageFees
 }))
 
 const priceRows = ref<Array<{ option: string; price: number; date: string }>>([

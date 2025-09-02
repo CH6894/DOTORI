@@ -3,7 +3,7 @@
     <main class="product-detail-container">
       <!-- 로딩 상태 -->
       <div v-if="loading" class="loading-container">
-        <div class="loading-spinner">로딩 중...</div>
+        <div class="loading-spinner"></div>
       </div>
       
       <!-- 에러 상태 -->
@@ -72,7 +72,7 @@ import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
 import RecommendedProducts from '@/components/RecommendedProducts.vue'
 import RelatedProducts from '@/components/RelatedProducts.vue'
 import { fetchItemById } from '@/api/items'
-import type { Item as ItemDTO } from '@/types/item'
+import type { ItemDTO } from '@/types/item'
 
 const route = useRoute()
 const productId = String(route.params.id)

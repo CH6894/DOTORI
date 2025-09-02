@@ -1,7 +1,7 @@
 // item 반환 타입 지정용
 // item entity 컬럼 자료형과 동일하게 작성.
 
-export interface Item {
+export interface ItemDTO{
   id?: string;        // 상품 ID (fallback용)
   itemCode: string;
   name: string;
