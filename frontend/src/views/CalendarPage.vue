@@ -14,179 +14,125 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
-
-/* ===== FullCalendar ===== */
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 
-/* ===== API (상대경로) =====
-   vite.config.js 예시:
-   export default {
-     server: {
-       port: 5173,
-       proxy: { '/api': { target: 'http://localhost:8081', changeOrigin: true } }
-     }
-   }
-*/
 const PUB_URL = '/api/public/calendars'
 
-/* ===== 상태 ===== */
 const calendarEl = ref(null)
 let calendar
 const agendaHtml = ref('')
 const pageDate = ref(new Date())
 
-/* ===== 유틸 ===== */
-const pad = (n) => String(n).padStart(2, '0')
-const isoLocal = (d) => {
-  const x = new Date(d)
-  return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}:${pad(x.getSeconds())}`
+/* 유틸 */
+const pad=(n)=>String(n).padStart(2,'0')
+const isoLocal=(d)=>{const x=new Date(d);return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}:${pad(x.getSeconds())}`}
+const escapeHtml=(s)=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))
+const fmtYmd=(d)=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+const hhmm=(d)=>`${pad(d.getHours())}:${pad(d.getMinutes())}`
+const timeRange=(s,e)=>(!e||e.getTime()===s.getTime())?hhmm(s):`${hhmm(s)} ~ ${hhmm(e)}`
+const startOfDay=(d)=>new Date(d.getFullYear(), d.getMonth(), d.getDate())
+const addDays=(d,n)=>new Date(d.getFullYear(), d.getMonth(), d.getDate()+n)
+function unpackInfo(info){ try{return info?JSON.parse(info):{}}catch{return{}} }
+const dateLabelKR = (d) => `${d.getMonth()+1}월 ${d.getDate()}일`
+const dayOnlyKR   = (d) => `${d.getDate()}일`
+function rangeLabelKR(start, endExclusive, allDay){
+  if(!allDay) return null
+  if(!endExclusive) return '종일'
+  const endInc = new Date(endExclusive.getTime() - 1)
+  const sameDay = start.toDateString() === endInc.toDateString()
+  if(sameDay) return '종일'
+  const sameMonth = (start.getFullYear()===endInc.getFullYear()) && (start.getMonth()===endInc.getMonth())
+  return sameMonth
+    ? `${dayOnlyKR(start)}부터 ${dayOnlyKR(endInc)}까지`
+    : `${dateLabelKR(start)}부터 ${dateLabelKR(endInc)}까지`
 }
-const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]))
-const fmtYmd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
-const timeRange = (s, e) => {
-  const f = (x) => `${pad(x.getHours())}:${pad(x.getMinutes())}`
-  if (!e || e.getTime() === s.getTime()) return f(s)
-  return `${f(s)} ~ ${f(e)}`
-}
-// 에러 메시지 가독성
-const formatAxiosError = (e) => (
-  e?.response
-    ? `HTTP ${e.response.status} ${e.response.statusText}\n${JSON.stringify(e.response.data)}`
-    : (e?.request ? '응답 없음(네트워크/CORS 가능성)' : `설정 오류: ${e?.message}`)
-)
 
-/* ===== 서버에서 현재 뷰 범위 로드 ===== */
-async function refetchFromServer() {
+/* 조회 */
+async function refetchFromServer(){
   const view = calendar.view
-  const start = isoLocal(view.currentStart).slice(0,19) // "YYYY-MM-DDTHH:mm:ss"
+  const start = isoLocal(view.currentStart).slice(0,19)
   const end   = isoLocal(view.currentEnd).slice(0,19)
 
-  try {
-    const { data } = await axios.get(PUB_URL, { params: { start, end } })
-    const events = (data || []).map(ev => ({
-      id: String(ev.id),
-      title: ev.title ?? ev.scheduleName ?? '(제목 없음)',
-      start: ev.start ?? ev.scheduleDate,   // 백엔드 필드 호환
-      end: ev.end ?? null,
-      allDay: false,
-      backgroundColor: '#7c3aed',
-      borderColor: '#7c3aed',
-      extendedProps: { color: '#7c3aed', info: ev.info ?? ev.scheduleInfo ?? '' }
-    }))
+  try{
+    const { data } = await axios.get(PUB_URL, { params:{ start, end } })
+    const events = (data||[]).map(ev=>{
+      const meta = unpackInfo(ev.scheduleInfo || ev.info)
+      const color = meta.color || '#7c3aed'
+      const inc = meta.endInclusive ? new Date(meta.endInclusive) : null
+      const allDay = meta.allDay ?? !!inc
+      const endExclusive = allDay ? (inc ? addDays(startOfDay(inc),1) : null) : (inc || null)
+      return {
+        id: String(ev.id),
+        title: ev.title ?? ev.scheduleName ?? '(제목 없음)',
+        start: ev.start ?? ev.scheduleDate,
+        end: endExclusive,
+        allDay,
+        backgroundColor: color,
+        borderColor: color,
+        extendedProps: { color }
+      }
+    })
     calendar.removeAllEvents()
-    events.forEach(e => calendar.addEvent(e))
+    events.forEach(e=>calendar.addEvent(e))
     renderAgenda()
-  } catch (e) {
+  }catch(e){
     console.error(e)
-    alert('일정 불러오기 실패: ' + formatAxiosError(e))
     calendar.removeAllEvents()
     agendaHtml.value = `<div class="agenda__empty">일정 로드 실패</div>`
   }
 }
 
-/* ===== 간단 Agenda 표시 ===== */
-function renderAgenda() {
+/* Agenda */
+function renderAgenda(){
   const container = document.getElementById('agenda-body')
-  if (!container) return
-
-  const rs = calendar.view.currentStart
-  const re = calendar.view.currentEnd
+  if(!container) return
+  const rs = calendar.view.currentStart, re = calendar.view.currentEnd
   const events = calendar.getEvents().filter(ev => (ev.end || ev.start) > rs && ev.start < re)
-  if (!events.length) {
-    agendaHtml.value = `<div class="agenda__empty">표시할 일정이 없습니다.</div>`
-    return
-  }
-
-  const byDay = {}
-  for (const ev of events) {
-    const key = fmtYmd(ev.start)
-    byDay[key] ||= []
-    byDay[key].push(ev)
-  }
-
-  const html = Object.keys(byDay).sort().map(k => {
-    const dateObj = new Date(k + 'T00:00:00')
-    const dateLabel = `${dateObj.getFullYear()}년 ${dateObj.getMonth()+1}월 ${dateObj.getDate()}일`
-    const items = byDay[k]
-      .sort((a,b)=>(a.start - b.start))
-      .map(ev => {
-        const color = ev.extendedProps?.color || ev.backgroundColor || '#7c3aed'
-        const time = ev.allDay ? '종일' : timeRange(ev.start, ev.end || ev.start)
-        const title = escapeHtml(ev.title || '(제목 없음)')
-        return `<li class="agenda__item" style="--dot-color:${color}">
-                  <span class="agenda__time">${time}</span>
-                  <span class="agenda__title">${title}</span>
-                </li>`
-      }).join('')
-    return `<section class="agenda__section">
-              <h4 class="agenda__date">${dateLabel}</h4>
-              <ul class="agenda__list">${items}</ul>
-            </section>`
+  if(!events.length){ agendaHtml.value=`<div class="agenda__empty">표시할 일정이 없습니다.</div>`; return }
+  const byDay={}
+  for(const ev of events){ const k=fmtYmd(ev.start); byDay[k]??=[]; byDay[k].push(ev) }
+  const html = Object.keys(byDay).sort().map(k=>{
+    const d=new Date(k+'T00:00:00')
+    const label=`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`
+    const items = byDay[k].sort((a,b)=>(a.start-b.start)).map(ev=>{
+      const color = ev.extendedProps?.color || ev.backgroundColor || '#7c3aed'
+      const time = ev.allDay ? rangeLabelKR(ev.start, ev.end, true) : timeRange(ev.start, ev.end || ev.start)
+      const title = escapeHtml(ev.title || '(제목 없음)')
+      return `<li class="agenda__item" style="--dot-color:${color}">
+                <span class="agenda__time">${time}</span>
+                <span class="agenda__title">${title}</span>
+              </li>`
+    }).join('')
+    return `<section class="agenda__section"><h4 class="agenda__date">${label}</h4><ul class="agenda__list">${items}</ul></section>`
   }).join('')
-
   agendaHtml.value = html
 }
 
-onMounted(async () => {
+onMounted(async()=>{
   calendar = new Calendar(calendarEl.value, {
-    themeSystem: 'bootstrap5',
-    locale: 'ko',
-    timeZone: 'Asia/Seoul',
-    plugins: [dayGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin],
-    initialView: 'dayGridMonth',
-    headerToolbar: {
-      left: 'prev today next',
-      center: '',
-      right: 'dayGridMonth,dayGridWeek,dayGridDay,listMonth'
-    },
-    dayCellContent: (arg) => ({ html: arg.dayNumberText.replace('일', '') }),
-    selectable: false,
-    selectMirror: false,
-    unselectAuto: false,
-    eventClick: () => {},
-
-    datesSet: async () => {
-      pageDate.value = calendar.getDate()
-      await refetchFromServer()      // ✅ 공개는 읽기만
-    }
+    themeSystem:'bootstrap5', locale:'ko', timeZone:'Asia/Seoul',
+    plugins:[dayGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin],
+    initialView:'dayGridMonth',
+    headerToolbar:{ left:'prev today next', center:'', right:'dayGridMonth,dayGridWeek,dayGridDay,listMonth' },
+    dayCellContent:(arg)=>({ html: arg.dayNumberText.replace('일','') }),
+    selectable:false, selectMirror:false, unselectAuto:false, eventClick:()=>{},
+    datesSet: async ()=>{ pageDate.value=calendar.getDate(); await refetchFromServer() }
   })
-
   calendar.render()
   pageDate.value = calendar.getDate()
-  setTimeout(() => calendar.updateSize(), 0)
+  setTimeout(()=>calendar.updateSize(),0)
 })
-
-onBeforeUnmount(() => { if (calendar) calendar.destroy() })
+onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 </script>
 
 <style src="../assets/calendar.css"></style>
 <style scoped>
-/* ===== Agenda ===== */
-.agenda {
-  width: var(--cal-fixed-width);
-  max-width: 100%;
-  margin: 10px auto 0;
-}
-.agenda__title {
-  margin: 16px 0 10px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #111;
-}
-.agenda__body {
-  background: #fff;
-  border: 1px solid #e9e9e9;
-  border-radius: 8px;
-  padding: 12px;
-}
-.agenda__empty {
-  padding: 14px;
-  color: #666;
-  font-size: 14px;
-  text-align: center;
-}
+.agenda { width: var(--cal-fixed-width); max-width: 100%; margin: 10px auto 0; }
+.agenda__title { margin: 16px 0 10px; font-size: 16px; font-weight: 700; color: #111; }
+.agenda__body { background:#fff; border:1px solid #e9e9e9; border-radius:8px; padding:12px; }
+.agenda__empty { padding:14px; color:#666; font-size:14px; text-align:center; }
 </style>

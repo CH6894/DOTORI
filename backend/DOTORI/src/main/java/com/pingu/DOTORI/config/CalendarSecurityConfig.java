@@ -1,7 +1,9 @@
+// src/main/java/com/pingu/DOTORI/config/SecurityConfig.java
 package com.pingu.DOTORI.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -9,24 +11,32 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class CalendarSecurityConfig {
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/", "/index.html", "/favicon.ico").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/admin/calendars").permitAll()
-                .anyRequest().permitAll()
-            )
-            .oauth2Login(oauth -> oauth.disable()) // OAuth 로그인 비활성화(개발용)
-            .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable())
-            .logout(logout -> logout.disable());
+  // 1) /api/admin/** 전용 체인 (우선 적용)
+  @Bean
+  @Order(1)
+  SecurityFilterChain admin(HttpSecurity http) throws Exception {
+    http
+      .securityMatcher("/api/admin/**")
+      .cors(Customizer.withDefaults())
+      .csrf(csrf -> csrf.disable())
+      .authorizeHttpRequests(auth -> auth
+        .anyRequest().permitAll()   // 개발 중 임시 오픈
+      );
+    return http.build();
+  }
 
-        return http.build();
-    }
+  // 2) 나머지 전체 (**반드시 마지막**, any request)
+  @Bean
+  @Order(2)
+  SecurityFilterChain main(HttpSecurity http) throws Exception {
+    http
+      .securityMatcher("/**")
+      .cors(Customizer.withDefaults())
+      .csrf(csrf -> csrf.disable())
+      .authorizeHttpRequests(auth -> auth
+        .requestMatchers("/api/public/**", "/actuator/**").permitAll()
+        .anyRequest().permitAll()  // 필요 시 인증으로 변경
+      );
+    return http.build();
+  }
 }
