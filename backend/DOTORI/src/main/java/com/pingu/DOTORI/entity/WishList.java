@@ -9,10 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity(name = "WishList")
-@Table(name = "WishList", uniqueConstraints = @UniqueConstraint(
-    name = "UQ_Wish_User_ItemDetails", 
-    columnNames = {"User_ID", "ItemDetails_ID"}
-))
+@Table(name = "WishList", uniqueConstraints = @UniqueConstraint(name = "UQ_Wish_User_Item", columnNames = { "User_ID",
+		"Item_ID" }))
 public class WishList {
 
 	@Id
@@ -25,6 +23,6 @@ public class WishList {
 	private Users user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ItemDetails_ID", nullable = false)
+	@JoinColumn(name = "Item_ID", nullable = false)
 	private ItemDetails itemDetails;
 }

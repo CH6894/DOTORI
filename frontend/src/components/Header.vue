@@ -45,7 +45,7 @@ function onDocClickCloseQuick(ev: MouseEvent) {
 /* 퀵바 카테고리 → /search?top=키 */
 const quickCats = [
   { label: 'Anime', key: 'Anime' },
-  { label: 'Kpop', key: 'Kpop' },
+  { label: 'KPOP', key: 'Kpop' },
   { label: 'Game', key: 'Game' },
   { label: 'Sports', key: 'Sports' },
   { label: 'Webtoon', key: 'Webtoon' },
@@ -158,7 +158,7 @@ onMounted(async () => {
 
   window.addEventListener('resize', measureQuickTop, { passive: true })
   window.addEventListener('scroll', measureQuickTop, { passive: true })
-  ;(document as any).fonts?.ready?.then?.(measureQuickTop)
+    ; (document as any).fonts?.ready?.then?.(measureQuickTop)
 
   document.addEventListener('click', onDocClick)
   document.addEventListener('click', onDocClickCloseQuick) // 👈 문서 아무곳 클릭 시 퀵바 닫기
@@ -167,7 +167,7 @@ onMounted(async () => {
   // 비로그인 시 세션 저장소 정리(선택)
   window.addEventListener('beforeunload', () => {
     if (!isLoggedIn.value) {
-      try { sessionStorage.removeItem(RECENT_KEY) } catch {}
+      try { sessionStorage.removeItem(RECENT_KEY) } catch { }
     }
   })
 
@@ -203,15 +203,8 @@ onBeforeUnmount(() => {
 
         <div class="header__bottom">
           <!-- 햄버거 버튼 -->
-          <button
-            id="hamburgerBtn"
-            ref="hamburgerBtn"
-            class="icon-btn header__hamburger"
-            :aria-expanded="quickOpen"
-            aria-controls="quickBar"
-            aria-label="메뉴 열기"
-            @click="toggleQuick"
-          >
+          <button id="hamburgerBtn" ref="hamburgerBtn" class="icon-btn header__hamburger" :aria-expanded="quickOpen"
+            aria-controls="quickBar" aria-label="메뉴 열기" @click="toggleQuick">
             <svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true">
               <rect width="22" height="2" y="0" rx="1" />
               <rect width="22" height="2" y="8" rx="1" />
@@ -313,31 +306,14 @@ onBeforeUnmount(() => {
     </header>
 
     <!-- ===== 오버레이: 퀵바 열렸을 때 아무곳이나 클릭 시 닫힘 ===== -->
-    <div
-      v-show="quickOpen"
-      class="quickbar-overlay"
-      aria-hidden="true"
-      @click="quickOpen = false"
-    />
+    <div v-show="quickOpen" class="quickbar-overlay" aria-hidden="true" @click="quickOpen = false" />
 
     <!-- ===== 퀵바 ===== -->
-    <div
-      id="quickBar"
-      ref="quickBarEl"
-      class="quick-bar"
-      :class="{ 'is-open': quickOpen }"
-      :style="{ top: `${quickTop}px` }"
-      role="region"
-      aria-label="빠른 작업 바"
-    >
+    <div id="quickBar" ref="quickBarEl" class="quick-bar" :class="{ 'is-open': quickOpen }"
+      :style="{ top: `${quickTop}px` }" role="region" aria-label="빠른 작업 바">
       <nav class="quick-bar__inner container">
-        <RouterLink
-          v-for="c in quickCats"
-          :key="c.key"
-          class="quick-link"
-          :to="{ name: 'search', query: { top: c.key } }"
-          @click="quickOpen = false"
-        >
+        <RouterLink v-for="c in quickCats" :key="c.key" class="quick-link"
+          :to="{ name: 'search', query: { top: c.key } }" @click="quickOpen = false">
           {{ c.label }}
         </RouterLink>
       </nav>
@@ -361,7 +337,9 @@ onBeforeUnmount(() => {
 .header::after {
   content: "";
   position: absolute;
-  left: 0; right: 0; bottom: -0.0625rem;
+  left: 0;
+  right: 0;
+  bottom: -0.0625rem;
   height: 0.75rem;
   background: linear-gradient(to bottom, #f7f2e6 70%, rgba(247, 242, 230, 0));
   pointer-events: none;
@@ -370,7 +348,8 @@ onBeforeUnmount(() => {
 /* 퀵바 */
 .quick-bar {
   position: fixed;
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   top: var(--quickbar-top, 0);
   height: var(--quickbar-height);
   background: rgba(45, 37, 28, 0.96);
@@ -381,10 +360,11 @@ onBeforeUnmount(() => {
   pointer-events: none;
   transition: transform .28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity .28s, visibility 0s .28s;
   z-index: 49;
-  box-shadow: 0 0.5rem 1.25rem rgba(0,0,0,.18);
+  box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, .18);
   backdrop-filter: saturate(160%) blur(0.5rem);
   overflow: hidden;
 }
+
 .quick-bar.is-open {
   transform: translateY(0);
   opacity: 1;
@@ -392,6 +372,7 @@ onBeforeUnmount(() => {
   pointer-events: auto;
   transition: transform .28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity .28s;
 }
+
 .quick-bar__inner {
   height: 100%;
   display: flex;
@@ -409,7 +390,8 @@ onBeforeUnmount(() => {
 .quickbar-overlay {
   position: fixed;
   inset: 0;
-  z-index: 48; /* .quick-bar(49) 바로 아래 */
+  z-index: 48;
+  /* .quick-bar(49) 바로 아래 */
   background: transparent;
 }
 
@@ -417,15 +399,23 @@ onBeforeUnmount(() => {
 .icon-btn {
   display: inline-grid;
   place-items: center;
-  width: 2.25rem; height: 2.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 0.75rem;
   border: 0.0625rem solid #e7dfcd;
   background: #fff7ea;
-  box-shadow: 0 0.125rem 0 rgba(0,0,0,.02) inset;
+  box-shadow: 0 0.125rem 0 rgba(0, 0, 0, .02) inset;
   cursor: pointer;
   color: var(--ink);
 }
-.icon-btn svg { width: 1.375rem; height: 1.375rem; display: block; } /* 22px */
+
+.icon-btn svg {
+  width: 1.375rem;
+  height: 1.375rem;
+  display: block;
+}
+
+/* 22px */
 
 /* 헤더 아이콘 영역 */
 .header__icons {
@@ -445,28 +435,55 @@ onBeforeUnmount(() => {
   border-radius: 0.625rem;
   font-size: 1.25rem;
 }
+
 .nav-link:hover {
   background: #fff0df;
   text-decoration: none;
 }
 
 /* 로고 */
-.logo { display: flex; align-items: center; gap: 0.5rem; margin-left: 0.5rem; }
-.logo__mark { display: inline-block; width: 12.5rem; }
-.logo__mark img { width: 100%; height: auto; }
-.logo.-small .logo__mark { font-size: 1.375rem; }
-.logo.-small .logo__text { font-weight: 800; font-size: 0.875rem; }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.logo__mark {
+  display: inline-block;
+  width: 12.5rem;
+}
+
+.logo__mark img {
+  width: 100%;
+  height: auto;
+}
+
+.logo.-small .logo__mark {
+  font-size: 1.375rem;
+}
+
+.logo.-small .logo__text {
+  font-weight: 800;
+  font-size: 0.875rem;
+}
 
 /* 헤더 레이아웃 */
 .header__inner {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  max-width: 80rem; /* 1280px */
+  max-width: 80rem;
+  /* 1280px */
   margin: 0 auto;
   padding: 0.75rem 0;
 }
-.header__logo { display: flex; justify-content: center; }
+
+.header__logo {
+  display: flex;
+  justify-content: center;
+}
+
 .header__bottom {
   width: 100%;
   display: flex;
@@ -476,17 +493,22 @@ onBeforeUnmount(() => {
   margin-top: 0.75rem;
   background: transparent !important;
 }
+
 .header__nav {
   margin-bottom: 0.5rem;
   display: flex;
-  gap: 6.25rem; /* 100px */
+  gap: 6.25rem;
+  /* 100px */
   white-space: nowrap;
   font-weight: 700;
-  font-size: 1.125rem; /* 18px */
+  font-size: 1.125rem;
+  /* 18px */
 }
 
 /* 검색 래퍼(패널 기준) */
-.search-wrap { position: relative; }
+.search-wrap {
+  position: relative;
+}
 
 /* 검색 폼 */
 .search {
@@ -495,9 +517,12 @@ onBeforeUnmount(() => {
   grid-template-columns: 1fr auto;
   gap: 0.5rem;
   align-items: center;
-  width: 25rem;         /* 400px */
-  margin-left: 7.5rem;  /* 120px */
-  margin-right: 1.875rem; /* 30px */
+  width: 25rem;
+  /* 400px */
+  margin-left: 7.5rem;
+  /* 120px */
+  margin-right: 1.875rem;
+  /* 30px */
 }
 
 /* 검색 input */
@@ -512,13 +537,18 @@ onBeforeUnmount(() => {
 
 /* 검색 버튼 */
 .search__btn {
-  width: 2.5rem; height: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 999px;
   border: 0.0625rem solid #eadfc9;
   background: #fff;
   cursor: pointer;
 }
-.search__btn svg { stroke: var(--ink); }
+
+.search__btn svg {
+  stroke: var(--ink);
+}
+
 .search__btn svg * {
   fill: none !important;
   stroke: currentColor !important;
@@ -529,11 +559,12 @@ onBeforeUnmount(() => {
 .search-panel {
   position: absolute;
   top: calc(100% + 0.5rem);
-  left: 0; right: 0;
+  left: 0;
+  right: 0;
   background: #fff;
   border: 0.0625rem solid #eee;
   border-radius: 0.75rem;
-  box-shadow: 0 0.75rem 1.75rem rgba(0,0,0,.12);
+  box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, .12);
   padding: 0.75rem;
   z-index: 2000;
 }
@@ -544,21 +575,39 @@ onBeforeUnmount(() => {
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
 }
-.panel-section { min-width: 0; }
+
+.panel-section {
+  min-width: 0;
+}
+
 .panel-title {
   font: 700 0.8125rem/1 "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: #333;
   margin: 0.375rem 0 0.625rem;
 }
-.panel-title.row { display: flex; align-items: center; justify-content: space-between; }
+
+.panel-title.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 /* 인기 검색어 */
-.pop-list { list-style: none; margin: 0; padding: 0; }
-.pop-item + .pop-item { margin-top: 0.375rem; }
+.pop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pop-item+.pop-item {
+  margin-top: 0.375rem;
+}
+
 .pop-link {
   width: 100%;
   display: grid;
-  grid-template-columns: 1.5rem 1fr auto; /* 24px */
+  grid-template-columns: 1.5rem 1fr auto;
+  /* 24px */
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.625rem;
@@ -569,22 +618,57 @@ onBeforeUnmount(() => {
   cursor: pointer;
   text-align: left;
 }
-.pop-link:hover { background: #f5f5f5; }
-.rank { font-weight: 700; color: #666; text-align: right; }
-.term { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.delta { font-size: 0.75rem; color: #888; display: inline-flex; align-items: center; gap: 0.25rem; }
-.delta.up { color: #0ea35a; }
-.delta.down { color: #e54848; }
-.delta.same { color: #9aa0a6; }
+
+.pop-link:hover {
+  background: #f5f5f5;
+}
+
+.rank {
+  font-weight: 700;
+  color: #666;
+  text-align: right;
+}
+
+.term {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.delta {
+  font-size: 0.75rem;
+  color: #888;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.delta.up {
+  color: #0ea35a;
+}
+
+.delta.down {
+  color: #e54848;
+}
+
+.delta.same {
+  color: #9aa0a6;
+}
 
 /* 최근 검색어 */
-.recent-list { list-style: none; margin: 0; padding: 0; }
+.recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .recent-empty {
   padding: 0.5rem 0.625rem;
   color: #9aa0a6;
   background: #fafafa;
   border-radius: 0.5rem;
 }
+
 .recent-item {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -592,6 +676,7 @@ onBeforeUnmount(() => {
   align-items: center;
   padding: 0.375rem 0;
 }
+
 .recent-link {
   max-width: 100%;
   padding: 0.5rem 0.625rem;
@@ -603,30 +688,62 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.recent-link:hover { background: #f5f5f5; }
+
+.recent-link:hover {
+  background: #f5f5f5;
+}
+
 .recent-del {
-  width: 1.75rem; height: 1.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
   border: 0.0625rem solid #eee;
   border-radius: 0.375rem;
   background: #fff;
   color: #666;
   cursor: pointer;
 }
-.recent-del:hover { background: #f8f8f8; }
-.clear-all {
-  border: none; background: transparent; cursor: pointer;
-  color: #888; font-size: 0.75rem;
+
+.recent-del:hover {
+  background: #f8f8f8;
 }
-.clear-all:hover { color: #555; }
+
+.clear-all {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.clear-all:hover {
+  color: #555;
+}
 
 /* 작은 화면에서 1열 */
 @media (max-width: 48rem) {
-  .panel-grid { grid-template-columns: 1fr; }
-  .search { width: min(92vw, 25rem); margin-left: 0.75rem; margin-right: 0.75rem; }
-  .header__icons { margin-left: 0; }
-  .header__nav { gap: 2rem; font-size: 1rem; }
+  .panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search {
+    width: min(92vw, 25rem);
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+  }
+
+  .header__icons {
+    margin-left: 0;
+  }
+
+  .header__nav {
+    gap: 2rem;
+    font-size: 1rem;
+  }
 }
 
 /* 요구사항: :visited 스타일 */
-a:visited { text-decoration: none; color: inherit; }
+a:visited {
+  text-decoration: none;
+  color: inherit;
+}
 </style>

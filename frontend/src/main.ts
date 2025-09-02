@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
+import axios from 'axios';
 import { API_BASE } from './config';
 
 // 글로벌 스타일 (당신 코드에 있었던 부분 유지)

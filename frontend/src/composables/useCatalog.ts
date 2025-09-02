@@ -20,4 +20,3 @@ export function useCatalog(all: CatalogItem[], top: Ref<string>, mid: Ref<string
   })
   return { filtered }
 }
-

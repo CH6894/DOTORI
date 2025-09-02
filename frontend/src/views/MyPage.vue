@@ -135,7 +135,7 @@
 
               <div class="wish-info">
                 <p class="wish-title">{{ w.title }}</p>
-                <p class="wish-price">{{ (Number(w.price) || 0).toLocaleString('ko-KR') }}원</p>
+                <p class="wish-price">{{ w.price.toLocaleString() }}원</p>
               </div>
 
               <div class="wish-actions">
@@ -172,7 +172,7 @@
 
 <script>
 import { useOrderStore } from '@/stores/orders'
-import { http as api } from '@/lib/http'
+import api from '@/api/axios.js'
 import { useAuthStore } from '@/stores/auth'
 import { useWishlistStore } from '@/stores/wishlist'
 
@@ -341,8 +341,8 @@ export default {
       if (real) {
         this.$router.push({ name: real }).catch(() => {
           if (name === 'TradePage') return this.$router.push('/mypage/trade')
-          if (name === 'WishPage') return this.$router.push('/mypage/wish')
-          if (name === 'ShipPage') return this.$router.push('/mypage/ship')
+          if (name === 'WishPage')  return this.$router.push('/mypage/wish')
+          if (name === 'ShipPage')  return this.$router.push('/mypage/ship')
         })
         return
       }

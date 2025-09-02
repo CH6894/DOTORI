@@ -1,10 +1,4 @@
-export const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8081'
-
-export const CONFIG = {
-  API_BASE,
-  USE_DUMMY_API: import.meta.env.VITE_USE_DUMMY_API === 'true',
-  TIMEOUT: 10000,
-} as const
+export const API_BASE = 'http://localhost:8081';
 
 export const OAUTH_NAVER_CLIENT_ID = '3J_9EIeTfTEup01jihZe';
 export const OAUTH_NAVER_REDIRECT_URI = `${API_BASE}/login/oauth2/code/naver`;

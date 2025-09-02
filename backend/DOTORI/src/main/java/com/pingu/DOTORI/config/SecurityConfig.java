@@ -43,11 +43,6 @@ public class SecurityConfig {
             .requestMatchers("/static/**").permitAll()
             .requestMatchers("/assets/**").permitAll()
             .requestMatchers("/open/**").permitAll()
-            .requestMatchers(
-                "/api/collection/test/**",
-                "/api/collection/verify-code",
-                "/api/collection/dex-state"
-            ).permitAll()
             .requestMatchers("/api/**").authenticated()
             .anyRequest().authenticated())
         .oauth2Login(oauth -> oauth

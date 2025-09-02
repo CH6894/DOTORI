@@ -103,7 +103,7 @@
 
     <!-- ✅ 토스트 -->
     <div v-if="showToast" class="toast" role="status" aria-live="polite">
-      <div class="toast__content">{{ toastMessage }}</div>
+      <div class="toast__content">장바구니에 담았습니다.</div>
     </div>
   </teleport>
 </template>
@@ -111,7 +111,6 @@
 <script setup>
 /* eslint-disable no-undef, no-unused-vars */
 import { ref, computed } from 'vue'
-import { useWishlistStore } from '@/stores/wishlist'
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -119,14 +118,10 @@ const props = defineProps({
 })
 const emit = defineEmits(['close', 'purchase', 'addToCart'])
 
-// 위시리스트 스토어
-const wish = useWishlistStore()
-
 // ---------- 상태 ----------
 const currentImageIndex = ref(0)
 const isWishlisted = ref(false)
 const showToast = ref(false)
-const toastMessage = ref('')
 const TOAST_MS = 1200
 
 // ---------- 안전 이미지 배열 ----------
@@ -193,35 +188,11 @@ const addToCart = () => {
 
   // 토스트만 잠깐 보여주고 끝 (alert 없음, 페이지 이동 없음)
   showToast.value = true
-  toastMessage.value = '장바구니에 담았습니다.'
   window.setTimeout(() => { showToast.value = false }, TOAST_MS)
 }
 
 // 찜 토글
-const toggleWishlist = async () => {
-  try {
-    // 백엔드 API 호출
-    const result = await wish.toggleWithAPI({
-      id: props.item?.id,
-      title: props.item?.title,
-      price: props.item?.price,
-      image: props.item?.image
-    })
-    
-    // 로컬 상태 업데이트
-    isWishlisted.value = result
-    
-    // 토스트 메시지 표시
-    showToast.value = true
-    toastMessage.value = result ? '위시리스트에 추가되었습니다.' : '위시리스트에서 제거되었습니다.'
-    window.setTimeout(() => { showToast.value = false }, TOAST_MS)
-  } catch (error) {
-    console.error('위시리스트 토글 실패:', error)
-    toastMessage.value = '위시리스트 처리 중 오류가 발생했습니다.'
-    showToast.value = true
-    window.setTimeout(() => { showToast.value = false }, TOAST_MS)
-  }
-}
+const toggleWishlist = () => { isWishlisted.value = !isWishlisted.value }
 
 // ---------- 유틸 ----------
 const getConditionText = (condition) => {

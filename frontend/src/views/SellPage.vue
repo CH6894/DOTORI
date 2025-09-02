@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ModalSellConfirm from '@/components/ModalSellConfirm.vue'
+import type { ItemDTO } from '@/types/item'
 
 const showModal = ref(true)
 
-const item = {
-  id: 1,
+const item: ItemDTO = {
+  id: '1',
+  itemCode: 'ITEM001',
+  name: '(예약분 입고중) 후류 (FURYU) 헌터헌터 누들 스토퍼 피규어 키르아 조르딕&곤 프릭스 (재판) (2종세트)ㅁㄴsadasdㅇㅁㄴㅇ',
   title: '(예약분 입고중) 후류 (FURYU) 헌터헌터 누들 스토퍼 피규어 키르아 조르딕&곤 프릭스 (재판) (2종세트)ㅁㄴsadasdㅇㅁㄴㅇ',
   images: ['/img/placeholder.jpg', '/img/placeholder.jpg'],
-  condition: 'excellent' as const,
   price: 152000,
 }
 

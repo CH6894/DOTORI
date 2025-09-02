@@ -106,29 +106,11 @@ export const useWishlistStore = defineStore('wishlist', {
       this.persist()
     },
 
-    // 서버에서 위시리스트 동기화
-    async syncFromServer() {
-      try {
-        const token = localStorage.getItem('auth_token')
-        if (!token) return
-
-        const response = await fetch('/api/wishlist', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-
-        if (response.ok) {
-          const serverWishlist = await response.json()
-          // 서버 데이터를 로컬에 동기화
-          this.replace(serverWishlist)
-        }
-      } catch (error) {
-        console.error('서버 동기화 실패:', error)
-      }
-    },
-
     // (선택) 서버 동기화 예시
+    // async syncFromServer(fetchFn: () => Promise<any[]>) {
+    //   const serverList = await fetchFn()
+    //   this.replace(serverList)
+    // },
     // async syncAddToServer(postFn: (item:any) => Promise<void>, item:any) {
     //   await postFn(item)
     //   this.add(item)

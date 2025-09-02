@@ -1,4 +1,4 @@
-import { http as axios } from '@/lib/http'
+import axios from "axios"
 
 // --- axios 기본 설정 ---
 const api = axios.create({

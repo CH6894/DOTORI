@@ -6,10 +6,7 @@
       <img class="hero__icon" :src="iconSrc" alt="주문 완료 아이콘" />
       <h1 class="hero__title">주문이 완료되었습니다.</h1>
       <p class="hero__meta">
-        주문번호 : <span class="order-no">{{ orderData.orderNo }}</span>
-      </p>
-      <p class="hero__date">
-        주문일시 : {{ formatDate(orderData.orderDate) }}
+        주문번호 : <span class="order-no">{{ orderNo }}</span>
       </p>
     </div>
 
@@ -24,17 +21,17 @@
         <div>결제 금액</div>
       </div>
       <div class="tbody">
-        <div class="row" v-for="it in orderData.items" :key="it.id">
+        <div class="row" v-for="it in items" :key="it.id">
           <div class="thumb">
             <img :src="it.thumb" alt="" />
           </div>
           <div class="info">
             <div class="name">{{ it.name }}</div>
-            <div class="meta">{{ it.desc || it.option || '' }}</div>
+            <div class="meta">{{ it.desc }}</div>
           </div>
           <div>{{ it.qty }}</div>
-          <div>{{ fmt(it.discount || 0) }}원</div>
-          <div class="right"><b>{{ fmt(it.price * it.qty - (it.discount || 0)) }}원</b></div>
+          <div>{{ fmt(it.discount) }}원</div>
+          <div class="right"><b>{{ fmt(it.price * it.qty - it.discount) }}원</b></div>
         </div>
       </div>
     </section>
@@ -46,32 +43,25 @@
           <h3 class="section-title">배송지 정보</h3>
           <div class="dl">
             <div class="dt">이름</div>
-            <div class="dd">{{ orderData.address.receiver }}</div>
+            <div class="dd">{{ ship.receiver }}</div>
             <div class="dt">휴대폰 번호</div>
-            <div class="dd">{{ orderData.address.phone }}</div>
+            <div class="dd">{{ ship.phone }}</div>
             <div class="dt">주소</div>
-            <div class="dd">[{{ orderData.address.postcode }}] {{ orderData.address.addr1 }}<br />{{
-              orderData.address.addr2 }}</div>
-            <div v-if="orderData.note" class="dt">배송 요청사항</div>
-            <div v-if="orderData.note" class="dd">{{ orderData.note }}</div>
+            <div class="dd">[{{ ship.postcode }}] {{ ship.addr1 }}<br />{{ ship.addr2 }}</div>
           </div>
         </div>
 
         <div class="panel">
           <h3 class="section-title">결제 정보</h3>
           <div class="dl">
-            <div class="dt">결제 수단</div>
-            <div class="dd">{{ getPaymentMethodText(orderData.payMethod) }}</div>
-            <div v-if="orderData.payMethod === 'bank'" class="dt">입금자명</div>
-            <div v-if="orderData.payMethod === 'bank'" class="dd">{{ orderData.depositorName }}</div>
             <div class="dt">상품 금액</div>
-            <div class="dd">{{ fmt(orderData.subtotal) }}원</div>
+            <div class="dd">{{ fmt(subtotal) }}원</div>
             <div class="dt">할인 금액</div>
-            <div class="dd">{{ fmt(orderData.discount) }}원</div>
+            <div class="dd">{{ fmt(discount) }}원</div>
             <div class="dt">배송비</div>
-            <div class="dd">{{ orderData.shippingFee === 0 ? '무료' : fmt(orderData.shippingFee) + '원' }}</div>
+            <div class="dd">{{ shippingFee === 0 ? '무료' : fmt(shippingFee) + '원' }}</div>
             <div class="dt total">총 결제 금액</div>
-            <div class="dd total"><b>{{ fmt(orderData.total) }}원</b></div>
+            <div class="dd total"><b>{{ fmt(total) }}원</b></div>
           </div>
         </div>
       </div>
@@ -79,97 +69,36 @@
 
     <!-- 하단 액션 -->
     <div class="actions">
-      <router-link class="btn outline" :to="{ name: 'mypage' }">주문 상세보기</router-link>
-      <router-link class="btn primary" :to="{ name: 'main' }">쇼핑 계속하기</router-link>
+      <router-link class="btn outline" :to="{ name: 'login' }">주문 상세보기</router-link>
+      <router-link class="btn primary" :to="{ name: 'checkout' }">쇼핑 계속하기</router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, reactive, ref } from 'vue'
 /* 아이콘 이미지는 프로젝트에 있는 걸로 교체해도 됨 */
 import icon from '@/assets/cart.svg' // 없으면 다른 이미지 경로로 바꿔도 OK
 
-const router = useRouter()
-
-// ====== 주문 데이터 불러오기 ======
-const orderData = ref({
-  items: [],
-  address: {
-    receiver: '',
-    phone: '',
-    postcode: '',
-    addr1: '',
-    addr2: ''
-  },
-  note: '',
-  payMethod: '',
-  selectedBank: null,
-  depositorName: '',
-  subtotal: 0,
-  discount: 0,
-  shippingFee: 0,
-  total: 0,
-  orderDate: new Date().toISOString(),
-  orderNo: ''
-})
-
-onMounted(() => {
-  const savedOrderData = localStorage.getItem('dotori_order_data')
-  if (savedOrderData) {
-    try {
-      orderData.value = JSON.parse(savedOrderData)
-    } catch (e) {
-      console.error('주문 데이터 파싱 오류:', e)
-      // 기본값으로 폴백
-      orderData.value = {
-        items: [],
-        address: { receiver: '', phone: '', postcode: '', addr1: '', addr2: '' },
-        note: '',
-        payMethod: '',
-        selectedBank: null,
-        depositorName: '',
-        subtotal: 0,
-        discount: 0,
-        shippingFee: 0,
-        total: 0,
-        orderDate: new Date().toISOString(),
-        orderNo: '주문 데이터 없음'
-      }
-    }
-  } else {
-    // 주문 데이터가 없으면 장바구니로 리다이렉트
-    router.push({ name: 'cart' })
-    return
-  }
-})
-
+// ====== 목업 데이터 (페이지 먼저 확인용) ======
 const iconSrc = icon
-
-// 결제 수단 텍스트 변환
-const getPaymentMethodText = (method) => {
-  const methodMap = {
-    'bank': '무통장 입금',
-    'easy': '간편 결제',
-    'card': '카드 결제',
-    'mobile': '휴대폰 결제'
-  }
-  return methodMap[method] || method
+const orderNo = '1234567890'
+const items = reactive([
+  { id: 'sku-1', name: '상품 A', price: 90000, qty: 1, discount: 0, thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz2BqmHnvVTX6iSjug5pt1h4ehgaX_GHat-Q&s' },
+  { id: 'sku-2', name: '상품 B', price: 45000, qty: 3, discount: 0, thumb: 'https://images.unsplash.com/photo-1549068106-b024baf5062d?w=400&q=80&auto=format&fit=crop' }
+])
+const ship = {
+  receiver: '구창회',
+  phone: '010-0000-0000',
+  postcode: '06236',
+  addr1: '서울 강남구 테헤란로 000',
+  addr2: 'OOO빌딩 10층'
 }
+const shippingFee = ref(0)
 
-// 날짜 포맷팅
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
+const discount = computed(() => items.reduce((s, it) => s + it.discount, 0))
+const subtotal = computed(() => items.reduce((s, it) => s + it.price * it.qty, 0))
+const total = computed(() => subtotal.value - discount.value + shippingFee.value)
 
 const fmt = (n) => n.toLocaleString('ko-KR')
 </script>
@@ -208,12 +137,6 @@ const fmt = (n) => n.toLocaleString('ko-KR')
   font-size: 13px;
 }
 
-.hero__date {
-  margin-top: 4px;
-  color: #666;
-  font-size: 12px;
-}
-
 .order-no {
   font-weight: 700;
 }
@@ -235,6 +158,7 @@ const fmt = (n) => n.toLocaleString('ko-KR')
   left: 50%;
   transform: translateX(-50%);
 }
+
 
 .section-title {
   font-size: 16px;
@@ -324,10 +248,10 @@ const fmt = (n) => n.toLocaleString('ko-KR')
 
 .actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content:flex-end;
   gap: 10px;
   margin-top: 20px;
-  width: 122%;
+  width:122%;
 }
 
 .btn {
@@ -362,8 +286,6 @@ const fmt = (n) => n.toLocaleString('ko-KR')
     grid-template-columns: 1fr;
   }
 
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
+  .info-grid{ grid-template-columns: 1fr; }
 }
 </style>
