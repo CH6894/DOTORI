@@ -223,6 +223,17 @@ public class InspectionService {
         admin.setAdmissionState(1); // 1 = 승인
         admin.setQuality(grade);
         admin.setRejectionReason(null); // 승인 시 반려사유는 null로 설정
+        
+        // 추가메모를 item_details 테이블의 product_condition에 저장
+        if (reason != null && !reason.trim().isEmpty()) {
+            // Admin의 itemDetails를 통해 직접 접근
+            ItemDetails itemDetails = admin.getItemDetails();
+            if (itemDetails != null) {
+                itemDetails.setProductCondition(reason.trim());
+                itemDetailsRepository.save(itemDetails);
+            }
+        }
+        
         adminRepository.save(admin);
     }
 

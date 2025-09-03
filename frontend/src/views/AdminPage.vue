@@ -343,9 +343,10 @@ async function submitDecision() {
 
   try {
     if (decision.value === "APPROVED") {
-      // 승인 시: 등급만 설정, 반려사유는 빈 값
+      // 승인 시: 등급과 추가메모 설정
       const gradeNumber = grade.value ? getGradeNumber(grade.value) : undefined
-      await approveInspection(current.value.id, gradeNumber)
+      const note = approveNote.value.trim() || undefined
+      await approveInspection(current.value.id, gradeNumber, note)
     } else if (decision.value === "REJECTED") {
       // 반려 시: 등급은 null, 반려사유만 설정
       const reason = rejectReasons.value.join(", ") + (approveNote.value ? ` - ${approveNote.value}` : "")
