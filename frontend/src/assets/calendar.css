@@ -6,8 +6,8 @@
 /* 캘린더 범위 변수/폭 고정 */
 .calendar-scope {
   --cal-fixed-width: 1280px;
-  /* ✅ 높이 늘리기 */
-  --cal-fixed-height: 1000px;
+  padding-top: 700;
+  
 }
 
 /* 중앙 고정 타이틀 */
@@ -583,61 +583,70 @@
 
 /* list 뷰 */
 .calendar-scope .fc .fc-list,
-.calendar-scope .fc .fc-list-sticky,
 .calendar-scope .fc .fc-list-scroller {
   height: 100% !important;
   min-height: 100% !important;
 }
 
-/* ===== dayGrid 셀 전체 클릭 영역 강화 ===== */
-.calendar-scope .fc .fc-daygrid-day {
-  /* 셀 자체는 항상 클릭 가능 */
-  position: relative;
-  cursor: pointer;
-  pointer-events: auto;
+/* 캘린더와 다음 섹션 사이 간격 확보 */
+.calendar-wrap {
+  margin-bottom: 24px;
+  /* ✅ 캘린더 아래 여백 추가 */
 }
 
-/* 셀 프레임 위에 투명 hit-area를 깔아 셀 전체에서 클릭/드래그가 잘 잡히도록 */
-.calendar-scope .fc .fc-daygrid-day-frame {
+/* 요약/아젠다를 캘린더 위 레이어로 올림 + 배경 */
+.summary,
+.agenda {
   position: relative;
+  /* ✅ z-index 적용을 위해 position 부여 */
+  z-index: 3;
+  /* ✅ 캘린더보다 위 레이어 */
 }
 
-.calendar-scope .fc .fc-daygrid-day-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* 셀 전체 덮음 */
+/* 요약 제목/빈 상태도 배경을 깔아 겹쳐 보이지 않게 */
+.summary__title {
+  display: inline-block;
+  background: #fff;
+  /* ✅ 캘린더 선이 비치지 않도록 */
+  padding: 2px 6px;
+  border-radius: 8px;
+  /* ▼ 밑으로 내리기 */
+  margin-top: 20px;
+  /* 원하는 만큼 px 조정 */
+}
+
+
+/* (선택) FullCalendar 전체 레이어는 낮게 유지 */
+:deep(.fc) {
   z-index: 1;
-  /* 배경 위, 이벤트 아래 */
-  pointer-events: auto;
-  /* 클릭/드래그 수신 → 상위 td로 버블링 */
-  background: transparent;
-  /* 시각적 변화 없음 */
+}
+/* =========================
+   timeGrid 세로선 끊김 해결 패치
+   ========================= */
+
+/* 내부 테이블은 height:auto 로 두기 */
+.calendar-scope .fc .fc-timegrid-body>table,
+.calendar-scope .fc .fc-timegrid-cols,
+.calendar-scope .fc .fc-timegrid-slots table {
+  height: auto !important;
+  max-height: none !important;
 }
 
-/* 날짜 숫자/헤더는 클릭을 가로채지 않게 */
-.calendar-scope .fc .fc-daygrid-day-top,
-.calendar-scope .fc .fc-daygrid-day-number {
-  pointer-events: none;
+/* 스크롤 컨테이너/하네스만 고정 */
+.calendar-scope .fc .fc-view-harness,
+.calendar-scope .fc .fc-view-harness-active,
+.calendar-scope .calendar-wrap {
+  height: var(--cal-fixed-height, 720px) !important;
 }
 
-/* 배경 레이어는 가로채지 않게 */
-.calendar-scope .fc .fc-daygrid-day-bg,
-.calendar-scope .fc .fc-bg-event {
-  pointer-events: none;
+/* 세로선 유지 */
+.calendar-scope .fc .fc-timegrid-col,
+.calendar-scope .fc .fc-timegrid-axis,
+.calendar-scope .fc .fc-timegrid-divider {
+  border-right: 1px solid #e0e0e0 !important;
 }
 
-/* 실제 이벤트는 오버레이보다 위(z-index 2)에서 정상 클릭되게 */
-.calendar-scope .fc .fc-daygrid-day-events,
-.calendar-scope .fc .fc-daygrid-event {
-  position: relative;
-  z-index: 2;
-  pointer-events: auto;
-}
-
-/* 드래그 선택도 셀 어디서나 잘 되도록(모바일 길게누르기 민감도 개선용 선택 사항) */
-@media (hover: none) {
-  .calendar-scope .fc {
-    -webkit-tap-highlight-color: transparent;
-  }
+/* 가로선 */
+.calendar-scope .fc .fc-timegrid-slot {
+  border-top: 1px dotted #eee !important;
 }
