@@ -1,3 +1,4 @@
+
 package com.pingu.DOTORI.service;
 
 import com.pingu.DOTORI.dto.CalendarRequest;
@@ -23,7 +24,7 @@ public class CalendarService {
     private final UsersRepository usersRepository;
 
     public CalendarService(CalendarRepository calendarRepository,
-                           UsersRepository usersRepository) {
+            UsersRepository usersRepository) {
         this.calendarRepository = calendarRepository;
         this.usersRepository = usersRepository;
     }
@@ -87,4 +88,3 @@ public class CalendarService {
         return calendarRepository.save(c);
     }
 }
-

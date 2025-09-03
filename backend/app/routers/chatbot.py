@@ -1,10 +1,54 @@
-from fastapi import APIRouter
-from main import rag_service, ChatRequest, ChatResponse
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix="/api", tags=["Chatbot"])
 
-@router.post("/chat", response_model=ChatResponse)
-def gen_answer(req: ChatRequest):
-    print(f'사용자 {req.user_id}의 질문: {req.query}')
-    result = rag_service.get_answer(req.query, req.user_id)
-    return ChatResponse(answer=result)
+# 요청/응답 모델
+class ChatRequest(BaseModel):
+    query: str
+    user_id: str = "default"
+
+class ChatResponse(BaseModel):
+    answer: str
+    is_multiple: bool = False
+    messages: list[str] = []
+
+@router.post("/chat")
+def chat(request: ChatRequest):
+    from main import chatbot_service
+    
+    try:
+        # 입력 검증
+        if not request.query or not request.query.strip():
+            raise HTTPException(status_code=400, detail="질문을 입력해주세요.")
+        
+        # 답변 생성 (이제 dict 반환)
+        result = chatbot_service.get_answer(request.query.strip(), request.user_id)
+        
+        # result가 dict인지 확인
+        if isinstance(result, dict):
+            return ChatResponse(**result)
+        else:
+            # 기존 string 반환인 경우 (하위 호환성)
+            return ChatResponse(answer=result)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"서버 오류: {str(e)}")
+
+@router.get("/help")
+def get_help():
+    return {
+        "message": "다람이 챗봇 사용법",
+        "features": [
+            "상품 검색: 키워드로 상품 찾기",
+            "검수 기준: S/A/B/C 등급 설명",
+            "FAQ: 자주 묻는 질문 답변"
+        ],
+        "examples": [
+            "원피스 흰수염 찾아줘",
+            "검수 A등급이 뭐야?",
+            "할인율은 어떻게 정해지나요?"
+        ]
+    }

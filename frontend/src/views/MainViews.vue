@@ -11,7 +11,7 @@ import TopButton from '../components/TopButton.vue'
 import ChatbotFab from '../components/ChatbotFab.vue'
 
 // 베스트셀러 아이템 데이터 (임시)
-const bestSellerItems = ref<CatalogItem[]>([])
+const bestSellerItems = ref("ㅎㅇㅋㅋ")
 
 </script>
 
