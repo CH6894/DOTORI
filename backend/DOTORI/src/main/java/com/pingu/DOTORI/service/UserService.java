@@ -13,9 +13,9 @@ public class UserService {
 
 	@Autowired
 	ItemRepository itemRepository;
-	
+
 	public Optional<Item> find(String test) {
 		return itemRepository.findById(test);
 	}
-	
+
 }

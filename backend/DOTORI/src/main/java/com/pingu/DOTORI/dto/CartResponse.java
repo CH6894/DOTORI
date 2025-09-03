@@ -10,12 +10,12 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor 
+@NoArgsConstructor
 public class CartResponse {
-    private Long cartId;         // 장바구니 ID
-    private Long itemDetailsId;  // 상품 상세 ID
-    private String itemName;     // 상품 이름 (ItemDetails → Item에서 가져올 수 있음)
-    private int quantity;        // 수량
+    private Long cartId; // 장바구니 ID
+    private Long itemDetailsId; // 상품 상세 ID
+    private String itemName; // 상품 이름 (ItemDetails → Item에서 가져올 수 있음)
+    private int quantity; // 수량
     private String thumbnailUrl; // 상품 이미지 (대표 이미지 1개)
-    private int price;           // 가격 (예: cost)
+    private int price; // 가격 (예: cost)
 }

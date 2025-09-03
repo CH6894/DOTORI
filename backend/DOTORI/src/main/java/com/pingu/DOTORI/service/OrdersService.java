@@ -34,7 +34,7 @@ public class OrdersService {
             throw new IllegalArgumentException("선택한 장바구니 항목이 없습니다.");
         }
 
-     // 2. 기본 배송지 조회 (AddressService 활용)
+        // 2. 기본 배송지 조회 (AddressService 활용)
         var addressDto = addressService.findFirstByUserId(userId);
 
         List<Orders> orders = new ArrayList<>();
@@ -65,8 +65,9 @@ public class OrdersService {
 
         return savedOrders;
     }
+
     // 나의 주문 내역 조회 (최신순)
-   public List<Orders> getOrdersByUser(Long userId) {
-       return ordersRepository.findByUser_IdOrderByIdDesc(userId);
-   }
+    public List<Orders> getOrdersByUser(Long userId) {
+        return ordersRepository.findByUser_IdOrderByIdDesc(userId);
+    }
 }

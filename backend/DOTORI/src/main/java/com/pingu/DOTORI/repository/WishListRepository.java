@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface WishListRepository extends JpaRepository<WishList, Long> {
     boolean existsByUser_IdAndItemId(Long userId, Long itemId);
+
     void deleteByUser_IdAndItemId(Long userId, Long itemId);
+
     List<WishList> findAllByUser_IdOrderByWishListIdAsc(Long userId);
 }

@@ -37,7 +37,7 @@ public class ItemDetails {
 
 	@Column(name = "Unpacked") // 0/1
 	private Boolean unpacked;
-	
+
 	@Lob
 	@Column(name = "Product_Condition")
 	private String productCondition; // 상품 상태 상세 메모
@@ -62,8 +62,6 @@ public class ItemDetails {
 
 	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = false)
 	private List<Orders> orders = new ArrayList<>();
-
-
 
 	// --- 편의 메서드 ---
 	public void addImage(ItemImg image) {
