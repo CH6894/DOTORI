@@ -49,7 +49,7 @@
           <div class="price-info">
             <div class="original-price">
               <span class="label">발매가</span>
-              <span class="value">{{ product.originalPrice || 0 }}</span>
+              <span class="value">{{ computedOriginalPrice }}</span>
             </div>
             <div class="current-price">
               <span class="label">현재가</span>
@@ -72,9 +72,7 @@
 
         <!-- 액션 버튼들 -->
         <div class="action-buttons">
-          <button :class="['wish-heart', { active: wish.has(product.id) }]"
-            @click="wish.toggle({ id: product.id, title: product.title, price: product.price, image: product.images?.[0] })"
-            aria-label="위시 토글" title="위시 토글">
+          <button :class="['wish-heart', { active: isLiked }]" @click="toggleLike" aria-label="위시 토글" title="위시 토글">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
               <path
                 d="M12 21s-6.716-4.146-9.193-7.142C.61 11.41 1.077 8.5 3.2 6.9c1.86-1.42 4.46-1.17 6.11.44L12 10l2.69-2.66c1.65-1.61 4.25-1.86 6.11-.44 2.12 1.6 2.59 4.51.393 6.958C18.716 16.854 12 21 12 21z" />
@@ -123,6 +121,7 @@ wish.load()
 /* ===== 타입 정의 ===== */
 interface Product {
   id?: string | number
+  itemId?: number
   itemCode?: string
   name?: string,
   title?: string
@@ -184,7 +183,10 @@ const emit = defineEmits<{
 const router = useRouter()
 
 /* ===== 상태 ===== */
-const isLiked = ref<boolean>(false)
+const isLiked = computed(() => {
+  const itemId = Number(props.product.itemId || props.product.id)
+  return itemId ? wish.has(itemId) : false
+})
 const currentImageIndex = ref<number>(0)
 
 /* 판매 모달 */
@@ -202,6 +204,20 @@ const TOAST_DURATION = 1200 // ms
 const images = computed<string[]>(() => {
   const arr = props.product?.images
   return Array.isArray(arr) ? (arr.filter(Boolean) as string[]) : []
+})
+
+/* ===== 발매가 계산 ===== */
+const computedOriginalPrice = computed(() => {
+  const originalPrice = props.product.originalPrice || 0
+  console.log('ProductInfo - originalPrice:', originalPrice)
+  
+  if (typeof originalPrice === 'number') {
+    return `${originalPrice.toLocaleString()}원`
+  } else if (typeof originalPrice === 'string') {
+    return originalPrice.includes('원') ? originalPrice : `${originalPrice}원`
+  } else {
+    return '0원'
+  }
 })
 
 /* ===== 현재가 계산 ===== */
@@ -237,9 +253,18 @@ const computedCurrentPrice = computed(() => {
   }
   
   // 승인된 미개봉 상품이 없으면 기존 현재가 또는 발매가 표시
-  const fallbackPrice = props.product.currentPrice || props.product.originalPrice || '0원'
+  const fallbackPrice = props.product.currentPrice || props.product.originalPrice || 0
   console.log('ProductInfo - fallback 가격:', fallbackPrice)
-  return fallbackPrice
+  
+  // 숫자인 경우 포맷팅, 이미 문자열인 경우 그대로 반환
+  if (typeof fallbackPrice === 'number') {
+    return `${fallbackPrice.toLocaleString()}원`
+  } else if (typeof fallbackPrice === 'string') {
+    // 이미 '원'이 포함되어 있는지 확인
+    return fallbackPrice.includes('원') ? fallbackPrice : `${fallbackPrice}원`
+  } else {
+    return '0원'
+  }
 })
 
 // props 기본값 설정
@@ -305,8 +330,22 @@ const setCurrentImage = (index: number): void => {
 }
 
 /* ===== 좋아요 토글 + 키보드 접근성 ===== */
-const toggleLike = (): void => {
-  isLiked.value = !isLiked.value
+const toggleLike = async (): Promise<void> => {
+  try {
+    // itemId가 있으면 itemId 사용, 없으면 id 사용
+    const itemId = Number(props.product.itemId || props.product.id)
+    if (!itemId) {
+      console.error('상품 ID가 없습니다. product:', props.product)
+      return
+    }
+    
+    await wish.toggle(itemId)
+  } catch (error) {
+    console.error('위시리스트 토글 실패:', error)
+    if (error instanceof Error && error.message === '로그인이 필요합니다') {
+      alert('위시리스트를 사용하려면 로그인이 필요합니다.')
+    }
+  }
 }
 
 function onLikeKey(e: KeyboardEvent): void {

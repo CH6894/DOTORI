@@ -51,7 +51,7 @@
               <div class="price-section">
                 <div class="current-price">{{ formatPrice(item.price) }}원</div>
                 <div v-if="item.originalPrice" class="original-price">
-                  정가: {{ formatPrice(item.originalPrice) }}원
+                  발매가: {{ formatPrice(item.originalPrice) }}원
                 </div>
               </div>
 
@@ -81,8 +81,8 @@
 
               <!-- 액션 -->
               <div class="action-buttons">
-                <button class="heart-btn" @click="toggleWishlist" :aria-pressed="isWishlisted">
-                  <span :class="['heart-icon', { active: isWishlisted }]">♡</span>
+                <button :class="['wish-heart', { active: isWishlisted }]" @click="toggleWishlist" aria-label="위시 토글" title="위시 토글">
+                  <span>♡</span>
                 </button>
 
                 <!-- ✅ 장바구니: alert 없이 저장 + 토스트 -->
@@ -111,6 +111,9 @@
 <script setup>
 /* eslint-disable no-undef, no-unused-vars */
 import { ref, computed } from 'vue'
+import { useWishlistStore } from '@/stores/wishlist'
+
+const wish = useWishlistStore()
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -120,9 +123,13 @@ const emit = defineEmits(['close', 'purchase', 'addToCart'])
 
 // ---------- 상태 ----------
 const currentImageIndex = ref(0)
-const isWishlisted = ref(false)
+const isWishlisted = computed(() => {
+  const itemId = Number(props.item.id)
+  return itemId ? wish.has(itemId) : false
+})
 const showToast = ref(false)
 const TOAST_MS = 1200
+
 
 // ---------- 안전 이미지 배열 ----------
 const images = computed(() => {
@@ -191,8 +198,21 @@ const addToCart = () => {
   window.setTimeout(() => { showToast.value = false }, TOAST_MS)
 }
 
+// 위시리스트 클릭 핸들러
 // 찜 토글
-const toggleWishlist = () => { isWishlisted.value = !isWishlisted.value }
+const toggleWishlist = async () => {
+  try {
+    const itemId = Number(props.item.id)
+    if (!itemId) {
+      console.error('상품 ID가 없습니다')
+      return
+    }
+    
+    await wish.toggle(itemId)
+  } catch (error) {
+    console.error('위시리스트 토글 실패:', error)
+  }
+}
 
 // ---------- 유틸 ----------
 const getGradeText = (quality) => {
@@ -561,4 +581,32 @@ const formatDate = (dateString) => {
     transform: translateY(0);
   }
 }
+
+/* ProductInfo와 동일한 위시리스트 하트 버튼 스타일 */
+.wish-heart {
+  display: inline-grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #fff;
+  color: #bebebe;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.wish-heart:hover {
+  transform: scale(1.04);
+  background: #fff5f5;
+  border-color: #fecaca;
+}
+
+.wish-heart.active {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+
 </style>
