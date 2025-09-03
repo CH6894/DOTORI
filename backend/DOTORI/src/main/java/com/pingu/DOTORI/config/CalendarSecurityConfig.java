@@ -13,7 +13,6 @@ public class CalendarSecurityConfig {
 
   // 1) /api/admin/** 전용 체인 (우선 적용)
   @Bean
-  @Order(1)
   SecurityFilterChain admin(HttpSecurity http) throws Exception {
     http
         .securityMatcher("/api/admin/**")
