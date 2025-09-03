@@ -57,8 +57,7 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Cart> cart = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
-    private List<WishList> wishList = new ArrayList<>();
+
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
@@ -75,6 +74,6 @@ public class Users {
     // ex) 오더 테이블에서 특정 값 수정했을 때 여기서도 수정한다고  => 양방향 불일치 문제를 막는다고 함.
     public void addOrder(Orders order){ orders.add(order); order.setUser(this); }
     //public void addCart(Cart cart){ cart.add(cart); cart.setUser(this); }
-    public void addWish(WishList wish){ wishList.add(wish); wish.setUser(this); }
+
 
 }

@@ -21,7 +21,7 @@
       <!-- 상품 정보가 로드된 후 -->
       <div v-else-if="product.id">
         <!-- 상품 기본 정보 섹션 -->
-        <ProductInfo 
+        <ProductDetailInfo 
           :product="product" 
           :productType="productType"
           :approvedUnpackedDetails="unpackedItems"
@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import ProductInfo from '@/components/ProductInfo.vue'
+import ProductDetailInfo from '@/components/ProductInfo.vue'
 import PriceChart from '@/components/PriceChart.vue'
 import UsedProductsSection from '@/components/UsedProductsSection.vue'
 import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
@@ -109,14 +109,16 @@ function adaptProduct(dto: ItemDTO) {
   const images = Array.isArray(dto.images) && dto.images.length
     ? dto.images
     : (codeImg ? [codeImg] : ['/img/placeholder.jpg'])
-  console.log(images)
+  console.log('adaptProduct - dto:', dto)
+  console.log('adaptProduct - images:', images)
   return {
-    id: dto.itemCode,
+    id: dto.itemCode, // itemCode를 id로 사용 (URL 파라미터와 일치)
+    itemCode: dto.itemCode, // itemCode도 별도로 저장
     name: dto.name,
     title: dto.title,
     brand: dto.manufacturer || '브랜드 미정',
-    originalPrice: dto.cost ? `${dto.cost.toLocaleString()}원` : '발매가 미정',
-    currentPrice: `${(dto.cost ?? 0).toLocaleString()}원`,
+    originalPrice: dto.cost || 0,  // 숫자로 전달
+    currentPrice: dto.cost || 0,   // 숫자로 전달
     type: 'new', // 기본은 미개봉 상품
     images,
     description: dto.information || `${dto.name || dto.title} 상품입니다.`,
@@ -136,6 +138,23 @@ const fetchProductDetail = async () => {
   try {
     const data: ItemDTO = await fetchItemById(productId)
     product.value = adaptProduct(data)
+    
+    // ItemDetails 정보도 가져와서 itemId 설정
+    try {
+      const unpackedDetails = await fetchApprovedUnpackedItemDetails(productId)
+      if (unpackedDetails && unpackedDetails.length > 0) {
+        // 첫 번째 미개봉 상품의 itemId를 사용
+        product.value.itemId = unpackedDetails[0].itemId
+      } else {
+        // 미개봉 상품이 없으면 개봉 상품에서 가져오기
+        const openedDetails = await fetchApprovedOpenedItemDetails(productId)
+        if (openedDetails && openedDetails.length > 0) {
+          product.value.itemId = openedDetails[0].itemId
+        }
+      }
+    } catch (e) {
+      console.warn('ItemDetails 정보 로드 실패:', e)
+    }
   } catch (e: any) {
     console.error('상품 정보 로드 실패:', e)
     error.value = e?.message ?? '상품 정보를 불러오지 못했습니다.'
@@ -159,6 +178,7 @@ const fetchPriceData = async () => {
 
 const fetchUsedItems = async () => {
   try {
+    console.log('fetchUsedItems 시작 - productId:', productId)
     // 승인된 개봉 상품의 ItemDetails 조회 (unpacked = 1)
     const approvedOpenedDetails = await fetchApprovedOpenedItemDetails(productId)
     console.log('승인된 개봉 상품 데이터:', approvedOpenedDetails)
@@ -171,7 +191,7 @@ const fetchUsedItems = async () => {
           title: detail.itemName || '상품명 미정',
           description: detail.productCondition || '상품 설명 없음',
           price: detail.cost || 0,
-          originalPrice: detail.cost || 0,
+          originalPrice: product.value.originalPrice || 0, // 해당 상품의 실제 발매가 사용
           condition: getConditionFromQuality(detail.quality), // Admin의 quality로 등급 결정
           createdAt: detail.registrationDate ? new Date(detail.registrationDate) : new Date(),
           images: detail.itemImgUrl ? [detail.itemImgUrl] : ['/img/placeholder.jpg'],
@@ -198,6 +218,7 @@ const fetchUsedItems = async () => {
 
 const fetchUnpackedItems = async () => {
   try {
+    console.log('fetchUnpackedItems 시작 - productId:', productId)
     // 승인된 미개봉 상품의 ItemDetails 조회 (unpacked = 0)
     const approvedUnpackedDetails = await fetchApprovedUnpackedItemDetails(productId)
     console.log('승인된 미개봉 상품 데이터:', approvedUnpackedDetails)
@@ -295,6 +316,8 @@ const goBack = () => {
 
 // 페이지 초기화
 const initializePage = async () => {
+  console.log('=== 페이지 초기화 시작 ===')
+  console.log('productId:', productId)
   loading.value = true
   error.value = null // 에러 상태 초기화
   
@@ -306,6 +329,11 @@ const initializePage = async () => {
       fetchUsedItems(),
       fetchUnpackedItems(), // 미개봉 상품 데이터도 로드
     ])
+    
+    console.log('=== 페이지 초기화 완료 ===')
+    console.log('product.value:', product.value)
+    console.log('usedItems.value:', usedItems.value)
+    console.log('unpackedItems.value:', unpackedItems.value)
   } catch (error) {
     console.error('페이지 초기화 실패:', error)
   } finally {

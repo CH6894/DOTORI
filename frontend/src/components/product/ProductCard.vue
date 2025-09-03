@@ -26,20 +26,11 @@ const priceText = computed(() =>
 
 <template>
   <article class="product-card" role="article">
-    <RouterLink
-      class="product-card__thumb"
-      :to="to"
-      :aria-label="`${item.name} 상세로 이동`"
-    >
+    <RouterLink class="product-card__thumb" :to="to" :aria-label="`${item.name} 상세로 이동`">
       <picture>
         <source :srcset="item.thumbWebp || '/img/placeholder.jpg'" type="image/webp" />
-        <img
-          :src="item.thumbJpg || '/img/placeholder.jpg'"
-          :alt="`${item.name} 이미지`"
-          loading="lazy"
-          width="300"
-          height="300"
-        />
+        <img :src="item.thumbJpg || '/img/placeholder.jpg'" :alt="`${item.name} 이미지`" loading="lazy" width="300"
+          height="300" />
       </picture>
     </RouterLink>
 

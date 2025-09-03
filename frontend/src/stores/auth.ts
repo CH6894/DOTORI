@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', {
     isAuthed: (s) => !!s.token,
   },
   actions: {
-    setToken(t) {
+    setToken(t: string | null) {
       this.token = t
       if (t) localStorage.setItem('accessToken', t)
       else localStorage.removeItem('accessToken')
