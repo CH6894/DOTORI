@@ -14,6 +14,7 @@ import com.pingu.DOTORI.repository.ItemRepository;
 import com.pingu.DOTORI.repository.UsersRepository;
 import jakarta.transaction.Transactional;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +38,10 @@ public class InspectionService {
     private final ItemImgRepository itemImgRepository;
     private final ItemRepository itemRepository;
     private final UsersRepository usersRepository;
+    
+    // NCP Storage Service는 조건부로 주입
+    @Autowired(required = false)
+    private NcpStorageService ncpStorageService;
 
     @Getter
     @Setter
@@ -106,14 +111,22 @@ public class InspectionService {
         for (MultipartFile image : images) {
             if (image.isEmpty()) continue;
 
-            String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
-
-            try {
-                Path savePath = Path.of("C:/uploads/items/" + filename);
-                Files.createDirectories(savePath.getParent());
-                image.transferTo(savePath);
-            } catch (IOException e) {
-                throw new RuntimeException("이미지 저장 실패", e);
+            String imageUrl;
+            
+            // NCP Storage Service가 있으면 사용, 없으면 로컬 저장
+            if (ncpStorageService != null) {
+                imageUrl = ncpStorageService.uploadFile(image, "items");
+            } else {
+                // 로컬 저장 (기존 방식)
+                String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+                try {
+                    Path savePath = Path.of("C:/uploads/items/" + filename);
+                    Files.createDirectories(savePath.getParent());
+                    image.transferTo(savePath);
+                    imageUrl = filename; // 로컬 파일명만 저장
+                } catch (IOException e) {
+                    throw new RuntimeException("이미지 저장 실패", e);
+                }
             }
 
             // EXIF 메타데이터에서 촬영시각 추출 → 없으면 requestFilmingTime 사용 → 그것도 없으면 현재시간
@@ -127,7 +140,7 @@ public class InspectionService {
 
             ItemImg itemImg = ItemImg.builder()
                     .itemDetails(item)
-                    .imgUrl(filename)
+                    .imgUrl(imageUrl)
                     .imgType((byte) 0)
                     .filmingTime(filmingTime)
                     .build();
@@ -158,13 +171,48 @@ public class InspectionService {
         Page<Object[]> results = adminRepository.findByFiltersNative(state, fromDate, toDate, pageable);
 
         return results.map(row -> {
-            String baseUrl = "http://localhost:8081/uploads/items/";
-
+            // 디버깅: 원본 데이터 확인
+            System.out.println("=== AdminListRow 데이터 디버깅 ===");
+            System.out.println("row[12] (imageUrls): " + row[12]);
+            System.out.println("row[10] (imageCount): " + row[10]);
+            System.out.println("row[2] (title): " + row[2]);
+            
             List<String> imageUrls = row[12] != null
                     ? Arrays.stream(row[12].toString().split(","))
-                            .map(url -> baseUrl + url) // prefix 붙여줌
+                            .map(url -> {
+                                String originalUrl = url.trim();
+                                System.out.println("  원본 URL: '" + originalUrl + "'");
+                                
+                                // NCP URL인지 확인 (http로 시작하면 그대로, 아니면 로컬 URL 붙이기)
+                                if (originalUrl.startsWith("http")) {
+                                    System.out.println("  -> NCP URL (그대로 사용): " + originalUrl);
+                                    return originalUrl; // NCP URL은 그대로 반환
+                                } else {
+                                    // 로컬 URL 처리 - 경로 정리
+                                    String cleanUrl = originalUrl;
+                                    
+                                    // static/items/8/p_0.jpg 형태를 처리
+                                    if (cleanUrl.startsWith("static/items/")) {
+                                        System.out.println("  -> static/items/ 경로 감지");
+                                        // static/items/8/p_0.jpg -> 8/p_0.jpg
+                                        cleanUrl = cleanUrl.replace("static/items/", "");
+                                        // 8/p_0.jpg -> p_0.jpg (item_id 제거)
+                                        if (cleanUrl.contains("/")) {
+                                            cleanUrl = cleanUrl.substring(cleanUrl.indexOf("/") + 1);
+                                        }
+                                        System.out.println("  -> 경로 정리 후: " + cleanUrl);
+                                    }
+                                    
+                                    String localUrl = "http://localhost:8081/uploads/items/" + cleanUrl;
+                                    System.out.println("  -> 최종 로컬 URL: " + localUrl);
+                                    return localUrl; // 로컬 URL
+                                }
+                            })
                             .toList()
                     : Collections.emptyList();
+            
+            System.out.println("최종 imageUrls: " + imageUrls);
+            System.out.println("================================");
 
             return new AdminListRow(
                     safeLongValue(row[0]),               // inspectionId
@@ -189,11 +237,16 @@ public class InspectionService {
         Page<Object[]> results = adminRepository.findByFiltersNative(state, from, to, pageRequest);
 
         return results.map(row -> {
-            String baseUrl = "http://localhost:8081/uploads/items/";
-
             List<String> imageUrls = row[12] != null
                     ? Arrays.stream(row[12].toString().split(","))
-                            .map(url -> baseUrl + url)
+                            .map(url -> {
+                                // NCP URL인지 확인 (http로 시작하면 그대로, 아니면 로컬 URL 붙이기)
+                                if (url.startsWith("http")) {
+                                    return url; // NCP URL은 그대로 반환
+                                } else {
+                                    return "http://localhost:8081/uploads/items/" + url; // 로컬 URL
+                                }
+                            })
                             .toList()
                     : Collections.emptyList();
 

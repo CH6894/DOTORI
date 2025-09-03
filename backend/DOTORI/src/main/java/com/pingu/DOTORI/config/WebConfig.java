@@ -17,9 +17,9 @@ public class WebConfig implements WebMvcConfigurer {
         .allowCredentials(true);
     
   }
-  public void addResourceHanlers(ResourceHandlerRegistry registry) {
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
 	  registry.addResourceHandler("/uploads/**")
-	  		  .addResourceLocations("file:/home/git/upload");	
+	  		  .addResourceLocations("file:C:/uploads/");	
   }
 
 }

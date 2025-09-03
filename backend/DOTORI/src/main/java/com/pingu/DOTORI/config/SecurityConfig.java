@@ -33,8 +33,7 @@ public class SecurityConfig {
       ClientRegistrationRepository repo) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
-        .cors(cors -> {
-        })
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .addFilterBefore(jwtAuthenticationFilter,
             org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth
@@ -42,7 +41,9 @@ public class SecurityConfig {
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
             .requestMatchers("/static/**").permitAll()
             .requestMatchers("/assets/**").permitAll()
+            .requestMatchers("/uploads/**").permitAll() // 업로드된 이미지 파일 접근 허용
             .requestMatchers("/open/**").permitAll()
+            .requestMatchers("/api/inspections").permitAll() // 검수 신청은 인증 없이 허용
             .requestMatchers("/api/**").authenticated()
             .anyRequest().authenticated())
         .oauth2Login(oauth -> oauth

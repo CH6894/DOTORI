@@ -26,25 +26,29 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
               a.registration_date AS registrationDate,
               a.admission_state AS admissionState,
               a.quality AS quality,
-                             a.item_explanation AS itemExplanation,
-              0 AS imageCount,
-              NULL AS filmingTime,
-              NULL AS imageUrls
+              a.item_explanation AS itemExplanation,
+              COUNT(img.img_id) AS imageCount,
+              MIN(img.filming_time) AS filmingTime,
+              GROUP_CONCAT(img.img_url ORDER BY img.img_id) AS imageUrls
             FROM admin a
             JOIN item_details i ON a.item_id = i.item_id
             JOIN item it ON i.item_code = it.item_code
             JOIN users u ON i.user_id = u.user_id
+            LEFT JOIN item_img img ON i.item_id = img.item_id
             WHERE (:state IS NULL OR a.admission_state = :state)
               AND (:from IS NULL OR a.registration_date >= :from)
               AND (:to IS NULL OR a.registration_date <= :to)
+            GROUP BY a.inspection_id, i.item_id, it.name, u.user_name, i.cost, i.unpacked, 
+                     a.registration_date, a.admission_state, a.quality, a.item_explanation
             ORDER BY a.inspection_id DESC
             """,
         countQuery = """
-            SELECT COUNT(*) 
+            SELECT COUNT(DISTINCT a.inspection_id) 
             FROM admin a
             JOIN item_details i ON a.item_id = i.item_id
             JOIN item it ON i.item_code = it.item_code
             JOIN users u ON i.user_id = u.user_id
+            LEFT JOIN item_img img ON i.item_id = img.item_id
             WHERE (:state IS NULL OR a.admission_state = :state)
               AND (:from IS NULL OR a.registration_date >= :from)
               AND (:to IS NULL OR a.registration_date <= :to)
