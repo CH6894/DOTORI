@@ -43,6 +43,12 @@ public class ItemService {
 				.map(this::toDto);
 	}
 
+	// 검색어로 아이템 찾기
+	public Page<ItemDTO> searchItems(String query, Pageable pageable) {
+		return itemRepository.findByNameContainingIgnoreCaseOrTitleContainingIgnoreCaseOrGenreContainingIgnoreCase(
+				query, query, query, pageable).map(this::toDto);
+	}
+
 	// 승인된 상품의 ItemDetails 조회
 	public List<ItemDetails> findApprovedItemDetailsByItemCode(String itemCode) {
 		return itemDetailsRepository.findByItem_ItemCodeAndStatusOrderByUnpackedAsc(itemCode, true);

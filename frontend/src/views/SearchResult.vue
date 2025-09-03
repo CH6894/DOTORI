@@ -92,6 +92,7 @@
     }
   }
 
+  // 초기 로드
   onMounted(load)
 
   // Top 변경: mid 보정 후 "장르만" 다시 로드
@@ -126,15 +127,17 @@
 
 <template>
   <div class="container mx-auto w-[1280px] px-0">
+    <!-- 카테고리 탭 -->
     <div class="category-tabs">
       <!-- Top Tabs -->
       <TopTabs :items="TopCategoryData" v-model="top" />
 
       <!-- Mid Tabs -->
       <MidTabs :items="midOptions" v-model="mid" :visible="true" />
+    </div>
 
-      <!-- 정렬 아이콘 바 -->
-      <div class="sortbar" role="toolbar" aria-label="정렬">
+    <!-- 정렬 아이콘 바 (항상 표시) -->
+    <div class="sortbar" role="toolbar" aria-label="정렬">
         <!-- 가격 -->
         <button
           type="button"
@@ -201,7 +204,6 @@
           <span class="label">판매</span>
         </button>
       </div>
-    </div>
 
     <!-- 상태 -->
     <div v-if="loading" class="py-12 text-center text-gray-500">불러오는 중…</div>

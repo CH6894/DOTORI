@@ -63,4 +63,11 @@ public class ItemController {
 		return ResponseEntity.ok(details);
 	}
 
+	// 검색 API
+	@GetMapping("/search")
+	public ResponseEntity<Page<ItemDTO>> searchItems(@RequestParam String q,
+			@PageableDefault(size = 30) Pageable pageable) {
+		return ResponseEntity.ok(itemService.searchItems(q, pageable));
+	}
+
 }

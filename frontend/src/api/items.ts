@@ -29,3 +29,9 @@ export const fetchApprovedUnpackedItemDetails = (itemCode: string) =>
 // 승인된 개봉 상품의 ItemDetails 조회
 export const fetchApprovedOpenedItemDetails = (itemCode: string) =>
     openApi.get(`/open/items/${itemCode}/approved-opened-details`).then(r => r.data)
+
+// 검색어로 아이템 찾기
+export const searchItems = (query: string, params?: PageParams) =>
+    openApi.get<Page<ItemDTO>>('/open/items/search', { 
+        params: { q: query, ...params } 
+    }).then(r => r.data)
