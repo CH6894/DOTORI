@@ -1,4 +1,3 @@
-<!-- CalendarPage.vue (조회용 최종: 요약 제거 + 종일 날짜 표시) -->
 <template>
   <div class="page calendar-scope cute">
     <h2 class="calendar-title">
@@ -96,12 +95,12 @@ function renderAgenda(){
 
   const allDaySection = allDayItems.length
     ? `<h4 class="agenda__section-title">종일</h4>
-       <ul class="agenda__list agenda__list--allday">${liAllDay}</ul>`
+      <ul class="agenda__list agenda__list--allday">${liAllDay}</ul>`
     : ''
 
   const timedSection = timedItems.length
     ? `<h4 class="agenda__section-title">시간</h4>
-       <ul class="agenda__list agenda__list--timed">${liTimed}</ul>`
+      <ul class="agenda__list agenda__list--timed">${liTimed}</ul>`
     : ''
 
   agendaHtml.value = `${allDaySection}${timedSection}`

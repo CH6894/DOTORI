@@ -1,0 +1,9902 @@
+[
+  {
+    "id": 1,
+    "name": "탄지로 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 1,
+    "name": "탄지로 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 1,
+    "name": "탄지로 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 1,
+    "name": "탄지로 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 1
+  },
+  {
+    "id": 1,
+    "name": "탄지로 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 2,
+    "name": "루피 해적왕 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 120000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 2,
+    "name": "루피 해적왕 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 120000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 2,
+    "name": "루피 해적왕 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 120000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 2,
+    "name": "루피 해적왕 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 120000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 2,
+    "name": "루피 해적왕 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 120000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 3,
+    "name": "세이버 얼터 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 3,
+    "name": "세이버 얼터 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 3,
+    "name": "세이버 얼터 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 3,
+    "name": "세이버 얼터 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 3,
+    "name": "세이버 얼터 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 4,
+    "name": "데쿠 히어로 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 180000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 4,
+    "name": "데쿠 히어로 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 180000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 4,
+    "name": "데쿠 히어로 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 180000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 4,
+    "name": "데쿠 히어로 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 180000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 4,
+    "name": "데쿠 히어로 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 180000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 2
+  },
+  {
+    "id": 5,
+    "name": "기유 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 250000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 16
+  },
+  {
+    "id": 5,
+    "name": "기유 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 250000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 5,
+    "name": "기유 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 250000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 5,
+    "name": "기유 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 250000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 5,
+    "name": "기유 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 250000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 6,
+    "name": "조로 삼도류 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 6,
+    "name": "조로 삼도류 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 6,
+    "name": "조로 삼도류 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 6,
+    "name": "조로 삼도류 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 6,
+    "name": "조로 삼도류 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 16
+  },
+  {
+    "id": 7,
+    "name": "라이더 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 7,
+    "name": "라이더 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 7,
+    "name": "라이더 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 7,
+    "name": "라이더 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 7,
+    "name": "라이더 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 8,
+    "name": "바쿠고 폭발 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 8,
+    "name": "바쿠고 폭발 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 8,
+    "name": "바쿠고 폭발 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 8,
+    "name": "바쿠고 폭발 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 8,
+    "name": "바쿠고 폭발 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 9,
+    "name": "네즈코 대나무 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 9,
+    "name": "네즈코 대나무 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 9,
+    "name": "네즈코 대나무 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 9,
+    "name": "네즈코 대나무 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 9,
+    "name": "네즈코 대나무 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 10,
+    "name": "상디 블랙레그 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 190000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 10,
+    "name": "상디 블랙레그 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 190000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 10,
+    "name": "상디 블랙레그 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 190000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 10,
+    "name": "상디 블랙레그 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 190000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 10,
+    "name": "상디 블랙레그 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 190000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 16
+  },
+  {
+    "id": 11,
+    "name": "아처 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 11,
+    "name": "아처 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 11,
+    "name": "아처 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 1
+  },
+  {
+    "id": 11,
+    "name": "아처 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 11,
+    "name": "아처 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 12,
+    "name": "토도로키 반냉반열 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 12,
+    "name": "토도로키 반냉반열 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 12,
+    "name": "토도로키 반냉반열 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 12,
+    "name": "토도로키 반냉반열 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 12,
+    "name": "토도로키 반냉반열 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 13,
+    "name": "이노스케 멧돼지 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 48000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 13,
+    "name": "이노스케 멧돼지 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 48000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 13,
+    "name": "이노스케 멧돼지 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 48000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 13,
+    "name": "이노스케 멧돼지 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 48000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 13,
+    "name": "이노스케 멧돼지 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 48000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 14,
+    "name": "에이스 불꽃 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 220000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 14,
+    "name": "에이스 불꽃 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 220000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 14,
+    "name": "에이스 불꽃 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 220000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 14,
+    "name": "에이스 불꽃 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 220000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 14,
+    "name": "에이스 불꽃 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 220000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 2
+  },
+  {
+    "id": 15,
+    "name": "길가메시 황금률 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 280000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 15,
+    "name": "길가메시 황금률 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 280000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 15,
+    "name": "길가메시 황금률 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 280000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 15,
+    "name": "길가메시 황금률 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 280000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 15,
+    "name": "길가메시 황금률 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 280000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 16,
+    "name": "우라라카 중력조작 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 72000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 16,
+    "name": "우라라카 중력조작 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 72000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 16,
+    "name": "우라라카 중력조작 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 72000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 16,
+    "name": "우라라카 중력조작 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 72000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 16,
+    "name": "우라라카 중력조작 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 72000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 17,
+    "name": "렌고쿠 염주 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 17,
+    "name": "렌고쿠 염주 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 17,
+    "name": "렌고쿠 염주 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 17,
+    "name": "렌고쿠 염주 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 17,
+    "name": "렌고쿠 염주 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 18,
+    "name": "나미 날씨 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 42000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 18,
+    "name": "나미 날씨 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 42000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 18,
+    "name": "나미 날씨 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 42000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 18,
+    "name": "나미 날씨 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 42000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 18,
+    "name": "나미 날씨 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 42000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 19,
+    "name": "랜서 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 19,
+    "name": "랜서 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 19,
+    "name": "랜서 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 19,
+    "name": "랜서 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 19,
+    "name": "랜서 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 20,
+    "name": "아이다 엔진 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 158000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 20,
+    "name": "아이다 엔진 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 158000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 20,
+    "name": "아이다 엔진 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 158000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 20,
+    "name": "아이다 엔진 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 158000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 20,
+    "name": "아이다 엔진 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 158000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 21,
+    "name": "우즈이 음주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 21,
+    "name": "우즈이 음주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 21,
+    "name": "우즈이 음주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 21,
+    "name": "우즈이 음주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 21,
+    "name": "우즈이 음주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 22,
+    "name": "로빈 하나하나 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 22,
+    "name": "로빈 하나하나 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 22,
+    "name": "로빈 하나하나 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 22,
+    "name": "로빈 하나하나 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 22,
+    "name": "로빈 하나하나 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 23,
+    "name": "캐스터 마법진 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 23,
+    "name": "캐스터 마법진 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 23,
+    "name": "캐스터 마법진 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 15
+  },
+  {
+    "id": 23,
+    "name": "캐스터 마법진 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 23,
+    "name": "캐스터 마법진 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 24,
+    "name": "올마이트 원포올 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 240000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 24,
+    "name": "올마이트 원포올 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 240000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 16
+  },
+  {
+    "id": 24,
+    "name": "올마이트 원포올 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 240000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 1
+  },
+  {
+    "id": 24,
+    "name": "올마이트 원포올 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 240000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 24,
+    "name": "올마이트 원포올 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 240000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 25,
+    "name": "미츠리 사랑주 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 175000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 25,
+    "name": "미츠리 사랑주 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 175000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 25,
+    "name": "미츠리 사랑주 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 175000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 25,
+    "name": "미츠리 사랑주 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 175000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 25,
+    "name": "미츠리 사랑주 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 175000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 26,
+    "name": "쵸파 인간 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 26,
+    "name": "쵸파 인간 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 26,
+    "name": "쵸파 인간 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 26,
+    "name": "쵸파 인간 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 26,
+    "name": "쵸파 인간 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 27,
+    "name": "버서커 광화 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 125000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 27,
+    "name": "버서커 광화 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 125000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 27,
+    "name": "버서커 광화 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 125000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 27,
+    "name": "버서커 광화 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 125000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 27,
+    "name": "버서커 광화 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 125000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 28,
+    "name": "키리시마 경화 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 28,
+    "name": "키리시마 경화 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 28,
+    "name": "키리시마 경화 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 28,
+    "name": "키리시마 경화 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 28,
+    "name": "키리시마 경화 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 29,
+    "name": "오바나이 뱀주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 185000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 29,
+    "name": "오바나이 뱀주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 185000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 29,
+    "name": "오바나이 뱀주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 185000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 29,
+    "name": "오바나이 뱀주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 185000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 29,
+    "name": "오바나이 뱀주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 185000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 30,
+    "name": "브룩 영혼왕 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 205000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 30,
+    "name": "브룩 영혼왕 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 205000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 30,
+    "name": "브룩 영혼왕 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 205000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 30,
+    "name": "브룩 영혼왕 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 205000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 30,
+    "name": "브룩 영혼왕 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 205000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 31,
+    "name": "마슈 방패 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 31,
+    "name": "마슈 방패 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 31,
+    "name": "마슈 방패 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 31,
+    "name": "마슈 방패 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 31,
+    "name": "마슈 방패 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 32,
+    "name": "미도리야 원포올 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 142000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 32,
+    "name": "미도리야 원포올 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 142000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 32,
+    "name": "미도리야 원포올 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 142000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 32,
+    "name": "미도리야 원포올 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 142000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 32,
+    "name": "미도리야 원포올 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 142000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 33,
+    "name": "실루엣 가라앉는 햇살 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 33,
+    "name": "실루엣 가라앉는 햇살 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 33,
+    "name": "실루엣 가라앉는 햇살 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 33,
+    "name": "실루엣 가라앉는 햇살 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 33,
+    "name": "실루엣 가라앉는 햇살 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 34,
+    "name": "징베 어인공수도 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 225000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 34,
+    "name": "징베 어인공수도 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 225000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 34,
+    "name": "징베 어인공수도 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 225000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 34,
+    "name": "징베 어인공수도 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 225000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 34,
+    "name": "징베 어인공수도 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 225000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 35,
+    "name": "잔느다르크 성녀 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 265000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 35,
+    "name": "잔느다르크 성녀 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 265000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 35,
+    "name": "잔느다르크 성녀 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 265000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 35,
+    "name": "잔느다르크 성녀 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 265000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 35,
+    "name": "잔느다르크 성녀 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 265000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 36,
+    "name": "야오요로즈 창조 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 81000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 36,
+    "name": "야오요로즈 창조 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 81000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 36,
+    "name": "야오요로즈 창조 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 81000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 36,
+    "name": "야오요로즈 창조 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 81000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 36,
+    "name": "야오요로즈 창조 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 81000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 37,
+    "name": "사비토 최종선별 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 37,
+    "name": "사비토 최종선별 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 37,
+    "name": "사비토 최종선별 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 37,
+    "name": "사비토 최종선별 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 37,
+    "name": "사비토 최종선별 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 38,
+    "name": "프랑키 사이보그 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 45000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 38,
+    "name": "프랑키 사이보그 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 45000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 38,
+    "name": "프랑키 사이보그 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 45000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 11
+  },
+  {
+    "id": 38,
+    "name": "프랑키 사이보그 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 45000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 38,
+    "name": "프랑키 사이보그 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 45000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 39,
+    "name": "이슈타르 금성여신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 210000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 39,
+    "name": "이슈타르 금성여신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 210000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 39,
+    "name": "이슈타르 금성여신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 210000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 39,
+    "name": "이슈타르 금성여신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 210000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 39,
+    "name": "이슈타르 금성여신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 210000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 40,
+    "name": "호크스 날개 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 188000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 40,
+    "name": "호크스 날개 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 188000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 40,
+    "name": "호크스 날개 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 188000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 40,
+    "name": "호크스 날개 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 188000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 40,
+    "name": "호크스 날개 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 188000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 41,
+    "name": "마코모 물의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 41,
+    "name": "마코모 물의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 41,
+    "name": "마코모 물의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 41,
+    "name": "마코모 물의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 41,
+    "name": "마코모 물의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 42,
+    "name": "비비 알라바스타 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 42,
+    "name": "비비 알라바스타 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 42,
+    "name": "비비 알라바스타 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 15
+  },
+  {
+    "id": 42,
+    "name": "비비 알라바스타 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 42,
+    "name": "비비 알라바스타 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 43,
+    "name": "스카사하 지혜의 마경 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 62000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 43,
+    "name": "스카사하 지혜의 마경 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 62000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 43,
+    "name": "스카사하 지혜의 마경 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 62000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 43,
+    "name": "스카사하 지혜의 마경 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 62000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 43,
+    "name": "스카사하 지혜의 마경 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 62000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 44,
+    "name": "엔데버 헬플레임 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 255000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 44,
+    "name": "엔데버 헬플레임 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 255000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 44,
+    "name": "엔데버 헬플레임 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 255000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 44,
+    "name": "엔데버 헬플레임 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 255000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 44,
+    "name": "엔데버 헬플레임 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 255000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 45,
+    "name": "카나오 꽃의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 45,
+    "name": "카나오 꽃의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 45,
+    "name": "카나오 꽃의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 45,
+    "name": "카나오 꽃의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 45,
+    "name": "카나오 꽃의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 46,
+    "name": "로 룸 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 46,
+    "name": "로 룸 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 46,
+    "name": "로 룸 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 46,
+    "name": "로 룸 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 46,
+    "name": "로 룸 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 47,
+    "name": "에미야 투영마술 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 129000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 47,
+    "name": "에미야 투영마술 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 129000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 47,
+    "name": "에미야 투영마술 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 129000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 47,
+    "name": "에미야 투영마술 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 129000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 47,
+    "name": "에미야 투영마술 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 129000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 48,
+    "name": "츠유 개구리 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 49000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 48,
+    "name": "츠유 개구리 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 49000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 48,
+    "name": "츠유 개구리 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 49000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 48,
+    "name": "츠유 개구리 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 49000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 48,
+    "name": "츠유 개구리 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 49000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 49,
+    "name": "무잔 완전체 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 300000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 49,
+    "name": "무잔 완전체 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 300000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 49,
+    "name": "무잔 완전체 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 300000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 15
+  },
+  {
+    "id": 49,
+    "name": "무잔 완전체 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 300000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 49,
+    "name": "무잔 완전체 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 300000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 50,
+    "name": "샹크스 사황 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 245000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 50,
+    "name": "샹크스 사황 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 245000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 50,
+    "name": "샹크스 사황 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 245000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 50,
+    "name": "샹크스 사황 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 245000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 50,
+    "name": "샹크스 사황 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 245000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 51,
+    "name": "알토리아 약속된 승리의 검 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 92000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 51,
+    "name": "알토리아 약속된 승리의 검 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 92000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 51,
+    "name": "알토리아 약속된 승리의 검 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 92000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 51,
+    "name": "알토리아 약속된 승리의 검 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 92000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 51,
+    "name": "알토리아 약속된 승리의 검 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 92000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 52,
+    "name": "스테인 히어로 킬러 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 156000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 52,
+    "name": "스테인 히어로 킬러 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 156000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 52,
+    "name": "스테인 히어로 킬러 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 156000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 52,
+    "name": "스테인 히어로 킬러 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 156000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 52,
+    "name": "스테인 히어로 킬러 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 156000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 53,
+    "name": "코쵸 시노부 충주 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 71000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 53,
+    "name": "코쵸 시노부 충주 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 71000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 53,
+    "name": "코쵸 시노부 충주 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 71000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 53,
+    "name": "코쵸 시노부 충주 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 71000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 53,
+    "name": "코쵸 시노부 충주 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 71000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 54,
+    "name": "하트 해적단 베포 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 54,
+    "name": "하트 해적단 베포 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 1
+  },
+  {
+    "id": 54,
+    "name": "하트 해적단 베포 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 54,
+    "name": "하트 해적단 베포 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 54,
+    "name": "하트 해적단 베포 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 165000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 55,
+    "name": "네로 황제특권 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 218000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 55,
+    "name": "네로 황제특권 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 218000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 55,
+    "name": "네로 황제특권 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 218000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 55,
+    "name": "네로 황제특권 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 218000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 55,
+    "name": "네로 황제특권 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 218000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 56,
+    "name": "미네타 포도 알 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 38000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 56,
+    "name": "미네타 포도 알 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 38000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 56,
+    "name": "미네타 포도 알 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 38000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 56,
+    "name": "미네타 포도 알 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 38000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 56,
+    "name": "미네타 포도 알 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 38000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 57,
+    "name": "아카자 파괴살 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 148000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 57,
+    "name": "아카자 파괴살 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 148000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 57,
+    "name": "아카자 파괴살 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 148000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 57,
+    "name": "아카자 파괴살 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 148000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 57,
+    "name": "아카자 파괴살 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 148000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 58,
+    "name": "도플라밍고 실실 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 58,
+    "name": "도플라밍고 실실 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 58,
+    "name": "도플라밍고 실실 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 58,
+    "name": "도플라밍고 실실 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 58,
+    "name": "도플라밍고 실실 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 55000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 59,
+    "name": "쿠훌린 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 178000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 59,
+    "name": "쿠훌린 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 178000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 59,
+    "name": "쿠훌린 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 178000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 59,
+    "name": "쿠훌린 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 178000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 59,
+    "name": "쿠훌린 게이볼그 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 178000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 60,
+    "name": "아이제와 말소 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 169000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 60,
+    "name": "아이제와 말소 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 169000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 60,
+    "name": "아이제와 말소 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 169000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 60,
+    "name": "아이제와 말소 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 169000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 60,
+    "name": "아이제와 말소 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 169000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 61,
+    "name": "도마 얼음 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 61,
+    "name": "도마 얼음 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 61,
+    "name": "도마 얼음 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 61,
+    "name": "도마 얼음 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 61,
+    "name": "도마 얼음 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 135000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 62,
+    "name": "크로커다일 모래 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 62,
+    "name": "크로커다일 모래 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 62,
+    "name": "크로커다일 모래 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 62,
+    "name": "크로커다일 모래 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 62,
+    "name": "크로커다일 모래 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 1
+  },
+  {
+    "id": 63,
+    "name": "타마모 여우 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 64000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 63,
+    "name": "타마모 여우 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 64000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 63,
+    "name": "타마모 여우 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 64000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 63,
+    "name": "타마모 여우 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 64000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 63,
+    "name": "타마모 여우 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 64000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 64,
+    "name": "시가라키 붕괴 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 64,
+    "name": "시가라키 붕괴 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 64,
+    "name": "시가라키 붕괴 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 64,
+    "name": "시가라키 붕괴 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 64,
+    "name": "시가라키 붕괴 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 65,
+    "name": "한텐구 분열 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 65,
+    "name": "한텐구 분열 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 65,
+    "name": "한텐구 분열 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 65,
+    "name": "한텐구 분열 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 65,
+    "name": "한텐구 분열 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 66,
+    "name": "에넬 번개 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 112000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 66,
+    "name": "에넬 번개 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 112000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 66,
+    "name": "에넬 번개 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 112000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 66,
+    "name": "에넬 번개 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 112000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 66,
+    "name": "에넬 번개 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 112000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 67,
+    "name": "모드레드 반역 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 88000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 67,
+    "name": "모드레드 반역 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 88000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 67,
+    "name": "모드레드 반역 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 88000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 67,
+    "name": "모드레드 반역 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 88000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 67,
+    "name": "모드레드 반역 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 88000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 68,
+    "name": "다비 청염 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 46000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 68,
+    "name": "다비 청염 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 46000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 68,
+    "name": "다비 청염 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 46000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 68,
+    "name": "다비 청염 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 46000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 68,
+    "name": "다비 청염 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 46000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 69,
+    "name": "교고쿠 치명상 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 193000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 69,
+    "name": "교고쿠 치명상 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 193000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 69,
+    "name": "교고쿠 치명상 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 193000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 11
+  },
+  {
+    "id": 69,
+    "name": "교고쿠 치명상 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 193000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 69,
+    "name": "교고쿠 치명상 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 193000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 70,
+    "name": "카이도 백수 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 285000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 70,
+    "name": "카이도 백수 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 285000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 70,
+    "name": "카이도 백수 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 285000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 15
+  },
+  {
+    "id": 70,
+    "name": "카이도 백수 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 285000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 70,
+    "name": "카이도 백수 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 285000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 71,
+    "name": "오키타 천재검사 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 124000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 71,
+    "name": "오키타 천재검사 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 124000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 71,
+    "name": "오키타 천재검사 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 124000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 71,
+    "name": "오키타 천재검사 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 124000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 71,
+    "name": "오키타 천재검사 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 124000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 72,
+    "name": "토가 변신 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 72,
+    "name": "토가 변신 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 72,
+    "name": "토가 변신 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 72,
+    "name": "토가 변신 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 72,
+    "name": "토가 변신 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 73,
+    "name": "나키메 무한성 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 73,
+    "name": "나키메 무한성 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 73,
+    "name": "나키메 무한성 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 73,
+    "name": "나키메 무한성 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 73,
+    "name": "나키메 무한성 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 74,
+    "name": "빅맘 소울소울 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 234000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 74,
+    "name": "빅맘 소울소울 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 234000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 74,
+    "name": "빅맘 소울소울 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 234000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 74,
+    "name": "빅맘 소울소울 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 234000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 1
+  },
+  {
+    "id": 74,
+    "name": "빅맘 소울소울 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 234000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 75,
+    "name": "잭더리퍼 해부 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 75,
+    "name": "잭더리퍼 해부 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 75,
+    "name": "잭더리퍼 해부 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 75,
+    "name": "잭더리퍼 해부 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 75,
+    "name": "잭더리퍼 해부 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 76,
+    "name": "컴프레스 압축 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 97000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 76,
+    "name": "컴프레스 압축 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 97000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 76,
+    "name": "컴프레스 압축 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 97000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 76,
+    "name": "컴프레스 압축 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 97000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 76,
+    "name": "컴프레스 압축 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 97000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 77,
+    "name": "무이치로 안개주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 77,
+    "name": "무이치로 안개주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 77,
+    "name": "무이치로 안개주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 77,
+    "name": "무이치로 안개주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 77,
+    "name": "무이치로 안개주 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 78,
+    "name": "마르코 불사조 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 51000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 78,
+    "name": "마르코 불사조 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 51000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 78,
+    "name": "마르코 불사조 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 51000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 78,
+    "name": "마르코 불사조 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 51000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 78,
+    "name": "마르코 불사조 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 51000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 79,
+    "name": "헤라클레스 열두시험 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 79,
+    "name": "헤라클레스 열두시험 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 79,
+    "name": "헤라클레스 열두시험 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 79,
+    "name": "헤라클레스 열두시험 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 79,
+    "name": "헤라클레스 열두시험 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 80,
+    "name": "스피너 변이형 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 142000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 80,
+    "name": "스피너 변이형 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 142000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 80,
+    "name": "스피너 변이형 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 142000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 80,
+    "name": "스피너 변이형 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 142000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 80,
+    "name": "스피너 변이형 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 142000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 81,
+    "name": "겐야 총탄 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 81,
+    "name": "겐야 총탄 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 81,
+    "name": "겐야 총탄 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 81,
+    "name": "겐야 총탄 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 81,
+    "name": "겐야 총탄 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 118000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 83,
+    "name": "마리 안토와네트 유리구두 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 83,
+    "name": "마리 안토와네트 유리구두 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 83,
+    "name": "마리 안토와네트 유리구두 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 83,
+    "name": "마리 안토와네트 유리구두 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 83,
+    "name": "마리 안토와네트 유리구두 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 84,
+    "name": "마그네 자석 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 175000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 84,
+    "name": "마그네 자석 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 175000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 84,
+    "name": "마그네 자석 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 175000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 84,
+    "name": "마그네 자석 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 175000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 84,
+    "name": "마그네 자석 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 175000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 85,
+    "name": "요리이치 일의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 295000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 85,
+    "name": "요리이치 일의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 295000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 85,
+    "name": "요리이치 일의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 295000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 85,
+    "name": "요리이치 일의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 295000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 85,
+    "name": "요리이치 일의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 295000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 86,
+    "name": "킨에몬 여우불류 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 106000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 86,
+    "name": "킨에몬 여우불류 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 106000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 86,
+    "name": "킨에몬 여우불류 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 106000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 86,
+    "name": "킨에몬 여우불류 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 106000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 86,
+    "name": "킨에몬 여우불류 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 106000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 87,
+    "name": "아스톨포 환상종 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 87,
+    "name": "아스톨포 환상종 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 87,
+    "name": "아스톨포 환상종 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 1
+  },
+  {
+    "id": 87,
+    "name": "아스톨포 환상종 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 87,
+    "name": "아스톨포 환상종 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 88,
+    "name": "트와이스 분열 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 43000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 88,
+    "name": "트와이스 분열 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 43000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 1
+  },
+  {
+    "id": 88,
+    "name": "트와이스 분열 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 43000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 88,
+    "name": "트와이스 분열 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 43000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 88,
+    "name": "트와이스 분열 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 43000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 89,
+    "name": "히메지마 바위주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 89,
+    "name": "히메지마 바위주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 89,
+    "name": "히메지마 바위주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 89,
+    "name": "히메지마 바위주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 89,
+    "name": "히메지마 바위주 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 90,
+    "name": "오든 이도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 267000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 90,
+    "name": "오든 이도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 267000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 90,
+    "name": "오든 이도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 267000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 90,
+    "name": "오든 이도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 267000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 90,
+    "name": "오든 이도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 267000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 91,
+    "name": "다 빈치 만능 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 131000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 91,
+    "name": "다 빈치 만능 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 131000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 91,
+    "name": "다 빈치 만능 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 131000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 91,
+    "name": "다 빈치 만능 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 131000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 91,
+    "name": "다 빈치 만능 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 131000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 92,
+    "name": "진 회전 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 92,
+    "name": "진 회전 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 92,
+    "name": "진 회전 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 92,
+    "name": "진 회전 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 92,
+    "name": "진 회전 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 93,
+    "name": "코쿠시보 달의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 93,
+    "name": "코쿠시보 달의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 93,
+    "name": "코쿠시보 달의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 93,
+    "name": "코쿠시보 달의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 93,
+    "name": "코쿠시보 달의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 94,
+    "name": "페롤 캔디맨 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 154000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 94,
+    "name": "페롤 캔디맨 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 154000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 94,
+    "name": "페롤 캔디맨 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 154000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 94,
+    "name": "페롤 캔디맨 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 154000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 94,
+    "name": "페롤 캔디맨 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 154000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 95,
+    "name": "모리아티 범죄왕 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 203000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 95,
+    "name": "모리아티 범죄왕 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 203000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 95,
+    "name": "모리아티 범죄왕 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 203000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 95,
+    "name": "모리아티 범죄왕 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 203000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 95,
+    "name": "모리아티 범죄왕 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 203000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 96,
+    "name": "문피시 돌진 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 114000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 96,
+    "name": "문피시 돌진 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 114000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 96,
+    "name": "문피시 돌진 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 114000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 96,
+    "name": "문피시 돌진 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 114000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 96,
+    "name": "문피시 돌진 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 114000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 97,
+    "name": "유시로 혈귀술 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 97,
+    "name": "유시로 혈귀술 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 97,
+    "name": "유시로 혈귀술 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 11
+  },
+  {
+    "id": 97,
+    "name": "유시로 혈귀술 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 97,
+    "name": "유시로 혈귀술 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 65000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 98,
+    "name": "바질 호크스 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 47000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 98,
+    "name": "바질 호크스 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 47000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 98,
+    "name": "바질 호크스 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 47000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 98,
+    "name": "바질 호크스 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 47000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 98,
+    "name": "바질 호크스 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 47000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 99,
+    "name": "모리어티 악의 화신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 186000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 99,
+    "name": "모리어티 악의 화신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 186000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 99,
+    "name": "모리어티 악의 화신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 186000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 1
+  },
+  {
+    "id": 99,
+    "name": "모리어티 악의 화신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 186000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 99,
+    "name": "모리어티 악의 화신 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 186000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 100,
+    "name": "미드나이트 수면 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 159000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 100,
+    "name": "미드나이트 수면 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 159000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 100,
+    "name": "미드나이트 수면 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 159000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 100,
+    "name": "미드나이트 수면 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 159000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 100,
+    "name": "미드나이트 수면 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 159000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 101,
+    "name": "하시라 주 세트 낸도 9",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 450000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 101,
+    "name": "하시라 주 세트 낸도 9",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 450000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 101,
+    "name": "하시라 주 세트 낸도 9",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 450000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 101,
+    "name": "하시라 주 세트 낸도 9",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 450000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 101,
+    "name": "하시라 주 세트 낸도 9",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 450000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 102,
+    "name": "밀집모자 해적단 세트 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 380000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 102,
+    "name": "밀집모자 해적단 세트 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 380000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 102,
+    "name": "밀집모자 해적단 세트 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 380000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 102,
+    "name": "밀집모자 해적단 세트 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 380000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 102,
+    "name": "밀집모자 해적단 세트 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 380000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 103,
+    "name": "성배전쟁 마스터 세트 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 290000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 16
+  },
+  {
+    "id": 103,
+    "name": "성배전쟁 마스터 세트 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 290000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 103,
+    "name": "성배전쟁 마스터 세트 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 290000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 103,
+    "name": "성배전쟁 마스터 세트 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 290000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 103,
+    "name": "성배전쟁 마스터 세트 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 290000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 104,
+    "name": "히어로 과정 세트 스태츄 1-A",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 520000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 104,
+    "name": "히어로 과정 세트 스태츄 1-A",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 520000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 104,
+    "name": "히어로 과정 세트 스태츄 1-A",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 520000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 104,
+    "name": "히어로 과정 세트 스태츄 1-A",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 520000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 104,
+    "name": "히어로 과정 세트 스태츄 1-A",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 520000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 105,
+    "name": "탄지로 히노카미 최종형태 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 105,
+    "name": "탄지로 히노카미 최종형태 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 105,
+    "name": "탄지로 히노카미 최종형태 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 105,
+    "name": "탄지로 히노카미 최종형태 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 105,
+    "name": "탄지로 히노카미 최종형태 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 195000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 106,
+    "name": "루피 기어 니카 낸도 5",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 106,
+    "name": "루피 기어 니카 낸도 5",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 106,
+    "name": "루피 기어 니카 낸도 5",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 106,
+    "name": "루피 기어 니카 낸도 5",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 106,
+    "name": "루피 기어 니카 낸도 5",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 107,
+    "name": "세이버 엑스칼리버 발동 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 125000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 107,
+    "name": "세이버 엑스칼리버 발동 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 125000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 107,
+    "name": "세이버 엑스칼리버 발동 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 125000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 107,
+    "name": "세이버 엑스칼리버 발동 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 125000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 107,
+    "name": "세이버 엑스칼리버 발동 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 125000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 108,
+    "name": "데쿠 풀카울 프라모델 100%",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 98000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 108,
+    "name": "데쿠 풀카울 프라모델 100%",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 98000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 108,
+    "name": "데쿠 풀카울 프라모델 100%",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 98000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 108,
+    "name": "데쿠 풀카울 프라모델 100%",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 98000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 108,
+    "name": "데쿠 풀카울 프라모델 100%",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 98000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 109,
+    "name": "기유 물의 형 스태츄 11",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 109,
+    "name": "기유 물의 형 스태츄 11",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 109,
+    "name": "기유 물의 형 스태츄 11",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 109,
+    "name": "기유 물의 형 스태츄 11",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 109,
+    "name": "기유 물의 형 스태츄 11",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 110,
+    "name": "조로 아슈라 일도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 110,
+    "name": "조로 아슈라 일도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 110,
+    "name": "조로 아슈라 일도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 110,
+    "name": "조로 아슈라 일도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 110,
+    "name": "조로 아슈라 일도류 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 111,
+    "name": "라이더 벨레로폰 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 109000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 111,
+    "name": "라이더 벨레로폰 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 109000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 111,
+    "name": "라이더 벨레로폰 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 109000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 111,
+    "name": "라이더 벨레로폰 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 109000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 111,
+    "name": "라이더 벨레로폰 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 109000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 112,
+    "name": "바쿠고 하울리처 임팩트 일반 피구어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 84000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 112,
+    "name": "바쿠고 하울리처 임팩트 일반 피구어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 84000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 112,
+    "name": "바쿠고 하울리처 임팩트 일반 피구어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 84000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 112,
+    "name": "바쿠고 하울리처 임팩트 일반 피구어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 84000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 112,
+    "name": "바쿠고 하울리처 임팩트 일반 피구어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 84000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 113,
+    "name": "네즈코 혈귀술 폭혈 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 113,
+    "name": "네즈코 혈귀술 폭혈 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 113,
+    "name": "네즈코 혈귀술 폭혈 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 113,
+    "name": "네즈코 혈귀술 폭혈 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 113,
+    "name": "네즈코 혈귀술 폭혈 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 76000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 114,
+    "name": "상디 디아블 잠 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 142000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 114,
+    "name": "상디 디아블 잠 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 142000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 114,
+    "name": "상디 디아블 잠 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 142000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 114,
+    "name": "상디 디아블 잠 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 142000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 114,
+    "name": "상디 디아블 잠 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 142000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 115,
+    "name": "아처 무한의 검제 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 213000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 115,
+    "name": "아처 무한의 검제 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 213000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 115,
+    "name": "아처 무한의 검제 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 213000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 115,
+    "name": "아처 무한의 검제 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 213000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 115,
+    "name": "아처 무한의 검제 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 213000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 116,
+    "name": "토도로키 플래시프리즈 히트웨이브 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 137000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 116,
+    "name": "토도로키 플래시프리즈 히트웨이브 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 137000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 116,
+    "name": "토도로키 플래시프리즈 히트웨이브 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 137000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 116,
+    "name": "토도로키 플래시프리즈 히트웨이브 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 137000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 116,
+    "name": "토도로키 플래시프리즈 히트웨이브 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 137000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 117,
+    "name": "이노스케 야수의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 117,
+    "name": "이노스케 야수의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 117,
+    "name": "이노스케 야수의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 117,
+    "name": "이노스케 야수의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 117,
+    "name": "이노스케 야수의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 118,
+    "name": "에이스 염제 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 118,
+    "name": "에이스 염제 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 118,
+    "name": "에이스 염제 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 118,
+    "name": "에이스 염제 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 118,
+    "name": "에이스 염제 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 89000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 119,
+    "name": "길가메시 에아 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 298000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 119,
+    "name": "길가메시 에아 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 298000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 119,
+    "name": "길가메시 에아 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 298000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 11
+  },
+  {
+    "id": 119,
+    "name": "길가메시 에아 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 298000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 119,
+    "name": "길가메시 에아 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 298000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 120,
+    "name": "우라라카 제로 그래비티 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 149000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 120,
+    "name": "우라라카 제로 그래비티 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 149000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 120,
+    "name": "우라라카 제로 그래비티 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 149000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 120,
+    "name": "우라라카 제로 그래비티 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 149000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 120,
+    "name": "우라라카 제로 그래비티 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 149000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 16
+  },
+  {
+    "id": 121,
+    "name": "렌고쿠 염의 호흡 오의 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 128000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 121,
+    "name": "렌고쿠 염의 호흡 오의 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 128000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 121,
+    "name": "렌고쿠 염의 호흡 오의 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 128000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 121,
+    "name": "렌고쿠 염의 호흡 오의 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 128000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 121,
+    "name": "렌고쿠 염의 호흡 오의 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 128000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 122,
+    "name": "나미 제우스 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 122,
+    "name": "나미 제우스 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 122,
+    "name": "나미 제우스 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 122,
+    "name": "나미 제우스 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 122,
+    "name": "나미 제우스 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 123,
+    "name": "랜서 게이볼그 투창 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 123,
+    "name": "랜서 게이볼그 투창 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 123,
+    "name": "랜서 게이볼그 투창 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 123,
+    "name": "랜서 게이볼그 투창 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 123,
+    "name": "랜서 게이볼그 투창 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 65000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 124,
+    "name": "아이다 리시프로 터보 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 156000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 124,
+    "name": "아이다 리시프로 터보 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 156000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 124,
+    "name": "아이다 리시프로 터보 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 156000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 11
+  },
+  {
+    "id": 124,
+    "name": "아이다 리시프로 터보 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 156000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 124,
+    "name": "아이다 리시프로 터보 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 156000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 125,
+    "name": "우즈이 음의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 174000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 125,
+    "name": "우즈이 음의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 174000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 125,
+    "name": "우즈이 음의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 174000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 125,
+    "name": "우즈이 음의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 174000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 125,
+    "name": "우즈이 음의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 174000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 126,
+    "name": "로빈 데밀 플뢰르 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 116000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 126,
+    "name": "로빈 데밀 플뢰르 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 116000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 126,
+    "name": "로빈 데밀 플뢰르 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 116000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 126,
+    "name": "로빈 데밀 플뢰르 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 116000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 126,
+    "name": "로빈 데밀 플뢰르 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 116000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 127,
+    "name": "캐스터 룰 브레이커 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 127,
+    "name": "캐스터 룰 브레이커 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 1
+  },
+  {
+    "id": 127,
+    "name": "캐스터 룰 브레이커 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 127,
+    "name": "캐스터 룰 브레이커 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 127,
+    "name": "캐스터 룰 브레이커 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 128,
+    "name": "올마이트 유나이티드 스테이츠 오브 스매시 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 195000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 128,
+    "name": "올마이트 유나이티드 스테이츠 오브 스매시 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 195000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 128,
+    "name": "올마이트 유나이티드 스테이츠 오브 스매시 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 195000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 15
+  },
+  {
+    "id": 128,
+    "name": "올마이트 유나이티드 스테이츠 오브 스매시 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 195000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 128,
+    "name": "올마이트 유나이티드 스테이츠 오브 스매시 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 195000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 129,
+    "name": "미츠리 사랑의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 163000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 129,
+    "name": "미츠리 사랑의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 163000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 12
+  },
+  {
+    "id": 129,
+    "name": "미츠리 사랑의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 163000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 129,
+    "name": "미츠리 사랑의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 163000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 129,
+    "name": "미츠리 사랑의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 163000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 130,
+    "name": "쵸파 몬스터 포인트 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 130,
+    "name": "쵸파 몬스터 포인트 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 130,
+    "name": "쵸파 몬스터 포인트 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 130,
+    "name": "쵸파 몬스터 포인트 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 130,
+    "name": "쵸파 몬스터 포인트 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 131,
+    "name": "버서커 나인 라이브즈 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 131,
+    "name": "버서커 나인 라이브즈 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 131,
+    "name": "버서커 나인 라이브즈 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 131,
+    "name": "버서커 나인 라이브즈 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 131,
+    "name": "버서커 나인 라이브즈 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 132,
+    "name": "키리시마 레드 라이오트 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 132,
+    "name": "키리시마 레드 라이오트 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 132,
+    "name": "키리시마 레드 라이오트 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 132,
+    "name": "키리시마 레드 라이오트 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 132,
+    "name": "키리시마 레드 라이오트 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 73000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 133,
+    "name": "오바나이 뱀의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 68000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 133,
+    "name": "오바나이 뱀의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 68000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 133,
+    "name": "오바나이 뱀의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 68000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 133,
+    "name": "오바나이 뱀의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 68000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 133,
+    "name": "오바나이 뱀의 호흡 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 68000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 16
+  },
+  {
+    "id": 134,
+    "name": "브룩 소울 킹 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 134,
+    "name": "브룩 소울 킹 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 134,
+    "name": "브룩 소울 킹 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 134,
+    "name": "브룩 소울 킹 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 134,
+    "name": "브룩 소울 킹 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 135,
+    "name": "마슈 로드 칼라드볼그 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 167000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 135,
+    "name": "마슈 로드 칼라드볼그 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 167000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 135,
+    "name": "마슈 로드 칼라드볼그 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 167000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 135,
+    "name": "마슈 로드 칼라드볼그 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 167000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 135,
+    "name": "마슈 로드 칼라드볼그 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 167000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 1
+  },
+  {
+    "id": 136,
+    "name": "미도리야 델라웨어 디트로이트 스매시 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 119000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 136,
+    "name": "미도리야 델라웨어 디트로이트 스매시 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 119000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 136,
+    "name": "미도리야 델라웨어 디트로이트 스매시 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 119000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 136,
+    "name": "미도리야 델라웨어 디트로이트 스매시 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 119000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 136,
+    "name": "미도리야 델라웨어 디트로이트 스매시 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 119000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 137,
+    "name": "실루엣 달의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 137,
+    "name": "실루엣 달의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 137,
+    "name": "실루엣 달의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 137,
+    "name": "실루엣 달의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 137,
+    "name": "실루엣 달의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 75000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 138,
+    "name": "징베 물심 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 138,
+    "name": "징베 물심 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 138,
+    "name": "징베 물심 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 138,
+    "name": "징베 물심 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 138,
+    "name": "징베 물심 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 58000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 139,
+    "name": "잔느다르크 라 퓌셀 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 139,
+    "name": "잔느다르크 라 퓌셀 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 139,
+    "name": "잔느다르크 라 퓌셀 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 139,
+    "name": "잔느다르크 라 퓌셀 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 1
+  },
+  {
+    "id": 139,
+    "name": "잔느다르크 라 퓌셀 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 140,
+    "name": "야오요로즈 크리에이션 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 145000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 140,
+    "name": "야오요로즈 크리에이션 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 145000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 140,
+    "name": "야오요로즈 크리에이션 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 145000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 140,
+    "name": "야오요로즈 크리에이션 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 145000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 1
+  },
+  {
+    "id": 140,
+    "name": "야오요로즈 크리에이션 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 145000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 141,
+    "name": "사비토 물의 호흡 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 102000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 141,
+    "name": "사비토 물의 호흡 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 102000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 141,
+    "name": "사비토 물의 호흡 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 102000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 141,
+    "name": "사비토 물의 호흡 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 102000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 141,
+    "name": "사비토 물의 호흡 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 102000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 16
+  },
+  {
+    "id": 142,
+    "name": "프랑키 라디칼 빔 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 142,
+    "name": "프랑키 라디칼 빔 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 142,
+    "name": "프랑키 라디칼 빔 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 142,
+    "name": "프랑키 라디칼 빔 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 142,
+    "name": "프랑키 라디칼 빔 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 69000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 143,
+    "name": "이슈타르 안 갈타 키갈시 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 87000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 143,
+    "name": "이슈타르 안 갈타 키갈시 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 87000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 143,
+    "name": "이슈타르 안 갈타 키갈시 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 87000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 143,
+    "name": "이슈타르 안 갈타 키갈시 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 87000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 143,
+    "name": "이슈타르 안 갈타 키갈시 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 87000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 2
+  },
+  {
+    "id": 144,
+    "name": "호크스 피어스 윙 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 183000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 144,
+    "name": "호크스 피어스 윙 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 183000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 144,
+    "name": "호크스 피어스 윙 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 183000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 144,
+    "name": "호크스 피어스 윙 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 183000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 1
+  },
+  {
+    "id": 144,
+    "name": "호크스 피어스 윙 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 183000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 145,
+    "name": "마코모 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 145,
+    "name": "마코모 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 145,
+    "name": "마코모 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 145,
+    "name": "마코모 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 145,
+    "name": "마코모 물의 호흡 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 156000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 146,
+    "name": "비비 피콕 슬래셔 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 146,
+    "name": "비비 피콕 슬래셔 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 146,
+    "name": "비비 피콕 슬래셔 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 146,
+    "name": "비비 피콕 슬래셔 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 146,
+    "name": "비비 피콕 슬래셔 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 95000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 147,
+    "name": "스카사하 게이볼그 얼터너티브 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 147,
+    "name": "스카사하 게이볼그 얼터너티브 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 147,
+    "name": "스카사하 게이볼그 얼터너티브 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 147,
+    "name": "스카사하 게이볼그 얼터너티브 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 147,
+    "name": "스카사하 게이볼그 얼터너티브 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 78000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 148,
+    "name": "엔데버 프로미넌스 번 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 124000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 148,
+    "name": "엔데버 프로미넌스 번 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 124000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 148,
+    "name": "엔데버 프로미넌스 번 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 124000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 148,
+    "name": "엔데버 프로미넌스 번 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 124000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 148,
+    "name": "엔데버 프로미넌스 번 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 124000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 149,
+    "name": "카나오 꽃의 호흡 종형 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 168000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 149,
+    "name": "카나오 꽃의 호흡 종형 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 168000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 149,
+    "name": "카나오 꽃의 호흡 종형 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 168000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 149,
+    "name": "카나오 꽃의 호흡 종형 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 168000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 149,
+    "name": "카나오 꽃의 호흡 종형 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 168000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 150,
+    "name": "로 메스 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 192000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 150,
+    "name": "로 메스 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 192000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 150,
+    "name": "로 메스 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 192000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 150,
+    "name": "로 메스 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 192000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 150,
+    "name": "로 메스 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 192000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 151,
+    "name": "에미야 트리플 크레인 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 113000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 151,
+    "name": "에미야 트리플 크레인 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 113000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 1
+  },
+  {
+    "id": 151,
+    "name": "에미야 트리플 크레인 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 113000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 151,
+    "name": "에미야 트리플 크레인 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 113000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 151,
+    "name": "에미야 트리플 크레인 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 113000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 3
+  },
+  {
+    "id": 152,
+    "name": "츠유 프로그 홉 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 56000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 152,
+    "name": "츠유 프로그 홉 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 56000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 152,
+    "name": "츠유 프로그 홉 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 56000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 1
+  },
+  {
+    "id": 152,
+    "name": "츠유 프로그 홉 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 56000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 152,
+    "name": "츠유 프로그 홉 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 56000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 153,
+    "name": "무잔 진 히메지마 모방 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 245000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 153,
+    "name": "무잔 진 히메지마 모방 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 245000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 153,
+    "name": "무잔 진 히메지마 모방 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 245000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 153,
+    "name": "무잔 진 히메지마 모방 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 245000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 153,
+    "name": "무잔 진 히메지마 모방 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 245000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 154,
+    "name": "샹크스 패왕색 패기 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 276000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 154,
+    "name": "샹크스 패왕색 패기 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 276000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 154,
+    "name": "샹크스 패왕색 패기 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 276000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 154,
+    "name": "샹크스 패왕색 패기 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 276000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 154,
+    "name": "샹크스 패왕색 패기 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 276000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 155,
+    "name": "알토리아 엑스칼리버 모건 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 254000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 155,
+    "name": "알토리아 엑스칼리버 모건 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 254000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 155,
+    "name": "알토리아 엑스칼리버 모건 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 254000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 155,
+    "name": "알토리아 엑스칼리버 모건 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 254000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 155,
+    "name": "알토리아 엑스칼리버 모건 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 254000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 156,
+    "name": "스테인 혈액 응고 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 138000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 156,
+    "name": "스테인 혈액 응고 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 138000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 156,
+    "name": "스테인 혈액 응고 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 138000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 156,
+    "name": "스테인 혈액 응고 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 138000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 156,
+    "name": "스테인 혈액 응고 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 138000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 157,
+    "name": "코쵸 시노부 충의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 157,
+    "name": "코쵸 시노부 충의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 157,
+    "name": "코쵸 시노부 충의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 157,
+    "name": "코쵸 시노부 충의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 157,
+    "name": "코쵸 시노부 충의 호흡 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 82000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 158,
+    "name": "베포 일렉트로 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 63000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 158,
+    "name": "베포 일렉트로 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 63000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 16
+  },
+  {
+    "id": 158,
+    "name": "베포 일렉트로 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 63000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 158,
+    "name": "베포 일렉트로 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 63000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 158,
+    "name": "베포 일렉트로 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 63000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 2
+  },
+  {
+    "id": 159,
+    "name": "네로 아에스투스 에스티우스 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 159,
+    "name": "네로 아에스투스 에스티우스 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 159,
+    "name": "네로 아에스투스 에스티우스 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 159,
+    "name": "네로 아에스투스 에스티우스 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 159,
+    "name": "네로 아에스투스 에스티우스 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 189000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 160,
+    "name": "미네타 포핑 오프 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 98000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 16
+  },
+  {
+    "id": 160,
+    "name": "미네타 포핑 오프 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 98000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 160,
+    "name": "미네타 포핑 오프 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 98000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 160,
+    "name": "미네타 포핑 오프 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 98000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 160,
+    "name": "미네타 포핑 오프 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 98000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 10
+  },
+  {
+    "id": 161,
+    "name": "아카자 술식전개 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 161,
+    "name": "아카자 술식전개 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 161,
+    "name": "아카자 술식전개 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 161,
+    "name": "아카자 술식전개 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 161,
+    "name": "아카자 술식전개 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 165000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 162,
+    "name": "도플라밍고 새장 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 127000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 162,
+    "name": "도플라밍고 새장 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 127000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 1
+  },
+  {
+    "id": 162,
+    "name": "도플라밍고 새장 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 127000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 162,
+    "name": "도플라밍고 새장 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 127000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 162,
+    "name": "도플라밍고 새장 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 127000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 163,
+    "name": "쿠훌린 루운의 마안 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 74000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 163,
+    "name": "쿠훌린 루운의 마안 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 74000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 163,
+    "name": "쿠훌린 루운의 마안 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 74000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 163,
+    "name": "쿠훌린 루운의 마안 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 74000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 163,
+    "name": "쿠훌린 루운의 마안 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 74000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 16
+  },
+  {
+    "id": 164,
+    "name": "아이제와 이레이저 헤드 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 164,
+    "name": "아이제와 이레이저 헤드 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 164,
+    "name": "아이제와 이레이저 헤드 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 164,
+    "name": "아이제와 이레이저 헤드 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 3
+  },
+  {
+    "id": 164,
+    "name": "아이제와 이레이저 헤드 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 151000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 165,
+    "name": "도마 결정어린동자 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 198000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 165,
+    "name": "도마 결정어린동자 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 198000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 165,
+    "name": "도마 결정어린동자 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 198000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 11
+  },
+  {
+    "id": 165,
+    "name": "도마 결정어린동자 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 198000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 4
+  },
+  {
+    "id": 165,
+    "name": "도마 결정어린동자 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 198000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 166,
+    "name": "크로커다일 사막의 보검 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 104000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 166,
+    "name": "크로커다일 사막의 보검 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 104000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 166,
+    "name": "크로커다일 사막의 보검 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 104000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 166,
+    "name": "크로커다일 사막의 보검 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 104000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 166,
+    "name": "크로커다일 사막의 보검 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 104000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 167,
+    "name": "타마모 수천년유혹 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 167,
+    "name": "타마모 수천년유혹 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 167,
+    "name": "타마모 수천년유혹 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 9
+  },
+  {
+    "id": 167,
+    "name": "타마모 수천년유혹 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 15
+  },
+  {
+    "id": 167,
+    "name": "타마모 수천년유혹 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 86000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 16
+  },
+  {
+    "id": 168,
+    "name": "시가라키 디케이 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 117000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 168,
+    "name": "시가라키 디케이 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 117000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 168,
+    "name": "시가라키 디케이 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 117000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 168,
+    "name": "시가라키 디케이 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 117000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 168,
+    "name": "시가라키 디케이 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 117000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 169,
+    "name": "한텐구 희로애락 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 221000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 16
+  },
+  {
+    "id": 169,
+    "name": "한텐구 희로애락 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 221000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 8
+  },
+  {
+    "id": 169,
+    "name": "한텐구 희로애락 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 221000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 169,
+    "name": "한텐구 희로애락 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 221000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 169,
+    "name": "한텐구 희로애락 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 221000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 170,
+    "name": "에넬 억볼트 바리 스페셜 에디션2",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 170,
+    "name": "에넬 억볼트 바리 스페셜 에디션2",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 16
+  },
+  {
+    "id": 170,
+    "name": "에넬 억볼트 바리 스페셜 에디션2",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 170,
+    "name": "에넬 억볼트 바리 스페셜 에디션2",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 170,
+    "name": "에넬 억볼트 바리 스페셜 에디션2",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 187000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 172,
+    "name": "다비 크리메이션 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 15
+  },
+  {
+    "id": 172,
+    "name": "다비 크리메이션 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 172,
+    "name": "다비 크리메이션 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 172,
+    "name": "다비 크리메이션 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 1
+  },
+  {
+    "id": 172,
+    "name": "다비 크리메이션 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 79000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 173,
+    "name": "교고쿠 혈귀술 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 91000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 173,
+    "name": "교고쿠 혈귀술 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 91000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 173,
+    "name": "교고쿠 혈귀술 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 91000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 16
+  },
+  {
+    "id": 173,
+    "name": "교고쿠 혈귀술 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 91000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 173,
+    "name": "교고쿠 혈귀술 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 91000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 174,
+    "name": "카이도 열제 하카이 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 289000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 174,
+    "name": "카이도 열제 하카이 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 289000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 174,
+    "name": "카이도 열제 하카이 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 289000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 174,
+    "name": "카이도 열제 하카이 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 289000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 174,
+    "name": "카이도 열제 하카이 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 289000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 175,
+    "name": "오키타 무명삼단돌 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 173000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 7
+  },
+  {
+    "id": 175,
+    "name": "오키타 무명삼단돌 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 173000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 175,
+    "name": "오키타 무명삼단돌 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 173000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 175,
+    "name": "오키타 무명삼단돌 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 173000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 175,
+    "name": "오키타 무명삼단돌 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 173000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 12
+  },
+  {
+    "id": 176,
+    "name": "토가 트랜스폼 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 176,
+    "name": "토가 트랜스폼 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 176,
+    "name": "토가 트랜스폼 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 176,
+    "name": "토가 트랜스폼 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 10
+  },
+  {
+    "id": 176,
+    "name": "토가 트랜스폼 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 108000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 2
+  },
+  {
+    "id": 177,
+    "name": "나키메 무한성 조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 177,
+    "name": "나키메 무한성 조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 177,
+    "name": "나키메 무한성 조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 177,
+    "name": "나키메 무한성 조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 177,
+    "name": "나키메 무한성 조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 85000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 1
+  },
+  {
+    "id": 178,
+    "name": "빅맘 나폴레온 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 178,
+    "name": "빅맘 나폴레온 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 178,
+    "name": "빅맘 나폴레온 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 11
+  },
+  {
+    "id": 178,
+    "name": "빅맘 나폴레온 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 178,
+    "name": "빅맘 나폴레온 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 67000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 179,
+    "name": "잭더리퍼 마리아 더 리퍼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 10
+  },
+  {
+    "id": 179,
+    "name": "잭더리퍼 마리아 더 리퍼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 179,
+    "name": "잭더리퍼 마리아 더 리퍼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 179,
+    "name": "잭더리퍼 마리아 더 리퍼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 179,
+    "name": "잭더리퍼 마리아 더 리퍼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 195000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 2
+  },
+  {
+    "id": 180,
+    "name": "컴프레스 매직 트릭 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 13
+  },
+  {
+    "id": 180,
+    "name": "컴프레스 매직 트릭 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 15
+  },
+  {
+    "id": 180,
+    "name": "컴프레스 매직 트릭 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 5
+  },
+  {
+    "id": 180,
+    "name": "컴프레스 매직 트릭 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 180,
+    "name": "컴프레스 매직 트릭 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 134000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 181,
+    "name": "무이치로 안개의 호흡 칠의 형 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 126000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 6
+  },
+  {
+    "id": 181,
+    "name": "무이치로 안개의 호흡 칠의 형 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 126000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 1
+  },
+  {
+    "id": 181,
+    "name": "무이치로 안개의 호흡 칠의 형 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 126000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 181,
+    "name": "무이치로 안개의 호흡 칠의 형 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 126000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 181,
+    "name": "무이치로 안개의 호흡 칠의 형 낸도",
+    "series": "귀멸의 칼날",
+    "style": "낸도",
+    "price": 126000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 182,
+    "name": "마르코 불사조 브랜드 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 93000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 1
+  },
+  {
+    "id": 182,
+    "name": "마르코 불사조 브랜드 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 93000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 182,
+    "name": "마르코 불사조 브랜드 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 93000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 182,
+    "name": "마르코 불사조 브랜드 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 93000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 182,
+    "name": "마르코 불사조 브랜드 일반 피규어",
+    "series": "원피스",
+    "style": "일반 피규어",
+    "price": 93000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 183,
+    "name": "헤라클레스 나인 라이브즈 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 81000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 183,
+    "name": "헤라클레스 나인 라이브즈 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 81000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 183,
+    "name": "헤라클레스 나인 라이브즈 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 81000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 13
+  },
+  {
+    "id": 183,
+    "name": "헤라클레스 나인 라이브즈 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 81000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 183,
+    "name": "헤라클레스 나인 라이브즈 프라모델",
+    "series": "페이트",
+    "style": "프라모델",
+    "price": 81000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 184,
+    "name": "스피너 스케일 메일 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 12
+  },
+  {
+    "id": 184,
+    "name": "스피너 스케일 메일 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 184,
+    "name": "스피너 스케일 메일 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 6
+  },
+  {
+    "id": 184,
+    "name": "스피너 스케일 메일 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 14
+  },
+  {
+    "id": 184,
+    "name": "스피너 스케일 메일 스태츄",
+    "series": "나의 히어로 아카데미아",
+    "style": "스태츄",
+    "price": 158000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 185,
+    "name": "겐야 반복동작 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 185,
+    "name": "겐야 반복동작 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 185,
+    "name": "겐야 반복동작 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 185,
+    "name": "겐야 반복동작 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 6
+  },
+  {
+    "id": 185,
+    "name": "겐야 반복동작 스페셜 에디션",
+    "series": "귀멸의 칼날",
+    "style": "스페셜 에디션",
+    "price": 147000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 186,
+    "name": "킨에몬 여우불류 염분신 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 186,
+    "name": "킨에몬 여우불류 염분신 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 186,
+    "name": "킨에몬 여우불류 염분신 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 3
+  },
+  {
+    "id": 186,
+    "name": "킨에몬 여우불류 염분신 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 13
+  },
+  {
+    "id": 186,
+    "name": "킨에몬 여우불류 염분신 낸도",
+    "series": "원피스",
+    "style": "낸도",
+    "price": 115000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 187,
+    "name": "아스톨포 히포그리프 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 187,
+    "name": "아스톨포 히포그리프 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 187,
+    "name": "아스톨포 히포그리프 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 15
+  },
+  {
+    "id": 187,
+    "name": "아스톨포 히포그리프 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 5
+  },
+  {
+    "id": 187,
+    "name": "아스톨포 히포그리프 일반 피규어",
+    "series": "페이트",
+    "style": "일반 피규어",
+    "price": 76000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 2
+  },
+  {
+    "id": 188,
+    "name": "트와이스 더블 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 54000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 14
+  },
+  {
+    "id": 188,
+    "name": "트와이스 더블 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 54000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 14
+  },
+  {
+    "id": 188,
+    "name": "트와이스 더블 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 54000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 188,
+    "name": "트와이스 더블 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 54000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 188,
+    "name": "트와이스 더블 프라모델",
+    "series": "나의 히어로 아카데미아",
+    "style": "프라모델",
+    "price": 54000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 5
+  },
+  {
+    "id": 189,
+    "name": "히메지마 바위의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 9
+  },
+  {
+    "id": 189,
+    "name": "히메지마 바위의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 189,
+    "name": "히메지마 바위의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 189,
+    "name": "히메지마 바위의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 189,
+    "name": "히메지마 바위의 호흡 스태츄",
+    "series": "귀멸의 칼날",
+    "style": "스태츄",
+    "price": 201000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 15
+  },
+  {
+    "id": 190,
+    "name": "오든 도우라쿠 십권 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 278000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 190,
+    "name": "오든 도우라쿠 십권 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 278000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 5
+  },
+  {
+    "id": 190,
+    "name": "오든 도우라쿠 십권 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 278000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 190,
+    "name": "오든 도우라쿠 십권 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 278000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 190,
+    "name": "오든 도우라쿠 십권 스페셜 에디션",
+    "series": "원피스",
+    "style": "스페셜 에디션",
+    "price": 278000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 11
+  },
+  {
+    "id": 191,
+    "name": "다 빈치 우모 디 스텔라 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 139000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 191,
+    "name": "다 빈치 우모 디 스텔라 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 139000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 3
+  },
+  {
+    "id": 191,
+    "name": "다 빈치 우모 디 스텔라 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 139000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 191,
+    "name": "다 빈치 우모 디 스텔라 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 139000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 191,
+    "name": "다 빈치 우모 디 스텔라 낸도",
+    "series": "페이트",
+    "style": "낸도",
+    "price": 139000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 9
+  },
+  {
+    "id": 192,
+    "name": "진 소닉 무브 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2017,
+    "condition": "미개봉",
+    "stock": 3
+  },
+  {
+    "id": 192,
+    "name": "진 소닉 무브 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2017,
+    "condition": "최상",
+    "stock": 10
+  },
+  {
+    "id": 192,
+    "name": "진 소닉 무브 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2017,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 192,
+    "name": "진 소닉 무브 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2017,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 192,
+    "name": "진 소닉 무브 일반 피규어",
+    "series": "나의 히어로 아카데미아",
+    "style": "일반 피규어",
+    "price": 71000,
+    "release_year": 2017,
+    "condition": "하",
+    "stock": 7
+  },
+  {
+    "id": 193,
+    "name": "코쿠시보 달의 호흡 십육의 형 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 234000,
+    "release_year": 2023,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 193,
+    "name": "코쿠시보 달의 호흡 십육의 형 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 234000,
+    "release_year": 2023,
+    "condition": "최상",
+    "stock": 7
+  },
+  {
+    "id": 193,
+    "name": "코쿠시보 달의 호흡 십육의 형 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 234000,
+    "release_year": 2023,
+    "condition": "상",
+    "stock": 8
+  },
+  {
+    "id": 193,
+    "name": "코쿠시보 달의 호흡 십육의 형 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 234000,
+    "release_year": 2023,
+    "condition": "중",
+    "stock": 2
+  },
+  {
+    "id": 193,
+    "name": "코쿠시보 달의 호흡 십육의 형 프라모델",
+    "series": "귀멸의 칼날",
+    "style": "프라모델",
+    "price": 234000,
+    "release_year": 2023,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 194,
+    "name": "페롤 페롤린 랜드 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 167000,
+    "release_year": 2020,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 194,
+    "name": "페롤 페롤린 랜드 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 167000,
+    "release_year": 2020,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 194,
+    "name": "페롤 페롤린 랜드 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 167000,
+    "release_year": 2020,
+    "condition": "상",
+    "stock": 12
+  },
+  {
+    "id": 194,
+    "name": "페롤 페롤린 랜드 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 167000,
+    "release_year": 2020,
+    "condition": "중",
+    "stock": 8
+  },
+  {
+    "id": 194,
+    "name": "페롤 페롤린 랜드 스태츄",
+    "series": "원피스",
+    "style": "스태츄",
+    "price": 167000,
+    "release_year": 2020,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 195,
+    "name": "모리아티 다이나믹스 오브 아스테로이드 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 215000,
+    "release_year": 2022,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 195,
+    "name": "모리아티 다이나믹스 오브 아스테로이드 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 215000,
+    "release_year": 2022,
+    "condition": "최상",
+    "stock": 13
+  },
+  {
+    "id": 195,
+    "name": "모리아티 다이나믹스 오브 아스테로이드 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 215000,
+    "release_year": 2022,
+    "condition": "상",
+    "stock": 7
+  },
+  {
+    "id": 195,
+    "name": "모리아티 다이나믹스 오브 아스테로이드 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 215000,
+    "release_year": 2022,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 195,
+    "name": "모리아티 다이나믹스 오브 아스테로이드 스페셜 에디션",
+    "series": "페이트",
+    "style": "스페셜 에디션",
+    "price": 215000,
+    "release_year": 2022,
+    "condition": "하",
+    "stock": 14
+  },
+  {
+    "id": 196,
+    "name": "문피시 문블라스트 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 122000,
+    "release_year": 2024,
+    "condition": "미개봉",
+    "stock": 8
+  },
+  {
+    "id": 196,
+    "name": "문피시 문블라스트 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 122000,
+    "release_year": 2024,
+    "condition": "최상",
+    "stock": 2
+  },
+  {
+    "id": 196,
+    "name": "문피시 문블라스트 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 122000,
+    "release_year": 2024,
+    "condition": "상",
+    "stock": 14
+  },
+  {
+    "id": 196,
+    "name": "문피시 문블라스트 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 122000,
+    "release_year": 2024,
+    "condition": "중",
+    "stock": 11
+  },
+  {
+    "id": 196,
+    "name": "문피시 문블라스트 낸도",
+    "series": "나의 히어로 아카데미아",
+    "style": "낸도",
+    "price": 122000,
+    "release_year": 2024,
+    "condition": "하",
+    "stock": 4
+  },
+  {
+    "id": 197,
+    "name": "유시로 혈귀술 시각조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2018,
+    "condition": "미개봉",
+    "stock": 5
+  },
+  {
+    "id": 197,
+    "name": "유시로 혈귀술 시각조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2018,
+    "condition": "최상",
+    "stock": 4
+  },
+  {
+    "id": 197,
+    "name": "유시로 혈귀술 시각조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2018,
+    "condition": "상",
+    "stock": 15
+  },
+  {
+    "id": 197,
+    "name": "유시로 혈귀술 시각조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2018,
+    "condition": "중",
+    "stock": 16
+  },
+  {
+    "id": 197,
+    "name": "유시로 혈귀술 시각조작 일반 피규어",
+    "series": "귀멸의 칼날",
+    "style": "일반 피규어",
+    "price": 68000,
+    "release_year": 2018,
+    "condition": "하",
+    "stock": 8
+  },
+  {
+    "id": 198,
+    "name": "바질 호크스 킹 펀치 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2021,
+    "condition": "미개봉",
+    "stock": 2
+  },
+  {
+    "id": 198,
+    "name": "바질 호크스 킹 펀치 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2021,
+    "condition": "최상",
+    "stock": 9
+  },
+  {
+    "id": 198,
+    "name": "바질 호크스 킹 펀치 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2021,
+    "condition": "상",
+    "stock": 4
+  },
+  {
+    "id": 198,
+    "name": "바질 호크스 킹 펀치 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2021,
+    "condition": "중",
+    "stock": 12
+  },
+  {
+    "id": 198,
+    "name": "바질 호크스 킹 펀치 프라모델",
+    "series": "원피스",
+    "style": "프라모델",
+    "price": 52000,
+    "release_year": 2021,
+    "condition": "하",
+    "stock": 6
+  },
+  {
+    "id": 199,
+    "name": "모리어티 파이널 프로블럼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2019,
+    "condition": "미개봉",
+    "stock": 4
+  },
+  {
+    "id": 199,
+    "name": "모리어티 파이널 프로블럼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2019,
+    "condition": "최상",
+    "stock": 6
+  },
+  {
+    "id": 199,
+    "name": "모리어티 파이널 프로블럼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2019,
+    "condition": "상",
+    "stock": 2
+  },
+  {
+    "id": 199,
+    "name": "모리어티 파이널 프로블럼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2019,
+    "condition": "중",
+    "stock": 9
+  },
+  {
+    "id": 199,
+    "name": "모리어티 파이널 프로블럼 스태츄",
+    "series": "페이트",
+    "style": "스태츄",
+    "price": 198000,
+    "release_year": 2019,
+    "condition": "하",
+    "stock": 13
+  },
+  {
+    "id": 200,
+    "name": "미드나이트 소머니페런트 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 164000,
+    "release_year": 2025,
+    "condition": "미개봉",
+    "stock": 11
+  },
+  {
+    "id": 200,
+    "name": "미드나이트 소머니페런트 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 164000,
+    "release_year": 2025,
+    "condition": "최상",
+    "stock": 11
+  },
+  {
+    "id": 200,
+    "name": "미드나이트 소머니페런트 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 164000,
+    "release_year": 2025,
+    "condition": "상",
+    "stock": 10
+  },
+  {
+    "id": 200,
+    "name": "미드나이트 소머니페런트 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 164000,
+    "release_year": 2025,
+    "condition": "중",
+    "stock": 7
+  },
+  {
+    "id": 200,
+    "name": "미드나이트 소머니페런트 스페셜 에디션",
+    "series": "나의 히어로 아카데미아",
+    "style": "스페셜 에디션",
+    "price": 164000,
+    "release_year": 2025,
+    "condition": "하",
+    "stock": 15
+  }
+]

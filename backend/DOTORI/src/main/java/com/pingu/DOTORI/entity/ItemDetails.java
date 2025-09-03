@@ -63,8 +63,7 @@ public class ItemDetails {
 	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = false)
 	private List<Orders> orders = new ArrayList<>();
 
-	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = false)
-	private List<WishList> wishLists = new ArrayList<>();
+
 
 	// --- 편의 메서드 ---
 	public void addImage(ItemImg image) {

@@ -43,7 +43,7 @@ const Pokemon = () => import("@/components/dex/Pokemon.vue");
 
 /* ===== auth helper (임시) ===== */
 function isAuthenticated(): boolean {
-  return !!localStorage.getItem("AuthToken");
+  return !!localStorage.getItem("accessToken");
 }
 
 /* ===== routes ===== */
@@ -96,7 +96,7 @@ const routes: RouteRecordRaw[] = [
     path: "/mypage",
     name: "mypage",
     component: MyPage,
-    meta: { requiresAuth: false, header: "main", footer: true, utilbar: true },
+    meta: { requiresAuth: true, header: "main", footer: true, utilbar: true },
     children: [
       { path: "trade", name: "mypage-trade", component: MyPageTrade },
       { path: "ship", name: "mypage-ship", component: MyPageShip },
@@ -107,9 +107,10 @@ const routes: RouteRecordRaw[] = [
     name: "mypage-wish",
     component: MyPageWish,
     meta: {
+      requiresAuth: true,
       header: "main",
       footer: true,
-      utilbar: true /* requiresAuth: true? */,
+      utilbar: true,
     },
   },
   // 결제 플로우

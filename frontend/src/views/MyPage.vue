@@ -128,26 +128,27 @@
         <h2 class="section__title link" @click="go('WishPage')">위시리스트</h2>
         <div class="panel">
           <div class="wish-grid">
-            <div v-for="w in wishlist" :key="w.id" class="wish-card" @click="goProduct(w)" role="button" tabindex="0">
+            <div v-for="w in wishlist" :key="w.wishListId" class="wish-card" @click="goProduct(w)" role="button" tabindex="0">
               <div class="wish-image-container">
                 <img :src="w.image || '/img/placeholder.jpg'" :alt="w.title" class="wish-image" />
               </div>
 
               <div class="wish-info">
                 <p class="wish-title">{{ w.title }}</p>
-                <p class="wish-price">{{ w.price.toLocaleString() }}원</p>
+                <p class="wish-price">{{ (w.price || 0).toLocaleString() }}원</p>
+
               </div>
 
               <div class="wish-actions">
                 <!-- 하트 버튼을 장바구니 버튼 왼쪽으로 -->
                 <button class="icon-heart-inline" aria-label="위시에서 제거" title="위시에서 제거"
-                  @click.stop="removeFromWishlist(w.id)">
+                  @click.stop="removeFromWishlist(w.itemId)">
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                     <path
                       d="M12 21s-6.716-4.146-9.193-7.142C.61 11.41 1.077 8.5 3.2 6.9c1.86-1.42 4.46-1.17 6.11.44L12 10l2.69-2.66c1.65-1.61 4.25-1.86 6.11-.44 2.12 1.6 2.59 4.51.393 6.958C18.716 16.854 12 21 12 21z" />
                   </svg>
                 </button>
-                <button class="btn btn--thin" @click.stop="addToCart(w.id)">장바구니</button>
+                <button class="btn btn--thin" @click.stop="addToCart(w.itemId)">장바구니</button>
               </div>
             </div>
           </div>
@@ -268,18 +269,21 @@ export default {
     },
   },
 
-  created() {
-    /* 위시리스트 로드 + 비어있으면 더미 시딩 */
-    this.wish.load()
-    if (!this.wish.count) {
-      this.wish.replace([
-        { id: 'w1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
-        { id: 'w2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
-        { id: 'w3', title: '코즈메 켄마 피규어', image: imgKozumeFigure, price: 59000 },
-        { id: 'w4', title: '하츠네 미쿠 피규어', image: imgMikuFigure, price: 53000 },
-        { id: 'w5', title: '히나타 소요 피규어', image: imgHinataSoyoFigure, price: 67000 },
-      ])
+  async created() {
+    /* 인증 상태 확인 */
+    if (!this.authStore.isAuthed) {
+      console.log('로그인되지 않은 사용자, 로그인 페이지로 리다이렉트')
+      this.$router.push({ 
+        name: 'login', 
+        query: { redirect: this.$route.fullPath } 
+      })
+      return
     }
+    
+    /* 사용자 정보 로드 */
+    await this.loadUserProfile()
+    
+
   },
 
   mounted() {
@@ -327,13 +331,56 @@ export default {
     },
     async updateProfile() {
       try {
-        // await api.post('/profile', { nickname: this.form.nickname })
-        this.user.nickName = this.form.nickname
-        this.showToast('프로필이 저장되었습니다')
-      } catch {
+        const response = await api.put('/me', { nickName: this.form.nickname })
+        if (response.data) {
+          this.user = response.data
+          this.showToast('프로필이 저장되었습니다')
+        }
+      } catch (error) {
+        console.error('프로필 업데이트 실패:', error)
         this.showToast('저장 중 오류가 발생했습니다')
       }
     },
+
+    /* ===== 사용자 정보 로드 ===== */
+    async loadUserProfile() {
+      try {
+        console.log('사용자 정보 로드 시작...')
+        console.log('현재 토큰:', localStorage.getItem('accessToken'))
+        
+        const response = await api.get('/me')
+        console.log('API 응답:', response.data)
+        
+        if (response.data && response.data.id) {
+          this.user = {
+            id: response.data.id,
+            nickName: response.data.nickName,
+            email: response.data.email,
+            userImg: response.data.userImg
+          }
+          console.log('사용자 정보 로드 완료:', this.user)
+        } else {
+          console.log('사용자 정보를 가져올 수 없습니다')
+          // 로그인하지 않은 경우 기본값 설정
+          this.user = {
+            nickName: '게스트',
+            email: 'guest@example.com',
+            userImg: null
+          }
+        }
+      } catch (error) {
+        console.error('사용자 정보 로드 실패:', error)
+        console.error('에러 상세:', error.response?.data)
+        // 에러 발생 시 기본값 설정
+        this.user = {
+          nickName: '게스트',
+          email: 'guest@example.com',
+          userImg: null
+        }
+      }
+    },
+
+
 
     /* ===== 라우팅 ===== */
     go(name) {
@@ -349,7 +396,19 @@ export default {
       this.$router.push('/mypage')
     },
     goProduct(w) {
-      this.$router.push({ name: 'ProductInfo', params: { id: w.id } })
+      // 위시리스트 아이템의 itemCode를 사용하여 상품 상세 페이지로 이동
+      this.$router.push({ 
+        name: 'product', 
+        params: { id: String(w.itemCode) } 
+      }).catch(err => {
+        console.error('라우터 이동 실패:', err)
+        // 대안: 쿼리 파라미터 사용
+        this.$router.push({ 
+          path: `/product/${w.itemCode}` 
+        }).catch(() => {
+          console.error('대안 라우터도 실패')
+        })
+      })
     },
 
     /* ===== 유틸 ===== */
@@ -374,19 +433,24 @@ export default {
       else cart.push(item)
       return cart
     },
-    addToCart(id) {
-      const w = this.wish.byId(id)
+    addToCart(itemId) {
+      const w = this.wish.byItemId(itemId)
       if (!w) { this.showToast('상품을 찾을 수 없습니다'); return }
-      const item = { id: w.id, title: w.title, price: w.price, qty: 1, shipping: 0, thumb: w.image }
+      const item = { id: w.itemId, title: w.title, price: w.price, qty: 1, shipping: 0, thumb: w.image }
       const next = this.upsert(this.getCart(), item)
       this.saveCart(next)
       this.showToast('장바구니에 담겼습니다')
     },
 
     /* ===== 위시리스트 버튼(하트) ===== */
-    removeFromWishlist(id) {
-      this.wish.remove(id)
-      this.showToast('위시리스트에서 제거되었습니다')
+    async removeFromWishlist(itemId) {
+      try {
+        await this.wish.remove(itemId)
+        this.showToast('위시리스트에서 제거되었습니다')
+      } catch (error) {
+        console.error('위시리스트 제거 실패:', error)
+        this.showToast('위시리스트 제거에 실패했습니다')
+      }
     },
 
     /* ===== Toast ===== */
@@ -572,13 +636,13 @@ export default {
   margin-right: .375rem;
 }
 
-.profile__nickname {
+.profile__nickName {
   font-size: 1.125rem;
   font-weight: 800;
   color: #2d251c;
 }
 
-.profile__userid {
+.profile__userId {
   font-size: .875rem;
   font-weight: 600;
   color: #5c5346;
@@ -855,6 +919,8 @@ export default {
   font-weight: 700;
   margin: 0;
 }
+
+
 
 .wish-actions {
   display: flex;

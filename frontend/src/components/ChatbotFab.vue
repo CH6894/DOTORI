@@ -8,8 +8,14 @@ const close = () => (open.value = false)
 
 // ESC로 닫기
 const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close() }
-onMounted(() => window.addEventListener('keydown', onKey))
-onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
+onMounted(() => {
+  window.addEventListener('keydown', onKey)
+  document.addEventListener('click', closeFAQOnOutsideClick)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKey)
+  document.removeEventListener('click', closeFAQOnOutsideClick)
+})
 
 // === 채팅 상태 관리 ===
 interface Message {
@@ -24,16 +30,63 @@ const inputText = ref('')
 const isLoading = ref(false)
 const userId = ref('default')
 const chatBody = ref<HTMLElement>()
+const inputRef = ref<HTMLInputElement>()
+const showFAQ = ref(false)
+const isRotating = ref(false)
 
 // 제안 버튼들
 const suggestions = [
-  '뉴진스 콜라보 굿즈 있어?',
-  '원피스 조로 피규어',
-  '블랙핑크 응원봉',
-  '검수 등급이 뭐야?',
-  'S급이랑 A급 차이는?',
-  'c등급 쓰는데 문제 없어?'
+  '뉴진스 응원봉 찾아줘',
+  '피규어 검수 기준이 뭐야?',
+  '귀칼 주인공 피규어 있어?',
+  '키링 S급 기준 알려줘',
+  '의류 B급은 어느 정도야?',
+  'BTS 앨범 중고로 있어?'
 ]
+
+// 자주 묻는 질문들
+const faqQuestions = [
+  '중고 상품 등급은 어떻게 나누나요?',
+  'B등급 상품도 사용에 문제없나요?',
+  'A등급과 B등급의 실질적 차이는?',
+  '등급별 할인율은 어떻게 되나요?',
+  '새 제품 대비 얼마나 저렴한가요?',
+  '배송은 얼마나 걸리나요?',
+  '받아보고 마음에 안 들면 교환/환불 가능한가요?',
+  '피규어 관절이 헐거우면 사용할 수 없나요?',
+  '부속품이나 소품이 빠진 경우도 있나요?',
+  '의류나 잡화의 사용감은 어느 정도인가요?',
+  '재고 수량이 실시간으로 업데이트되나요?',
+  '특정 등급의 상품만 보고 싶어요',
+  '검수는 누가 하나요?'
+]
+
+// FAQ 토글 함수
+const toggleFAQ = () => {
+  // 회전 애니메이션 시작
+  isRotating.value = true
+  setTimeout(() => {
+    isRotating.value = false
+  }, 300) // 0.3초 후 회전 상태 해제
+  
+  // FAQ 드롭다운을 조금 늦게 표시
+  setTimeout(() => {
+    showFAQ.value = !showFAQ.value
+  }, 150) // 0.15초 후 FAQ 표시
+}
+
+// 바깥 영역 클릭으로 FAQ 닫기
+const closeFAQOnOutsideClick = (event: Event) => {
+  if (showFAQ.value && !(event.target as Element).closest('.faq-dropdown') && !(event.target as Element).closest('.btn-attach')) {
+    showFAQ.value = false
+  }
+}
+
+// FAQ 질문 클릭 함수
+const handleFAQClick = (question: string) => {
+  sendMessage(question)
+  showFAQ.value = false
+}
 
 // === 메시지 관리 함수들 ===
 const addMessage = (text: string, isUser: boolean) => {
@@ -66,7 +119,10 @@ const sendMessageToAPI = async (userMessage: string) => {
     }
   }
 }
-
+// 전처리 함수 추가
+const cleanSearchQuery = (text: string) => {
+  return text.replace(/(은|는|이|가|을|를|도|만|에서|으로|로)(\s|$)/g, '$2').trim()
+}
 // === 메시지 전송 ===
 const sendMessage = async (text?: string) => {
   const messageText = text || inputText.value.trim()
@@ -78,25 +134,23 @@ const sendMessage = async (text?: string) => {
   isLoading.value = true
 
   try {
-    // API 호출
-    const response = await sendMessageToAPI(messageText)
+    // 조사 전처리 후 API 호출
+    const cleanedMessage = cleanSearchQuery(messageText)
+    const response = await sendMessageToAPI(cleanedMessage)
     
-    // 첫 번째 메시지 추가
+    // 답변 메시지 추가
     addMessage(response.answer, false)
-    
-    // 추가 메시지들이 있으면 순차적으로 표시
-    if (response.is_multiple && response.messages && Array.isArray(response.messages)) {
-      response.messages.forEach((message: string, index: number) => {
-        setTimeout(() => {
-          addMessage(message, false)
-        }, (index + 1) * 1000) // 1초 간격으로 조정
-      })
-    }
   } catch (error) {
     console.error('메시지 전송 오류:', error)
     addMessage('죄송해요, 오류가 발생했어요.', false)
   } finally {
     isLoading.value = false
+    // 전송 완료 후 입력창에 포커스
+    nextTick(() => {
+      if (inputRef.value) {
+        inputRef.value.focus()
+      }
+    })
   }
 }
 
@@ -218,8 +272,9 @@ const formatMessage = (text: string) => {
           </main>
 
           <footer class="foot">
-            <button class="btn-attach" title="첨부" aria-label="첨부">+</button>
+            <button class="btn-attach" :class="{ 'rotating': isRotating }" title="자주 묻는 질문" aria-label="자주 묻는 질문" @click="toggleFAQ">?</button>
             <input 
+              ref="inputRef"
               class="input" 
               type="text" 
               placeholder="메시지 입력" 
@@ -231,16 +286,67 @@ const formatMessage = (text: string) => {
               class="btn-send"
               type="button"
               @click="sendMessage"
-              :disabled="isLoading || !inputText.trim()"
+              :disabled="isLoading"
             >
               {{ isLoading ? '전송중...' : '전송' }}
             </button>
+            
+            <!-- FAQ 드롭다운 - input 위에 -->
+            <div v-if="showFAQ" class="faq-dropdown">
+              <div class="faq-header">
+                <h4>자주 묻는 질문</h4>
+                <button class="faq-close" @click="showFAQ = false">×</button>
+              </div>
+              <div class="faq-list">
+                <button 
+                  v-for="(question, index) in faqQuestions" 
+                  :key="index"
+                  class="faq-item"
+                  @click="handleFAQClick(question)"
+                >
+                  {{ question }}
+                </button>
+              </div>
+            </div>
           </footer>
         </section>
       </div>
     </transition>
   </div>
 </template>
+
+<style scoped>
+/* v-html로 생성된 링크는 scoped가 적용되지 않으므로 별도 처리 */
+</style>
+
+<style>
+.chatbot .ai-message .message-bubble div a.product-link,
+.chatbot .user-message .message-bubble div a.product-link {
+  background: #B35428 !important;       
+  color: #fff !important;               
+  border-color: #B35428 !important;     
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  font-size: 0.9em !important;
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  display: inline-block !important;
+  margin-top: 12px !important;
+  transition: all 0.25s ease !important;
+  cursor: pointer !important;
+}
+
+
+.chatbot .ai-message .message-bubble div a.product-link:hover,
+.chatbot .user-message .message-bubble div a.product-link:hover {
+  background: #B35428 !important;       
+  color: #fff !important;               
+  border-color: #B35428 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(107, 62, 46, 0.25) !important; /* 은은한 그림자 */
+}
+
+</style>
 
 <style scoped>
 /* 기존 스타일은 그대로 유지하되, 단위만 반응형으로 정리 */
@@ -310,11 +416,28 @@ const formatMessage = (text: string) => {
   display: grid; grid-template-rows: 8.75rem 1fr auto;  /* 140px */
   border-radius: 1.25rem;                               /* 20px */
   overflow: hidden;
-  box-shadow: var(--shadow); background: var(--brand);
+  box-shadow: var(--shadow); 
+  background: var(--brand);
+  position: relative;
+}
+
+.squirrel-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/img/chatbot/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  z-index: 0;
 }
 
 /* 머리 */
-.head{ position: relative; background: var(--brand); }
+.head{ position: relative; background: var(--brand); z-index: 1; }
 .btn-close{
   position: absolute; right: 1rem; top: 1rem;           /* 16px */
   background: #e5e5e5; border: 0; border-radius: 0.5rem;/* 8px */
@@ -340,6 +463,7 @@ const formatMessage = (text: string) => {
   background: var(--cream); padding: 1rem 0.875rem 0;   /* 16px 14px 0 */
   overflow-y: auto; min-width: 0;
   display: flex; flex-direction: column;
+  position: relative; z-index: 1;
 }
 
 /* 웰컴 메시지 */
@@ -411,14 +535,43 @@ const formatMessage = (text: string) => {
 /* 제안 칩들 */
 .greet{ margin: 0.3125rem 0 0.0625rem 0.0625rem; }      /* 5px 0 1px 1px */
 .chips{ display: flex; flex-wrap: wrap; gap: 0.5rem; }   /* 8px */
-.chip{
-  border: 0; padding: 0.375rem 0.75rem;                 /* 6px 12px */
-  border-radius: 999px;
-  background: #9b9b9b; color: #fff; font-weight: 600; cursor: pointer;
-  font-size: 0.75rem;                                    /* 12px */
-  transition: background 0.2s;
+/* 칩 버튼 컨테이너 */
+.chips {
+  display: flex;
+  flex-wrap: wrap;          /* 줄바꿈 허용 */
+  gap: 0.75rem 0.5rem;      /* 가로·세로 간격 */
+  justify-content: flex-start; /* 왼쪽 정렬 (원하면 center도 가능) */
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
 }
-.chip:hover { background: #777; }
+
+/* 칩 버튼 스타일 */
+.chip {
+  border: 0;
+  padding: 0.4rem 0.9rem;         /* 패딩 살짝 줄이기 */
+  border-radius: 999px;
+  background: #9b9b9b;
+  color: #fff;
+  font-weight: 500;               /* 굵기 ↓ (600 → 500) */
+  font-size: 0.78rem;             /* 크기 ↓ (12.5px 정도) */
+  line-height: 1.3;               /* 글자 간격 여유 */
+  cursor: pointer;
+
+  display: inline-block;
+  white-space: nowrap;
+  text-align: center;
+
+  transition: transform 0.15s ease, box-shadow 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12); /* 그림자도 약하게 */
+}
+
+.chip:hover {
+  background: #777;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+
 
 /* 입력부 */
 .foot{
@@ -428,12 +581,18 @@ const formatMessage = (text: string) => {
   align-items: center;
   padding: 0.625rem 0.625rem 0.75rem;                   /* 10px 10px 12px */
   border-top: 0.375rem solid var(--brand-dark);         /* 6px */
+  position: relative; z-index: 1;
 }
 .btn-attach{
   width: 2.5rem; height: 2.5rem;                        /* 40px */
   border-radius: 50%; border: 0;
   background: #fff; color: var(--accent); font-size: 1.375rem; /* 22px */
   cursor: pointer; display: grid; place-items: center;
+  transition: transform 0.3s ease;
+}
+
+.btn-attach.rotating {
+  transform: rotate(50deg);
 }
 .input{
   height: 2.5rem; border-radius: 0.625rem;              /* 10px */
@@ -452,6 +611,82 @@ const formatMessage = (text: string) => {
   background: #ccc; cursor: not-allowed;
 }
 
+/* FAQ 드롭다운 스타일 */
+.faq-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #d8d3c7;
+  border-radius: 0.75rem 0.75rem 0 0;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 0.625rem;
+ 
+}
+
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.faq-header h4 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.faq-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.faq-list {
+  padding: 0.5rem;
+}
+
+.faq-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.25rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  color: #333;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.faq-item:hover {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.faq-item:last-child {
+  margin-bottom: 0;
+}
+
 /* 메시지 안의 링크 스타일 */
 .message-bubble a {
   color: inherit;
@@ -461,30 +696,41 @@ const formatMessage = (text: string) => {
   color: #fff;
 }
 
-/* 상품 링크 스타일 */
-.product-link {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff !important;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  text-decoration: none !important;
-  font-weight: 600;
-  margin-top: 0.75rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* 상품 링크 스타일 - 실제 HTML 구조에 맞는 선택자 */
+.chatbot .ai-message .message-bubble div a.product-link,
+.chatbot .user-message .message-bubble div a.product-link {
+  color: var(--brand) !important;
+  text-decoration: underline !important;
+  font-weight: 900 !important;
+  font-size: 1.1em !important;
+  transition: all 0.2s ease !important;
+  display: inline !important;
 }
 
-.product-link:hover {
-  background: #e66a2a;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+.chatbot .ai-message .message-bubble div a.product-link:hover,
+.chatbot .user-message .message-bubble div a.product-link:hover {
+  color: var(--brand-dark) !important;
+  text-decoration: underline !important;
+  font-size: 1.15em !important;
+  font-weight: 900 !important;
 }
 
 /* 메시지 내 강조 텍스트 */
 .message-bubble strong {
   color: var(--brand);
   font-weight: 700;
+}
+
+/* 메시지 버블 내 텍스트 줄바꿈 개선 - 긴 상품명 가독성 향상 */
+.message-bubble div {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  font-weight: 500;
 }
 
 /* 스크롤바 */
