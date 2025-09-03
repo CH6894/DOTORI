@@ -51,6 +51,11 @@
 </template>
 
 <script setup>
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
+
 // import { OAUTH } from '@/config'
 
 // function loginWithNaver(){
@@ -62,7 +67,10 @@ function handleSocialLogin(provider){
 }
 
 const loginNaver = () => {
-  window.location.href = 'http://localhost:8081/oauth2/authorization/naver';
+  // 리다이렉트 URL이 있으면 쿼리 파라미터로 추가
+  const redirectUrl = route.query.redirect || '/'
+  const loginUrl = `http://localhost:8081/oauth2/authorization/naver?redirect_uri=${encodeURIComponent(redirectUrl)}`
+  window.location.href = loginUrl
 }
 </script>
 

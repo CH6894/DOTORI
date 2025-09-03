@@ -21,7 +21,7 @@
           <div class="wish-grid">
             <div
               v-for="w in wishlist"
-              :key="w.id"
+              :key="w.wishListId"
               class="wish-card"
               @click="goProduct(w)"
               role="button"
@@ -37,7 +37,7 @@
 
               <div class="wish-info">
                 <p class="wish-title">{{ w.title }}</p>
-                <p class="wish-price">{{ w.price.toLocaleString() }}원</p>
+                <p class="wish-price">{{ (w.price || 0).toLocaleString() }}원</p>
               </div>
 
               <div class="wish-actions">
@@ -46,14 +46,14 @@
                   class="icon-heart-inline"
                   aria-label="위시에서 제거"
                   title="위시에서 제거"
-                  @click.stop="removeFromWishlist(w.id)"
+                  @click.stop="removeFromWishlist(w.itemId)"
                 >
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                     <path d="M12 21s-6.716-4.146-9.193-7.142C.61 11.41 1.077 8.5 3.2 6.9c1.86-1.42 4.46-1.17 6.11.44L12 10l2.69-2.66c1.65-1.61 4.25-1.86 6.11-.44 2.12 1.6 2.59 4.51.393 6.958C18.716 16.854 12 21 12 21z"/>
                   </svg>
                 </button>
 
-                <button class="btn btn--thin" @click.stop="addToCart(w.id)">
+                <button class="btn btn--thin" @click.stop="addToCart(w.itemId)">
                   장바구니
                 </button>
               </div>
@@ -99,23 +99,9 @@ export default {
     }
   },
 
-  created() {
-    // Pinia 스토어 로드 (LocalStorage에서 불러오기)
-    this.wish.load()
-
-    // 빈 경우에만 더미 데이터 시딩 (원치 않으면 이 블록 제거)
-    if (!this.wish.count) {
-      this.wish.replace([
-        { id: 'w1', title: '렌고쿠 코쥬로 키링', image: imgRengokuKeyring, price: 10000 },
-        { id: 'w2', title: '아카자 인형', image: imgAkazaDoll, price: 48000 },
-        { id: 'w3', title: '코즈메 켄마 피규어', image: imgKozumeFigure, price: 59000 },
-        { id: 'w4', title: '하츠네 미쿠 피규어', image: imgMikuFigure, price: 53000 },
-        { id: 'w5', title: '히나타 소요 피규어', image: imgHinataSoyoFigure, price: 67000 },
-        { id: 'w6', title: '미쿠 넨도로이드', image: imgMikuFigure, price: 42000 },
-        { id: 'w7', title: '렌고쿠 미니 피규어', image: imgRengokuKeyring, price: 15000 },
-        { id: 'w8', title: '아카자 미니 봉제', image: imgAkazaDoll, price: 22000 },
-      ])
-    }
+  async created() {
+    // API에서 위시리스트 데이터 로드
+    await this.wish.load()
   },
 
   computed: {
@@ -126,15 +112,15 @@ export default {
   methods: {
     /* ===== 라우팅 ===== */
     goProduct(w) {
-      // 위시리스트 아이템의 ID를 사용하여 상품 상세 페이지로 이동
+      // 위시리스트 아이템의 itemCode를 사용하여 상품 상세 페이지로 이동
       this.$router.push({ 
-        name: 'ProductInfo', 
-        params: { id: String(w.id) } 
+        name: 'product', 
+        params: { id: String(w.itemCode) } 
       }).catch(err => {
         console.error('라우터 이동 실패:', err)
         // 대안: 쿼리 파라미터 사용
         this.$router.push({ 
-          path: `/product/${w.id}` 
+          path: `/product/${w.itemCode}` 
         }).catch(() => {
           console.error('대안 라우터도 실패')
         })
@@ -142,9 +128,14 @@ export default {
     },
 
     /* ===== 위시리스트 (Pinia 스토어 사용) ===== */
-    removeFromWishlist(id) {
-      this.wish.remove(id)
-      this.showToast('위시에서 제거되었습니다')
+    async removeFromWishlist(itemId) {
+      try {
+        await this.wish.remove(itemId)
+        this.showToast('위시에서 제거되었습니다')
+      } catch (error) {
+        console.error('위시리스트 제거 실패:', error)
+        this.showToast('위시리스트 제거에 실패했습니다')
+      }
     },
     clearWishlist() {
       if (!this.wish.count) return
@@ -169,10 +160,10 @@ export default {
       else cart.push(item)
       return cart
     },
-    addToCart(id) {
-      const w = this.wish.byId(id)
+    addToCart(itemId) {
+      const w = this.wish.byItemId(itemId)
       if (!w) { this.showToast('상품을 찾을 수 없습니다'); return }
-      const item = { id: w.id, title: w.title, price: w.price, qty: 1, shipping: 0, thumb: w.image }
+      const item = { id: w.itemId, title: w.title, price: w.price, qty: 1, shipping: 0, thumb: w.image }
       const next = this.upsert(this.getCart(), item)
       this.saveCart(next)
       this.showToast('장바구니에 담겼습니다')

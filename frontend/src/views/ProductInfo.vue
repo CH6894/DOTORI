@@ -103,9 +103,11 @@ function adaptProduct(dto: ItemDTO) {
   const images = Array.isArray(dto.images) && dto.images.length
     ? dto.images
     : (codeImg ? [codeImg] : ['/img/placeholder.jpg'])
-  console.log(images)
+  console.log('adaptProduct - dto:', dto)
+  console.log('adaptProduct - images:', images)
   return {
-    id: dto.itemCode,
+    id: dto.itemCode, // itemCode를 id로 사용 (URL 파라미터와 일치)
+    itemCode: dto.itemCode, // itemCode도 별도로 저장
     name: dto.name,
     title: dto.title,
     brand: dto.manufacturer || '브랜드 미정',
@@ -130,6 +132,23 @@ const fetchProductDetail = async () => {
   try {
     const data: ItemDTO = await fetchItemById(productId)
     product.value = adaptProduct(data)
+    
+    // ItemDetails 정보도 가져와서 itemId 설정
+    try {
+      const unpackedDetails = await fetchApprovedUnpackedItemDetails(productId)
+      if (unpackedDetails && unpackedDetails.length > 0) {
+        // 첫 번째 미개봉 상품의 itemId를 사용
+        product.value.itemId = unpackedDetails[0].itemId
+      } else {
+        // 미개봉 상품이 없으면 개봉 상품에서 가져오기
+        const openedDetails = await fetchApprovedOpenedItemDetails(productId)
+        if (openedDetails && openedDetails.length > 0) {
+          product.value.itemId = openedDetails[0].itemId
+        }
+      }
+    } catch (e) {
+      console.warn('ItemDetails 정보 로드 실패:', e)
+    }
   } catch (e: any) {
     console.error('상품 정보 로드 실패:', e)
     error.value = e?.message ?? '상품 정보를 불러오지 못했습니다.'
@@ -153,6 +172,7 @@ const fetchPriceData = async () => {
 
 const fetchUsedItems = async () => {
   try {
+    console.log('fetchUsedItems 시작 - productId:', productId)
     // 승인된 개봉 상품의 ItemDetails 조회 (unpacked = 1)
     const approvedOpenedDetails = await fetchApprovedOpenedItemDetails(productId)
     console.log('승인된 개봉 상품 데이터:', approvedOpenedDetails)
@@ -192,6 +212,7 @@ const fetchUsedItems = async () => {
 
 const fetchUnpackedItems = async () => {
   try {
+    console.log('fetchUnpackedItems 시작 - productId:', productId)
     // 승인된 미개봉 상품의 ItemDetails 조회 (unpacked = 0)
     const approvedUnpackedDetails = await fetchApprovedUnpackedItemDetails(productId)
     console.log('승인된 미개봉 상품 데이터:', approvedUnpackedDetails)
@@ -289,6 +310,8 @@ const goBack = () => {
 
 // 페이지 초기화
 const initializePage = async () => {
+  console.log('=== 페이지 초기화 시작 ===')
+  console.log('productId:', productId)
   loading.value = true
   error.value = null // 에러 상태 초기화
   
@@ -300,6 +323,11 @@ const initializePage = async () => {
       fetchUsedItems(),
       fetchUnpackedItems(), // 미개봉 상품 데이터도 로드
     ])
+    
+    console.log('=== 페이지 초기화 완료 ===')
+    console.log('product.value:', product.value)
+    console.log('usedItems.value:', usedItems.value)
+    console.log('unpackedItems.value:', unpackedItems.value)
   } catch (error) {
     console.error('페이지 초기화 실패:', error)
   } finally {

@@ -3,6 +3,11 @@
     <div class="section-container">
       <h3 class="section-title">중고상품</h3>
       
+      <!-- 디버깅 정보 -->
+      <div v-if="usedItems.length === 0" class="debug-info">
+        <p>중고상품이 없습니다. usedItems: {{ usedItems }}</p>
+      </div>
+      
       <div class="products-slider-container">
         <div class="products-slider">
           <!-- 각각의 개별 중고상품 카드 -->

@@ -6,15 +6,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository; // ✅ 추가
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.cors.*;
-import org.springframework.security.config.Customizer;
-
 import com.pingu.DOTORI.security.OAuth2SuccessHandler;
 import com.pingu.DOTORI.security.JwtAuthenticationFilter;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
-import com.pingu.DOTORI.config.AlwaysReauthResolver;
+
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +26,15 @@ public class SecurityConfig {
   public SecurityConfig(OAuth2SuccessHandler oAuth2SuccessHandler, JwtAuthenticationFilter jwtAuthenticationFilter) {
     this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+  }
+
+  @Bean
+  AuthenticationEntryPoint restAuthEntryPoint() {
+    return (request, response, authException) -> {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.setContentType("application/json");
+      response.getWriter().write("{\"error\":\"UNAUTHORIZED\"}");
+    };
   }
 
   @Bean(name = "mainSecurityFilterChain")
@@ -45,6 +54,7 @@ public class SecurityConfig {
             .requestMatchers("/open/**").permitAll()
             .requestMatchers("/api/**").authenticated()
             .anyRequest().authenticated())
+        .exceptionHandling(e -> e.authenticationEntryPoint(restAuthEntryPoint()))
         .oauth2Login(oauth -> oauth
             .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))
             .successHandler(oAuth2SuccessHandler) // 로그인 성공 후 JWT 발급
