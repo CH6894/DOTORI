@@ -100,7 +100,6 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 /* API */
 const PUB_URL = '/api/public/calendars'
