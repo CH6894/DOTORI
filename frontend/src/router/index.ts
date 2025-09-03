@@ -8,6 +8,7 @@ import {
 /* ===== views (code-splitting) ===== */
 const MainViews = () => import("@/views/MainViews.vue");
 const SearchResult = () => import("@/views/SearchResult.vue");
+const SearchPage = () => import("@/views/SearchPage.vue");
 const ProductInfo = () => import("@/views/ProductInfo.vue");
 const LoginView = () => import("@/views/LoginView.vue");
 const CheckoutPage = () => import("@/views/CheckoutPage.vue");
@@ -67,6 +68,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/search",
     name: "search",
+    component: SearchPage,
+    meta: { header: "main", footer: true, utilbar: true },
+  },
+  {
+    path: "/category",
+    name: "category", 
     component: SearchResult,
     meta: { header: "main", footer: true, utilbar: true },
   },

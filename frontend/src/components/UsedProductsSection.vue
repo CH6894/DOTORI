@@ -4,8 +4,8 @@
       <h3 class="section-title">중고상품</h3>
       
       <!-- 디버깅 정보 -->
-      <div v-if="usedItems.length === 0" class="debug-info">
-        <p>중고상품이 없습니다. usedItems: {{ usedItems }}</p>
+      <div v-if="usedItems.length === 0" class="empty">
+        <p>현재 중고상품이 없습니다. 중고상품이 추가되면 여기에 표시됩니다.</p>
       </div>
       
       <div class="products-slider-container">
@@ -237,5 +237,13 @@ const openUsedItemDetail = (item) => {
   color: #666;
   margin: 0;
   line-height: 1.3;
+}
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2.25rem 0;                                /* 36px */
+  color: #9a9a9a;
+  border: 0.0625rem dashed #e5e5e5;                  /* 1px */
+  border-radius: 0.75rem;                            /* 12px */
 }
 </style>

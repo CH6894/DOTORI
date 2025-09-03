@@ -15,15 +15,15 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class MeController {
-    
+
     private final MyPageService myPageService;
     private final JwtProvider jwtProvider;
-    
+
     public MeController(MyPageService myPageService, JwtProvider jwtProvider) {
         this.myPageService = myPageService;
         this.jwtProvider = jwtProvider;
     }
-    
+
     @GetMapping("/api/me")
     public ResponseEntity<?> me(HttpServletRequest req) {
         String authHeader = req.getHeader("Authorization");
@@ -31,7 +31,7 @@ public class MeController {
             try {
                 String token = authHeader.substring(7);
                 String email = jwtProvider.getSubject(token);
-                
+
                 Users user = myPageService.getProfileByEmail(email);
                 if (user != null) {
                     return ResponseEntity.ok(user);
@@ -40,10 +40,10 @@ public class MeController {
                 System.out.println("JWT 파싱 실패: " + e.getMessage());
             }
         }
-        
+
         return ResponseEntity.ok(Map.of("authenticated", false));
     }
-    
+
     @PutMapping("/api/me")
     public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> request, HttpServletRequest req) {
         try {
@@ -51,7 +51,7 @@ public class MeController {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
                 String email = jwtProvider.getSubject(token);
-                
+
                 String nickName = request.get("nickName");
                 if (nickName != null && !nickName.trim().isEmpty()) {
                     Users updatedUser = myPageService.updateProfileByEmail(email, nickName);
@@ -60,7 +60,7 @@ public class MeController {
                     }
                 }
             }
-            
+
             return ResponseEntity.badRequest().body(Map.of("error", "프로필 업데이트 실패"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", "프로필 업데이트 중 오류가 발생했습니다"));

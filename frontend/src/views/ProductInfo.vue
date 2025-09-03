@@ -54,10 +54,10 @@
         />
         
         <!-- 추천상품 섹션 -->
-        <RecommendedProducts :products="recommendedProducts" />
+        <!-- <RecommendedProducts :products="recommendedProducts" /> -->
         
         <!-- 함께 본 상품 섹션 -->
-        <RelatedProducts :products="relatedProducts" />
+        <!-- <RelatedProducts :products="relatedProducts" /> -->
       </div>
       
       <!-- 상품을 찾을 수 없는 경우 -->

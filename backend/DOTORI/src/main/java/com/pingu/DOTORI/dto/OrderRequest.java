@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderRequest {
 
-    private List<Long> cartIds;     // 주문할 장바구니 ID 목록
-    private String depositerName;   // 입금자명
-    private String payMessage;      // 배송 요청사항
+    private List<Long> cartIds; // 주문할 장바구니 ID 목록
+    private String depositerName; // 입금자명
+    private String payMessage; // 배송 요청사항
 }
