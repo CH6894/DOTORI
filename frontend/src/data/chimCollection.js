@@ -10,7 +10,7 @@ import Chim8 from '@/assets/chim/Chim8.png'
 import Chim9 from '@/assets/chim/Chim9.png'
 import Chim10 from '@/assets/chim/Chim10.png'
 import Chim11 from '@/assets/chim/Chim11.png'
-import Chim12 from '@/assets/chim/Chim12.png'
+import Chim12 from '@/assets/chim/Chim12.png' 
 
 export default [
         { id: 'CHIM-001', name: '스트레스 볼', desc: '옐로우 레몬맨/폭력 레몬맨', image: Chim1, verified: true },
