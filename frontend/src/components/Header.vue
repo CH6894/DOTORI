@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import SearchComponent from './Search.vue'
 // import { useAuth } from '@/stores/useAuth' // 실제 스토어 사용 시
 
 // const auth = useAuth()
@@ -52,101 +53,9 @@ const quickCats = [
   { label: 'Creator', key: 'Creator' },
 ]
 
-/* ===== 검색 패널 상태 ===== */
-const searchWrapEl = ref<HTMLElement | null>(null)
-const searchOpen = ref(false)
-const query = ref('')
-
-type PopularItem = { term: string; rank: number; prevRank?: number }
-type RecentItem = { term: string; ts: number }
-
-/* 데모 인기 검색어 */
-const popular = ref<PopularItem[]>([
-  { term: '포토카드', rank: 1, prevRank: 3 },
-  { term: '슬리브', rank: 2, prevRank: 1 },
-  { term: '굿즈 캘린더', rank: 3, prevRank: 5 },
-  { term: '한정판', rank: 4, prevRank: 4 },
-  { term: '피규어', rank: 5, prevRank: 2 },
-  { term: '재입고', rank: 6, prevRank: 6 },
-  { term: '티켓', rank: 7, prevRank: 10 },
-  { term: '웰컴키트', rank: 8, prevRank: 8 },
-  { term: '특전', rank: 9, prevRank: 7 },
-  { term: '랜덤가챠', rank: 10, prevRank: 11 },
-])
-
-const RECENT_KEY = 'recent-searches'
-const recent = ref<RecentItem[]>([])
-
-function loadRecent() {
-  try {
-    const raw = getKV().getItem(RECENT_KEY)
-    recent.value = raw ? JSON.parse(raw) : []
-  } catch {
-    recent.value = []
-  }
-}
-function saveRecent() {
-  const trimmed = recent.value.slice(0, 10)
-  recent.value = trimmed
-  getKV().setItem(RECENT_KEY, JSON.stringify(trimmed))
-}
-function addRecent(term: string) {
-  const t = term.trim()
-  if (!t) return
-  recent.value = [{ term: t, ts: Date.now() }, ...recent.value.filter(r => r.term !== t)]
-  saveRecent()
-}
-function removeRecent(term: string) {
-  recent.value = recent.value.filter(r => r.term !== term)
-  saveRecent()
-}
-function clearRecent() {
-  recent.value = []
-  getKV().removeItem(RECENT_KEY)
-}
-
-/* 등락 표기 */
-function delta(item: PopularItem) {
-  if (item.prevRank == null) return 0
-  return item.prevRank - item.rank
-}
-function deltaClass(item: PopularItem) {
-  const d = delta(item)
-  return d > 0 ? 'up' : d < 0 ? 'down' : 'same'
-}
-function deltaLabel(item: PopularItem) {
-  const d = delta(item)
-  return d > 0 ? `▲${d}` : d < 0 ? `▼${Math.abs(d)}` : '—'
-}
-
-/* ===== 검색 실행/제출 ===== */
-function goSearch(term: string) {
-  const q = term.trim()
-  if (!q) return
-  addRecent(q)
-  searchOpen.value = false
-  router.push({ name: 'search', query: { q } })
-}
-function onSearchSubmit(e?: Event) {
-  e?.preventDefault()
-  goSearch(query.value)
-}
-function selectTerm(term: string) {
-  query.value = term
-  goSearch(term)
-}
-
-/* 포커스/열고닫기 */
-function openPanel() { searchOpen.value = true }
-
-function onDocClick(ev: MouseEvent) {
-  const root = searchWrapEl.value
-  if (root && !root.contains(ev.target as Node)) searchOpen.value = false
-}
-
+/* ===== ESC 키 처리 ===== */
 function onEscKey(ev: KeyboardEvent) {
   if (ev.key === 'Escape') {
-    searchOpen.value = false
     quickOpen.value = false
   }
 }
@@ -154,39 +63,20 @@ function onEscKey(ev: KeyboardEvent) {
 onMounted(async () => {
   await nextTick()
   measureQuickTop()
-  loadRecent()
 
   window.addEventListener('resize', measureQuickTop, { passive: true })
   window.addEventListener('scroll', measureQuickTop, { passive: true })
     ; (document as any).fonts?.ready?.then?.(measureQuickTop)
 
-  document.addEventListener('click', onDocClick)
   document.addEventListener('click', onDocClickCloseQuick) // 👈 문서 아무곳 클릭 시 퀵바 닫기
   document.addEventListener('keydown', onEscKey)
-
-  // 비로그인 시 세션 저장소 정리(선택)
-  window.addEventListener('beforeunload', () => {
-    if (!isLoggedIn.value) {
-      try { sessionStorage.removeItem(RECENT_KEY) } catch { }
-    }
-  })
-
-  // 로그인 상태에서는 탭 간 동기화(선택)
-  window.addEventListener('storage', (e) => {
-    if (!isLoggedIn.value) return
-    if (e.key === RECENT_KEY) {
-      loadRecent()
-    }
-  })
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', measureQuickTop)
   window.removeEventListener('scroll', measureQuickTop)
-  document.removeEventListener('click', onDocClick)
   document.removeEventListener('click', onDocClickCloseQuick)
   document.removeEventListener('keydown', onEscKey)
-  // 익명 핸들러 해제는 생략 가능
 })
 </script>
 
@@ -219,60 +109,8 @@ onBeforeUnmount(() => {
             <RouterLink to="/inspection">검수기준</RouterLink>
           </nav>
 
-          <!-- ===== 검색 (확장) ===== -->
-          <div class="search-wrap" ref="searchWrapEl">
-            <form class="search" role="search" aria-label="검색" @submit.prevent="onSearchSubmit">
-              <input v-model="query" type="search" placeholder="검색어를 입력하세요" aria-label="검색어" @focus="openPanel" />
-              <button type="submit" class="search__btn" aria-label="검색">
-                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="M16.5 16.5L22 22" />
-                </svg>
-              </button>
-            </form>
-
-            <!-- 검색 제안 패널 -->
-            <div id="searchPanel" class="search-panel" v-show="searchOpen" role="region" aria-label="검색 제안">
-              <div class="panel-grid">
-                <!-- 인기 검색어 -->
-                <section class="panel-section">
-                  <div class="panel-title">인기 검색어</div>
-                  <ol class="pop-list">
-                    <li v-for="item in popular.slice(0, 10)" :key="item.term" class="pop-item">
-                      <button type="button" class="pop-link" @click="selectTerm(item.term)">
-                        <span class="rank">{{ item.rank }}</span>
-                        <span class="term">{{ item.term }}</span>
-                        <span class="delta" :class="deltaClass(item)">{{ deltaLabel(item) }}</span>
-                      </button>
-                    </li>
-                  </ol>
-                </section>
-
-                <!-- 최근 검색어 -->
-                <section class="panel-section">
-                  <div class="panel-title row">
-                    <span>최근 검색어</span>
-                    <button v-if="recent.length" type="button" class="clear-all" @click="clearRecent"
-                      aria-label="최근 검색어 전체 삭제" title="전체 삭제">
-                      전체삭제
-                    </button>
-                  </div>
-                  <ul class="recent-list">
-                    <li v-if="recent.length === 0" class="recent-empty">최근 검색어가 없습니다.</li>
-                    <li v-for="r in recent.slice(0, 10)" :key="r.term" class="recent-item">
-                      <button type="button" class="recent-link" @click="selectTerm(r.term)">
-                        {{ r.term }}
-                      </button>
-                      <button type="button" class="recent-del" @click.stop="removeRecent(r.term)" aria-label="삭제"
-                        title="삭제">
-                        x
-                      </button>
-                    </li>
-                  </ul>
-                </section>
-              </div>
-            </div>
-          </div>
+          <!-- ===== 검색 (공통 컴포넌트) ===== -->
+          <SearchComponent />
           <!-- ===== /검색 ===== -->
 
           <!-- 우측 아이콘 -->
@@ -313,7 +151,7 @@ onBeforeUnmount(() => {
       :style="{ top: `${quickTop}px` }" role="region" aria-label="빠른 작업 바">
       <nav class="quick-bar__inner container">
         <RouterLink v-for="c in quickCats" :key="c.key" class="quick-link"
-          :to="{ name: 'search', query: { top: c.key } }" @click="quickOpen = false">
+          :to="{ name: 'category', query: { top: c.key } }" @click="quickOpen = false">
           {{ c.label }}
         </RouterLink>
       </nav>
@@ -505,219 +343,6 @@ onBeforeUnmount(() => {
   /* 18px */
 }
 
-/* 검색 래퍼(패널 기준) */
-.search-wrap {
-  position: relative;
-}
-
-/* 검색 폼 */
-.search {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.5rem;
-  align-items: center;
-  width: 25rem;
-  /* 400px */
-  margin-left: 7.5rem;
-  /* 120px */
-  margin-right: 1.875rem;
-  /* 30px */
-}
-
-/* 검색 input */
-.search input,
-.search input[type="search"] {
-  width: 100%;
-  height: 2.5rem;
-  padding: 0 0.875rem;
-  border-radius: 999px;
-  border: 0.0625rem solid #eadfc9;
-}
-
-/* 검색 버튼 */
-.search__btn {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 999px;
-  border: 0.0625rem solid #eadfc9;
-  background: #fff;
-  cursor: pointer;
-}
-
-.search__btn svg {
-  stroke: var(--ink);
-}
-
-.search__btn svg * {
-  fill: none !important;
-  stroke: currentColor !important;
-  stroke-width: 2 !important;
-}
-
-/* 검색 패널 */
-.search-panel {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 0.0625rem solid #eee;
-  border-radius: 0.75rem;
-  box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, .12);
-  padding: 0.75rem;
-  z-index: 2000;
-}
-
-/* 검색 패널 레이아웃 */
-.panel-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-.panel-section {
-  min-width: 0;
-}
-
-.panel-title {
-  font: 700 0.8125rem/1 "Pretendard", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: #333;
-  margin: 0.375rem 0 0.625rem;
-}
-
-.panel-title.row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* 인기 검색어 */
-.pop-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.pop-item+.pop-item {
-  margin-top: 0.375rem;
-}
-
-.pop-link {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1.5rem 1fr auto;
-  /* 24px */
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.625rem;
-  border-radius: 0.5rem;
-  border: 0.0625rem solid transparent;
-  background: #fafafa;
-  color: inherit;
-  cursor: pointer;
-  text-align: left;
-}
-
-.pop-link:hover {
-  background: #f5f5f5;
-}
-
-.rank {
-  font-weight: 700;
-  color: #666;
-  text-align: right;
-}
-
-.term {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.delta {
-  font-size: 0.75rem;
-  color: #888;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.delta.up {
-  color: #0ea35a;
-}
-
-.delta.down {
-  color: #e54848;
-}
-
-.delta.same {
-  color: #9aa0a6;
-}
-
-/* 최근 검색어 */
-.recent-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.recent-empty {
-  padding: 0.5rem 0.625rem;
-  color: #9aa0a6;
-  background: #fafafa;
-  border-radius: 0.5rem;
-}
-
-.recent-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.375rem 0;
-}
-
-.recent-link {
-  max-width: 100%;
-  padding: 0.5rem 0.625rem;
-  border-radius: 0.5rem;
-  background: #fafafa;
-  border: 0.0625rem solid transparent;
-  text-align: left;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.recent-link:hover {
-  background: #f5f5f5;
-}
-
-.recent-del {
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 0.0625rem solid #eee;
-  border-radius: 0.375rem;
-  background: #fff;
-  color: #666;
-  cursor: pointer;
-}
-
-.recent-del:hover {
-  background: #f8f8f8;
-}
-
-.clear-all {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: #888;
-  font-size: 0.75rem;
-}
-
-.clear-all:hover {
-  color: #555;
-}
 
 /* 작은 화면에서 1열 */
 @media (max-width: 48rem) {

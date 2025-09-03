@@ -29,7 +29,8 @@ public class AlwaysReauthResolver implements OAuth2AuthorizationRequestResolver 
   }
 
   private OAuth2AuthorizationRequest customize(OAuth2AuthorizationRequest req) {
-    if (req == null) return null;
+    if (req == null)
+      return null;
     Map<String, Object> extra = new HashMap<>(req.getAdditionalParameters());
     // ✅ 네이버: 항상 재인증
     extra.put("auth_type", "reauthenticate");

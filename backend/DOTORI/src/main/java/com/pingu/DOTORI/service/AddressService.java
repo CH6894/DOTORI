@@ -59,23 +59,20 @@ public class AddressService {
 
         addressRepository.delete(address);
     }
-    
- 
+
     public AddressResponse findFirstByUserId(Long userId) {
         return addressRepository.findFirstByUser_Id(userId)
                 .map(this::toResponse)
                 .orElseThrow(() -> new IllegalArgumentException("배송지가 등록되지 않았습니다."));
     }
 
-
     private AddressResponse toResponse(Address address) {
         return AddressResponse.builder()
-                .addressId(address.getId())                          // Address 엔티티 PK
-                .receiver(address.getUser().getUserName())    // Users 엔티티에서 이름
-                .phone(address.getUser().getPhone())          // Users 엔티티에서 전화번호
-                .mainAddress(address.getMainAddress())        // Address 테이블의 mainAddress
+                .addressId(address.getId()) // Address 엔티티 PK
+                .receiver(address.getUser().getUserName()) // Users 엔티티에서 이름
+                .phone(address.getUser().getPhone()) // Users 엔티티에서 전화번호
+                .mainAddress(address.getMainAddress()) // Address 테이블의 mainAddress
                 .build();
     }
 
 }
-

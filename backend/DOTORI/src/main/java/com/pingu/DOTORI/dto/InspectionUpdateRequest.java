@@ -12,6 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class InspectionUpdateRequest {
     private Long inspectionId;
-    private Integer status;   // admission_state
-    private Integer grade;    // quality
+    private Integer status; // admission_state
+    private Integer grade; // quality
 }

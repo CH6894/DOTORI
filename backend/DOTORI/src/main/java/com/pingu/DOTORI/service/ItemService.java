@@ -3,7 +3,6 @@ package com.pingu.DOTORI.service;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
@@ -16,7 +15,6 @@ import com.pingu.DOTORI.entity.Item;
 import com.pingu.DOTORI.repository.ItemRepository;
 import com.pingu.DOTORI.entity.ItemDetails;
 import com.pingu.DOTORI.repository.ItemDetailsRepository;
-import com.pingu.DOTORI.entity.Admin;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +39,12 @@ public class ItemService {
 	public Page<ItemDTO> findByGenreAndTitle(String genre, String title, Pageable pageable) {
 		return itemRepository.findByGenreIgnoreCaseAndTitleContainingIgnoreCase(genre, title, pageable)
 				.map(this::toDto);
+	}
+
+	// 검색어로 아이템 찾기
+	public Page<ItemDTO> searchItems(String query, Pageable pageable) {
+		return itemRepository.findByNameContainingIgnoreCaseOrTitleContainingIgnoreCaseOrGenreContainingIgnoreCase(
+				query, query, query, pageable).map(this::toDto);
 	}
 
 	// 승인된 상품의 ItemDetails 조회

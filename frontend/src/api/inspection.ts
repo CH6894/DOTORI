@@ -65,6 +65,23 @@ function mapState(s: number): Status {
 
 // AdminListRow -> Inspection 변환
 function rowToInspection(r: AdminListRow): Inspection {
+  console.log("=== 프론트엔드 이미지 URL 디버깅 ===");
+  console.log("AdminListRow:", r);
+  console.log("imageUrls:", r.imageUrls);
+  console.log("imageCount:", r.imageCount);
+  
+  const photos = r.imageUrls?.map((url, idx) => {
+    const finalUrl = url.startsWith('http') ? url : `http://localhost:8081/uploads/items/${url}`;
+    console.log(`이미지 ${idx}: ${url} -> ${finalUrl}`);
+    return { 
+      id: idx, 
+      url: finalUrl 
+    };
+  }) || [];
+  
+  console.log("최종 photos:", photos);
+  console.log("================================");
+  
   return {
     id: String(r.inspectionId),
     listingId: String(r.itemId),
@@ -75,10 +92,7 @@ function rowToInspection(r: AdminListRow): Inspection {
     submittedAt: r.registrationDate || new Date().toISOString(),
     status: mapState(r.admissionState || 0),
     memo: r.itemExplanation || "",
-    photos: r.imageUrls?.map((url, idx) => ({ 
-      id: idx, 
-      url: url.startsWith('http') ? url : `http://localhost:8081/uploads/items/${url}` 
-    })) || [],
+    photos: photos,
     grade: r.quality !== null ? mapGrade(r.quality) : undefined,
     capturedAtInternal: r.filmingTime || undefined,
   }

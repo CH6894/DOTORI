@@ -15,7 +15,7 @@ const cats = [
       v-for="c in cats"
       :key="c.key"
       class="cat-card"
-      :to="{ name: 'search', query: { top: c.key } }"
+      :to="{ name: 'category', query: { top: c.key } }"
       :aria-label="c.key"
     >
       <img class="cat-card__img" :src="c.img" :alt="c.key" />

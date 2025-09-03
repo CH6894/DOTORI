@@ -31,7 +31,7 @@ public class InspectionController {
         System.out.println("FilmingTime: " + dto.getFilmingTime());
         System.out.println("images count: " + (dto.getImages() != null ? dto.getImages().size() : 0));
         System.out.println("========================");
-        
+
         CreateResult result = inspectionService.createInspection(dto);
         return ResponseEntity.ok(result);
     }
@@ -42,8 +42,7 @@ public class InspectionController {
         inspectionService.updateStatusAndGrade(
                 request.getInspectionId(),
                 request.getStatus(),
-                request.getGrade()
-        );
+                request.getGrade());
         return ResponseEntity.ok().build();
     }
 
@@ -56,8 +55,7 @@ public class InspectionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {
 
-        Page<AdminListRow> adminList =
-                inspectionService.getAdminInspections(state, from, to, page, size);
+        Page<AdminListRow> adminList = inspectionService.getAdminInspections(state, from, to, page, size);
 
         return ResponseEntity.ok(adminList);
     }
@@ -68,7 +66,7 @@ public class InspectionController {
             @PathVariable Long inspectionId,
             @RequestParam(required = false) Integer grade,
             @RequestParam(required = false) String reason) {
-        
+
         inspectionService.approve(inspectionId, grade, reason);
         return ResponseEntity.ok().build();
     }
@@ -79,7 +77,7 @@ public class InspectionController {
             @PathVariable Long inspectionId,
             @RequestParam(required = false) Integer grade,
             @RequestParam(required = false) String reason) {
-        
+
         inspectionService.reject(inspectionId, grade, reason);
         return ResponseEntity.ok().build();
     }

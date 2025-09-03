@@ -508,7 +508,8 @@ function onClose() { emit('close') }
 /* 최종 제출 → 4단계 */
 const isSubmitting = ref(false)
 const step = ref<1 | 2 | 3 | 4>(1)
-const userId = 3
+// 사용자 ID를 동적으로 가져오기
+const userId = ref(3) // 임시로 기본값 설정
 
 const normalizedPrice = price.toString().replace(/,/g, "")
 
@@ -528,7 +529,7 @@ async function submitAll() {
     console.log("items.value.length:", items.value.length)
     
     const fd = new FormData()
-    fd.append('userId', String(userId))
+    fd.append('userId', String(userId.value))
     fd.append('itemCode', props.item?.itemCode || props.item?.id || '')
     fd.append('productTitle', props.item?.name || props.item?.title || '')
     fd.append("price", String(price.value ?? 0))
@@ -540,7 +541,6 @@ async function submitAll() {
     for (const [key, value] of fd.entries()) {
       console.log("FormData:", key, value)
     }
-    items.value.forEach(i => fd.append('images', i.file))
 
     const res = await createInspection(fd)
     console.log('created:', res) // { inspectionId, itemId, status }

@@ -1,9 +1,7 @@
 package com.pingu.DOTORI.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.aspectj.apache.bcel.classfile.Module.Require;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,9 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pingu.DOTORI.dto.ItemDTO;
 import com.pingu.DOTORI.dto.ItemDetailsDTO;
-import com.pingu.DOTORI.entity.Item;
-import com.pingu.DOTORI.entity.ItemDetails;
-import com.pingu.DOTORI.repository.ItemRepository;
 import com.pingu.DOTORI.service.ItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +56,13 @@ public class ItemController {
 	public ResponseEntity<List<ItemDetailsDTO>> getApprovedOpenedItemDetails(@PathVariable String itemCode) {
 		List<ItemDetailsDTO> details = itemService.findApprovedOpenedItemDetailsByItemCode(itemCode);
 		return ResponseEntity.ok(details);
+	}
+
+	// 검색 API
+	@GetMapping("/search")
+	public ResponseEntity<Page<ItemDTO>> searchItems(@RequestParam String q,
+			@PageableDefault(size = 30) Pageable pageable) {
+		return ResponseEntity.ok(itemService.searchItems(q, pageable));
 	}
 
 }

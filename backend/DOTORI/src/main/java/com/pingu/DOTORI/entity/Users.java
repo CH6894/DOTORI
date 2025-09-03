@@ -6,7 +6,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "Users")
 @Table(name = "Users")
 public class Users {
@@ -23,10 +27,10 @@ public class Users {
     private String nickName; // 단일 유니크
 
     @Column(name = "Email", length = 255, unique = true, nullable = false)
-    private String email;    // 단일 유니크
+    private String email; // 단일 유니크
 
     @Column(name = "Phone", length = 100, unique = true, nullable = false)
-    private String phone;    // 단일 유니크
+    private String phone; // 단일 유니크
 
     @Column(name = "Gender", nullable = false)
     private Byte gender;
@@ -42,7 +46,7 @@ public class Users {
 
     @Column(name = "User_Type", nullable = false)
     private Integer userType;
-    
+
     @Column(name = "User_Img")
     private String userImg;
 
@@ -57,23 +61,23 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Cart> cart = new ArrayList<>();
 
-
-
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Orders> orders = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Search> search = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
-//    private Set<CollectionMapping> collectionMapping = new HashSet<>();
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval =
+    // false)
+    // private Set<CollectionMapping> collectionMapping = new HashSet<>();
 
     // 편의 메서드 예시
     // 얘가 있는 이유 -> 연관된 테이블에서 수정하면 여기서도 수정될 수 있도록
-    // ex) 오더 테이블에서 특정 값 수정했을 때 여기서도 수정한다고  => 양방향 불일치 문제를 막는다고 함.
-    public void addOrder(Orders order){ orders.add(order); order.setUser(this); }
-    //public void addCart(Cart cart){ cart.add(cart); cart.setUser(this); }
-
+    // ex) 오더 테이블에서 특정 값 수정했을 때 여기서도 수정한다고 => 양방향 불일치 문제를 막는다고 함.
+    public void addOrder(Orders order) {
+        orders.add(order);
+        order.setUser(this);
+    }
+    // public void addCart(Cart cart){ cart.add(cart); cart.setUser(this); }
 
 }
