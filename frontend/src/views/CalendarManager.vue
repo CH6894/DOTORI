@@ -115,6 +115,7 @@ const startOfDay=(d)=>new Date(d.getFullYear(),d.getMonth(),d.getDate())
 const endOfDayInclusive=(d)=>new Date(d.getFullYear(),d.getMonth(),d.getDate(),23,59,59,999)
 const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n)
 const isoLocal=(d)=>{const x=new Date(d);return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}:${pad(x.getSeconds())}`}
+/* Axios 에러 포맷 */
 const formatAxiosError=(e)=> e?.response?`HTTP ${e.response.status} ${e.response.statusText}\n${JSON.stringify(e.response.data)}`:(e?.request?'응답 없음(네트워크/CORS 가능성)':`설정 오류: ${e?.message}`)
 
 /* 요약 표기 */
@@ -169,7 +170,45 @@ watch(()=>form.allDay,(v)=>{
   }
 })
 
-/* 서버 CRUD */
+/* ===== 모달/폼 헬퍼 ===== */
+function resetForm(){
+  form.id=''; form.title=''; form.start=''; form.end=''; form.allDay=false; form.color='#ff8ab3'
+}
+function fillFormFromEvent(ev){
+  const meta = ev.extendedProps || {}
+  const allDay = !!ev.allDay
+  form.id = String(ev.id)
+  form.title = ev.title || ''
+  form.allDay = allDay
+  form.color = meta.color || ev.backgroundColor || '#ff8ab3'
+  if(allDay){
+    const s0 = new Date(ev.start.getFullYear(), ev.start.getMonth(), ev.start.getDate())
+    const eInc = new Date((ev.end || ev.start).getTime() - 1)
+    form.start = toLocalDateInput00(s0)
+    form.end   = toLocalDateInput2359(eInc)
+  }else{
+    const eInc = new Date((ev.end || ev.start).getTime() - 1)
+    form.start = toLocalInputValue(ev.start)
+    form.end   = toLocalInputValue(eInc)
+  }
+}
+function openModal(mode='create', evObj){
+  isModalOpen.value = true
+  if(mode==='create'){
+    modalTitle.value = '일정 등록'
+    resetForm()
+    // dateClick/select에서 미리 세팅한 값 유지하도록 둠이다.
+  }else{
+    modalTitle.value = '일정 수정'
+    if(evObj) fillFormFromEvent(evObj)
+  }
+}
+function closeModal(){
+  isModalOpen.value = false
+  pendingSelect.value = null
+}
+
+/* ===== 서버 CRUD ===== */
 async function createEventToServer({ title, start, info }){
   const body={ scheduleName:title, scheduleDate:start, scheduleInfo:info??null, userId:ADMIN_USER_ID }
   const { data }=await axios.post(ADM_URL, body, { headers:{'Content-Type':'application/json'} })
@@ -188,7 +227,7 @@ function patchCalendarEventLocal(id,{ title,color,allDay,start,endExclusive }){
   if(start) ev.setStart(start); if(endExclusive) ev.setEnd(endExclusive)
 }
 
-/* 저장/삭제 */
+/* ===== 저장/삭제 버튼 ===== */
 async function onSave(){
   try{
     if(!form.title){ alert('제목을 입력하세요.'); return }
@@ -225,18 +264,18 @@ async function onSave(){
     }else{
       await createEventToServer({ title:form.title,start:startIso,info })
     }
-    calendar.refetchEvents(); pendingSelect.value=null; closeModal(); alert('저장 완료.')
+    calendar.refetchEvents(); pendingSelect.value=null; closeModal(); alert('저장 완료이다.')
   }catch(e){ alert('저장 실패: '+(e.message||e)) }
 }
 async function onDelete(){
   try{
     if(!form.id) return
     await deleteEventFromServer(form.id)
-    calendar.refetchEvents(); closeModal(); alert('삭제 완료.')
+    calendar.refetchEvents(); closeModal(); alert('삭제 완료이다.')
   }catch(e){ alert('삭제 실패: '+(e.message||e)) }
 }
 
-/* 요약/아젠다 */
+/* ===== 요약/아젠다 ===== */
 function refreshSummary(){
   if(!calendar) return
   const view=calendar.view
@@ -289,7 +328,7 @@ async function deleteFromSummary(id){
   }catch(e){ alert('삭제 실패: '+(e.message||e)) }
 }
 
-/* 캘린더 초기화 */
+/* ===== 캘린더 초기화 ===== */
 onMounted(()=>{
   calendar=new Calendar(calendarEl.value,{
     themeSystem:'bootstrap5',
@@ -336,10 +375,15 @@ onMounted(()=>{
 
     selectable:true, selectMirror:true, unselectAuto:true, selectLongPressDelay:180,
 
-    /* ✅ 공식 이벤트 소스: 성공 시에만 교체, 실패 시 기존 유지 */
+    /* ✅ 드래그/리사이즈 활성화 */
+    editable:true,
+    eventStartEditable:true,
+    eventDurationEditable:true,
+
+    /* ✅ 이벤트 로드 */
     events: async (info, success, failure)=>{
       try{
-        // 뷰 범위를 "지역시간 00:00 ~ 23:59:59"로 안전하게 보냄
+        // 뷰 범위를 로컬 00:00 ~ 23:59:59로 보냄이다.
         const s = new Date(info.start)
         const eInc = new Date(info.end.getTime()-1)
         const start = isoLocal(new Date(s.getFullYear(),s.getMonth(),s.getDate(),0,0,0)).slice(0,19)
@@ -367,17 +411,18 @@ onMounted(()=>{
       }catch(e){
         console.error('일정 로드 실패', e)
         alert('일정 불러오기 실패: '+formatAxiosError(e))
-        failure(e) // 실패 시 기존 이벤트 유지
+        failure(e)
       }
     },
 
-    /* 이벤트 세트가 바뀐 뒤 요약/아젠다 동기화 */
+    /* ✅ 이벤트 세트 변경 후 동기화 */
     eventsSet: ()=>{
       refreshSummary()
       if(selectedDate.value && hasEventsOn(selectedDate.value)){ showAgenda.value=true; renderAgenda() }
       else{ showAgenda.value=false; agendaHtml.value='' }
     },
 
+    /* ✅ 클릭/선택으로 등록 */
     dateClick:(info)=>{
       pendingSelect.value=null
       const d=new Date(info.date); selectedDate.value=d
@@ -394,7 +439,6 @@ onMounted(()=>{
         form.end   = toLocalInputValue(info.date)
       }
     },
-
     select:(arg)=>{
       const d=new Date(arg.start); selectedDate.value=d
       if(hasEventsOn(d)){ showAgenda.value=true; renderAgenda() } else { showAgenda.value=false; agendaHtml.value='' }
@@ -415,31 +459,60 @@ onMounted(()=>{
       calendar.unselect()
     },
 
+    /* ✅ 이벤트 클릭 시 편집 */
     eventClick: (arg) => {
-      // Day/Week/Month 어디서든 이벤트 클릭 시 '편집' 모달 열기
-      // (CalendarManager에서 쓰던 openModal 을 그대로 사용)
-      try {
-      openModal('edit', arg.event);
-      } catch (e) {
-        // 혹시 현재 파일에 openModal 이 없다면 CalendarManager 라우팅으로 대체
-        // router.push({ name: 'CalendarManager', query: { editId: arg.event.id } })
+      try { openModal('edit', arg.event) } catch {}
+      const d = new Date(arg.event.start)
+      selectedDate.value = d
+      showAgenda.value = true
+      renderAgenda()
+      if (arg.jsEvent) arg.jsEvent.preventDefault()
+    },
+
+    /* ✅ 드래그 이동 서버 반영 */
+    eventDrop: async (info) => {
+      try{
+        const ev = info.event
+        const allDay = !!ev.allDay
+        const startIso = isoLocal(ev.start).slice(0,19)
+        const e = ev.end || ev.start
+        const endInclusive = allDay
+          ? isoLocal(new Date(e.getTime() - 1)).slice(0,19)
+          : isoLocal(e).slice(0,19)
+        const color = ev.extendedProps?.color || ev.backgroundColor || '#ff8ab3'
+        const infoJson = packInfo({ color, allDay, endInclusive })
+        await updateEventToServer(ev.id, { title: ev.title, start: startIso, info: infoJson })
+        refreshSummary(); renderAgenda()
+      }catch(e){
+        info.revert()
+        alert('이동 저장 실패: ' + formatAxiosError(e))
       }
+    },
 
-      // 클릭한 일정 날짜로 아젠다도 동기화(하단 상세 보기 켜기)
-      const d = new Date(arg.event.start);
-      selectedDate.value = d;
-      showAgenda.value = true;
-      renderAgenda();
-
-      // a[href]로 등록된 이벤트라도 페이지 이동 막기
-      if (arg.jsEvent) arg.jsEvent.preventDefault();
+    /* ✅ 리사이즈 서버 반영 */
+    eventResize: async (info) => {
+      try{
+        const ev = info.event
+        const allDay = !!ev.allDay
+        const startIso = isoLocal(ev.start).slice(0,19)
+        const e = ev.end || ev.start
+        const endInclusive = allDay
+          ? isoLocal(new Date(e.getTime() - 1)).slice(0,19)
+          : isoLocal(e).slice(0,19)
+        const color = ev.extendedProps?.color || ev.backgroundColor || '#ff8ab3'
+        const infoJson = packInfo({ color, allDay, endInclusive })
+        await updateEventToServer(ev.id, { title: ev.title, start: startIso, info: infoJson })
+        refreshSummary(); renderAgenda()
+      }catch(e){
+        info.revert()
+        alert('리사이즈 저장 실패: ' + formatAxiosError(e))
+      }
     },
 
     datesSet: ()=>{
       pageDate.value=calendar.getDate()
       const t = calendar.view.type
       isMonthView.value = (t === 'fiveWeek' || t === 'dayGridMonth')
-      // 높이 토글 금지(깜빡임 원인)
     }
   })
   calendar.render(); pageDate.value=calendar.getDate(); setTimeout(()=>calendar.updateSize(),0)
@@ -451,7 +524,7 @@ onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 <style scoped>
 /* ===== 래퍼 ===== */
 .calendar-wrap{
-  position:relative; z-index:1; overflow:visible; /* ✅ sticky/표시 잘림 방지 */
+  position:relative; z-index:1; overflow:visible;
   width: var(--cal-fixed-width, 1280px);
   max-width:100%;
   height: var(--cal-fixed-height, 720px);
@@ -502,6 +575,7 @@ onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
   padding:2px 6px; font-weight:700;
 }
 :deep(.fc .fc-event-time){ font-weight:800; }
+:deep(.fc .fc-event){ cursor: pointer; }
 
 /* 요약/아젠다 */
 .summary, .agenda{ width: var(--cal-fixed-width, 1280px); max-width:100%; margin:16px auto 0; }
@@ -522,7 +596,46 @@ onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 .agenda__body{ background:#fff; border:1px solid #ffe4ee; border-radius:14px; padding:12px; }
 .agenda__item{ display:grid; grid-template-columns:110px 140px 1fr; gap:10px; padding:8px 10px; border:1px dashed #ffd3e1; border-radius:12px; }
 
-.modal__dialog{ background:#fff; border:2px solid #ffe4ee; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); }
+/* 캘린더와 요약/상세일정 간격 확보 */
+.calendar-wrap { margin-bottom: 60px; }
+.summary, .agenda {
+  clear: both;
+  position: relative;
+  z-index: 10;
+  margin-top: 0;
+  background: #fff;
+  padding: 8px 0;
+}
+
+/* === timeGrid 세로선 끊김 고정 패치 === */
+.calendar-wrap{ background:#fff; overflow:hidden; }
+:deep(.fc),
+:deep(.fc .fc-scrollgrid),
+:deep(.fc .fc-scroller),
+:deep(.fc .fc-scroller-harness),
+:deep(.fc .fc-scroller-liquid-absolute),
+:deep(.fc .fc-timegrid),
+:deep(.fc .fc-timegrid-body),
+:deep(.fc .fc-timegrid-slots){ background:#fff !important; }
+:deep(.fc-theme-standard .fc-scrollgrid){ border:1px solid #e9e0da; }
+:deep(.fc-theme-standard td),
+:deep(.fc-theme-standard th){ border:1px solid #e9e0da; }
+:deep(.fc-timegrid .fc-timegrid-col){ border-left:1px solid #e9e0da !important; }
+:deep(.fc-timegrid .fc-timegrid-axis){ border-right:1px solid #e9e0da !important; }
+:deep(.fc-timegrid .fc-timegrid-slot){ border-bottom:1px solid #e9e0da !important; }
+:deep(.fc-timegrid .fc-timegrid-slots table){ border-collapse: separate !important; border-spacing: 0 !important; }
+
+/* 모달 오버레이 */
+.modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal__dialog{ background:#fff; border:2px solid #ffe4ee; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); max-width:520px; width:min(92vw,520px); }
 .modal__header{ padding:12px 16px; border-bottom:1px dashed #ffd3e1; display:flex; justify-content:space-between; align-items:center; }
 .modal__close{ background:#fff; border:1px solid #ffd3e1; border-radius:8px; width:28px; height:28px; }
 .modal__body{ padding:12px 16px; }
@@ -531,72 +644,4 @@ onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
   border:1px solid #ffd3e1; border-radius:10px; padding:8px;
 }
 .modal__footer{ display:flex; justify-content:space-between; gap:12px; padding:12px 16px; border-top:1px dashed #ffd3e1; }
-/* 캘린더와 요약/상세일정 간격 확보 */
-.calendar-wrap {
-  margin-bottom: 40px;   /* ✅ 캘린더 아래 공간 넉넉히 확보 */
-}
-
-/* 요약과 아젠다는 캘린더 밖에 독립된 블록처럼 */
-.summary, .agenda {
-  margin-top: 20px;      /* ✅ 위쪽 간격 */
-  position: relative;
-  z-index: 5;            /* ✅ 캘린더보다 위 레이어 */
-}
-/* 캘린더 영역과 요약/아젠다를 완전히 분리 */
-.calendar-wrap {
-  margin-bottom: 60px;   /* ✅ 캘린더와 요약 사이 간격 확보 */
-}
-
-/* 요약과 아젠다를 캘린더 바깥에 표시 */
-.summary, .agenda {
-  clear: both;           /* ✅ float/테이블 흐름과 분리 */
-  position: relative;
-  z-index: 10;           /* ✅ 캘린더보다 위 */
-  margin-top: 0;         /* ✅ 위 여백은 캘린더 쪽에서 확보했으므로 0 */
-  background: #fff;      /* ✅ 캘린더 선 안 비치게 흰 배경 */
-  padding: 8px 0;
-}
-:deep(.fc .fc-event){ cursor: pointer; }
-/* === [timeGrid 세로선 끊김 고정 패치] ========================= */
-
-/* 1) 캘린더 영역과 내부 스크롤 표면을 전부 흰 배경으로 고정(배경 비침 차단) */
-.calendar-wrap{
-  background:#fff;         /* ✅ 뒤 배경(물결 등) 비치지 않게 */
-  overflow:hidden;         /* 내부 스크롤러 경계 밖으로 튀어나오는 것 차단 */
-}
-:deep(.fc),
-:deep(.fc .fc-scrollgrid),
-:deep(.fc .fc-scroller),
-:deep(.fc .fc-scroller-harness),
-:deep(.fc .fc-scroller-liquid-absolute),
-:deep(.fc .fc-timegrid),
-:deep(.fc .fc-timegrid-body),
-:deep(.fc .fc-timegrid-slots){
-  background:#fff !important;
-}
-
-/* 2) 세로/가로 경계선을 명시적으로 그려, 중간 끊김 방지 */
-:deep(.fc-theme-standard .fc-scrollgrid){ border:1px solid #e9e0da; }
-:deep(.fc-theme-standard td),
-:deep(.fc-theme-standard th){ border:1px solid #e9e0da; }
-
-:deep(.fc-timegrid .fc-timegrid-col){ border-left:1px solid #e9e0da !important; }
-:deep(.fc-timegrid .fc-timegrid-axis){ border-right:1px solid #e9e0da !important; }
-:deep(.fc-timegrid .fc-timegrid-slot){ border-bottom:1px solid #e9e0da !important; }
-
-/* 3) 테이블 경계의 서브픽셀 갭 제거(브라우저별 1px 틈 방지) */
-:deep(.fc-timegrid .fc-timegrid-slots table){
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-}
-
-/* 4) 드물게 오버레이가 라인을 덮는 경우 대비(하이라이트/배경 이벤트 투명도 낮춤) */
-:deep(.fc .fc-bg-event){ opacity: .9; }       /* 필요 시 조정 */
-:deep(.fc .fc-highlight){ opacity: .3; }      /* 드래그/선택 하이라이트 */
-
-/* 5) 아주 고집센 환경에서의 마지막 수단: outline(보더 덮임 방지) */
-/* 필요 시 주석 해제해서 사용
-:deep(.fc-timegrid .fc-timegrid-col){ outline:1px solid #e9e0da; outline-offset:-1px; }
-*/
-
 </style>
