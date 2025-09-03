@@ -19,8 +19,8 @@ public class CalendarSecurityConfig {
         .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll() // 개발 중 임시 오픈
-        );
+        	    .anyRequest().authenticated() // ✅ 로그인 필요
+        	);
     return http.build();
   }
 
