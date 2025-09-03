@@ -90,11 +90,10 @@ import { ref, reactive, onMounted, onBeforeUnmount, watch } from 'vue'
 import axios from 'axios'
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'          // ✅ 추가
+import timeGridPlugin from '@fullcalendar/timegrid'          // ✅ Day/Week 시간격자
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
-import "bootstrap/dist/css/bootstrap.min.css";
 
 /* API */
 const PUB_URL = '/api/public/calendars'
@@ -451,46 +450,60 @@ function openModal(mode, ev){
 function closeModal(){ isModalOpen.value=false; pendingSelect.value = null }
 
 /* 캘린더 초기화 */
-onMounted(()=>{
+onMounted(() => {
   calendar = new Calendar(calendarEl.value, {
-    themeSystem:'bootstrap5',
-    locale:'ko',
-    timeZone:'Asia/Seoul',
-    plugins:[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin], // ✅ timeGrid 추가
-    initialView:'dayGridMonth',
-    headerToolbar:{
-      left:'prev today next',
-      center:'',
-      right:'dayGridMonth,timeGridWeek,timeGridDay,listMonth,addEventButton' // ✅ week/day 버튼
+    themeSystem: 'bootstrap5',
+    locale: 'ko',
+    timeZone: 'Asia/Seoul',
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin], // ✅ Day/Week 플러그인 포함
+    initialView: 'dayGridMonth',
+
+    // ===== Month 뷰 줄수 자동(빈줄 제거) & 비현재월 숨김 / 높이 =====
+    fixedWeekCount: false,        // ✅ 6줄 강제 해제
+    showNonCurrentDates: false,   // ◇ 이전/다음달 날짜칸 숨김
+    expandRows: true,
+    height: 'auto',
+
+    headerToolbar: {
+      left: 'prev today next',
+      center: '',
+      right: 'dayGridMonth,dayGridWeek,timeGridDay,listMonth,addEventButton' // ✅ Day 버튼을 timeGridDay로
     },
-    customButtons:{ addEventButton:{ text:'일정 등록', click:()=>openModal('create') } },
+    customButtons: {
+      addEventButton: { text: '일정 등록', click: () => openModal('create') }
+    },
 
     // 월 그리드 날짜 숫자만
-    dayCellContent:(arg)=>({ html: arg.dayNumberText.replace('일','') }),
+    dayCellContent: (arg) => ({ html: arg.dayNumberText.replace('일', '') }),
 
-    // 주/일 헤더 'M월 D일 (요일)'
-    views:{
-      dayGridWeek:{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },
-      dayGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },
-      timeGridWeek:{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }, // ✅
-      timeGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }, // ✅
+    // 주/일 헤더 포맷
+    views: {
+      dayGridWeek:  { dayHeaderContent: (arg) => ({ html: koDayHeader(arg.date) }) },
+      dayGridDay:   { dayHeaderContent: (arg) => ({ html: koDayHeader(arg.date) }) },
+      timeGridWeek: { dayHeaderContent: (arg) => ({ html: koDayHeader(arg.date) }) }, // ✅
+      timeGridDay:  { dayHeaderContent: (arg) => ({ html: koDayHeader(arg.date) }) }  // ✅
     },
 
-    // ✅ 월별 줄(week rows) 가변 & 레이아웃
-    fixedWeekCount:false,
-    showNonCurrentDates:false,
-    expandRows:true,
-    height:'auto',
+    // ✅ Day/Week 시간 슬롯 표기
+    slotMinTime: '07:00:00',
+    slotMaxTime: '22:00:00',
+    eventTimeFormat: { hour: '2-digit', minute: '2-digit', meridiem: false },
 
-    // ✅ day/week 시간 슬롯 가독성
-    slotMinTime:'07:00:00',
-    slotMaxTime:'22:00:00',
-    eventTimeFormat:{ hour:'2-digit', minute:'2-digit', meridiem:false },
+    selectable: true,
+    selectMirror: true,
+    unselectAuto: true,
+    selectLongPressDelay: 200,
 
-    selectable:true, selectMirror:true, unselectAuto:true, selectLongPressDelay:200,
+    // ===== 클릭: 셀 전체 하이라이트 + 기존 로직 유지 =====
+    dateClick: (info) => {
+      // 기존 선택 제거
+      calendarEl.value
+        .querySelectorAll('.fc .fc-daygrid-day.is-picked')
+        .forEach(el => el.classList.remove('is-picked'))
+      // 방금 클릭한 셀 표시
+      info.dayEl.classList.add('is-picked')
 
-    // 날짜 클릭 → 상세영역 규칙 + 등록 모달
-    dateClick:(info)=>{
+      // ⬇️ 기존 동작
       pendingSelect.value = null
       const d = new Date(info.date)
       selectedDate.value = d
@@ -503,19 +516,32 @@ onMounted(()=>{
       form.end   = toLocalDateInput2359(info.date)
     },
 
-    // 드래그 선택(기간 포함 정확 처리)
-    select:(arg)=>{
+    // ===== 드래그 선택: 시작 셀 하이라이트 + 기존 로직 유지 =====
+    select: (arg) => {
+      // 기존 선택 제거
+      calendarEl.value
+        .querySelectorAll('.fc .fc-daygrid-day.is-picked')
+        .forEach(el => el.classList.remove('is-picked'))
+      // 드래그 시작 셀 표시
+      const startCell = calendarEl.value.querySelector(`[data-date="${arg.startStr}"]`)
+      if (startCell) startCell.classList.add('is-picked')
+
+      // ⬇️ 기존 동작
       const d = new Date(arg.start)
       selectedDate.value = d
       if (hasEventsOn(d)) { showAgenda.value = true; renderAgenda() }
       else { showAgenda.value = false; agendaHtml.value = '' }
 
       openModal('create')
-      pendingSelect.value = { start:new Date(arg.start), end:new Date(arg.end||arg.start), allDay:arg.allDay===true }
+      pendingSelect.value = {
+        start: new Date(arg.start),
+        end: new Date(arg.end || arg.start),
+        allDay: arg.allDay === true
+      }
 
       form.allDay = arg.allDay === true
       if (form.allDay) {
-        const DAY = 24*60*60*1000
+        const DAY = 24 * 60 * 60 * 1000
         const start0 = new Date(arg.start.getFullYear(), arg.start.getMonth(), arg.start.getDate())
         const rawEnd = arg.end ? new Date(arg.end) : new Date(arg.start)
         const dayCount = Math.max(1, Math.round((rawEnd - start0) / DAY))
@@ -530,17 +556,24 @@ onMounted(()=>{
       calendar.unselect()
     },
 
-    eventClick:(arg)=>openModal('edit', arg.event),
+    eventClick: (arg) => openModal('edit', arg.event),
 
-    datesSet: async ()=>{
+    datesSet: async () => {
+      // 뷰 이동 시 하이라이트 초기화
+      calendarEl.value
+        .querySelectorAll('.fc .fc-daygrid-day.is-picked')
+        .forEach(el => el.classList.remove('is-picked'))
+
       pageDate.value = calendar.getDate()
       await refetchFromServer()
     }
   })
+
   calendar.render()
   pageDate.value = calendar.getDate()
-  setTimeout(()=>calendar.updateSize(),0)
+  setTimeout(() => calendar.updateSize(), 0)
 })
+
 onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 </script>
 

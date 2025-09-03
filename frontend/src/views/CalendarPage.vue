@@ -22,10 +22,10 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'   // ✅ Day/Week 시간격자
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
-
 
 const PUB_URL = '/api/public/calendars'
 
@@ -42,33 +42,13 @@ const showAgenda   = ref(false)
 const pad=(n)=>String(n).padStart(2,'0')
 const isoLocal=(d)=>{const x=new Date(d);return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}:${pad(x.getSeconds())}`}
 const escapeHtml=(s)=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))
-const fmtYmd=(d)=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
 const hhmm=(d)=>`${pad(d.getHours())}:${pad(d.getMinutes())}`
 const timeRange=(s,e)=>(!e||e.getTime()===s.getTime())?hhmm(s):`${hhmm(s)} ~ ${hhmm(e)}`
 const startOfDay=(d)=>new Date(d.getFullYear(), d.getMonth(), d.getDate())
 const addDays=(d,n)=>new Date(d.getFullYear(), d.getMonth(), d.getDate()+n)
 function unpackInfo(info){ try{return info?JSON.parse(info):{}}catch{return{}} }
-const dateLabelKR = (d) => `${d.getMonth()+1}월 ${d.getDate()}일`
-const dayOnlyKR   = (d) => `${d.getDate()}일`
-function rangeLabelKR(start, endExclusive, allDay){
-  if(!allDay) return null
-  if(!endExclusive) return '종일'
-  const endInc = new Date(endExclusive.getTime() - 1)
-  const sameDay = start.toDateString() === endInc.toDateString()
-  if(sameDay) return '종일'
-  const sameMonth = (start.getFullYear()===endInc.getFullYear()) && (start.getMonth()===endInc.getMonth())
-  return sameMonth
-    ? `${dayOnlyKR(start)}부터 ${dayOnlyKR(endInc)}까지`
-    : `${dateLabelKR(start)}부터 ${dateLabelKR(endInc)}까지`
-}
+const koDayHeader = (date) => `${date.getMonth() + 1}월 ${date.getDate()}일 (${ '일월화수목금토'[date.getDay()] })`
 
-/* day/week 헤더 포맷터 */
-const koDayHeader = (date) => {
-  const yo = '일월화수목금토'[date.getDay()]
-  return `${date.getMonth() + 1}월 ${date.getDate()}일 (${yo})`
-}
-
-/* 해당 날짜에 이벤트가 있는지 */
 function hasEventsOn(date){
   if(!calendar) return false
   const s0 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0,0,0,0)
@@ -104,7 +84,6 @@ async function refetchFromServer(){
     calendar.removeAllEvents()
     events.forEach(e=>calendar.addEvent(e))
 
-    // 규칙 유지: 선택일에 이벤트가 있으면 보이기
     if (selectedDate.value && hasEventsOn(selectedDate.value)) {
       showAgenda.value = true
       renderAgenda()
@@ -112,8 +91,7 @@ async function refetchFromServer(){
       showAgenda.value = false
       agendaHtml.value = ''
     }
-  }catch(e){
-    console.error(e)
+  }catch{
     calendar.removeAllEvents()
     agendaHtml.value = `<div class="agenda__empty">일정 로드 실패</div>`
   }
@@ -121,10 +99,7 @@ async function refetchFromServer(){
 
 /* Agenda: 선택된 하루만 */
 function renderAgenda(){
-  const container = document.getElementById('agenda-body')
-  if(!container) return
   if(!selectedDate.value){ agendaHtml.value=''; return }
-
   const d = selectedDate.value
   const s0 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0,0,0,0)
   const e0 = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59,999)
@@ -136,7 +111,7 @@ function renderAgenda(){
 
   const html = items.map(ev=>{
     const color = ev.extendedProps?.color || ev.backgroundColor || '#7c3aed'
-    const time = ev.allDay ? rangeLabelKR(ev.start, ev.end, true) : timeRange(ev.start, ev.end || ev.start)
+    const time = ev.allDay ? '종일' : timeRange(ev.start, ev.end || ev.start)
     const title = escapeHtml(ev.title || '(제목 없음)')
     return `<li class="agenda__item" style="--dot-color:${color}">
               <span class="agenda__time">${time}</span>
@@ -144,19 +119,33 @@ function renderAgenda(){
             </li>`
   }).join('')
 
-  agendaHtml.value =
-    `<section class="agenda__section">
-       <h4 class="agenda__date">${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일</h4>
-       <ul class="agenda__list">${html}</ul>
-     </section>`
+  agendaHtml.value = `<ul class="agenda__list">${html}</ul>`
 }
 
 onMounted(async()=>{
   calendar = new Calendar(calendarEl.value, {
-    themeSystem:'bootstrap5', locale:'ko', timeZone:'Asia/Seoul',
-    plugins:[dayGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin],
+    themeSystem:'bootstrap5',
+    locale:'ko',
+    timeZone:'Asia/Seoul',
+    plugins:[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin], // ✅
     initialView:'dayGridMonth',
-    headerToolbar:{ left:'prev today next', center:'', right:'dayGridMonth,dayGridWeek,dayGridDay,listMonth' },
+    fixedWeekCount: false,
+    headerToolbar:{
+      left:'prev today next',
+      center:'',
+      right:'dayGridMonth,dayGridWeek,timeGridDay,listMonth' // ✅ Day 버튼 timeGridDay
+    },
+
+    // ✅ 월별 줄수 자동 가변(디자인 영향 없음)
+    fixedWeekCount:false,
+    showNonCurrentDates:false,
+    expandRows:true,
+    height:'auto',
+
+    // ✅ Day/Week 시간 슬롯(표시만)
+    slotMinTime:'07:00:00',
+    slotMaxTime:'22:00:00',
+    eventTimeFormat:{ hour:'2-digit', minute:'2-digit', meridiem:false },
 
     // 월 그리드 날짜 숫자만
     dayCellContent:(arg)=>({ html: arg.dayNumberText.replace('일','') }),
@@ -164,7 +153,9 @@ onMounted(async()=>{
     // day/week 헤더 'M월 D일 (요일)'
     views:{
       dayGridWeek:{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },
-      dayGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }
+      dayGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },
+      timeGridWeek:{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }, // ✅
+      timeGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },  // ✅
     },
 
     // 날짜 클릭/드래그 시: 이벤트가 있는 날에만 상세일정 표시
