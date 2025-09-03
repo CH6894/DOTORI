@@ -26,6 +26,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 
+
 const PUB_URL = '/api/public/calendars'
 
 const calendarEl = ref(null)

@@ -26,7 +26,7 @@
       <div v-else class="summary__empty">현재 화면 범위에 일정이 없습니다.</div>
     </section>
 
-    <!-- 상세일정: 이벤트 있는 날짜를 클릭했을 때만 보임 -->
+    <!-- 상세일정 -->
     <section class="agenda" v-show="showAgenda">
       <h3 class="agenda__title">
         상세일정
@@ -90,9 +90,11 @@ import { ref, reactive, onMounted, onBeforeUnmount, watch } from 'vue'
 import axios from 'axios'
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'          // ✅ 추가
 import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
+import "bootstrap/dist/css/bootstrap.min.css";
 
 /* API */
 const PUB_URL = '/api/public/calendars'
@@ -166,11 +168,10 @@ const summary = ref([])
 const ADMIN_USER_ID = 1
 const form = reactive({ id:'', title:'', start:'', end:'', allDay:false, color:'#7c3aed' })
 
-/* 상세일정 상태: 처음엔 숨김 */
+/* 상세일정 상태 */
 const showAgenda = ref(false)
 const selectedDate = ref(null)
 const agendaHtml   = ref('')
-// 사용자가 드래그로 선택한 원본 구간(FullCalendar select의 end는 exclusive)
 const pendingSelect = ref(null)
 
 /* 종일 토글 스냅 */
@@ -243,7 +244,6 @@ function patchCalendarEventLocal(id, { title, color, allDay, start, endExclusive
 }
 
 /* 저장 */
-/* 저장 */
 async function onSave(){
   try{
     if(!form.title){ alert('제목을 입력하세요.'); return }
@@ -251,7 +251,6 @@ async function onSave(){
     let startDate, endInclusive
 
     if (form.allDay) {
-      // ✅ 드래그 선택이 있었다면 그것을 기준으로 (셀 개수 기반으로 마지막날 확정)
       if (pendingSelect.value?.allDay) {
         const DAY   = 24*60*60*1000
         const sSel0 = new Date(
@@ -264,13 +263,11 @@ async function onSave(){
         startDate      = sSel0
         endInclusive   = endOfDayInclusive(new Date(sSel0.getFullYear(), sSel0.getMonth(), sSel0.getDate() + (dayCount - 1)))
       } else {
-        // 폼 수동 입력 케이스(안전망): 마지막날 23:59:59.999
         const { start00, end2359 } = normalizeAllDayRange(form.start, form.end || form.start)
         startDate    = start00
         endInclusive = end2359
       }
     } else {
-      // 시간형 이벤트
       const s = fromLocalInputValue(form.start)
       const e = form.end ? fromLocalInputValue(form.end) : s
       startDate    = s
@@ -302,7 +299,6 @@ async function onSave(){
     }
 
     await refetchFromServer()
-    // 저장 후 드래그 정보 초기화
     pendingSelect.value = null
     closeModal()
     alert('저장 완료.')
@@ -407,7 +403,6 @@ async function refetchFromServer(){
   events.forEach(e=>calendar.addEvent(e))
   refreshSummary()
 
-  // 선택된 날짜가 있고 그 날에 이벤트가 있을 때만 상세일정 표시
   if (selectedDate.value && hasEventsOn(selectedDate.value)) {
     showAgenda.value = true
     renderAgenda()
@@ -458,70 +453,68 @@ function closeModal(){ isModalOpen.value=false; pendingSelect.value = null }
 /* 캘린더 초기화 */
 onMounted(()=>{
   calendar = new Calendar(calendarEl.value, {
-    themeSystem:'bootstrap5', locale:'ko', timeZone:'Asia/Seoul',
-    plugins:[dayGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin],
+    themeSystem:'bootstrap5',
+    locale:'ko',
+    timeZone:'Asia/Seoul',
+    plugins:[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin, bootstrap5Plugin], // ✅ timeGrid 추가
     initialView:'dayGridMonth',
-    headerToolbar:{ left:'prev today next', center:'', right:'dayGridMonth,dayGridWeek,dayGridDay,listMonth addEventButton' },
+    headerToolbar:{
+      left:'prev today next',
+      center:'',
+      right:'dayGridMonth,timeGridWeek,timeGridDay,listMonth,addEventButton' // ✅ week/day 버튼
+    },
     customButtons:{ addEventButton:{ text:'일정 등록', click:()=>openModal('create') } },
 
     // 월 그리드 날짜 숫자만
     dayCellContent:(arg)=>({ html: arg.dayNumberText.replace('일','') }),
 
-    // day/week 헤더 'M월 D일 (요일)'
+    // 주/일 헤더 'M월 D일 (요일)'
     views:{
       dayGridWeek:{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },
-      dayGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }
+      dayGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) },
+      timeGridWeek:{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }, // ✅
+      timeGridDay :{ dayHeaderContent:(arg)=>({ html: koDayHeader(arg.date) }) }, // ✅
     },
+
+    // ✅ 월별 줄(week rows) 가변 & 레이아웃
+    fixedWeekCount:false,
+    showNonCurrentDates:false,
+    expandRows:true,
+    height:'auto',
+
+    // ✅ day/week 시간 슬롯 가독성
+    slotMinTime:'07:00:00',
+    slotMaxTime:'22:00:00',
+    eventTimeFormat:{ hour:'2-digit', minute:'2-digit', meridiem:false },
 
     selectable:true, selectMirror:true, unselectAuto:true, selectLongPressDelay:200,
 
-    // 날짜 클릭 → 이벤트 있는 날이면 상세일정 표시
+    // 날짜 클릭 → 상세영역 규칙 + 등록 모달
     dateClick:(info)=>{
-      // 단일 클릭 시 기존 드래그 선택 정보 초기화
-      pendingSelect.value = null;
+      pendingSelect.value = null
       const d = new Date(info.date)
       selectedDate.value = d
+      if (hasEventsOn(d)) { showAgenda.value = true; renderAgenda() }
+      else { showAgenda.value = false; agendaHtml.value = '' }
 
-      if (hasEventsOn(d)) {
-        showAgenda.value = true
-        renderAgenda()
-      } else {
-        showAgenda.value = false
-        agendaHtml.value = ''
-      }
-
-      // 등록 모달 (원하면 제거 가능)
       openModal('create')
       form.allDay = true
       form.start = toLocalDateInput00(info.date)
       form.end   = toLocalDateInput2359(info.date)
     },
 
-    // 드래그 선택 → 시작일 기준으로 판정
+    // 드래그 선택(기간 포함 정확 처리)
     select:(arg)=>{
       const d = new Date(arg.start)
       selectedDate.value = d
-
-      if (hasEventsOn(d)) {
-        showAgenda.value = true
-        renderAgenda()
-      } else {
-        showAgenda.value = false
-        agendaHtml.value = ''
-      }
+      if (hasEventsOn(d)) { showAgenda.value = true; renderAgenda() }
+      else { showAgenda.value = false; agendaHtml.value = '' }
 
       openModal('create')
-
-      // ✅ 원본 선택 구간 저장 (FullCalendar select의 end는 보통 exclusive)
-      pendingSelect.value = {
-        start: new Date(arg.start),
-        end: new Date(arg.end || arg.start),
-        allDay: arg.allDay === true
-      }
+      pendingSelect.value = { start:new Date(arg.start), end:new Date(arg.end||arg.start), allDay:arg.allDay===true }
 
       form.allDay = arg.allDay === true
       if (form.allDay) {
-        // ✅ 마지막 칸까지 확실히 포함: 셀 개수 기반(lastDay = start0 + (dayCount-1)일)
         const DAY = 24*60*60*1000
         const start0 = new Date(arg.start.getFullYear(), arg.start.getMonth(), arg.start.getDate())
         const rawEnd = arg.end ? new Date(arg.end) : new Date(arg.start)
