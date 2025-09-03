@@ -1,16 +1,16 @@
 // src/data/chimCollection.js
-import Chim1 from '@/assets/chim/Chim1.png'
-import Chim2 from '@/assets/chim/Chim2.png'
-import Chim3 from '@/assets/chim/Chim3.png'
-import Chim4 from '@/assets/chim/Chim4.png'
-import Chim5 from '@/assets/chim/Chim5.png'
-import Chim6 from '@/assets/chim/Chim6.png'
-import Chim7 from '@/assets/chim/Chim7.png'
-import Chim8 from '@/assets/chim/Chim8.png'
-import Chim9 from '@/assets/chim/Chim9.png'
-import Chim10 from '@/assets/chim/Chim10.png'
-import Chim11 from '@/assets/chim/Chim11.png'
-import Chim12 from '@/assets/chim/Chim12.png' 
+import Chim1 from '@/assets/Chim/Chim1.png'
+import Chim2 from '@/assets/Chim/Chim2.png'
+import Chim3 from '@/assets/Chim/Chim3.png'
+import Chim4 from '@/assets/Chim/Chim4.png'
+import Chim5 from '@/assets/Chim/Chim5.png'
+import Chim6 from '@/assets/Chim/Chim6.png'
+import Chim7 from '@/assets/Chim/Chim7.png'
+import Chim8 from '@/assets/Chim/Chim8.png'
+import Chim9 from '@/assets/Chim/Chim9.png'
+import Chim10 from '@/assets/Chim/Chim10.png'
+import Chim11 from '@/assets/Chim/Chim11.png'
+import Chim12 from '@/assets/Chim/Chim12.png' 
 
 export default [
         { id: 'CHIM-001', name: '스트레스 볼', desc: '옐로우 레몬맨/폭력 레몬맨', image: Chim1, verified: true },
