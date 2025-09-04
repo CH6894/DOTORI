@@ -1,19 +1,7 @@
 // src/lib/http.ts
 import axios from 'axios'
-import { useAuthStore } from '@/stores/auth'
 
-export const http = axios.create({
-  baseURL: 'http://localhost:8081'
-})
-
-// 요청 인터셉터: 인증 토큰 자동 추가
-http.interceptors.request.use((config) => {
-  const auth = useAuthStore()
-  if (auth.token) {
-    config.headers.Authorization = `Bearer ${auth.token}`
-  }
-  return config
-})
+export const http = axios.create()
 
 /**
  * 개발 모드에서는 /api/dex/* 를 전부 목킹해서
