@@ -172,13 +172,14 @@ public class ItemService {
 	// ItemDetails의 모든 이미지 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
 	public List<String> getAllImagesByItemDetailsId(Long itemDetailsId) {
 		System.out.println("ItemService - 모든 이미지 조회 시작: itemDetailsId=" + itemDetailsId);
-		
+
 		List<String> imageUrls = new ArrayList<>();
-		
+
 		// 1. 관리자 이미지 먼저 조회 (img_type = 2)
-		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 2);
+		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+				(byte) 2);
 		System.out.println("관리자 이미지 개수: " + adminImages.size());
-		
+
 		for (ItemImg img : adminImages) {
 			String imageUrl = img.getImgUrl();
 			if (imageUrl.startsWith("http")) {
@@ -188,11 +189,12 @@ public class ItemService {
 			}
 			System.out.println("관리자 이미지 URL 추가: " + imageUrl);
 		}
-		
+
 		// 2. 판매자 이미지 조회 (img_type = 0)
-		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 0);
+		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+				(byte) 0);
 		System.out.println("판매자 이미지 개수: " + sellerImages.size());
-		
+
 		for (ItemImg img : sellerImages) {
 			String imageUrl = img.getImgUrl();
 			if (imageUrl.startsWith("http")) {
@@ -202,8 +204,9 @@ public class ItemService {
 			}
 			System.out.println("판매자 이미지 URL 추가: " + imageUrl);
 		}
-		
-		System.out.println("최종 이미지 URL 개수: " + imageUrls.size() + " (관리자: " + adminImages.size() + ", 판매자: " + sellerImages.size() + ")");
+
+		System.out.println("최종 이미지 URL 개수: " + imageUrls.size() + " (관리자: " + adminImages.size() + ", 판매자: "
+				+ sellerImages.size() + ")");
 		return imageUrls;
 	}
 
@@ -221,13 +224,14 @@ public class ItemService {
 	// ItemDetails의 모든 이미지 정보 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
 	public List<ImageInfo> getAllImageInfosByItemDetailsId(Long itemDetailsId) {
 		System.out.println("ItemService - 모든 이미지 정보 조회 시작: itemDetailsId=" + itemDetailsId);
-		
+
 		List<ImageInfo> imageInfos = new ArrayList<>();
-		
+
 		// 1. 관리자 이미지 먼저 조회 (img_type = 2)
-		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 2);
+		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+				(byte) 2);
 		System.out.println("관리자 이미지 개수: " + adminImages.size());
-		
+
 		for (ItemImg img : adminImages) {
 			String imageUrl = img.getImgUrl();
 			if (!imageUrl.startsWith("http")) {
@@ -236,11 +240,12 @@ public class ItemService {
 			imageInfos.add(new ImageInfo(imageUrl, "admin", "관리자"));
 			System.out.println("관리자 이미지 정보 추가: " + imageUrl);
 		}
-		
+
 		// 2. 판매자 이미지 조회 (img_type = 0)
-		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 0);
+		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+				(byte) 0);
 		System.out.println("판매자 이미지 개수: " + sellerImages.size());
-		
+
 		for (ItemImg img : sellerImages) {
 			String imageUrl = img.getImgUrl();
 			if (!imageUrl.startsWith("http")) {
@@ -249,18 +254,20 @@ public class ItemService {
 			imageInfos.add(new ImageInfo(imageUrl, "seller", "판매자"));
 			System.out.println("판매자 이미지 정보 추가: " + imageUrl);
 		}
-		
-		System.out.println("최종 이미지 정보 개수: " + imageInfos.size() + " (관리자: " + adminImages.size() + ", 판매자: " + sellerImages.size() + ")");
+
+		System.out.println("최종 이미지 정보 개수: " + imageInfos.size() + " (관리자: " + adminImages.size() + ", 판매자: "
+				+ sellerImages.size() + ")");
 		return imageInfos;
 	}
 
 	// 관리자 이미지만 조회
 	public List<String> getAdminImagesByItemDetailsId(Long itemDetailsId) {
 		System.out.println("ItemService - 관리자 이미지 조회 시작: itemDetailsId=" + itemDetailsId);
-		
-		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 2);
+
+		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+				(byte) 2);
 		System.out.println("조회된 관리자 이미지 개수: " + adminImages.size());
-		
+
 		List<String> imageUrls = new ArrayList<>();
 		for (ItemImg img : adminImages) {
 			String imageUrl = img.getImgUrl();
@@ -272,7 +279,7 @@ public class ItemService {
 			}
 			System.out.println("관리자 이미지 URL 추가: " + imageUrl);
 		}
-		
+
 		System.out.println("최종 관리자 이미지 URL 개수: " + imageUrls.size());
 		return imageUrls;
 	}
@@ -280,10 +287,11 @@ public class ItemService {
 	// 판매자 이미지만 조회
 	public List<String> getSellerImagesByItemDetailsId(Long itemDetailsId) {
 		System.out.println("ItemService - 판매자 이미지 조회 시작: itemDetailsId=" + itemDetailsId);
-		
-		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 0);
+
+		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+				(byte) 0);
 		System.out.println("조회된 판매자 이미지 개수: " + sellerImages.size());
-		
+
 		List<String> imageUrls = new ArrayList<>();
 		for (ItemImg img : sellerImages) {
 			String imageUrl = img.getImgUrl();
@@ -295,7 +303,7 @@ public class ItemService {
 			}
 			System.out.println("판매자 이미지 URL 추가: " + imageUrl);
 		}
-		
+
 		System.out.println("최종 판매자 이미지 URL 개수: " + imageUrls.size());
 		return imageUrls;
 	}
@@ -348,13 +356,13 @@ public class ItemService {
 	public ItemDetailsWithAdminInfo getItemDetailsWithAdminInfo(Long itemDetailsId) {
 		ItemDetails itemDetails = itemDetailsRepository.findById(itemDetailsId)
 				.orElseThrow(() -> new RuntimeException("ItemDetails not found with id: " + itemDetailsId));
-		
+
 		// Admin 정보 조회 (itemDetailsId로 검색)
 		Admin admin = adminRepository.findByItemDetails_ItemId(itemDetailsId).orElse(null);
-		
+
 		return new ItemDetailsWithAdminInfo(
-			itemDetails.getProductCondition(), // 관리자 메모 (상태 상세용)
-			itemDetails.getItemExplanation() // 판매자 메모 (상품 설명용)
+				itemDetails.getProductCondition(), // 관리자 메모 (상태 상세용)
+				itemDetails.getItemExplanation() // 판매자 메모 (상품 설명용)
 		);
 	}
 

@@ -1,7 +1,7 @@
-import { http } from '@/lib/http'
+import api from '@/api/axios'
 
 export const WishAPI = {
-  add: (itemId: number) => http.post('/api/wish', { itemId }),
-  remove: (itemId: number) => http.delete('/api/wish', { data: { itemId } }),
-  list: () => http.get('/api/wish')
+  add: (itemId: number) => api.post('/wish', { itemId }),
+  remove: (itemId: number) => api.delete('/wish', { data: { itemId } }),
+  list: () => api.get('/wish')
 }

@@ -10,22 +10,22 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "Notification")
+@Table(name = "notification")
 public class Notification {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "Notification_ID")
+	@Column(name = "notification_id")
 	@EqualsAndHashCode.Include
 	private Long id;
 
-	@Column(name = "Notification_Title", nullable = false, length = 255)
+	@Column(name = "notification_title", nullable = false, length = 255)
 	private String title;
 
 	@Lob
-	@Column(name = "Notification_Content", nullable = false)
+	@Column(name = "notification_content", nullable = false)
 	private String content;
 
-	@Column(name = "Notification_Type", nullable = false)
+	@Column(name = "notification_type", nullable = false)
 	private Byte type; // 0/1
 }

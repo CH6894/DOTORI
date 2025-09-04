@@ -12,42 +12,42 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Users")
-@Table(name = "Users")
+@Table(name = "users")
 public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "User_ID", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long id;
 
-    @Column(name = "User_Name", length = 50)
+    @Column(name = "user_name", length = 50)
     private String userName;
 
-    @Column(name = "Nick_Name", length = 100, unique = true)
+    @Column(name = "nick_name", length = 100, unique = true)
     private String nickName; // 단일 유니크
 
-    @Column(name = "Email", length = 255, unique = true, nullable = false)
+    @Column(name = "email", length = 255, unique = true, nullable = false)
     private String email; // 단일 유니크
 
-    @Column(name = "Phone", length = 100, unique = true, nullable = false)
+    @Column(name = "phone", length = 100, unique = true, nullable = false)
     private String phone; // 단일 유니크
 
-    @Column(name = "Gender", nullable = false)
+    @Column(name = "gender", nullable = false)
     private Byte gender;
 
-    @Column(name = "Birth_Year", nullable = false)
+    @Column(name = "birth_year", nullable = false)
     private LocalDate birthYear;
 
-    @Column(name = "Birth_Date", nullable = false)
+    @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "Sign_in_Date", nullable = false)
+    @Column(name = "sign_in_date", nullable = false)
     private LocalDateTime signInDate;
 
-    @Column(name = "User_Type", nullable = false)
+    @Column(name = "user_type", nullable = false)
     private Integer userType;
 
-    @Column(name = "User_Img")
+    @Column(name = "user_img")
     private String userImg;
 
     // ===== 양방향 컬렉션 =====

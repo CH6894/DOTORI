@@ -134,7 +134,7 @@
               </div>
 
               <div class="wish-info">
-                <p class="wish-title">{{ w.title }}</p>
+                <p class="wish-title">{{ w.name }}</p>
                 <p class="wish-price">{{ (w.price || 0).toLocaleString() }}원</p>
 
               </div>
