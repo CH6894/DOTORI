@@ -38,4 +38,8 @@ public class Admin {
 	@Column(name = "Rejection_Reason") // 반려 사유 코드(1~5)
 	private Integer rejectionReason;
 
+	@Lob
+	@Column(name = "Admin_Note") // 관리자 메모
+	private String adminNote;
+
 }

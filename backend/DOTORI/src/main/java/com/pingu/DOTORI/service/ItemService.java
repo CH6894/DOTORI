@@ -21,8 +21,6 @@ import com.pingu.DOTORI.entity.ItemDetails;
 import com.pingu.DOTORI.repository.ItemDetailsRepository;
 import com.pingu.DOTORI.entity.ItemImg;
 import com.pingu.DOTORI.repository.ItemImgRepository;
-import com.pingu.DOTORI.entity.Admin;
-import com.pingu.DOTORI.repository.AdminRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +28,6 @@ public class ItemService {
 	private final ItemRepository itemRepository;
 	private final ItemDetailsRepository itemDetailsRepository;
 	private final ItemImgRepository itemImgRepository;
-	private final AdminRepository adminRepository;
 
 	public Page<ItemDTO> findAll(Pageable pageable) {
 		return itemRepository.findAll(pageable).map(this::toDto);
@@ -342,30 +339,6 @@ public class ItemService {
 				.itemName(detail.getItem() != null ? detail.getItem().getName() : null)
 				.itemImgUrl(detail.getItem() != null ? detail.getItem().getImgUrl() : null)
 				.build();
-	}
-
-	// ItemDetails와 Admin 정보를 모두 가져오는 메서드
-	public ItemDetailsWithAdminInfo getItemDetailsWithAdminInfo(Long itemDetailsId) {
-		ItemDetails itemDetails = itemDetailsRepository.findById(itemDetailsId)
-				.orElseThrow(() -> new RuntimeException("ItemDetails not found with id: " + itemDetailsId));
-		
-		// Admin 정보 조회 (itemDetailsId로 검색)
-		Admin admin = adminRepository.findByItemDetails_ItemId(itemDetailsId).orElse(null);
-		
-		return new ItemDetailsWithAdminInfo(
-			itemDetails.getProductCondition(), // 관리자 메모 (상태 상세용)
-			itemDetails.getItemExplanation() // 판매자 메모 (상품 설명용)
-		);
-	}
-
-	// ItemDetails와 Admin 정보를 담는 DTO 클래스
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class ItemDetailsWithAdminInfo {
-		private String productCondition; // 관리자 메모 (상태 상세용)
-		private String adminExplanation; // 판매자 메모 (상품 설명용)
 	}
 
 }

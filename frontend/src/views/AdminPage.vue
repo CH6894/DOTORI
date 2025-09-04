@@ -391,8 +391,8 @@ async function openReview(ins: Inspection) {
       }
       
       // 관리자 메모 설정
-      if (decisionInfo.itemDetails && decisionInfo.itemDetails.productCondition) {
-        approveNote.value = decisionInfo.itemDetails.productCondition
+      if (decisionInfo.adminNote) {
+        approveNote.value = decisionInfo.adminNote
       }
       
       // 승인/반려 상태 설정 (admissionState: 0=대기, 1=승인, 2=반려)
