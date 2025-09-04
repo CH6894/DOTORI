@@ -127,7 +127,7 @@
 /* eslint-disable no-undef, no-unused-vars */
 import { ref, computed, onMounted, watch } from 'vue'
 import { useWishlistStore } from '@/stores/wishlist'
-import { fetchAllImagesByItemDetailsId, fetchAdminImagesByItemDetailsId, fetchSellerImagesByItemDetailsId, fetchAllImageInfosByItemDetailsId } from '@/api/items'
+import { fetchAllImagesByItemDetailsId, fetchAdminImagesByItemDetailsId, fetchSellerImagesByItemDetailsId, fetchAllImageInfosByItemDetailsId, fetchItemDetailsWithAdminInfo } from '@/api/items'
 
 const wish = useWishlistStore()
 
@@ -142,6 +142,12 @@ const currentImageIndex = ref(0)
 const isWishlisted = computed(() => {
   const itemId = Number(props.item.id)
   return itemId ? wish.has(itemId) : false
+})
+
+// ItemDetails와 Admin 정보
+const itemDetailsInfo = ref({
+  productCondition: '', // 관리자 메모 (상태 상세용)
+  adminExplanation: '' // 판매자 메모 (상품 설명용)
 })
 const showToast = ref(false)
 const TOAST_MS = 1200
@@ -268,9 +274,15 @@ const getConditionText = (condition) => {
   return map[condition] || '미정'
 }
 
-const getConditionDetails = (details) => details || '상태 양호'
+const getConditionDetails = (details) => {
+  // itemDetailsInfo에서 관리자 메모(상태 상세)를 가져옴
+  return itemDetailsInfo.value.productCondition || details || '상태 양호'
+}
 
-const getItemExplanation = (explanation) => explanation || '판매자 코멘트가 없습니다.'
+const getItemExplanation = (explanation) => {
+  // itemDetailsInfo에서 판매자 메모(상품 설명)를 가져옴
+  return itemDetailsInfo.value.adminExplanation || explanation || '판매자 코멘트가 없습니다.'
+}
 
 const formatPrice = (price) =>
   new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 0 }).format(Number(price || 0))
@@ -306,6 +318,15 @@ const loadAllImages = async () => {
   try {
     isLoadingImages.value = true
     console.log('이미지 로딩 시작:', props.item.id)
+    
+    // ItemDetails와 Admin 정보 로드
+    try {
+      const detailsInfo = await fetchItemDetailsWithAdminInfo(props.item.id)
+      console.log('ItemDetails와 Admin 정보:', detailsInfo)
+      itemDetailsInfo.value = detailsInfo
+    } catch (error) {
+      console.error('ItemDetails와 Admin 정보 로드 실패:', error)
+    }
     
     // 새로운 API를 사용하여 이미지 정보를 로드 (관리자 이미지 우선, 판매자 이미지 후순위)
     try {

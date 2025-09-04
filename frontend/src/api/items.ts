@@ -58,3 +58,12 @@ export interface ImageInfo {
 // 모든 이미지 정보 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
 export const fetchAllImageInfosByItemDetailsId = (itemDetailsId: number) =>
     openApi.get<ImageInfo[]>(`/open/items/item-details/${itemDetailsId}/image-infos`).then(r => r.data)
+
+// ItemDetails와 Admin 정보를 모두 조회
+export interface ItemDetailsWithAdminInfo {
+    productCondition: string // 관리자 메모 (상태 상세용)
+    adminExplanation: string // 판매자 메모 (상품 설명용)
+}
+
+export const fetchItemDetailsWithAdminInfo = (itemDetailsId: number) =>
+    openApi.get<ItemDetailsWithAdminInfo>(`/open/items/item-details/${itemDetailsId}/details-with-admin`).then(r => r.data)

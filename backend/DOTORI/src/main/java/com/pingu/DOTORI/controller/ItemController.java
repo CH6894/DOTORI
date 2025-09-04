@@ -93,4 +93,10 @@ public class ItemController {
       return ResponseEntity.ok(imageInfos);
    }
 
+   @GetMapping("/item-details/{itemDetailsId}/details-with-admin")
+   public ResponseEntity<com.pingu.DOTORI.service.ItemService.ItemDetailsWithAdminInfo> getItemDetailsWithAdminInfo(@PathVariable Long itemDetailsId) {
+      com.pingu.DOTORI.service.ItemService.ItemDetailsWithAdminInfo info = itemService.getItemDetailsWithAdminInfo(itemDetailsId);
+      return ResponseEntity.ok(info);
+   }
+
 }

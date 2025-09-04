@@ -1,6 +1,7 @@
 package com.pingu.DOTORI.repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,5 +56,8 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
       @Param("from") LocalDateTime from,
       @Param("to") LocalDateTime to,
       Pageable pageable);
+
+  // ItemDetails의 itemId로 Admin 정보 조회
+  Optional<Admin> findByItemDetails_ItemId(Long itemId);
 
 }
