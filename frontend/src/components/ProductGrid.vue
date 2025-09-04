@@ -18,6 +18,20 @@ const formatPrice = (n: number) => {
   try { return n?.toLocaleString?.() ?? String(n) }
   catch { return String(n) }
 }
+
+// 이미지 로딩 에러 핸들링
+const handleImageError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  if (img.src !== '/img/placeholder.jpg') {
+    img.src = '/img/placeholder.jpg'
+  }
+}
+
+// 이미지 로딩 완료 핸들링
+const handleImageLoad = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  img.style.opacity = '1'
+}
 </script>
 
 <template>
@@ -27,11 +41,17 @@ const formatPrice = (n: number) => {
       <RouterLink v-for="p in props.items" :key="p.id" class="product-card"
         :to="{ name: 'product', params: { id: String(p.id) } }" aria-label="상품 상세로 이동">
         <div class="product-card__thumb">
-          <img :src="p.thumbJpg" :alt="p.name" loading="lazy" />
+          <img 
+            :src="p.thumbJpg || '/img/placeholder.jpg'" 
+            :alt="p.name" 
+            loading="lazy" 
+            @error="handleImageError"
+            @load="handleImageLoad"
+          />
         </div>
         <div class="product-card__meta">
           <div class="product-card__name">{{ p.name }}</div>
-          <div class="product-card__price">{{ p.price }}</div>
+          <div class="product-card__price">{{ formatPrice(p.price) }}원</div>
         </div>
       </RouterLink>
 
@@ -56,13 +76,14 @@ const formatPrice = (n: number) => {
   text-decoration: none;
   background: #ffffff;
   border: 0.0625rem solid #eee;                      /* 1px */
-  border-radius: 0.125rem;                           /* 2px */
+  border-radius: 0.75rem;                            /* 12px - 카테고리와 동일 */
   overflow: hidden;
-  transition: transform .12s ease, box-shadow .12s ease;
+  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,.08);    /* 카테고리와 동일한 그림자 */
 }
 .product-card:hover {
-  transform: translateY(-0.125rem);                  /* -2px */
-  box-shadow: 0 0.375rem 1.125rem rgba(0,0,0,.06);   /* 6px 18px */
+  transform: translateY(-0.1875rem);                 /* -3px - 카테고리와 동일 */
+  box-shadow: 0 0.625rem 1.625rem rgba(0,0,0,.10);  /* 카테고리와 동일한 호버 그림자 */
   text-decoration: none;
 }
 /* 하이퍼링크 visited 사양 유지 */
@@ -75,36 +96,47 @@ const formatPrice = (n: number) => {
   position: relative;
   background: #f6f6f6;
   overflow: hidden;
+  height: 12.5rem;                                   /* 200px - 고정 높이 설정 */
+  width: 100%;                                       /* 전체 너비 사용 */
 }
 .product-card__thumb img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .product-card__meta {
-  padding: 0.625rem 0.75rem 0.75rem;                 /* 10px 12px 12px */
+  padding: 0.75rem 1rem 1rem;                        /* 12px 16px 16px - 카테고리와 유사 */
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  gap: 0.25rem;                                      /* 4px */
+  gap: 0.375rem;                                     /* 6px */
+  background: #ffffff;
 }
 
 .product-card__name {
   font-size: 0.875rem;                               /* 14px */
-  line-height: 1.35;
-  white-space: nowrap;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;                             /* 2줄로 제한 */
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 700;
-  color: #333333;
+  font-weight: 600;
+  color: #2d251c;                                    /* 카테고리와 동일한 색상 */
+  width: 100%;
+  min-height: 2.8em;                                 /* 2줄 높이 보장 */
 }
 
 .product-card__price {
   font-weight: 700;
-  font-size: 0.875rem;                               /* 14px */
-  color: #333;
+  font-size: 0.9375rem;                              /* 15px - 약간 크게 */
+  color: #FC703C;                                    /* 요청된 색상 */
 }
 
 .empty {
@@ -179,23 +211,27 @@ const formatPrice = (n: number) => {
 /* ≤1280px → 4열 */
 @media (max-width: 80rem) {                           /* 1280px */
   .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .product-card__thumb { height: 11.25rem; }          /* 180px */
 }
 
 /* ≤1024px → 3열 */
 @media (max-width: 64rem) {                           /* 1024px */
   .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .product-card__thumb { height: 10rem; }             /* 160px */
   .tabs { gap: 1.5rem; }                              /* 간격 완화 */
 }
 
 /* ≤768px → 2열 */
 @media (max-width: 48rem) {                           /* 768px */
   .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .product-card__thumb { height: 9.375rem; }          /* 150px */
   .tab { font-size: 1rem; }                           /* 16px */
 }
 
 /* ≤480px → 1열 */
 @media (max-width: 30rem) {                           /* 480px */
   .product-grid { grid-template-columns: 1fr; }
+  .product-card__thumb { height: 8.75rem; }           /* 140px */
   .product-card__name, .product-card__price { font-size: 0.8125rem; } /* 13px */
   .tabs { gap: 1rem; padding: 0.5rem 0 0.75rem; }
 }
