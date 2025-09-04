@@ -122,11 +122,11 @@
                 </div>
               </div>
 
-              <!-- 이미지 미리보기 그리드 -->
-              <h3 class="section-title">이미지 ({{ Math.min(current.photos?.length || 0, 5) }})</h3>
+              <!-- 이미지 미리보기 그리드 (판매자 이미지만) -->
+              <h3 class="section-title">이미지 ({{ Math.min(sellerPhotos?.length || 0, 5) }})</h3>
               <div class="thumb-row">
                 <figure
-                  v-for="p in (current.photos?.slice(0, 5) || [])"
+                  v-for="p in (sellerPhotos?.slice(0, 5) || [])"
                   :key="p.id"
                   class="thumb"
                   @click="openViewer(p)"
@@ -287,6 +287,17 @@ const adminImages = ref<Array<{ file: File; preview: string }>>([])
 const isDragOver = ref(false)
 
 // ---------------------
+// 판매자 이미지만 필터링
+const sellerPhotos = computed(() => {
+  if (!current.value?.photos) return []
+  
+  // 관리자 이미지 URL 패턴을 제외 (관리자 이미지는 /uploads/admin/ 경로를 사용)
+  return current.value.photos.filter(photo => 
+    !photo.url.includes('/uploads/admin/') && 
+    !photo.url.includes('admin')
+  )
+})
+
 // 필터 + 페이지네이션
 // ---------------------
 const filtered = computed(() => {
@@ -362,6 +373,12 @@ async function openReview(ins: Inspection) {
   current.value = { ...ins }
   panelOpen.value = true
   
+  // 먼저 기본값으로 초기화 (각 상품별로 독립적인 데이터 관리)
+  decision.value = null
+  rejectReasons.value = []
+  approveNote.value = ""
+  grade.value = ""
+  
   // 백엔드에서 검수 결정 정보 조회
   try {
     const decisionInfo = await getInspectionDecision(ins.id)
@@ -373,17 +390,17 @@ async function openReview(ins: Inspection) {
         grade.value = getGradeText(decisionInfo.quality)
       }
       
-      // 추가 메모 설정
-      if (decisionInfo.itemExplanation) {
-        approveNote.value = decisionInfo.itemExplanation
+      // 관리자 메모 설정
+      if (decisionInfo.adminNote) {
+        approveNote.value = decisionInfo.adminNote
       }
       
-      // 승인/반려 상태 설정
+      // 승인/반려 상태 설정 (admissionState: 0=대기, 1=승인, 2=반려)
       if (decisionInfo.admissionState === 1) {
+        decision.value = "APPROVED"
+      } else if (decisionInfo.admissionState === 2) {
         decision.value = "REJECTED"
         // 반려 사유는 rejectionReason에서 가져올 수 있음
-      } else if (decisionInfo.admissionState === 2) {
-        decision.value = "APPROVED"
       }
     }
   } catch (error) {
@@ -445,6 +462,12 @@ function closePanel() {
   panelOpen.value = false
   current.value = null
   
+  // 검수 데이터 초기화 (다음 상품을 위해)
+  decision.value = null
+  rejectReasons.value = []
+  approveNote.value = ""
+  grade.value = ""
+  
   // 관리자 이미지는 초기화하지 않음 (업로드 후에도 유지)
   isDragOver.value = false
 }
@@ -454,42 +477,14 @@ function openViewer(p: Photo) {
 }
 function setApprove() {
   decision.value = "APPROVED"
-  // 검수 결정 상태 저장
-  if (current.value) {
-    const decisionData = {
-      decision: decision.value,
-      rejectReasons: rejectReasons.value,
-      approveNote: approveNote.value,
-      grade: grade.value
-    }
-    saveDecision(current.value.id, decisionData)
-  }
 }
 function setReject() {
   decision.value = "REJECTED"
-  // 검수 결정 상태 저장
-  if (current.value) {
-    const decisionData = {
-      decision: decision.value,
-      rejectReasons: rejectReasons.value,
-      approveNote: approveNote.value,
-      grade: grade.value
-    }
-    saveDecision(current.value.id, decisionData)
-  }
 }
 async function submitDecision() {
   if (!current.value || !decision.value) return
 
   try {
-    // 검수 결정 상태 저장
-    const decisionData = {
-      decision: decision.value,
-      rejectReasons: rejectReasons.value,
-      approveNote: approveNote.value,
-      grade: grade.value
-    }
-    saveDecision(current.value.id, decisionData)
 
     if (decision.value === "APPROVED") {
       // 승인 시: 등급과 추가메모 설정
@@ -519,8 +514,7 @@ async function submitDecision() {
     })
     list.value = items
 
-    // 성공적으로 저장된 후에도 검수 결정 상태 유지 (다시 열었을 때 보이도록)
-    // clearSavedDecision(current.value.id) // 이 줄을 제거하여 상태 유지
+    // 성공적으로 저장됨
     
     // 관리자 이미지 새로고침
     await loadAdminImages(current.value.id)
@@ -625,58 +619,7 @@ function getGradeNumber(grade: string): number {
   }
 }
 
-// 검수 결정 상태 저장/복원 함수들
-const DECISION_STORAGE_KEY = 'admin_decisions'
-
-function saveDecision(inspectionId: string, decisionData: any) {
-  try {
-    const saved = JSON.parse(localStorage.getItem(DECISION_STORAGE_KEY) || '{}')
-    saved[inspectionId] = {
-      ...decisionData,
-      savedAt: new Date().toISOString()
-    }
-    localStorage.setItem(DECISION_STORAGE_KEY, JSON.stringify(saved))
-    console.log('검수 결정 저장됨:', inspectionId, decisionData)
-  } catch (error) {
-    console.error('검수 결정 저장 실패:', error)
-  }
-}
-
-function getSavedDecision(inspectionId: string) {
-  try {
-    const saved = JSON.parse(localStorage.getItem(DECISION_STORAGE_KEY) || '{}')
-    return saved[inspectionId] || null
-  } catch (error) {
-    console.error('검수 결정 복원 실패:', error)
-    return null
-  }
-}
-
-function clearSavedDecision(inspectionId: string) {
-  try {
-    const saved = JSON.parse(localStorage.getItem(DECISION_STORAGE_KEY) || '{}')
-    delete saved[inspectionId]
-    localStorage.setItem(DECISION_STORAGE_KEY, JSON.stringify(saved))
-    console.log('검수 결정 삭제됨:', inspectionId)
-  } catch (error) {
-    console.error('검수 결정 삭제 실패:', error)
-  }
-}
-
-// ---------------------
-// 검수 결정 상태 자동 저장
-// ---------------------
-watch([decision, rejectReasons, approveNote, grade], () => {
-  if (current.value && decision.value) {
-    const decisionData = {
-      decision: decision.value,
-      rejectReasons: rejectReasons.value,
-      approveNote: approveNote.value,
-      grade: grade.value
-    }
-    saveDecision(current.value.id, decisionData)
-  }
-}, { deep: true })
+// 검수 결정은 백엔드에서 관리하므로 localStorage 사용하지 않음
 
 // ---------------------
 // ✅ DB에서 불러오기
