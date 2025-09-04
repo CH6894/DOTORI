@@ -35,7 +35,7 @@
               </div>
             </div>
 
-            <h3 class="item-title">{{ item.title }}</h3>
+            <h3 class="item-title">{{ item.name }}</h3>
 
             <div class="badge-row">
               <button v-for="chip in chips" :key="chip" type="button" class="chip"
