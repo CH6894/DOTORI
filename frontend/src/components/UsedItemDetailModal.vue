@@ -19,9 +19,9 @@
               <div class="main-image-container">
                 <img :src="currentImage || '/img/placeholder.jpg'" :alt="item.title" class="main-image" />
 
-                <!-- 상태 배지 -->
-                <div class="condition-badge" :class="item.condition">
-                  {{ getConditionText(item.condition) }}
+                <!-- 이미지 타입 배지 -->
+                <div class="condition-badge" :class="currentImageType === '관리자' ? 'admin' : 'seller'">
+                  {{ currentImageType }}
                 </div>
 
                 <!-- 좌/우 화살표 -->
@@ -79,6 +79,21 @@
                 <p class="description-text">{{ getItemExplanation(item.itemExplanation) }}</p>
               </div>
 
+              <!-- 관리자 이미지 섹션 -->
+              <div v-if="adminImages.length > 0" class="admin-images-section">
+                <h4 class="section-title">관리자 검수 이미지</h4>
+                <div class="admin-images-grid">
+                  <img 
+                    v-for="(image, index) in adminImages" 
+                    :key="`admin-${index}`"
+                    :src="image" 
+                    :alt="`관리자 검수 이미지 ${index + 1}`"
+                    class="admin-image"
+                    @click="setCurrentImage(index)"
+                  />
+                </div>
+              </div>
+
               <!-- 액션 -->
               <div class="action-buttons">
                 <button :class="['wish-heart', { active: isWishlisted }]" @click="toggleWishlist" aria-label="위시 토글" title="위시 토글">
@@ -110,8 +125,9 @@
 
 <script setup>
 /* eslint-disable no-undef, no-unused-vars */
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useWishlistStore } from '@/stores/wishlist'
+import { fetchAllImagesByItemDetailsId, fetchAdminImagesByItemDetailsId, fetchSellerImagesByItemDetailsId, fetchAllImageInfosByItemDetailsId } from '@/api/items'
 
 const wish = useWishlistStore()
 
@@ -130,9 +146,23 @@ const isWishlisted = computed(() => {
 const showToast = ref(false)
 const TOAST_MS = 1200
 
+// ---------- 이미지 상태 ----------
+const adminImages = ref([])
+const sellerImages = ref([])
+const imageInfos = ref([]) // 이미지 정보 (URL + 타입)
+const isLoadingImages = ref(false)
 
 // ---------- 안전 이미지 배열 ----------
 const images = computed(() => {
+  // imageInfos가 있으면 사용 (관리자 이미지 우선, 판매자 이미지 후순위)
+  if (imageInfos.value.length > 0) {
+    return imageInfos.value.map(info => info.url)
+  }
+  // 기존 방식 (fallback)
+  const allImages = [...adminImages.value, ...sellerImages.value]
+  if (allImages.length > 0) {
+    return allImages
+  }
   const arr = props.item?.images
   return Array.isArray(arr) ? arr.filter(Boolean) : []
 })
@@ -141,6 +171,14 @@ const images = computed(() => {
 const currentImage = computed(() =>
   images.value[currentImageIndex.value] || '/img/placeholder.jpg'
 )
+
+// 현재 이미지의 타입 정보
+const currentImageType = computed(() => {
+  if (imageInfos.value.length > 0 && currentImageIndex.value < imageInfos.value.length) {
+    return imageInfos.value[currentImageIndex.value].typeLabel
+  }
+  return '판매자' // 기본값
+})
 
 // 이미지 네비게이션
 const previousImage = () => { if (currentImageIndex.value > 0) currentImageIndex.value-- }
@@ -260,6 +298,61 @@ const formatDate = (dateString) => {
     return '-'
   }
 }
+
+// ---------- 이미지 로딩 ----------
+const loadAllImages = async () => {
+  if (!props.item?.id) return
+  
+  try {
+    isLoadingImages.value = true
+    console.log('이미지 로딩 시작:', props.item.id)
+    
+    // 새로운 API를 사용하여 이미지 정보를 로드 (관리자 이미지 우선, 판매자 이미지 후순위)
+    try {
+      const imageInfosData = await fetchAllImageInfosByItemDetailsId(props.item.id)
+      console.log('이미지 정보들:', imageInfosData)
+      
+      if (imageInfosData && imageInfosData.length > 0) {
+        imageInfos.value = imageInfosData
+        console.log('imageInfos 설정 완료:', imageInfosData.length, '개')
+      } else {
+        console.log('imageInfos가 비어있음, 기존 방식 사용')
+      }
+    } catch (error) {
+      console.error('imageInfos 로드 실패:', error)
+    }
+    
+    // 기존 방식도 유지 (fallback용)
+    const [adminImgs, sellerImgs] = await Promise.all([
+      fetchAdminImagesByItemDetailsId(props.item.id),
+      fetchSellerImagesByItemDetailsId(props.item.id)
+    ])
+    
+    console.log('관리자 이미지들:', adminImgs)
+    console.log('판매자 이미지들:', sellerImgs)
+    
+    adminImages.value = adminImgs
+    sellerImages.value = sellerImgs
+    currentImageIndex.value = 0 // 첫 번째 이미지로 리셋
+  } catch (error) {
+    console.error('이미지 로딩 실패:', error)
+    // 실패해도 기존 이미지는 유지
+  } finally {
+    isLoadingImages.value = false
+  }
+}
+
+// ---------- 생명주기 ----------
+onMounted(() => {
+  loadAllImages()
+})
+
+// item이 변경될 때마다 이미지 다시 로드
+watch(() => props.item?.id, (newId) => {
+  if (newId) {
+    loadAllImages()
+  }
+})
 </script>
 
 <style scoped>
@@ -328,6 +421,7 @@ const formatDate = (dateString) => {
 /* 이미지 */
 .main-image-container {
   position: relative;
+  height: 470px;
 }
 
 .main-image {
@@ -345,6 +439,14 @@ const formatDate = (dateString) => {
   font-size: 12px;
   background: #111;
   color: #fff;
+}
+
+.condition-badge.admin {
+  background: #2563eb; /* 파란색 - 관리자 */
+}
+
+.condition-badge.seller {
+  background: #059669; /* 초록색 - 판매자 */
 }
 
 .nav-btn {
@@ -370,9 +472,10 @@ const formatDate = (dateString) => {
 
 .image-indicators {
   position: absolute;
-  left: 0;
+  left: 50%;
   right: 0;
   bottom: 10px;
+  transform: translateX(-50%);
   display: flex;
   gap: 6px;
   justify-content: center;
@@ -469,6 +572,33 @@ const formatDate = (dateString) => {
   color: #666;
   line-height: 1.5;
   margin: 0;
+}
+
+/* 관리자 이미지 섹션 */
+.admin-images-section {
+  margin-bottom: 30px;
+}
+
+.admin-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.admin-image {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-image:hover {
+  border-color: #3b82f6;
+  transform: scale(1.05);
 }
 
 /* 등급 배지 스타일 */

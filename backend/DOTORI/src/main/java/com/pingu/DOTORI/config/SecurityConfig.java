@@ -51,6 +51,7 @@ public class SecurityConfig {
             .requestMatchers("/uploads/**").permitAll() // 업로드된 이미지 파일 접근 허용
             .requestMatchers("/open/**").permitAll()
             .requestMatchers("/api/inspections").permitAll() // 검수 신청은 인증 없이 허용
+            .requestMatchers("/api/inspections/*/admin-images").permitAll() // 관리자 이미지 업로드는 인증 없이 허용
             .requestMatchers("/api/**").authenticated()
             .anyRequest().authenticated())
         .exceptionHandling(e -> e.authenticationEntryPoint(restAuthEntryPoint()))

@@ -1,6 +1,10 @@
 package com.pingu.DOTORI.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
@@ -15,12 +19,15 @@ import com.pingu.DOTORI.entity.Item;
 import com.pingu.DOTORI.repository.ItemRepository;
 import com.pingu.DOTORI.entity.ItemDetails;
 import com.pingu.DOTORI.repository.ItemDetailsRepository;
+import com.pingu.DOTORI.entity.ItemImg;
+import com.pingu.DOTORI.repository.ItemImgRepository;
 
 @Service
 @RequiredArgsConstructor
 public class ItemService {
 	private final ItemRepository itemRepository;
 	private final ItemDetailsRepository itemDetailsRepository;
+	private final ItemImgRepository itemImgRepository;
 
 	public Page<ItemDTO> findAll(Pageable pageable) {
 		return itemRepository.findAll(pageable).map(this::toDto);
@@ -157,6 +164,137 @@ public class ItemService {
 			dtoList.add(dto);
 		}
 		return dtoList;
+	}
+
+	// ItemDetails의 모든 이미지 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
+	public List<String> getAllImagesByItemDetailsId(Long itemDetailsId) {
+		System.out.println("ItemService - 모든 이미지 조회 시작: itemDetailsId=" + itemDetailsId);
+		
+		List<String> imageUrls = new ArrayList<>();
+		
+		// 1. 관리자 이미지 먼저 조회 (img_type = 2)
+		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 2);
+		System.out.println("관리자 이미지 개수: " + adminImages.size());
+		
+		for (ItemImg img : adminImages) {
+			String imageUrl = img.getImgUrl();
+			if (imageUrl.startsWith("http")) {
+				imageUrls.add(imageUrl);
+			} else {
+				imageUrls.add("http://localhost:8081/uploads/admin/" + imageUrl);
+			}
+			System.out.println("관리자 이미지 URL 추가: " + imageUrl);
+		}
+		
+		// 2. 판매자 이미지 조회 (img_type = 0)
+		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 0);
+		System.out.println("판매자 이미지 개수: " + sellerImages.size());
+		
+		for (ItemImg img : sellerImages) {
+			String imageUrl = img.getImgUrl();
+			if (imageUrl.startsWith("http")) {
+				imageUrls.add(imageUrl);
+			} else {
+				imageUrls.add("http://localhost:8081/uploads/items/" + imageUrl);
+			}
+			System.out.println("판매자 이미지 URL 추가: " + imageUrl);
+		}
+		
+		System.out.println("최종 이미지 URL 개수: " + imageUrls.size() + " (관리자: " + adminImages.size() + ", 판매자: " + sellerImages.size() + ")");
+		return imageUrls;
+	}
+
+	// 이미지 정보를 포함한 DTO 클래스
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class ImageInfo {
+		private String url;
+		private String type; // "admin" 또는 "seller"
+		private String typeLabel; // "관리자" 또는 "판매자"
+	}
+
+	// ItemDetails의 모든 이미지 정보 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
+	public List<ImageInfo> getAllImageInfosByItemDetailsId(Long itemDetailsId) {
+		System.out.println("ItemService - 모든 이미지 정보 조회 시작: itemDetailsId=" + itemDetailsId);
+		
+		List<ImageInfo> imageInfos = new ArrayList<>();
+		
+		// 1. 관리자 이미지 먼저 조회 (img_type = 2)
+		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 2);
+		System.out.println("관리자 이미지 개수: " + adminImages.size());
+		
+		for (ItemImg img : adminImages) {
+			String imageUrl = img.getImgUrl();
+			if (!imageUrl.startsWith("http")) {
+				imageUrl = "http://localhost:8081/uploads/admin/" + imageUrl;
+			}
+			imageInfos.add(new ImageInfo(imageUrl, "admin", "관리자"));
+			System.out.println("관리자 이미지 정보 추가: " + imageUrl);
+		}
+		
+		// 2. 판매자 이미지 조회 (img_type = 0)
+		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 0);
+		System.out.println("판매자 이미지 개수: " + sellerImages.size());
+		
+		for (ItemImg img : sellerImages) {
+			String imageUrl = img.getImgUrl();
+			if (!imageUrl.startsWith("http")) {
+				imageUrl = "http://localhost:8081/uploads/items/" + imageUrl;
+			}
+			imageInfos.add(new ImageInfo(imageUrl, "seller", "판매자"));
+			System.out.println("판매자 이미지 정보 추가: " + imageUrl);
+		}
+		
+		System.out.println("최종 이미지 정보 개수: " + imageInfos.size() + " (관리자: " + adminImages.size() + ", 판매자: " + sellerImages.size() + ")");
+		return imageInfos;
+	}
+
+	// 관리자 이미지만 조회
+	public List<String> getAdminImagesByItemDetailsId(Long itemDetailsId) {
+		System.out.println("ItemService - 관리자 이미지 조회 시작: itemDetailsId=" + itemDetailsId);
+		
+		List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 2);
+		System.out.println("조회된 관리자 이미지 개수: " + adminImages.size());
+		
+		List<String> imageUrls = new ArrayList<>();
+		for (ItemImg img : adminImages) {
+			String imageUrl = img.getImgUrl();
+			// NCP URL이면 그대로, 로컬 파일이면 경로 추가
+			if (imageUrl.startsWith("http")) {
+				imageUrls.add(imageUrl);
+			} else {
+				imageUrls.add("http://localhost:8081/uploads/admin/" + imageUrl);
+			}
+			System.out.println("관리자 이미지 URL 추가: " + imageUrl);
+		}
+		
+		System.out.println("최종 관리자 이미지 URL 개수: " + imageUrls.size());
+		return imageUrls;
+	}
+
+	// 판매자 이미지만 조회
+	public List<String> getSellerImagesByItemDetailsId(Long itemDetailsId) {
+		System.out.println("ItemService - 판매자 이미지 조회 시작: itemDetailsId=" + itemDetailsId);
+		
+		List<ItemImg> sellerImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 0);
+		System.out.println("조회된 판매자 이미지 개수: " + sellerImages.size());
+		
+		List<String> imageUrls = new ArrayList<>();
+		for (ItemImg img : sellerImages) {
+			String imageUrl = img.getImgUrl();
+			// NCP URL이면 그대로, 로컬 파일이면 경로 추가
+			if (imageUrl.startsWith("http")) {
+				imageUrls.add(imageUrl);
+			} else {
+				imageUrls.add("http://localhost:8081/uploads/items/" + imageUrl);
+			}
+			System.out.println("판매자 이미지 URL 추가: " + imageUrl);
+		}
+		
+		System.out.println("최종 판매자 이미지 URL 개수: " + imageUrls.size());
+		return imageUrls;
 	}
 
 	private ItemDTO toDto(Item i) {

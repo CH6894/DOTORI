@@ -35,3 +35,26 @@ export const searchItems = (query: string, params?: PageParams) =>
     openApi.get<Page<ItemDTO>>('/open/items/search', { 
         params: { q: query, ...params } 
     }).then(r => r.data)
+
+// ItemDetails의 모든 이미지 조회 (관리자 이미지 포함)
+export const fetchAllImagesByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<string[]>(`/open/items/item-details/${itemDetailsId}/images`).then(r => r.data)
+
+// ItemDetails의 관리자 이미지만 조회
+export const fetchAdminImagesByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<string[]>(`/open/items/item-details/${itemDetailsId}/admin-images`).then(r => r.data)
+
+// ItemDetails의 판매자 이미지만 조회
+export const fetchSellerImagesByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<string[]>(`/open/items/item-details/${itemDetailsId}/seller-images`).then(r => r.data)
+
+// 이미지 정보 타입 정의
+export interface ImageInfo {
+    url: string
+    type: string // "admin" 또는 "seller"
+    typeLabel: string // "관리자" 또는 "판매자"
+}
+
+// 모든 이미지 정보 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
+export const fetchAllImageInfosByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<ImageInfo[]>(`/open/items/item-details/${itemDetailsId}/image-infos`).then(r => r.data)

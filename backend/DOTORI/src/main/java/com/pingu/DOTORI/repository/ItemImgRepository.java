@@ -23,4 +23,7 @@ public interface ItemImgRepository extends JpaRepository<ItemImg, Long> {
   /** 가장 이른 촬영 시각 */
   @Query("select min(i.filmingTime) from ItemImg i where i.itemDetails.itemId = :itemId")
   Optional<LocalDateTime> findEarliestFilmingTime(@Param("itemId") Long itemId);
+
+  /** 특정 imgType의 이미지들 조회 */
+  List<ItemImg> findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(Long itemId, Byte imgType);
 }
