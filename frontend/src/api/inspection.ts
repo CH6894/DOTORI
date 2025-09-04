@@ -180,3 +180,48 @@ export async function rejectInspection(inspectionId: string, grade?: number, rea
     throw error
   }
 }
+
+// 관리자 이미지 업로드
+export async function uploadAdminImages(inspectionId: string, images: File[]) {
+  try {
+    const formData = new FormData()
+    images.forEach(image => {
+      formData.append('images', image)
+    })
+    
+    // 인증 없이 요청하기 위해 별도의 axios 인스턴스 사용
+    const { data } = await axios.post(`http://localhost:8081/api/inspections/${inspectionId}/admin-images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+      },
+      withCredentials: true
+    })
+    return data
+  } catch (error: any) {
+    console.error("관리자 이미지 업로드 오류:", error)
+    throw error
+  }
+}
+
+// 검수 결정 정보 조회
+export async function getInspectionDecision(inspectionId: string) {
+  try {
+    const { data } = await api.get(`/${inspectionId}/decision`)
+    return data
+  } catch (error: any) {
+    console.error("검수 결정 정보 조회 오류:", error)
+    throw error
+  }
+}
+
+// 관리자 이미지 조회
+export async function getAdminImages(inspectionId: string) {
+  try {
+    const { data } = await api.get(`/${inspectionId}/admin-images`)
+    return data
+  } catch (error: any) {
+    console.error("관리자 이미지 조회 오류:", error)
+    throw error
+  }
+}

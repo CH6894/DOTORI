@@ -81,4 +81,45 @@ public class InspectionController {
         inspectionService.reject(inspectionId, grade, reason);
         return ResponseEntity.ok().build();
     }
+
+    /** 관리자 이미지 업로드 */
+    @PostMapping(value = "/{inspectionId}/admin-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadAdminImages(
+            @PathVariable String inspectionId,
+            @RequestParam("images") java.util.List<org.springframework.web.multipart.MultipartFile> images) {
+        try {
+            inspectionService.uploadAdminImages(inspectionId, images);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            System.err.println("관리자 이미지 업로드 실패: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /** 검수 결정 정보 조회 */
+    @GetMapping("/{inspectionId}/decision")
+    public ResponseEntity<com.pingu.DOTORI.entity.Admin> getInspectionDecision(@PathVariable String inspectionId) {
+        try {
+            com.pingu.DOTORI.entity.Admin decision = inspectionService.getInspectionDecision(inspectionId);
+            return ResponseEntity.ok(decision);
+        } catch (Exception e) {
+            System.err.println("검수 결정 정보 조회 실패: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /** 관리자 이미지 조회 */
+    @GetMapping("/{inspectionId}/admin-images")
+    public ResponseEntity<java.util.List<String>> getAdminImages(@PathVariable String inspectionId) {
+        try {
+            java.util.List<String> images = inspectionService.getAdminImagesByInspectionId(inspectionId);
+            return ResponseEntity.ok(images);
+        } catch (Exception e) {
+            System.err.println("관리자 이미지 조회 실패: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

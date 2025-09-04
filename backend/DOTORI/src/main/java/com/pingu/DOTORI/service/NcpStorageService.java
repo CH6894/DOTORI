@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import java.util.UUID;
 
 @Service
@@ -71,6 +71,7 @@ public class NcpStorageService {
             // NCP Object Storage 업로드
             System.out.println("업로드 시작...");
             s3Client.putObject(bucketName, objectKey, file.getInputStream(), metadata);
+            s3Client.setObjectAcl(bucketName, objectKey, CannedAccessControlList.PublicRead);
             System.out.println("업로드 완료!");
 
             // 업로드 후 접근 가능한 URL 반환
