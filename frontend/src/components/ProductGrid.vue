@@ -72,7 +72,7 @@ const formatPrice = (n: number) => {
 }
 
 .product-card__thumb {
-  aspect-ratio: 1 / 1;
+  position: relative;
   background: #f6f6f6;
   overflow: hidden;
 }
