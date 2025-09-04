@@ -122,15 +122,17 @@ watch(currentTab, async () => {
         <h2 class="section__title center">Best Seller</h2>
 
         <!-- 🔹 장르 탭 (마이페이지 인디케이터 패턴 복제) -->
-        <nav class="tabs" role="tablist" aria-label="베스트셀러 장르" ref="tabsWrap">
-            <span class="tabs__indicator"
-                :style="{ width: indicator.width + 'px', transform: `translateX(${indicator.left}px)` }" />
-            <button v-for="(g, i) in GENRES" :key="g" ref="tabBtns" class="tab"
-                :class="{ 'is-active': currentTab === g }" role="tab" :aria-selected="currentTab === g"
-                @click="setTab(g)">
-                {{ g }}
-            </button>
-        </nav>
+        <div class="tabs-container">
+            <nav class="tabs" role="tablist" aria-label="베스트셀러 장르" ref="tabsWrap">
+                <span class="tabs__indicator"
+                    :style="{ width: indicator.width + 'px', transform: `translateX(${indicator.left}px)` }" />
+                <button v-for="(g, i) in GENRES" :key="g" ref="tabBtns" class="tab"
+                    :class="{ 'is-active': currentTab === g }" role="tab" :aria-selected="currentTab === g"
+                    @click="setTab(g)">
+                    {{ g }}
+                </button>
+            </nav>
+        </div>
 
         <!-- 🔹 콘텐츠 -->
         <div v-if="error" class="error">{{ error }}</div>
@@ -144,10 +146,17 @@ watch(currentTab, async () => {
 </template>
 
 <style scoped>
+/* 탭 컨테이너 */
+.tabs-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
 /* 탭 바 */
 .tabs {
     position: relative;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     gap: 8px;
     padding: 8px;
@@ -199,11 +208,12 @@ watch(currentTab, async () => {
 }
 
 .skeleton-card {
-    height: 210px;
+    height: 280px;                                    /* ProductGrid와 동일한 높이 (200px 이미지 + 80px 메타) */
     border-radius: 12px;
     background: linear-gradient(90deg, #f2f2f2, #eaeaea, #f2f2f2);
     background-size: 200% 100%;
     animation: shimmer 1.2s infinite;
+    box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,.08);  /* ProductGrid와 동일한 그림자 */
 }
 
 @keyframes shimmer {

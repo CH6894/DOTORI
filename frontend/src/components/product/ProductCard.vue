@@ -133,18 +133,19 @@ a:visited {
   color: #333;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   white-space: normal;
   min-height: calc(1.35 * 14px * 2);
+}
 
-  .product-card__price {
-    font-weight: 700;
-    font-size: 14px;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.product-card__price {
+  font-weight: 700;
+  font-size: 14px;
+  color: #FC703C !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
