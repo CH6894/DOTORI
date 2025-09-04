@@ -349,22 +349,29 @@ const formatMessage = (text: string) => {
 </style>
 
 <style scoped>
-/* 기존 스타일은 그대로 유지하되, 단위만 반응형으로 정리 */
+/* 반응형 챗봇 크기 조정 */
 .chatbot{
-  --fab-size: 8rem;                                   /* 128px */
-  --fab-right: calc(1.5rem + 3.75rem);                /* 24px + 60px */
-  --fab-bottom: calc(1.5rem + 2rem);                  /* 24px + 32px */
-  --panel-w: min(90vw, 26.25rem);                     /* 420px 상한 */
-  --panel-h: 78vh;
-  --panel-gap: 1rem;                                  /* 16px */
-  --panel-scale: .8;
+  /* 화면 크기에 따른 FAB 크기 조정 */
+  --fab-size: clamp(4rem, 8vw, 8rem);                 /* 64px ~ 128px */
+  --fab-right: clamp(3rem, 5vw, 4rem);                /* 48px ~ 64px - 왼쪽으로 이동 */
+  --fab-bottom: clamp(5rem, 8vh, 7rem);               /* 80px ~ 112px - 위로 올림 */
+  
+  /* 화면 크기에 따른 패널 크기 조정 */
+  --panel-w: clamp(20rem, 85vw, 26.25rem);            /* 320px ~ 420px */
+  --panel-h: clamp(60vh, 75vh, 78vh);                 /* 60vh ~ 78vh */
+  --panel-gap: clamp(0.5rem, 2vw, 1rem);              /* 8px ~ 16px */
+  --panel-scale: clamp(0.7, 0.8, 0.9);                /* 0.7 ~ 0.9 */
+  
+  /* 색상 변수 */
   --brand: #c6742e;
   --brand-dark: #b36222;
   --cream: #f4f2e5;
   --accent: #ff7a3a;
-  --shadow: 0 1rem 2.5rem rgba(0,0,0,.18);            /* 0 16px 40px */
-  --panel-shift-x: 3rem;                               /* 48px */
-  --panel-shift-y: 4.5rem;                             /* 72px */
+  --shadow: 0 1rem 2.5rem rgba(0,0,0,.18);
+  
+  /* 패널 위치 조정 */
+  --panel-shift-x: clamp(2rem, 4vw, 3rem);            /* 32px ~ 48px */
+  --panel-shift-y: clamp(3rem, 5vw, 4.5rem);          /* 48px ~ 72px */
 }
 
 /* 트랜지션 */
@@ -736,4 +743,65 @@ const formatMessage = (text: string) => {
 /* 스크롤바 */
 .body::-webkit-scrollbar{ width: 0.5rem; }              /* 8px */
 .body::-webkit-scrollbar-thumb{ background: #d0c8b2; border-radius: 0.625rem; } /* 10px */
+
+/* 반응형 미디어 쿼리 */
+@media (max-width: 768px) {
+  .chatbot {
+    /* 모바일에서 더 작은 크기 */
+    --fab-size: clamp(3.5rem, 10vw, 5rem);             /* 56px ~ 80px */
+    --panel-w: clamp(18rem, 90vw, 22rem);              /* 288px ~ 352px */
+    --panel-h: clamp(50vh, 70vh, 75vh);                /* 50vh ~ 75vh */
+    --panel-scale: clamp(0.6, 0.75, 0.8);              /* 0.6 ~ 0.8 */
+    --panel-shift-x: clamp(1rem, 3vw, 2rem);           /* 16px ~ 32px */
+    --panel-shift-y: clamp(2rem, 4vw, 3rem);           /* 32px ~ 48px */
+  }
+  
+  /* 모바일에서 패널 위치 조정 */
+  .panel-wrap {
+    right: clamp(0.5rem, 2vw, 1rem) !important;
+    bottom: clamp(0.5rem, 2vw, 1rem) !important;
+    transform: scale(var(--panel-scale)) !important;
+  }
+  
+  /* 모바일에서 FAB 위치 조정 */
+  .fab-wrap {
+    right: clamp(2rem, 4vw, 2.5rem) !important;       /* 왼쪽으로 이동 */
+    bottom: clamp(4rem, 6vh, 5.5rem) !important;       /* 위로 올림 */
+  }
+}
+
+@media (max-width: 480px) {
+  .chatbot {
+    /* 매우 작은 화면에서 최소 크기 */
+    --fab-size: clamp(3rem, 12vw, 4rem);               /* 48px ~ 64px */
+    --panel-w: clamp(16rem, 95vw, 20rem);              /* 256px ~ 320px */
+    --panel-h: clamp(45vh, 65vh, 70vh);                /* 45vh ~ 70vh */
+    --panel-scale: clamp(0.5, 0.7, 0.75);              /* 0.5 ~ 0.75 */
+  }
+  
+  /* 매우 작은 화면에서 FAB 위치 조정 */
+  .fab-wrap {
+    right: clamp(1.5rem, 3vw, 2rem) !important;       /* 왼쪽으로 이동 */
+    bottom: clamp(3.5rem, 5vh, 4.5rem) !important;     /* 위로 올림 */
+  }
+  
+  /* 작은 화면에서 텍스트 크기 조정 */
+  .chip {
+    font-size: 0.7rem !important;                      /* 11.2px */
+    padding: 0.3rem 0.7rem !important;                 /* 4.8px 11.2px */
+  }
+  
+  .message-bubble div {
+    font-size: 0.85rem !important;                     /* 13.6px */
+  }
+  
+  .input {
+    font-size: 0.8rem !important;                      /* 12.8px */
+  }
+  
+  .btn-send {
+    font-size: 0.8rem !important;                      /* 12.8px */
+    padding: 0 0.5rem !important;                      /* 0 8px */
+  }
+}
 </style>

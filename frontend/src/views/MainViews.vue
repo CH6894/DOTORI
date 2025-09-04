@@ -100,7 +100,7 @@ body {
   isolation: isolate;
 }
 
-/* 2) 공통: 문서의 최상단/최하단에 “배경처럼” 깔릴 레이어 */
+/* 2) 공통: 문서의 최상단/최하단에 "배경처럼" 깔릴 레이어 */
 body.home::before,
 body.home::after {
   content: "";
