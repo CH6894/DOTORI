@@ -1,4 +1,5 @@
 package com.pingu.DOTORI.bootstrap;
+
 // 데이터 넣기 위한 코드
 import com.pingu.DOTORI.entity.Item;
 import com.pingu.DOTORI.repository.ItemRepository;
@@ -30,7 +31,7 @@ public class ItemCsvSeeder implements CommandLineRunner {
         var resource = new ClassPathResource("items_from_text_v3.csv");
 
         try (InputStream in = resource.getInputStream();
-             var reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+                var reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
 
             Iterable<CSVRecord> rows = CSVFormat.DEFAULT
                     .withFirstRecordAsHeader()
@@ -39,17 +40,17 @@ public class ItemCsvSeeder implements CommandLineRunner {
 
             for (CSVRecord r : rows) {
                 String itemCode = nullIfBlank(r.get("item_code"));
-                String name     = nullIfBlank(r.get("name"));
-                String title    = nullIfBlank(r.get("title"));
-                String manu     = nullIfBlank(r.get("manufacturer"));
-                String material = nullIfBlank(r.get("material"));   // = Texture
+                String name = nullIfBlank(r.get("name"));
+                String title = nullIfBlank(r.get("title"));
+                String manu = nullIfBlank(r.get("manufacturer"));
+                String material = nullIfBlank(r.get("material")); // = Texture
                 String relMonth = nullIfBlank(r.get("release_month")); // YYYY-MM
-                String size     = nullIfBlank(r.get("size"));
-                String info     = nullIfBlank(r.get("information"));
-                String imgUrl   = nullIfBlank(r.get("img_url"));
-                String costStr  = nullIfBlank(r.get("cost"));
-                String feesStr  = nullIfBlank(r.get("storage_fees"));
-                String genre    = nullIfBlank(r.get("genre"));
+                String size = nullIfBlank(r.get("size"));
+                String info = nullIfBlank(r.get("information"));
+                String imgUrl = nullIfBlank(r.get("img_url"));
+                String costStr = nullIfBlank(r.get("cost"));
+                String feesStr = nullIfBlank(r.get("storage_fees"));
+                String genre = nullIfBlank(r.get("genre"));
 
                 LocalDate releaseDate = (relMonth == null) ? null : LocalDate.parse(relMonth + "-01");
                 Long storageFees = (feesStr == null) ? 3000L : Long.parseLong(feesStr);
@@ -62,9 +63,9 @@ public class ItemCsvSeeder implements CommandLineRunner {
                         .name(name)
                         .title(title)
                         .manufacturer(manu)
-                        .material(material)          // material -> texture 매핑
+                        .material(material) // material -> texture 매핑
                         .releaseMonth(releaseDate)
-                        .size(size)                 // size는 NULL 허용 권장
+                        .size(size) // size는 NULL 허용 권장
                         .information(info)
                         .imgUrl(imgUrl)
                         .storageFees(storageFees)
@@ -76,7 +77,8 @@ public class ItemCsvSeeder implements CommandLineRunner {
                     var f = Item.class.getDeclaredField("cost");
                     f.setAccessible(true);
                     f.set(item, cost);
-                } catch (NoSuchFieldException ignore) {}
+                } catch (NoSuchFieldException ignore) {
+                }
 
                 // 단순 삽입(동일 PK 존재 시 업데이트 하려면 exists 체크 후 merge 로직 추가)
                 repo.save(item);

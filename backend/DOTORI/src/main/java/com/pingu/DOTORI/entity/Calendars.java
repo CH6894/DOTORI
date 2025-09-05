@@ -25,7 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Calendars")
-@Table(name = "Calendars")
+@Table(name = "calendars")
 public class Calendars {
 
 	@Id

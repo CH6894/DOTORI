@@ -45,7 +45,7 @@ public class OrdersService {
         if (request.getItemDetailsId() == null) {
             throw new IllegalArgumentException("상품 상세 ID가 필요합니다.");
         }
-        
+
         ItemDetails itemDetails = itemDetailsRepository.findById(request.getItemDetailsId())
                 .orElseThrow(() -> new RuntimeException("상품 상세 정보를 찾을 수 없습니다."));
 
@@ -159,7 +159,7 @@ public class OrdersService {
         return results;
     }
 
-    // 내 주문 내역 조회 
+    // 내 주문 내역 조회
     @Transactional(readOnly = true)
     public List<OrdersResponseDTO> getMyOrders(HttpServletRequest req) {
         Users user = getCurrentUser(req);

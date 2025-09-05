@@ -35,7 +35,7 @@
               </div>
             </div>
 
-            <h3 class="item-title">{{ item.title }}</h3>
+            <h3 class="item-title">{{ item.name }}</h3>
 
             <div class="badge-row">
               <button v-for="chip in chips" :key="chip" type="button" class="chip"
@@ -132,7 +132,7 @@
               <li v-for="(e, i) in errors" :key="i">{{ e }}</li>
             </ul>
 
-            <section v-if="items.length" class="uploader__grid">
+            <section class="uploader__grid" :class="{ 'uploader__grid--empty': !items.length }">
               <article v-for="(it, idx2) in items" :key="it.id" class="uploader__card">
                 <img :src="it.preview" :alt="`미리보기 ${idx2 + 1}`" class="uploader__img" />
                 <div class="uploader__meta">
@@ -146,12 +146,13 @@
                     :disabled="idx2 === items.length - 1 || uploading" aria-label="오른쪽으로">→</button>
                   <button class="btn btn--ghost danger" @click="remove(idx2)" :disabled="uploading">삭제</button>
                 </div>
-                <label class="uploader__caption">
-                  <span class="uploader__caption-label">설명(선택)</span>
-                  <input class="uploader__caption-input" type="text" maxlength="60" placeholder="예) 상자 모서리 스크래치 있음"
-                    v-model="it.caption" :disabled="uploading" />
-                </label>
               </article>
+              
+              <!-- 빈 상태일 때 플레이스홀더 -->
+              <div v-if="!items.length" class="uploader__placeholder">
+                <div class="placeholder-icon">📷</div>
+                <p class="placeholder-text">업로드된 이미지가 여기에 표시됩니다</p>
+              </div>
             </section>
 
             <div class="uploader__footer">
@@ -508,7 +509,8 @@ function onClose() { emit('close') }
 /* 최종 제출 → 4단계 */
 const isSubmitting = ref(false)
 const step = ref<1 | 2 | 3 | 4>(1)
-const userId = 3
+// 사용자 ID를 동적으로 가져오기
+const userId = ref(3) // 임시로 기본값 설정
 
 const normalizedPrice = price.toString().replace(/,/g, "")
 
@@ -528,7 +530,7 @@ async function submitAll() {
     console.log("items.value.length:", items.value.length)
     
     const fd = new FormData()
-    fd.append('userId', String(userId))
+    fd.append('userId', String(userId.value))
     fd.append('itemCode', props.item?.itemCode || props.item?.id || '')
     fd.append('productTitle', props.item?.name || props.item?.title || '')
     fd.append("price", String(price.value ?? 0))
@@ -540,7 +542,6 @@ async function submitAll() {
     for (const [key, value] of fd.entries()) {
       console.log("FormData:", key, value)
     }
-    items.value.forEach(i => fd.append('images', i.file))
 
     const res = await createInspection(fd)
     console.log('created:', res) // { inspectionId, itemId, status }
@@ -570,12 +571,14 @@ async function submitAll() {
 
 .modal-sheet {
   width: min(1200px, 95vw);
-  height: min(850px, 50vw);
+  max-height: 90vh;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, .35);
   overflow: hidden;
   animation: pop .2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes pop {
@@ -629,18 +632,24 @@ async function submitAll() {
   display: grid;
   grid-template-columns: 1fr 0.8fr;
   gap: 24px;
-  padding: 12px 36px;
+  padding: 24px 36px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .sheet-body.single {
   display: block;
-  margin-top: 60px;
-  padding: 24px 36px;
+  padding: 36px 36px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .left {
-  min-height: 560px;
+  min-height: 0;
   max-width: 550px;
+  overflow-y: auto;
 }
 
 .item-title {
@@ -873,10 +882,10 @@ textarea:focus {
 .confirm {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-weight: 700;
   color: #333;
-  margin-top: 6px
+  margin-top: 0px
 }
 
 /* Buttons */
@@ -1107,7 +1116,7 @@ button.ghost:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 6px;
+  margin-top: 0px;
 }
 
 .btn {
@@ -1144,7 +1153,7 @@ button.ghost:hover {
 }
 
 .uploader__fine {
-  margin: 6px 2px 2px;
+  margin: 4px 2px 2px;
   color: #6b7280;
   font-size: 12px
 }
@@ -1370,8 +1379,25 @@ button.ghost:hover {
 
 /* Responsive */
 @media (max-width: 980px) {
+  .modal-sheet {
+    width: 95vw;
+    max-height: 95vh;
+    margin: 2.5vh auto;
+  }
+  
   .sheet-body {
-    grid-template-columns: 1fr
+    grid-template-columns: 1fr;
+    padding: 12px 20px;
+    gap: 16px;
+  }
+
+  .sheet-body.single {
+    padding: 20px;
+    margin-top: 40px;
+  }
+
+  .left {
+    max-width: none;
   }
 
   .addr-grid {
@@ -1384,4 +1410,200 @@ button.ghost:hover {
     top: 48px
   }
 }
+
+@media (max-width: 768px) {
+  .modal-sheet {
+    width: 98vw;
+    max-height: 98vh;
+    margin: 1vh auto;
+    border-radius: 12px;
+  }
+  
+  .sheet-header {
+    padding: 12px 16px;
+  }
+  
+  .sheet-title {
+    font-size: 16px;
+  }
+  
+  .sheet-body {
+    padding: 8px 16px;
+    gap: 12px;
+  }
+
+  .sheet-body.single {
+    padding: 16px;
+    margin-top: 20px;
+  }
+
+  .item-title {
+    font-size: 20px;
+  }
+
+  .chip {
+    padding: 6px 16px;
+    font-size: 14px;
+  }
+
+  .main-image-container {
+    margin-bottom: 8px;
+  }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-sheet {
+    width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .sheet-header {
+    padding: 10px 12px;
+  }
+  
+  .sheet-title {
+    font-size: 14px;
+  }
+  
+  .sheet-body {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .sheet-body.single {
+    padding: 12px;
+    margin-top: 10px;
+  }
+
+  .item-title {
+    font-size: 18px;
+  }
+
+  .chip {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+
+  .badge-row {
+    gap: 6px;
+  }
+}
+
+/* 새로 추가한 요소들의 스타일 */
+
+
+/* 업로더 그리드 고정 높이 */
+.uploader__grid {
+  min-height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 16px;
+  border: 2px dashed #e9ecef;
+  border-radius: 12px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.uploader__grid--empty {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.uploader__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 200px;
+  color: #6c757d;
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.placeholder-text {
+  margin: 0;
+  font-size: 14px;
+  color: #6c757d;
+  text-align: center;
+}
+
+.uploader__card {
+  width: 200px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.uploader__card:hover {
+  transform: translateY(-2px);
+}
+
+.uploader__img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.uploader__meta {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+}
+
+.uploader__badge {
+  background: #007bff;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.uploader__size {
+  font-size: 11px;
+  color: #6c757d;
+}
+
+.uploader__actions {
+  padding: 8px 12px;
+  display: flex;
+  gap: 4px;
+  background: white;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploader__actions .btn {
+  flex: 1;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
 </style>

@@ -15,7 +15,12 @@ public class WebConfig implements WebMvcConfigurer {
         .allowedOrigins("http://localhost:5173")
         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
         .allowCredentials(true);
-    
+
+  }
+
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("/uploads/**")
+        .addResourceLocations("file:C:/uploads/");
   }
 
 }

@@ -36,15 +36,7 @@
     </nav>
 
     <!-- 검색 -->
-    <form class="search" role="search" aria-label="검색">
-      <input type="search" placeholder="검색어를 입력하세요" aria-label="검색어" />
-      <button type="submit" class="search__btn" aria-label="검색">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" />
-          <path d="M16.5 16.5L22 22" />
-        </svg>
-      </button>
-    </form>
+    <SearchComponent />
 
     <!-- 아이콘 -->
         <div class="header__icons">
@@ -82,6 +74,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import SearchComponent from './Search.vue'
 
 const isAuthed = ref(false)
 const API_BASE = 'http://192.168.198.1:8085'

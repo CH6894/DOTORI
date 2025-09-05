@@ -4,6 +4,10 @@ import openApi from './axiosPublic'
 import type { Page, PageParams } from '@/types/common'
 import type { ItemDTO } from '@/types/item'
 
+// 전체 아이템 목록 조회
+export const fetchItems = (params?: PageParams) =>
+    openApi.get<Page<ItemDTO>>('/open/items', { params }).then(r => r.data)
+
 // 탑 카테고리로 아이템 찾기
 export const fetchGenre = (genre : string, params?: PageParams) =>
     openApi.get<Page<ItemDTO>>(`/open/items/genre/${genre}`).then(r => r.data)
@@ -25,3 +29,41 @@ export const fetchApprovedUnpackedItemDetails = (itemCode: string) =>
 // 승인된 개봉 상품의 ItemDetails 조회
 export const fetchApprovedOpenedItemDetails = (itemCode: string) =>
     openApi.get(`/open/items/${itemCode}/approved-opened-details`).then(r => r.data)
+
+// 검색어로 아이템 찾기
+export const searchItems = (query: string, params?: PageParams) =>
+    openApi.get<Page<ItemDTO>>('/open/items/search', { 
+        params: { q: query, ...params } 
+    }).then(r => r.data)
+
+// ItemDetails의 모든 이미지 조회 (관리자 이미지 포함)
+export const fetchAllImagesByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<string[]>(`/open/items/item-details/${itemDetailsId}/images`).then(r => r.data)
+
+// ItemDetails의 관리자 이미지만 조회
+export const fetchAdminImagesByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<string[]>(`/open/items/item-details/${itemDetailsId}/admin-images`).then(r => r.data)
+
+// ItemDetails의 판매자 이미지만 조회
+export const fetchSellerImagesByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<string[]>(`/open/items/item-details/${itemDetailsId}/seller-images`).then(r => r.data)
+
+// 이미지 정보 타입 정의
+export interface ImageInfo {
+    url: string
+    type: string // "admin" 또는 "seller"
+    typeLabel: string // "관리자" 또는 "판매자"
+}
+
+// 모든 이미지 정보 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
+export const fetchAllImageInfosByItemDetailsId = (itemDetailsId: number) =>
+    openApi.get<ImageInfo[]>(`/open/items/item-details/${itemDetailsId}/image-infos`).then(r => r.data)
+
+// ItemDetails와 Admin 정보를 모두 조회
+export interface ItemDetailsWithAdminInfo {
+    productCondition: string // 관리자 메모 (상태 상세용)
+    adminExplanation: string // 판매자 메모 (상품 설명용)
+}
+
+export const fetchItemDetailsWithAdminInfo = (itemDetailsId: number) =>
+    openApi.get<ItemDetailsWithAdminInfo>(`/open/items/item-details/${itemDetailsId}/details-with-admin`).then(r => r.data)

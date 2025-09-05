@@ -5,15 +5,15 @@ import { RouterLink } from 'vue-router'
 /** 슬라이드 데이터 */
 const slides = [
   {
-    href: '/promo/summer',
+    href: '/dex',
     image: '/img/hero/Banner.webp'
   },
   {
-    href: '/promo/new',
+    href: '/category',
     image: '/img/hero/Banner3.webp'
   },
   {
-    href: '/promo/sale',
+    href: '/inspection',
     image: '/img/hero/Banner2.webp'
   }
 ]
@@ -52,6 +52,7 @@ onBeforeUnmount(stopAuto)
     <div class="hero-viewport">
       <div class="hero-track" :style="{ transform: `translateX(-${index * 100}%)` }">
         <!-- ✅ RouterLink로 변경해서 SPA 네비게이션 -->
+        <!-- 원본 슬라이드들 -->
         <RouterLink
           v-for="(s, i) in slides"
           :key="i"
@@ -95,7 +96,7 @@ onBeforeUnmount(stopAuto)
 .hero-track {
   display: flex;
   will-change: transform;
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.6s ease-in-out;
 }
 
 /* 각 슬라이드 */
@@ -120,9 +121,6 @@ onBeforeUnmount(stopAuto)
   inset: 0;
   z-index: 1;
   border-radius: 1.125rem; /* 18px */
-  background: radial-gradient(5rem 5rem at 20% 80%, #ffcfed33 0, transparent 60%),
-    radial-gradient(5rem 5rem at 70% 20%, #8ad3ff33 0, transparent 60%),
-    linear-gradient(135deg, #2b262d, #1f1a23);
 }
 
 .hero__art img {

@@ -22,25 +22,24 @@ public class AdminListRow {
     private LocalDateTime filmingTime;
     private List<String> imageUrls;
 
-
     // ✅ JPQL과 100% 매칭되는 생성자
     public AdminListRow(Long inspectionId,
-                        Long itemId,
-                        String title,
-                        String userName,
-                        BigDecimal cost,
-                        Boolean unpacked,
-                        LocalDateTime registrationDate,
-                        Integer admissionState,
-                        Integer quality,
-                        String itemExplanation,
-                        Long imageCount,
-                        LocalDateTime filmingTime,
-                        List<String> imageUrls) {
+            Long itemId,
+            String title,
+            String userName,
+            BigDecimal cost,
+            Boolean unpacked,
+            LocalDateTime registrationDate,
+            Integer admissionState,
+            Integer quality,
+            String itemExplanation,
+            Long imageCount,
+            LocalDateTime filmingTime,
+            List<String> imageUrls) {
         this.inspectionId = inspectionId;
         this.itemId = itemId;
         this.title = title;
-        this.sellerName = userName;   // userName → sellerName 매핑
+        this.sellerName = userName; // userName → sellerName 매핑
         this.cost = cost;
         this.unpacked = unpacked;
         this.registrationDate = registrationDate;

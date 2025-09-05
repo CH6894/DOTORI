@@ -29,12 +29,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UsersRepository userRepository;
     private final OAuth2AuthorizedClientService clientService;
 
-    // Vue 쪽 redirect 주소 (application.yml 에서 app.oauth2.success-redirect 로도 오버라이드 가능)
+    // Vue 쪽 redirect 주소 (application.yml 에서 app.oauth2.success-redirect 로도 오버라이드
+    // 가능)
     @Value("${app.oauth2.success-redirect:http://localhost:5173/oauth2/callback}")
     private String frontendCallback;
 
     public OAuth2SuccessHandler(JwtProvider jwtProvider, UsersRepository userRepository,
-                                OAuth2AuthorizedClientService clientService) {
+            OAuth2AuthorizedClientService clientService) {
         this.jwtProvider = jwtProvider;
         this.userRepository = userRepository;
         this.clientService = clientService;
@@ -42,7 +43,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res,
-                                        Authentication authentication)
+            Authentication authentication)
             throws IOException, ServletException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
@@ -102,9 +103,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // --- AccessToken 세션에 저장 (네이버 API 호출용) ---
         if (authentication instanceof OAuth2AuthenticationToken oauthToken) {
-            OAuth2AuthorizedClient client =
-                    clientService.loadAuthorizedClient(oauthToken.getAuthorizedClientRegistrationId(),
-                            oauthToken.getName());
+            OAuth2AuthorizedClient client = clientService.loadAuthorizedClient(
+                    oauthToken.getAuthorizedClientRegistrationId(),
+                    oauthToken.getName());
             if (client != null) {
                 String accessToken = client.getAccessToken().getTokenValue();
                 HttpSession session = req.getSession(true);
@@ -127,7 +128,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     // --- 유틸 함수 ---
     private Byte convertGender(String gender) {
-        if (gender == null) return (byte) 1;
+        if (gender == null)
+            return (byte) 1;
         return switch (gender.toUpperCase()) {
             case "M" -> (byte) 1;
             case "F" -> (byte) 2;

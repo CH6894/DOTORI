@@ -23,7 +23,8 @@ public class FileStorageService {
 
   /** 이미지 실제 저장 + 메타 제거(재인코딩), 저장된 URL(/static/...) 리스트 반환 */
   public List<String> saveItemImages(Long itemId, List<MultipartFile> files) throws IOException {
-    if (files == null || files.isEmpty()) return List.of();
+    if (files == null || files.isEmpty())
+      return List.of();
 
     Path dir = Path.of(uploadRoot, "items", String.valueOf(itemId)).toAbsolutePath().normalize();
     Files.createDirectories(dir);
@@ -34,7 +35,8 @@ public class FileStorageService {
 
       // 간단한 시그니처 검사 (jpeg/png/webp… 필요시 보강)
       String ct = f.getContentType() == null ? "" : f.getContentType().toLowerCase();
-      if (!ct.startsWith("image/")) throw new IOException("이미지 파일만 허용됩니다: " + ct);
+      if (!ct.startsWith("image/"))
+        throw new IOException("이미지 파일만 허용됩니다: " + ct);
 
       String filename = "p_" + i + ".jpg"; // 모두 jpeg로 재인코딩
       Path out = dir.resolve(filename);
@@ -66,7 +68,8 @@ public class FileStorageService {
           return LocalDateTime.ofInstant(dt.toInstant(), ZoneId.systemDefault());
         }
       }
-    } catch (Exception ignore) {}
+    } catch (Exception ignore) {
+    }
     return null;
   }
 }

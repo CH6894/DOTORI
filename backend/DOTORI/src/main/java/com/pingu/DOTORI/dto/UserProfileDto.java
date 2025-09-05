@@ -15,5 +15,3 @@ public class UserProfileDto {
     private String email;
     private String userImg;
 }
-
-

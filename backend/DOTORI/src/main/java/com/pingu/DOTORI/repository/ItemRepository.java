@@ -18,4 +18,8 @@ public interface ItemRepository extends JpaRepository<Item, String> {
 
 	Page<Item> findByGenreIgnoreCaseAndTitleContainingIgnoreCase(String genre, String title, Pageable pageable);
 
+	// 검색어로 아이템 찾기 (name, title, genre에서 검색)
+	Page<Item> findByNameContainingIgnoreCaseOrTitleContainingIgnoreCaseOrGenreContainingIgnoreCase(
+			String name, String title, String genre, Pageable pageable);
+
 }

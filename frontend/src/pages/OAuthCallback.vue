@@ -6,8 +6,9 @@ const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
-  // URL에서 token 추출
+  // URL에서 token과 redirect URL 추출
   const token = route.query.token as string | null;
+  const redirectUrl = route.query.redirect_uri as string | null;
 
   if (token) {
     try {
@@ -19,8 +20,10 @@ onMounted(() => {
       // import axios from "axios"; (위에 추가)
       // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      // 원하는 페이지로 리다이렉트 (예: 메인화면)
-      router.replace("/");
+      // 리다이렉트 URL이 있으면 해당 페이지로, 없으면 메인화면으로
+      const targetUrl = redirectUrl || "/";
+      console.log("[OAuth2Callback] 리다이렉트:", targetUrl);
+      router.replace(targetUrl);
     } catch (e) {
       console.error("[OAuth2Callback] 토큰 저장 중 오류:", e);
       router.replace("/login");
