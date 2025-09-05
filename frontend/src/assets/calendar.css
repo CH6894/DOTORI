@@ -558,7 +558,7 @@
 }
 
 /* 공통 스크롤 영역 */
-.calendar-scope .fc .fc-scroller-harness,
+
 .calendar-scope .fc .fc-scroller {
   height: 100% !important;
   max-height: 100% !important;
@@ -568,8 +568,7 @@
 .calendar-scope .fc .fc-timegrid,
 .calendar-scope .fc .fc-timegrid-container,
 .calendar-scope .fc .fc-timegrid-body,
-.calendar-scope .fc .fc-timegrid-body>table,
-.calendar-scope .fc .fc-timegrid-slots {
+.calendar-scope .fc .fc-timegrid-body>table {
   height: 100% !important;
 }
 
@@ -619,34 +618,4 @@
 /* (선택) FullCalendar 전체 레이어는 낮게 유지 */
 :deep(.fc) {
   z-index: 1;
-}
-/* =========================
-   timeGrid 세로선 끊김 해결 패치
-   ========================= */
-
-/* 내부 테이블은 height:auto 로 두기 */
-.calendar-scope .fc .fc-timegrid-body>table,
-.calendar-scope .fc .fc-timegrid-cols,
-.calendar-scope .fc .fc-timegrid-slots table {
-  height: auto !important;
-  max-height: none !important;
-}
-
-/* 스크롤 컨테이너/하네스만 고정 */
-.calendar-scope .fc .fc-view-harness,
-.calendar-scope .fc .fc-view-harness-active,
-.calendar-scope .calendar-wrap {
-  height: var(--cal-fixed-height, 720px) !important;
-}
-
-/* 세로선 유지 */
-.calendar-scope .fc .fc-timegrid-col,
-.calendar-scope .fc .fc-timegrid-axis,
-.calendar-scope .fc .fc-timegrid-divider {
-  border-right: 1px solid #e0e0e0 !important;
-}
-
-/* 가로선 */
-.calendar-scope .fc .fc-timegrid-slot {
-  border-top: 1px dotted #eee !important;
 }
