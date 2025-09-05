@@ -1,4 +1,4 @@
-package com.pingu.DOTORI.controller;
+/**package com.pingu.DOTORI.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -81,7 +81,7 @@ public class WishListController {
         }
         
         try {
-            ItemDetails itemDetails = itemDetailsRepository.findByItemId(itemId)
+            //ItemDetails itemDetails = itemDetailsRepository.findByItemId(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found with itemId: " + itemId));
             
             WishList wishList = wishListService.toggleLike(me, itemDetails);
@@ -107,6 +107,6 @@ public class WishListController {
             return null;
         }
     }
-}
+}**/
 
 

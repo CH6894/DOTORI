@@ -376,7 +376,7 @@ const buildCartItem = (payload: UsedConfirmPayload = {}): CartItem => {
     id: p.id ?? String(Date.now()),
     title: p.title ?? '',
     price: Number(payload.price ?? p.currentPrice ?? p.price ?? 0),
-    qty: Math.max(1, Number(payload.qty ?? 1)),
+    qty: 1,
     shipping: Number(p.shipping ?? 0),
     thumb: firstImage ?? '/img/placeholder.jpg',
 
@@ -388,12 +388,32 @@ const buildCartItem = (payload: UsedConfirmPayload = {}): CartItem => {
 
 /* ===== 구매 플로우 ===== */
 // 구매 버튼 → 모달 없이 즉시 결제 페이지
+/* ===== 구매 플로우 ===== */
+// 구매 버튼 → 모달 없이 즉시 결제 페이지
 const buyNowDirect = (): void => {
+  // ✅ approvedUnpackedDetails에서 첫 번째 미개봉 상품 가져오기
+  const firstDetail = props.approvedUnpackedDetails?.[0]
+
+  if (!firstDetail) {
+    alert("구매 가능한 미개봉 상품이 없습니다.")
+    return
+  }
+
   const item = buildCartItem({})
   sessionStorage.setItem(SS_BUY_ONE, JSON.stringify([item]))
   emit('purchase', props.product)
-  router.push({ name: 'checkout', query: { mode: 'buynow' } })
+
+  // ✅ 반드시 itemDetailsId 함께 전달
+  router.push({
+    name: "checkout",
+    query: {
+      mode: "buynow",
+      itemDetailsId: firstDetail.itemId,
+      quantity: 1
+    }
+  })
 }
+
 
 /* ===== 장바구니 버튼 플로우  ===== */
 const addToCartAndNotify = (): void => {

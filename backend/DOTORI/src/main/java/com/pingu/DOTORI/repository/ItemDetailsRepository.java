@@ -36,7 +36,7 @@ public interface ItemDetailsRepository extends JpaRepository<ItemDetails, Long> 
 		   "LEFT JOIN FETCH id.item " +
 		   "WHERE id.item.itemCode = :itemCode AND id.unpacked = true " +
 		   "AND a.admissionState = 1 " +
-		   "ORDER BY id.itemId")
+		   "ORDER BY id.id")
 	List<ItemDetails> findApprovedOpenedItemDetailsWithAdminByItemCode(@Param("itemCode") String itemCode);
 	
 	// 승인된 미개봉 상품의 ItemDetails와 Admin 정보를 함께 조회 (Admin.admission_state = 1 확인)
@@ -45,6 +45,6 @@ public interface ItemDetailsRepository extends JpaRepository<ItemDetails, Long> 
 		   "LEFT JOIN FETCH id.item " +
 		   "WHERE id.item.itemCode = :itemCode AND id.unpacked = false " +
 		   "AND a.admissionState = 1 " +
-		   "ORDER BY id.itemId")
+		   "ORDER BY id.id")
 	List<ItemDetails> findApprovedUnpackedItemDetailsWithAdminByItemCode(@Param("itemCode") String itemCode);
 }

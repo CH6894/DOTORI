@@ -10,44 +10,49 @@
       </p>
     </div>
 
-    <!-- 주문 상품 표 -->
+    <!-- 주문 상품 -->
     <section class="card wide" v-if="items.length">
       <h2 class="section-title">주문 상품</h2>
       <div class="thead row">
         <div>상품 이미지</div>
         <div>상품 정보</div>
         <div>수량</div>
-        <div>할인 금액</div>
         <div>결제 금액</div>
       </div>
       <div class="tbody">
-        <div class="row" v-for="it in items" :key="it.itemDetailsId">
+        <div class="row" v-for="it in items" :key="it.orderId">
           <div class="thumb">
-            <img :src="it.thumbnailUrl" alt="" />
+            <img :src="it.mainImageUrl || '/default-product.jpg'" alt="상품 이미지" />
           </div>
           <div class="info">
             <div class="name">{{ it.itemName }}</div>
-            <div class="meta">상품번호: {{ it.itemDetailsId }}</div>
           </div>
           <div>{{ it.quantity }}</div>
-          <div>{{ fmt(it.discount || 0) }}원</div>
-          <div class="right"><b>{{ fmt(it.price * it.quantity - (it.discount || 0)) }}원</b></div>
+          <div class="right"><b>{{ fmt(it.price * (it.quantity || 1)) }}원</b></div>
         </div>
       </div>
     </section>
 
+    <!-- 주문 없음 안내 -->
+    <p v-else class="muted">주문 내역을 찾을 수 없습니다.</p>
+
     <!-- 배송/결제 정보 -->
-    <section class="card wide">
+    <section class="card wide" v-if="items.length">
       <div class="info-grid">
         <div class="panel">
           <h3 class="section-title">배송지 정보</h3>
           <div class="dl">
             <div class="dt">이름</div>
-            <div class="dd">{{ ship.receiver }}</div>
+            <div class="dd">{{ ship.receiver || '정보 없음' }}</div>
             <div class="dt">휴대폰 번호</div>
-            <div class="dd">{{ ship.phone }}</div>
+            <div class="dd">{{ ship.phone || '정보 없음' }}</div>
             <div class="dt">주소</div>
-            <div class="dd">[{{ ship.postcode }}] {{ ship.addr1 }}<br />{{ ship.addr2 }}</div>
+            <div class="dd">
+              <span v-if="ship.postcode">[{{ ship.postcode }}]</span>
+              {{ ship.addr1 || ship.mainAddress || '주소 정보 없음' }}
+              <br v-if="ship.addr2" />
+              {{ ship.addr2 }}
+            </div>
           </div>
         </div>
 
@@ -56,8 +61,6 @@
           <div class="dl">
             <div class="dt">상품 금액</div>
             <div class="dd">{{ fmt(subtotal) }}원</div>
-            <div class="dt">할인 금액</div>
-            <div class="dd">{{ fmt(discount) }}원</div>
             <div class="dt">배송비</div>
             <div class="dd">{{ shippingFee === 0 ? '무료' : fmt(shippingFee) + '원' }}</div>
             <div class="dt total">총 결제 금액</div>
@@ -68,7 +71,7 @@
     </section>
 
     <!-- 하단 액션 -->
-    <div class="actions">
+    <div class="actions" v-if="items.length">
       <router-link class="btn outline" :to="{ name: 'OrderHistory' }">주문 내역 보기</router-link>
       <router-link class="btn primary" :to="{ name: 'Home' }">쇼핑 계속하기</router-link>
     </div>
@@ -83,7 +86,11 @@ import icon from '@/assets/cart.svg'
 
 const route = useRoute()
 const iconSrc = icon
-const orderNo = ref<string>('') // 주문 번호
+
+// ✅ Checkout에서 payTime query로 전달됨
+const payTime = route.query.payTime as string
+
+const orderNo = ref<string>('') 
 const items = ref<any[]>([])
 const ship = reactive({
   receiver: '',
@@ -91,57 +98,90 @@ const ship = reactive({
   postcode: '',
   addr1: '',
   addr2: '',
+  mainAddress: '',
 })
 const shippingFee = ref(0)
 
-// 금액 계산
-const discount = computed(() => items.value.reduce((s, it) => s + (it.discount || 0), 0))
-const subtotal = computed(() => items.value.reduce((s, it) => s + it.price * it.quantity, 0))
-const total = computed(() => subtotal.value - discount.value + shippingFee.value)
+// ✅ subtotal 수정 (quantity 반영)
+const subtotal = computed(() =>
+  items.value.reduce((s, it) => s + (it.price * (it.quantity || 1)), 0)
+)
+const total = computed(() => subtotal.value + shippingFee.value)
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
-// API: 주문 상세 조회
+// 주문 조회
 const fetchOrderDetail = async () => {
   try {
-    const orderId = route.query.orderId
-    let res
+    console.log('payTime:', payTime)
 
-    if (orderId) {
-      // 특정 주문 상세
-      res = await api.get(`/api/orders/${orderId}`)
+    const res = await api.get('/orders/me')
+    console.log('주문 데이터:', res.data)
+
+    // ✅ payTime 기준으로 그룹핑 (ISO 포맷 대응)
+    const groupOrders = res.data.filter((o: any) =>
+      String(o.payTime).startsWith(payTime)
+    )
+    console.log('필터된 주문:', groupOrders)
+
+    if (groupOrders.length > 0) {
+      orderNo.value = payTime
+      items.value = groupOrders
+
+      // 배송지 불러오기
+      try {
+        const addrRes = await api.get('/address')
+        console.log('주소 응답:', addrRes.data)
+
+        let addressData = null
+        if (Array.isArray(addrRes.data) && addrRes.data.length > 0) {
+          addressData = addrRes.data[0]
+        } else if (addrRes.data && !Array.isArray(addrRes.data)) {
+          addressData = addrRes.data
+        }
+
+        if (addressData) {
+          ship.receiver = addressData.receiver || ''
+          ship.phone = addressData.phone || ''
+          ship.postcode = addressData.postcode || ''
+          ship.addr1 = addressData.addr1 || addressData.mainAddress || ''
+          ship.addr2 = addressData.addr2 || ''
+          ship.mainAddress = addressData.mainAddress || ''
+        }
+      } catch (e) {
+        console.warn('주소 불러오기 실패:', e)
+      }
     } else {
-      // orderId 없으면 최신 주문 내역
-      res = await api.get('/api/orders/me')
+      console.warn('해당 payTime에 맞는 주문이 없습니다:', payTime)
+      alert('해당 주문 내역을 찾을 수 없습니다.')
     }
-
-    const data = res.data
-    orderNo.value = data.orderId || (Array.isArray(data) ? data[0]?.orderId : 'N/A')
-    items.value = data.items || (Array.isArray(data) ? data[0]?.items : [])
-    // 배송지 정보도 data에서 매핑
   } catch (err) {
-    console.error('❌ 주문 상세 조회 실패:', err)
+    console.error('주문 상세 조회 실패:', err)
+    alert('주문 정보를 불러오는 중 오류가 발생했습니다.')
   }
 }
 
 onMounted(() => {
-  fetchOrderDetail()
+  if (payTime) {
+    fetchOrderDetail()
+  } else {
+    console.error('주문 payTime이 없습니다.')
+    alert('주문번호 정보가 없습니다.')
+  }
 })
 </script>
-
 
 <style scoped>
 /* Checkout 페이지와 톤/폭을 맞춤 */
 .order-complete {
   max-width: 720px;
   margin: 24px auto 120px;
-  /* 하단 여백: 고정 결제바와 동일 높이 */
   padding: 0 16px;
 }
 
 /* 상단 히어로 */
 .hero {
   text-align: center;
-  margin: 8px 0 8px;
+  margin: 8px 0 24px;
 }
 
 .hero__icon {
@@ -167,7 +207,7 @@ onMounted(() => {
   font-weight: 700;
 }
 
-/* 카드 공통 (Checkout과 동일한 중앙정렬/폭) */
+/* 카드 공통 */
 .card {
   background: #fff;
   border: 1px solid #eee;
@@ -185,7 +225,6 @@ onMounted(() => {
   transform: translateX(-50%);
 }
 
-
 .section-title {
   font-size: 16px;
   margin: 0 0 12px;
@@ -195,7 +234,7 @@ onMounted(() => {
 .thead,
 .row {
   display: grid;
-  grid-template-columns: 100px 1fr 80px 120px 140px;
+  grid-template-columns: 100px 1fr 80px 120px;
   align-items: center;
   gap: 12px;
 }
@@ -225,12 +264,6 @@ onMounted(() => {
   line-height: 1.4;
 }
 
-.info .meta {
-  color: #8a8a8a;
-  font-size: 13px;
-  margin-top: 2px;
-}
-
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -239,14 +272,6 @@ onMounted(() => {
 
 .right {
   text-align: right;
-}
-
-/* 2단 그리드 */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
 }
 
 .dl {
@@ -274,10 +299,10 @@ onMounted(() => {
 
 .actions {
   display: flex;
-  justify-content:flex-end;
+  justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
-  width:122%;
+  width: 122%;
 }
 
 .btn {
@@ -285,33 +310,29 @@ onMounted(() => {
   padding: 10px 14px;
   cursor: pointer;
   border: 1px solid #ddd;
+  text-decoration: none;
 }
 
 .btn.primary {
   background: #ff7a2e;
   color: #fff;
   border-color: #ff7a2e;
-  text-decoration: none;
 }
 
 .btn.outline {
   background: #fff;
   color: #000;
-  text-decoration: none;
 }
 
 /* 반응형 */
 @media (max-width: 720px) {
-
   .thead,
   .row {
-    grid-template-columns: 80px 1fr 60px 100px 1fr;
+    grid-template-columns: 80px 1fr 60px 100px;
   }
 
-  .grid {
+  .info-grid {
     grid-template-columns: 1fr;
   }
-
-  .info-grid{ grid-template-columns: 1fr; }
 }
 </style>

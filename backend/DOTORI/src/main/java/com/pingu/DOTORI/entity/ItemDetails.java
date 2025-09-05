@@ -14,40 +14,40 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "Item_details")
+@Table(name = "item_details")
 public class ItemDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "Item_ID")
+	@Column(name = "item_id")
 	@EqualsAndHashCode.Include
 	private Long itemId; // 아이템 고유 번호
 
-	@Column(name = "Cost")
+	@Column(name = "cost")
 	private BigDecimal cost; // 상품 가격
 
-	@Column(name = "Storage_Date")
+	@Column(name = "storage_date")
 	private LocalDateTime storageDate; // 입고 날짜
 
-	@Column(name = "Delivery_Date")
+	@Column(name = "delivery_date")
 	private LocalDateTime deliveryDate; // 출고 날짜
 
-	@Column(name = "Status", nullable = false)
+	@Column(name = "status", nullable = false)
 	private Boolean status; // 판매 상태
 
-	@Column(name = "Unpacked") // 0/1
+	@Column(name = "unpacked") // 0/1
 	private Boolean unpacked;
-	
+
 	@Lob
-	@Column(name = "Product_Condition")
+	@Column(name = "product_condition")
 	private String productCondition; // 상품 상태 상세 메모
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "Item_Code", nullable = false)
+	@JoinColumn(name = "item_code", nullable = false)
 	private Item item;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "User_ID", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	private Users user; // 유저 고유 번호 (단방향으로 충분
 
 	// --- 양방향 매핑 ---
@@ -62,9 +62,6 @@ public class ItemDetails {
 
 	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = false)
 	private List<Orders> orders = new ArrayList<>();
-
-	@OneToMany(mappedBy = "itemDetails", cascade = CascadeType.ALL, orphanRemoval = false)
-	private List<WishList> wishLists = new ArrayList<>();
 
 	// --- 편의 메서드 ---
 	public void addImage(ItemImg image) {

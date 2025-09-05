@@ -4,19 +4,9 @@
 
     <div class="table-wrap">
       <table class="cart-table">
-        <colgroup>
-          <col style="width:50px" />
-          <col style="width:auto" />
-          <col style="width:140px" />
-          <col style="width:120px" />
-          <col style="width:100px" />
-          <col style="width:100px" />
-          <col style="width:80px" />
-        </colgroup>
-
         <thead>
           <tr>
-            <th class="w-40"><input type="checkbox" :checked="allChecked" @change="toggleAll($event.target.checked)" /></th>
+            <th><input type="checkbox" :checked="allChecked" @change="toggleAll($event.target.checked)" /></th>
             <th>상품 정보</th>
             <th>수량</th>
             <th>상품 금액</th>
@@ -50,9 +40,9 @@
         <button class="btn sm" @click="removeSelected" :disabled="selectedIds.length===0">선택 상품 삭제</button>
         <button class="btn sm ghost" @click="router.push('/')">쇼핑 계속 하기</button>
       </div>
-
       <div class="right total">
-        <span>총 <b>{{ totalQty }}</b> 개의 상품 금액
+        <span>
+          총 <b>{{ totalQty }}</b> 개의 상품 금액
           <b>{{ currency(subtotal) }}</b> + 배송비
           <b>{{ currency(shippingTotal) }}</b> =
           <b class="sum">{{ currency(grandTotal) }}</b>
@@ -60,7 +50,7 @@
       </div>
     </div>
 
-    <!-- 주문 버튼들을 toolbar 아래에 -->
+    <!-- 주문 버튼 -->
     <div class="order-buttons" v-if="items.length">
       <button class="btn lg ghost" @click="orderSelected" :disabled="selectedIds.length===0">선택 상품 주문</button>
       <button class="btn lg primary" @click="orderAll" :disabled="items.length===0">전체 상품 주문</button>
@@ -74,45 +64,37 @@ import { reactive, ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CartItem from '@/components/shoppingcart/CartItem.vue'
 
-const cartItems = ref([])
+const items = ref([])
+const checked = reactive({})
 const router = useRouter()
 
-// items 변수 정의
-const items = cartItems
-
-// 선택 상태
-const checked = reactive({})
+// 전체 선택 상태
 const allChecked = computed(() => items.value.length && items.value.every(it => checked[it.cartId] !== false))
-const toggleAll = (v) => { items.value.forEach(it => { checked[it.cartId] = v }) }
+const toggleAll = (v) => items.value.forEach(it => { checked[it.cartId] = v })
+
+// 선택된 cartId 목록
 const selectedIds = computed(() => items.value.filter(it => checked[it.cartId] !== false).map(it => it.cartId))
 
-// 합계
-const subtotal = computed(() => 
-  items.value.reduce((s, it) => s + (checked[it.cartId] !== false ? it.price * it.quantity : 0), 0))
-const shippingTotal = computed(() => 0) // 배송비 로직 필요시 수정
+// 금액 계산
+const subtotal = computed(() => items.value.reduce((s, it) => checked[it.cartId] !== false ? s + (it.price * it.quantity) : s, 0))
+const shippingTotal = computed(() => 0)
 const grandTotal = computed(() => subtotal.value + shippingTotal.value)
-const totalQty = computed(() => 
-  items.value.reduce((s, it) => s + (checked[it.cartId] !== false ? it.quantity : 0), 0))
+const totalQty = computed(() => items.value.reduce((s, it) => checked[it.cartId] !== false ? s + it.quantity : s, 0))
 
-// 금액 포맷
-const currency = (n) => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(n)
+const currency = (n) => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(n || 0)
 
-// API 호출
+// 장바구니 불러오기
 const loadCart = async () => {
   try {
-    console.log('장바구니 로딩 시작...')
     const res = await api.get('/cart/me')
-    console.log('장바구니 응답:', res.data)
     items.value = res.data
-    res.data.forEach(it => { checked[it.cartId] = true }) // 기본 선택
+    res.data.forEach(it => { checked[it.cartId] = true })
   } catch (error) {
-    console.error('장바구니 로딩 실패:', error)
-    if (error.response?.status === 401) {
-      console.log('인증 실패 - 로그인 필요')
-    }
+    console.error('장바구니 로드 실패:', error)
   }
 }
 
+// 수량 변경
 const applyQty = async ({ id, qty }) => {
   try {
     await api.put(`/cart/${id}`, null, { params: { quantity: qty } })
@@ -122,68 +104,121 @@ const applyQty = async ({ id, qty }) => {
   }
 }
 
+// 개별 삭제
 const removeOne = async (id) => {
-  try {
-    await api.delete(`/cart/${id}`)
-    await loadCart()
-  } catch (error) {
-    console.error('상품 삭제 실패:', error)
-  }
+  if (!confirm('삭제하시겠습니까?')) return
+  await api.delete(`/cart/${id}`)
+  await loadCart()
 }
 
+// 선택 삭제
 const removeSelected = async () => {
-  try {
-    for (const id of selectedIds.value) {
-      await api.delete(`/cart/${id}`)
-    }
-    await loadCart()
-  } catch (error) {
-    console.error('선택 상품 삭제 실패:', error)
+  if (!confirm(`선택한 ${selectedIds.value.length}개 상품을 삭제하시겠습니까?`)) return
+  for (const id of selectedIds.value) {
+    await api.delete(`/cart/${id}`)
   }
+  await loadCart()
 }
 
-// 주문하기
+// 주문 페이지 이동
 const orderSelected = () => {
-  if (!selectedIds.value.length) return
-  router.push({ name: 'CheckoutPage', query: { cartIds: selectedIds.value.join(',') } })
+  if (!selectedIds.value.length) return alert('주문할 상품을 선택해주세요.')
+  router.push({ name: 'checkout', query: { cartIds: selectedIds.value.join(',') } })
 }
 
 const orderAll = () => {
-  if (!items.value.length) return
+  if (!items.value.length) return alert('장바구니가 비어있습니다.')
   const allIds = items.value.map(it => it.cartId)
-  router.push({ name: 'CheckoutPage', query: { cartIds: allIds.join(',') } })
+  router.push({ name: 'checkout', query: { cartIds: allIds.join(',') } })
 }
 
-// 마운트 시 로드
-onMounted(() => {
-  console.log('ShoppingCart 마운트됨')
-  loadCart()
-})
+// mounted
+onMounted(loadCart)
 </script>
 
 
 <style scoped>
-.container { max-width:1280px; margin:0 auto; padding:20px; }
-.title { font-size:28px; font-weight:800; text-align:center; margin:16px 0 24px; }
-.table-wrap { border:1px solid #eee; border-radius:14px; overflow:hidden; background:#fff; }
-
-/* 열 정렬 고정 */
-.cart-table { width:100%; border-collapse:collapse; table-layout:fixed; }
-.cart-table thead th {
-  background:#fafafa; padding:14px 10px; border-bottom:1px solid #eee; font-weight:700; font-size:14px;
+.container { 
+  max-width: 1280px; 
+  margin: 0 auto; 
+  padding: 20px; 
 }
-/* 숫자/관리 헤더 가운데 정렬 */
+
+.title { 
+  font-size: 28px; 
+  font-weight: 800; 
+  text-align: center; 
+  margin: 16px 0 24px; 
+}
+
+/* 디버깅 정보 스타일 */
+.debug-info {
+  background: #f0f8ff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+  font-family: monospace;
+}
+
+.debug-item {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.debug-item:last-child {
+  border-bottom: none;
+}
+
+.table-wrap { 
+  border: 1px solid #eee; 
+  border-radius: 14px; 
+  overflow: hidden; 
+  background: #fff; 
+}
+
+/* 테이블 스타일 */
+.cart-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  table-layout: fixed; 
+}
+
+.cart-table thead th {
+  background: #fafafa; 
+  padding: 14px 10px; 
+  border-bottom: 1px solid #eee; 
+  font-weight: 700; 
+  font-size: 14px;
+}
+
 .cart-table thead th:nth-child(3),
 .cart-table thead th:nth-child(4),
 .cart-table thead th:nth-child(5),
 .cart-table thead th:nth-child(6),
-.cart-table thead th:nth-child(7) { text-align:center; }
+.cart-table thead th:nth-child(7) { 
+  text-align: center; 
+}
 
-.cart-table th, .cart-table td { padding:14px 10px; font-size:14px; vertical-align:middle; overflow:hidden; }
-.w-40 { width:40px; }
-.empty { text-align:center; padding:60px 0; color:#777; }
+.cart-table th, 
+.cart-table td { 
+  padding: 14px 10px; 
+  font-size: 14px; 
+  vertical-align: middle; 
+  overflow: hidden; 
+}
 
-/* 기존 toolbar 디자인 그대로 */
+.w-40 { 
+  width: 40px; 
+}
+
+.empty { 
+  text-align: center; 
+  padding: 60px 0; 
+  color: #777; 
+}
+
+/* Toolbar 스타일 */
 .toolbar {
   display: flex; 
   align-items: center; 
@@ -196,11 +231,23 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-.left { display: flex; gap: 8px; }
-.total { display: flex; align-items: center; gap: 16px; }
-.total .sum { font-size: 20px; color: #111; }
+.left { 
+  display: flex; 
+  gap: 8px; 
+}
 
-/* 주문 버튼들을 toolbar 바로 아래에 */
+.total { 
+  display: flex; 
+  align-items: center; 
+  gap: 16px; 
+}
+
+.total .sum { 
+  font-size: 20px; 
+  color: #111; 
+}
+
+/* 주문 버튼들 */
 .order-buttons {
   display: flex;
   gap: 10px;
@@ -209,6 +256,7 @@ onMounted(() => {
   margin-top: 8px;
 }
 
+/* 버튼 스타일 */
 .btn { 
   padding: 10px 14px; 
   border: 1px solid #ddd; 
@@ -217,6 +265,16 @@ onMounted(() => {
   cursor: pointer;
   font-weight: 600;
   white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  background: #f8f9fa;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn.sm { 
@@ -236,7 +294,31 @@ onMounted(() => {
   border-color: #fc703c; 
 }
 
+.btn.primary:hover {
+  background: #e85a2b;
+}
+
 .btn.ghost { 
-  background: #ffff 
+  background: #fff;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .order-buttons {
+    flex-direction: column;
+  }
+  
+  .btn.lg {
+    width: 100%;
+  }
 }
 </style>

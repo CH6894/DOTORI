@@ -1,4 +1,4 @@
-<!-- src/components/UsedItemDetailModal.vue (예상 경로/이름) -->
+<!-- src/components/UsedItemDetailModal.vue -->
 <template>
   <teleport to="body">
     <!-- 오버레이 -->
@@ -85,14 +85,8 @@
                   <span :class="['heart-icon', { active: isWishlisted }]">♡</span>
                 </button>
 
-                <!-- ✅ 장바구니: alert 없이 저장 + 토스트 -->
-                <button class="cart-btn" @click="addToCart">
-                  장바구니
-                </button>
-
-                <button class="purchase-btn" @click="purchaseNow">
-                  구매하기
-                </button>
+                <button class="cart-btn" @click="addToCart">장바구니</button>
+                <button class="purchase-btn" @click="purchaseNow">구매하기</button>
               </div>
             </div>
           </div>
@@ -109,8 +103,8 @@
 </template>
 
 <script setup>
-/* eslint-disable no-undef, no-unused-vars */
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -118,64 +112,56 @@ const props = defineProps({
 })
 const emit = defineEmits(['close', 'purchase', 'addToCart'])
 
+const router = useRouter()
+
 // ---------- 상태 ----------
 const currentImageIndex = ref(0)
 const isWishlisted = ref(false)
 const showToast = ref(false)
 const TOAST_MS = 1200
 
-// ---------- 안전 이미지 배열 ----------
-const images = computed(() => {
-  const arr = props.item?.images
-  return Array.isArray(arr) ? arr.filter(Boolean) : []
-})
-
-// 현재 이미지
-const currentImage = computed(() =>
-  images.value[currentImageIndex.value] || '/img/placeholder.jpg'
-)
-
-// 이미지 네비게이션
+// ---------- 이미지 ----------
+const images = computed(() => Array.isArray(props.item?.images) ? props.item.images.filter(Boolean) : [])
+const currentImage = computed(() => images.value[currentImageIndex.value] || '/img/placeholder.jpg')
 const previousImage = () => { if (currentImageIndex.value > 0) currentImageIndex.value-- }
-const nextImage = () => {
-  if (currentImageIndex.value < images.value.length - 1) currentImageIndex.value++
-}
-const setCurrentImage = (index) => {
-  if (index >= 0 && index < images.value.length) currentImageIndex.value = index
-}
+const nextImage = () => { if (currentImageIndex.value < images.value.length - 1) currentImageIndex.value++ }
+const setCurrentImage = (index) => { if (index >= 0 && index < images.value.length) currentImageIndex.value = index }
 
-// 닫기
+// ---------- 닫기 ----------
 const closeModal = () => { emit('close') }
 
-// 구매(부모가 처리)
-const purchaseNow = () => { emit('purchase', props.item) }
-
-// ---------- 장바구니 저장 (alert 없이) ----------
-const LS_CART = 'dotori_cart_v1'
-const getCart = () => {
-  try { return JSON.parse(localStorage.getItem(LS_CART) || '[]') } catch { return [] }
+// ---------- 구매하기 (CheckoutPage로 이동) ----------
+const purchaseNow = () => {
+  if (!props.item?.id) {
+    alert("상품 정보가 없습니다.")
+    return
+  }
+  emit('purchase', props.item)
+  router.push({
+    name: 'checkout',
+    query: { mode: 'used', itemDetailsId: props.item.id, quantity: 1 }
+  })
 }
+
+// ---------- 장바구니 ----------
+const LS_CART = 'dotori_cart_v1'
+const getCart = () => { try { return JSON.parse(localStorage.getItem(LS_CART) || '[]') } catch { return [] } }
 const saveCart = (list) => localStorage.setItem(LS_CART, JSON.stringify(list))
 const upsert = (cart, item) => {
-  const i = cart.findIndex(x =>
-    String(x.id) === String(item.id) &&
-    (x.condition ?? null) === (item.condition ?? null)
-  )
+  const i = cart.findIndex(x => String(x.id) === String(item.id))
   if (i >= 0) cart[i].qty += item.qty
   else cart.push(item)
   return cart
 }
-// 현재 모달의 item으로 카트 아이템 구성
 const buildCartItem = () => {
   const p = props.item || {}
-  const firstImage = Array.isArray(p.images) ? p.images.find(Boolean) : null
   return {
     id: p.id ?? String(Date.now()),
     title: p.title ?? '',
-    price: Number(p.currentPrice ?? p.price ?? 0),
-    qty: 1,
+    price: Number(p.price ?? 0),
+    qty: 1, // ✅ 수량 고정
     shipping: Number(p.shipping ?? 0),
-    thumb: firstImage || '/img/placeholder.jpg',
+    thumb: Array.isArray(p.images) ? p.images.find(Boolean) || '/img/placeholder.jpg' : '/img/placeholder.jpg',
     condition: p.condition ?? null,
     note: null,
     variant: null,
@@ -184,63 +170,26 @@ const buildCartItem = () => {
 const addToCart = () => {
   const next = upsert(getCart(), buildCartItem())
   saveCart(next)
-  emit('addToCart', props.item) // 부모가 별도 처리할 게 있으면 사용
-
-  // 토스트만 잠깐 보여주고 끝 (alert 없음, 페이지 이동 없음)
+  emit('addToCart', props.item)
   showToast.value = true
   window.setTimeout(() => { showToast.value = false }, TOAST_MS)
 }
 
-// 찜 토글
-const toggleWishlist = () => { isWishlisted.value = !isWishlisted.value }
-
 // ---------- 유틸 ----------
-const getGradeText = (quality) => {
-  const map = { 1: 'S', 2: 'A', 3: 'B', 4: 'C' }
-  return map[quality] || '미정'
-}
-
-const getGradeClass = (quality) => {
-  const map = { 1: 'badge-grade--s', 2: 'badge-grade--a', 3: 'badge-grade--b', 4: 'badge-grade--c' }
-  return map[quality] || 'badge-grade--none'
-}
-
-const getConditionText = (condition) => {
-  const map = { excellent: '최상', good: '상', fair: '중', poor: '하' }
-  return map[condition] || '미정'
-}
-
-const getConditionDetails = (details) => details || '상태 양호'
-
-const getItemExplanation = (explanation) => explanation || '판매자 코멘트가 없습니다.'
-
-const formatPrice = (price) =>
-  new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 0 }).format(Number(price || 0))
-
-const formatDate = (dateString) => {
-  if (!dateString) return '-'
-  
-  try {
-    const date = new Date(dateString)
-    
-    // 유효한 날짜인지 확인
-    if (isNaN(date.getTime())) {
-      console.warn('Invalid date:', dateString)
-      return '-'
-    }
-    
-    // 한국 시간대로 변환하여 YYYY-MM-DD 형식으로 표시
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    
-    return `${year}-${month}-${day}`
-  } catch (error) {
-    console.error('Date formatting error:', error)
-    return '-'
-  }
+const toggleWishlist = () => { isWishlisted.value = !isWishlisted.value }
+const getGradeText = (q) => ({ 1: 'S', 2: 'A', 3: 'B', 4: 'C' }[q] || '미정')
+const getGradeClass = (q) => ({ 1: 'badge-grade--s', 2: 'badge-grade--a', 3: 'badge-grade--b', 4: 'badge-grade--c' }[q] || 'badge-grade--none')
+const getConditionText = (c) => ({ excellent: '최상', good: '상', fair: '중', poor: '하' }[c] || '미정')
+const getConditionDetails = (d) => d || '상태 양호'
+const getItemExplanation = (e) => e || '판매자 코멘트가 없습니다.'
+const formatPrice = (p) => new Intl.NumberFormat('ko-KR').format(Number(p || 0))
+const formatDate = (ds) => {
+  if (!ds) return '-'
+  const d = new Date(ds)
+  return isNaN(d.getTime()) ? '-' : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 </script>
+
 
 <style scoped>
 @import '@/styles/InfoCommon.css';
