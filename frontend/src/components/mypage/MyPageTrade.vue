@@ -1,10 +1,14 @@
 <!-- frontend/src/components/mypage/MyPageTrade.vue -->
 <template>
     <main class="mypage">
-        <section class="trade">
-            <!-- 목록 화면 -->
-            <div v-if="!showDetail">
-                <h1 class="section__title section__title--center">거래 내역</h1>
+        <section class="container">
+            <div class="trade">
+                <!-- 목록 화면 -->
+                <div v-if="!showDetail">
+                    <div class="section-header">
+                        <button @click="goToMyPage" class="btn-back">←돌아가기</button>
+                        <h1 class="section__title section__title--center">거래 내역</h1>
+                    </div>
 
                 <!-- 요약(전체/판매/구매) -->
                 <div class="panel panel--center">
@@ -23,8 +27,9 @@
                         </li>
                     </ul>
                 </div>
+                
                 <!-- 거래 테이블 -->
-                <div class="panel panel--center" v-if="filteredTrades.length">
+                <div class="panel panel--center">
                     <!-- 필터 -->
                     <div class="panel panel--center">
                         <div class="filter-bar" role="tablist" aria-label="거래 유형 필터">
@@ -49,7 +54,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-wrap">
+                    
+                    <!-- 검색 결과 표시 영역 -->
+                    <div class="table-wrap" v-if="filteredTrades.length > 0">
                         <table class="tbl tbl--fixed">
                             <colgroup>
                                 <col class="col-no" />
@@ -88,6 +95,11 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <!-- 검색 결과 없음 메시지 -->
+                    <div v-if="filteredTrades.length === 0" class="no-results">
+                        <p>검색 결과가 없습니다.</p>
+                    </div>
 
                     <!-- 페이지네이션 -->
                     <nav class="pagination" role="navigation" aria-label="페이지네이션" v-if="pageCount > 1">
@@ -108,12 +120,6 @@
                     </nav>
                 </div>
 
-                <!-- 빈 상태 -->
-                <div v-else class="panel panel--center">
-                    <div class="empty-state">
-                        <p class="empty-message">거래 내역이 없습니다.</p>
-                    </div>
-                </div>
             </div>
 
             <!-- 상세 화면 -->
@@ -152,6 +158,7 @@
                 <div class="bottom-actions">
                     <button class="btn-primary" @click="goBack">목록으로</button>
                 </div>
+            </div>
             </div>
         </section>
     </main>
@@ -256,7 +263,11 @@ export default {
             if (this.selectedKind !== 'all') rows = rows.filter(t => t.kind === this.selectedKind)
             if (this.searchKeyword) {
                 const q = this.searchKeyword.toLowerCase()
-                rows = rows.filter(t => t.no.toLowerCase().includes(q) || t.item.toLowerCase().includes(q))
+                rows = rows.filter(t => {
+                    const no = t.no ? t.no.toLowerCase() : ''
+                    const item = t.item ? t.item.toLowerCase() : ''
+                    return no.includes(q) || item.includes(q)
+                })
             }
             return rows
         },
@@ -305,7 +316,9 @@ export default {
         goBack() {
             this.showDetail = false
             this.tradeSelected = null
-            this.$nextTick(() => window.scrollTo({ top: 0 }))
+        },
+        goToMyPage() {
+            this.$router.push({ name: 'mypage' })
         },
 
         goPage(n) {
@@ -333,11 +346,61 @@ export default {
 </script>
 
 <style scoped>
+/* ===== 섹션 헤더 ===== */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0 1rem 0;
+    position: relative;
+    width: 100%;
+}
+
+.section-header .section__title {
+    text-align: center;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #2d251c;
+    flex: 1;
+}
+
+.section-header .btn-back {
+    position: absolute;
+    left: 0;
+    z-index: 1;
+}
+
+.btn-back {
+    padding: 0.5rem 0.75rem;
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.btn-back:hover {
+    background: #e9ecef;
+    color: #495057;
+    border-color: #adb5bd;
+}
+
 /* ===== Trade page (scoped) ===== */
 .trade {
     width: 100%;
     --row-h: 3.5rem;
     --badge-col: clamp(2.1rem, 2vw, 2.4rem);
+}
+
+.container {
+    width: min(1160px, 92%);
+    margin: 0 auto;
+    padding-bottom: 120px;
 }
 
 /* 제목 & 패널 */
@@ -438,6 +501,13 @@ export default {
     font-size: .875rem;
     min-height: 2.375rem;
     width: min(40ch, 100%);
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+    font-size: 1rem;
 }
 
 /* ===== 표: 줄 깨짐 방지 ===== */

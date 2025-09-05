@@ -2,7 +2,7 @@
 <template>
   <main class="mypage">
     <!-- 헤더: 제목 + 탭 (상세 진입 시 숨김) -->
-    <section class="mypage__head container" v-if="!$route.query.detail">
+    <section class="mypage__head container" v-if="!$route.query.detail && !isChildRoute">
       <h1 class="mypage__title">마이페이지</h1>
 
       <nav class="tabs" role="tablist" aria-label="마이페이지 탭" ref="tabsWrap">
@@ -125,7 +125,7 @@
         </div>
 
         <!-- 위시리스트 -->
-        <h2 class="section__title link" @click="go('WishPage')">위시리스트</h2>
+        <h2 class="section__title link" @click="go('WishPage')">위시리스트 ({{ wishlistCount }}개)</h2>
         <div class="panel">
           <div class="wish-grid">
             <div v-for="w in wishlist" :key="w.wishListId" class="wish-card" @click="goProduct(w)" role="button"
@@ -266,7 +266,13 @@ export default {
     },
     /* 템플릿 호환: v-for="w in wishlist" 그대로 쓰려면 아래 사용 */
     wishlist() {
-      return this.wish.items
+      // 최근에 추가한 순으로 정렬하고 6개만 반환
+      return [...this.wish.items]
+        .sort((a, b) => new Date(b.createdAt || b.addedAt || 0) - new Date(a.createdAt || a.addedAt || 0))
+        .slice(0, 6)
+    },
+    wishlistCount() {
+      return this.wish.items ? this.wish.items.length : 0
     },
   },
 
@@ -875,6 +881,8 @@ export default {
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .wish-card:hover {
@@ -904,6 +912,11 @@ export default {
 
 .wish-info {
   padding: 0.625rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 80px; /* 최소 높이 보장 */
 }
 
 .wish-title {
@@ -912,6 +925,13 @@ export default {
   color: #333;
   margin: 0 0 0.25rem 0;
   line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
 .wish-price {
@@ -928,6 +948,8 @@ export default {
   justify-content: space-between;
   gap: 0.375rem;
   padding: 0.625rem;
+  margin-top: auto; /* 하단에 고정 */
+  flex-shrink: 0;
 }
 
 /* 하트 아이콘 버튼 */
