@@ -72,9 +72,12 @@
         </div>
         <div class="info">
           <div class="name">{{ it.itemName }}</div>
-          <div class="meta">수량: {{ it.quantity }}개</div>
+          <div class="meta">
+            <span v-if="it.isUsed" class="used-badge">중고</span>
+            수량: 1개
+          </div>
         </div>
-        <div class="price">{{ formatCurrency(it.price * it.quantity) }} 원</div>
+        <div class="price">{{ formatCurrency(it.price) }} 원</div>
       </div>
 
       <p v-if="items.length === 0" class="muted" style="margin-top:12px;">주문할 상품이 없습니다.</p>
@@ -113,7 +116,7 @@
             </div>
           </div>
         </transition>
-        <label class="radio"><input type="radio" value="card" v-model="payMethod" /> 간편 결제</label>
+        <label class="radio"><input type="radio" value="easy" v-model="payMethod" /> 간편 결제</label>
         <label class="radio"><input type="radio" value="card" v-model="payMethod" /> 카드 결제</label>
         <label class="radio"><input type="radio" value="mobile" v-model="payMethod" /> 휴대폰 결제</label>
       </div>
@@ -166,47 +169,86 @@ const onClearNote = () => { tempNote.value = ''; deliveryNote.value = '' }
 /* 주문 아이템 */
 const items = ref([])
 
+// 주문 아이템 로드 개선
 const loadItems = async () => {
   try {
     if (route.query.mode === 'buynow' || route.query.mode === 'used') {
+      // 바로구매 모드
       const itemDetailsId = route.query.itemDetailsId
 
-      console.log('=== 디버깅 정보 ===')
+      console.log('=== 바로구매 디버깅 정보 ===')
       console.log('route.query:', route.query)
       console.log('itemDetailsId:', itemDetailsId)
-      console.log('itemDetailsId 타입:', typeof itemDetailsId)
 
       if (!itemDetailsId) {
         alert('잘못된 접근입니다. 상품 정보가 없습니다.')
+        router.push({ name: 'Home' })
         return
       }
       
       const res = await api.get(`/itemdetails/${itemDetailsId}`)
-      console.log('API 응답 전체:', res.data)
-      console.log('API 응답의 itemId:', res.data.itemId)
+      console.log('상품 상세 API 응답:', res.data)
       
-      // ✅ URL 파라미터에서 가져온 itemDetailsId를 직접 사용
+      // 상품 판매 상태 확인
+      if (!res.data.status) {
+        alert('이미 판매된 상품입니다.')
+        router.push({ name: 'Home' })
+        return
+      }
+      
+      // 중고상품 특성 반영 (수량 고정 1)
       items.value = [{
-        itemDetailsId: parseInt(itemDetailsId), // URL 파라미터 값 직접 사용
+        itemDetailsId: parseInt(itemDetailsId),
         itemName: res.data.itemName,
         itemImgUrl: res.data.itemImgUrl,
-        quantity: 1,
-        price: res.data.cost
+        quantity: 1, // 중고상품은 항상 1개
+        price: res.data.cost,
+        isUsed: true // 중고상품 표시용
       }]
       
-      console.log('설정된 items.value:', items.value)
+      console.log('설정된 바로구매 상품:', items.value)
+      
     } else {
+      // 장바구니 모드
       const res = await api.get('/cart/me')
-      items.value = res.data
+      console.log('장바구니 API 응답:', res.data)
+      
+      // 장바구니에서 이미 판매된 상품 필터링
+      const availableItems = res.data.filter(item => {
+        if (item.itemDetails && !item.itemDetails.status) {
+          console.warn(`장바구니 상품 ${item.itemDetails.item?.name}이 이미 판매되었습니다.`)
+          return false
+        }
+        return true
+      })
+      
+      if (availableItems.length !== res.data.length) {
+        alert('장바구니에 판매완료된 상품이 있어 제외되었습니다.')
+      }
+      
+      items.value = availableItems.map(item => ({
+        ...item,
+        quantity: 1, // 중고상품은 항상 1개
+        isUsed: true
+      }))
+      
+      console.log('설정된 장바구니 상품:', items.value)
     }
   } catch (e) {
     console.error('아이템 로드 실패:', e)
-    items.value = []
+    
+    if (e.response?.status === 404) {
+      alert('상품을 찾을 수 없습니다.')
+      router.push({ name: 'Home' })
+    } else {
+      alert('상품 정보를 불러오는 중 오류가 발생했습니다.')
+      items.value = []
+    }
   }
 }
 
 /* 금액 */
-const subtotal = computed(() => items.value.reduce((s, it) => s + (it.price * it.quantity), 0))
+const subtotal = computed(() => items.value.reduce((s, it) => s + it.price, 0)) // 중고상품은 수량이 1이므로 단순화
 const shippingFee = 0
 const total = computed(() => subtotal.value + shippingFee)
 const formatCurrency = (n) => n.toLocaleString('ko-KR')
@@ -231,6 +273,7 @@ const submitOrder = async () => {
 
   if (!canPay.value) return alert('입금자명을 입력하세요.')
 
+  // 기본 payload 구성
   const payload = {
     depositerName: depositerName.value,
     payMethod: payMethod.value,
@@ -238,40 +281,66 @@ const submitOrder = async () => {
   }
 
   const mode = route.query.mode
+  
+  // 주문 방식에 따른 payload 구성
   if ((mode === 'buynow' || mode === 'used') && items.value[0]) {
+    // 바로구매/중고상품 주문
     const itemDetailsId = items.value[0].itemDetailsId
     
-    console.log('추출한 itemDetailsId:', itemDetailsId)
-    console.log('itemDetailsId 타입:', typeof itemDetailsId)
+    console.log('바로구매 모드 - itemDetailsId:', itemDetailsId)
     
-    // ✅ 추가 검증
     if (!itemDetailsId) {
       alert('상품 정보가 올바르지 않습니다.')
       return
     }
 
     payload.itemDetailsId = itemDetailsId
-    payload.quantity = 1
+    // 중고상품은 수량이 항상 1이므로 quantity 필드 제거
   } else {
+    // 장바구니 주문
+    console.log('장바구니 모드')
     payload.cartIds = items.value.map(it => it.cartId)
   }
 
   console.log('최종 전송 payload:', payload)
 
   try {
-    const res = await api.post('/orders/cart', payload)
+    // 통합 엔드포인트 사용
+    const res = await api.post('/orders', payload)
+    console.log('주문 응답:', res.data)
+    
     alert('주문이 완료되었습니다!')
     
-    // ✅ payTime으로 변경 (OrderComplete에서 사용)
-    const payTime = new Date().toISOString().slice(0, 19)
+    // 백엔드 응답에서 payTime 추출
+    let payTime
+    if (Array.isArray(res.data) && res.data.length > 0) {
+      // 장바구니 주문 (배열 응답)
+      payTime = res.data[0].payTime
+    } else if (res.data.payTime) {
+      // 단일 주문 (객체 응답)
+      payTime = res.data.payTime
+    } else {
+      // 폴백: 현재 시간 사용
+      payTime = new Date().toISOString()
+    }
+    
+    // ISO 형식을 19자리로 통일 (2025-09-05T02:37:12)
+    const formattedPayTime = payTime.slice(0, 19)
+    console.log('OrderComplete로 전달할 payTime:', formattedPayTime)
+    
     router.push({ 
       name: 'ordercomplete', 
-      query: { payTime: payTime }
+      query: { payTime: formattedPayTime }
     })
+    
   } catch (err) {
     console.error('주문 실패:', err)
-    if (err.response?.data) {
-      alert('주문 실패: ' + err.response.data)
+    
+    // 더 상세한 에러 처리
+    if (err.response?.status === 400) {
+      alert('주문 실패: ' + (err.response.data || '잘못된 요청입니다.'))
+    } else if (err.response?.status === 500) {
+      alert('서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.')
     } else {
       alert('주문 처리 중 오류가 발생했습니다.')
     }
@@ -339,6 +408,19 @@ onMounted(() => { loadAddress(); loadItems() })
 .info .name { font-weight: 700; }
 .info .meta { color: #8a8a8a; font-size: 13px; margin-top: 4px; }
 .price { font-weight: 700; }
+
+/* 중고상품 배지 스타일 */
+.used-badge {
+  display: inline-block;
+  background: #ff7a2e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
 
 .amount { margin-top: 8px; }
 .amount .row { padding: 10px 0; }

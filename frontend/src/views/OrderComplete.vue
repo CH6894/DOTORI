@@ -109,54 +109,124 @@ const subtotal = computed(() =>
 const total = computed(() => subtotal.value + shippingFee.value)
 const fmt = (n: number) => n.toLocaleString('ko-KR')
 
-// 주문 조회
+// 주문 조회 - payTime 기준으로 해당 시간의 주문 그룹 조회
 const fetchOrderDetail = async () => {
   try {
     console.log('payTime:', payTime)
 
-    const res = await api.get('/orders/me')
-    console.log('주문 데이터:', res.data)
+    // ✅ 우선 전체 주문 내역을 가져와서 확인
+    const allOrdersRes = await api.get('/orders/me')
+    console.log('전체 주문 데이터:', allOrdersRes.data)
 
-    // ✅ payTime 기준으로 그룹핑 (ISO 포맷 대응)
-    const groupOrders = res.data.filter((o: any) =>
-      String(o.payTime).startsWith(payTime)
-    )
-    console.log('필터된 주문:', groupOrders)
+    // ✅ 새로운 API 엔드포인트 사용 - payTime 기준 주문 그룹 조회
+    try {
+      const res = await api.get(`/orders/paytime?payTime=${encodeURIComponent(payTime)}`)
+      console.log('payTime 기준 주문 데이터:', res.data)
 
-    if (groupOrders.length > 0) {
-      orderNo.value = payTime
-      items.value = groupOrders
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        // ✅ 주문번호는 해당 시간대 주문 중 가장 작은 ID로 설정
+        const minOrderId = Math.min(...res.data.map((o: any) => o.orderId))
+        orderNo.value = minOrderId.toString()
+        
+        // ✅ 중고상품이므로 모든 quantity는 1
+        items.value = res.data.map((order: any) => ({
+          orderId: order.orderId,
+          itemName: order.itemName || '상품명 없음',
+          mainImageUrl: order.mainImageUrl,
+          price: order.price || 0,
+          quantity: 1 // 중고상품은 항상 1개
+        }))
 
-      // 배송지 불러오기
-      try {
-        const addrRes = await api.get('/address')
-        console.log('주소 응답:', addrRes.data)
-
-        let addressData = null
-        if (Array.isArray(addrRes.data) && addrRes.data.length > 0) {
-          addressData = addrRes.data[0]
-        } else if (addrRes.data && !Array.isArray(addrRes.data)) {
-          addressData = addrRes.data
-        }
-
-        if (addressData) {
-          ship.receiver = addressData.receiver || ''
-          ship.phone = addressData.phone || ''
-          ship.postcode = addressData.postcode || ''
-          ship.addr1 = addressData.addr1 || addressData.mainAddress || ''
-          ship.addr2 = addressData.addr2 || ''
-          ship.mainAddress = addressData.mainAddress || ''
-        }
-      } catch (e) {
-        console.warn('주소 불러오기 실패:', e)
+        // 배송지 정보 불러오기
+        await fetchShippingAddress()
+        return
       }
-    } else {
-      console.warn('해당 payTime에 맞는 주문이 없습니다:', payTime)
-      alert('해당 주문 내역을 찾을 수 없습니다.')
+    } catch (apiError) {
+      console.error('payTime API 호출 실패:', apiError)
     }
+
+    // ✅ API 실패 시 폴백: 전체 주문에서 시간 기준으로 필터링
+    if (Array.isArray(allOrdersRes.data)) {
+      console.log('폴백 모드: 전체 주문에서 필터링 시작')
+      
+      // payTime 기준으로 필터링 (여러 방식 시도)
+      const targetTime = payTime.slice(0, 16) // "2025-09-05T02:37" 형식
+      console.log('필터링 대상 시간:', targetTime)
+      
+      const filteredOrders = allOrdersRes.data.filter((order: any) => {
+        if (!order.payTime) return false
+        
+        // 여러 형식으로 시간 비교 시도
+        const orderTimeStr = order.payTime.toString()
+        const orderTime16 = orderTimeStr.slice(0, 16)
+        const orderTime19 = orderTimeStr.slice(0, 19)
+        
+        console.log(`주문 ${order.orderId} 시간 비교:`, {
+          original: orderTimeStr,
+          slice16: orderTime16,
+          slice19: orderTime19,
+          target: targetTime,
+          match16: orderTime16 === targetTime,
+          match19: orderTime19 === payTime
+        })
+        
+        return orderTime16 === targetTime || orderTime19 === payTime
+      })
+
+      console.log('필터링된 주문:', filteredOrders)
+
+      if (filteredOrders.length > 0) {
+        const minOrderId = Math.min(...filteredOrders.map((o: any) => o.orderId || o.id))
+        orderNo.value = minOrderId.toString()
+        
+        items.value = filteredOrders.map((order: any) => ({
+          orderId: order.orderId || order.id,
+          itemName: order.itemName || '상품명 없음',
+          mainImageUrl: order.mainImageUrl,
+          price: order.price || 0,
+          quantity: 1
+        }))
+
+        await fetchShippingAddress()
+        return
+      }
+    }
+
+    // 모든 방법이 실패한 경우
+    console.warn('해당 payTime에 맞는 주문이 없습니다:', payTime)
+    alert('해당 주문 내역을 찾을 수 없습니다.')
+    
   } catch (err) {
     console.error('주문 상세 조회 실패:', err)
     alert('주문 정보를 불러오는 중 오류가 발생했습니다.')
+  }
+}
+
+// 배송지 정보 조회 함수 분리
+const fetchShippingAddress = async () => {
+  try {
+    const addrRes = await api.get('/address')
+    console.log('주소 응답:', addrRes.data)
+
+    let addressData = null
+    if (Array.isArray(addrRes.data) && addrRes.data.length > 0) {
+      // 기본 배송지 또는 첫 번째 배송지 사용
+      addressData = addrRes.data.find((addr: any) => addr.is_default) || addrRes.data[0]
+    } else if (addrRes.data && !Array.isArray(addrRes.data)) {
+      addressData = addrRes.data
+    }
+
+    if (addressData) {
+      ship.receiver = addressData.receiver || ''
+      ship.phone = addressData.phone || ''
+      ship.postcode = addressData.postcode || ''
+      ship.addr1 = addressData.addr1 || addressData.mainAddress || ''
+      ship.addr2 = addressData.addr2 || ''
+      ship.mainAddress = addressData.mainAddress || ''
+    }
+  } catch (e) {
+    console.warn('주소 불러오기 실패:', e)
+    // 배송지 정보는 선택사항이므로 에러를 alert로 표시하지 않음
   }
 }
 
@@ -322,6 +392,12 @@ onMounted(() => {
 .btn.outline {
   background: #fff;
   color: #000;
+}
+
+.muted {
+  text-align: center;
+  color: #666;
+  margin: 40px 0;
 }
 
 /* 반응형 */

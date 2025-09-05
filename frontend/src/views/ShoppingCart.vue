@@ -75,33 +75,44 @@ const toggleAll = (v) => items.value.forEach(it => { checked[it.cartId] = v })
 // 선택된 cartId 목록
 const selectedIds = computed(() => items.value.filter(it => checked[it.cartId] !== false).map(it => it.cartId))
 
-// 금액 계산
-const subtotal = computed(() => items.value.reduce((s, it) => checked[it.cartId] !== false ? s + (it.price * it.quantity) : s, 0))
+// 금액 계산 (중고상품은 수량이 항상 1이므로 단순화)
+const subtotal = computed(() => items.value.reduce((s, it) => checked[it.cartId] !== false ? s + it.price : s, 0))
 const shippingTotal = computed(() => 0)
 const grandTotal = computed(() => subtotal.value + shippingTotal.value)
-const totalQty = computed(() => items.value.reduce((s, it) => checked[it.cartId] !== false ? s + it.quantity : s, 0))
+const totalQty = computed(() => items.value.reduce((s, it) => checked[it.cartId] !== false ? s + 1 : s, 0)) // 중고상품은 항상 1개
 
 const currency = (n) => new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW', maximumFractionDigits: 0 }).format(n || 0)
 
-// 장바구니 불러오기
+// 장바구니 불러오기 수정
 const loadCart = async () => {
   try {
     const res = await api.get('/cart/me')
-    items.value = res.data
+    console.log('장바구니 원본 데이터:', res.data)
+    
+    // unpacked 상태 정보를 포함하여 장바구니 아이템 매핑
+    items.value = res.data.map(item => ({
+      ...item,
+      // itemDetails에서 unpacked 상태 추출
+      unpacked: item.itemDetails?.unpacked,
+      // 다른 필요한 정보들도 매핑
+      itemName: item.itemDetails?.item?.name || item.itemName,
+      mainImageUrl: item.itemDetails?.item?.imgUrl || item.mainImageUrl,
+      quantity: 1 // 중고상품은 항상 1개
+    }))
+    
+    console.log('매핑된 장바구니 데이터:', items.value)
+    
+    // 체크박스 초기화
     res.data.forEach(it => { checked[it.cartId] = true })
   } catch (error) {
     console.error('장바구니 로드 실패:', error)
   }
 }
 
-// 수량 변경
+// 수량 변경 (중고상품은 수량 변경 불가하므로 제거)
 const applyQty = async ({ id, qty }) => {
-  try {
-    await api.put(`/cart/${id}`, null, { params: { quantity: qty } })
-    await loadCart()
-  } catch (error) {
-    console.error('수량 변경 실패:', error)
-  }
+  // 중고상품은 수량이 항상 1이므로 수량 변경 기능 비활성화
+  console.log('중고상품은 수량 변경이 불가능합니다.')
 }
 
 // 개별 삭제
@@ -135,7 +146,6 @@ const orderAll = () => {
 // mounted
 onMounted(loadCart)
 </script>
-
 
 <style scoped>
 .container { 

@@ -18,8 +18,13 @@
         @error="handleImageError"
       />
       <div class="meta">
-        <!-- ✅ 상품명 itemName 우선 -->
-        <p class="title">{{ item.itemName || item.title || '상품명 없음' }}</p>
+        <!-- 상품명과 배지 -->
+        <div class="title-container">
+          <!-- 배지 시스템: unpacked 상태에 따라 구분 -->
+          <span v-if="item.unpacked === true" class="used-badge">중고</span>
+          <span v-else-if="item.unpacked === false" class="new-badge">미개봉</span>
+          <span class="product-name">{{ item.itemName || item.title || '상품명 없음' }}</span>
+        </div>
         <p class="unit-price">{{ currency(item.price) }}</p>
       </div>
     </td>
@@ -105,15 +110,48 @@ export default {
   flex-shrink: 0;
 }
 .meta { flex: 1; min-width: 0; }
-.meta .title { 
-  font-weight: 600; 
-  white-space: nowrap; 
-  overflow: hidden; 
-  text-overflow: ellipsis; 
-  margin: 0 0 4px 0;
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.product-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
 .unit-price { color: #777; font-size: 13px; margin: 0; }
+
+/* 배지 스타일 */
+.used-badge {
+  display: inline-block;
+  background: #ff7a2e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.new-badge {
+  display: inline-block;
+  background: #22c55e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
 
 /* 수량 (고정 1) */
 .qty { text-align: center; }

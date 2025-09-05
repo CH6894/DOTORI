@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pingu.DOTORI.dto.OrdersRequestDTO;
@@ -24,7 +25,7 @@ public class OrdersController {
 
     private final OrdersService ordersService;
 
-    /** ✅ 통합 주문 생성 - 단일/장바구니 자동 구분 */
+    /** 통합 주문 생성 - 단일/장바구니 자동 구분 */
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrdersRequestDTO request,
                                         HttpServletRequest httpReq) {
@@ -50,25 +51,39 @@ public class OrdersController {
         }
     }
 
-    /** ✅ 장바구니 기반 주문 생성 (별도 엔드포인트) */
+    /** 장바구니 기반 주문 생성 (별도 엔드포인트) */
     @PostMapping("/cart")
     public ResponseEntity<List<OrdersResponseDTO>> createOrderFromCart(@RequestBody OrdersRequestDTO request,
-                                                                       HttpServletRequest httpReq) {
-    	System.out.println("cart METHOD -------------------------------------------------------------------------");
+                                                                      HttpServletRequest httpReq) {
+        System.out.println("cart METHOD -------------------------------------------------------------------------");
         List<OrdersResponseDTO> saved = ordersService.createOrderFromCart(request, httpReq);
         return ResponseEntity.ok(saved);
     }
 
-    /** ✅ 내 주문 내역 조회 */
+    /** 내 주문 내역 조회 */
     @GetMapping("/me")
     public List<OrdersResponseDTO> getMyOrders(HttpServletRequest httpReq) {
         return ordersService.getMyOrders(httpReq);
     }
 
-    /** ✅ 주문 단건 조회 */
+    /** 주문 단건 조회 */
     @GetMapping("/{orderId}")
     public ResponseEntity<OrdersResponseDTO> getOrderById(@PathVariable Long orderId,
-                                                          HttpServletRequest httpReq) {
+                                                         HttpServletRequest httpReq) {
         return ResponseEntity.ok(ordersService.getOrderById(orderId, httpReq));
+    }
+
+    /** 특정 시간의 주문 그룹 조회 (주문완료 페이지용) */
+    @GetMapping("/paytime")
+    public ResponseEntity<List<OrdersResponseDTO>> getOrdersByPayTime(
+            @RequestParam String payTime,
+            HttpServletRequest httpReq) {
+        try {
+            List<OrdersResponseDTO> orders = ordersService.getOrdersByPayTime(payTime, httpReq);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            System.err.println("payTime 기준 주문 조회 오류: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
     }
 }
