@@ -62,7 +62,7 @@ const handleImageLoad = (event: Event) => {
         </div>
       </RouterLink>
 
-      <div v-if="props.items.length === 0" class="empty">해당 태그의 상품이 없어요.</div>
+      <div v-if="displayItems.length === 0" class="empty">해당 태그의 상품이 없어요.</div>
     </div>
 
   </section>
