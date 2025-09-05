@@ -14,6 +14,7 @@ import '@/assets/styles/links.css'
 
 const app = createApp(App)
 
+
 // 팀원 코드 스타일을 따라 바로 등록
 app.use(createPinia())
 app.use(router)

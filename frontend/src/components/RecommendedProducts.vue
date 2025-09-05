@@ -3,7 +3,11 @@
     <div class="section-container">
       <h3 class="section-title">추천상품</h3>
       
-      <div class="products-slider-container">
+      <div v-if="products.length === 0" class="empty">
+        <p>현재 추천상품이 없습니다. 추천상품이 추가되면 여기에 표시됩니다.</p>
+      </div>
+      
+      <div v-else class="products-slider-container">
         <div class="products-slider">
           <div 
             v-for="product in products" 
@@ -53,5 +57,14 @@ const goToProduct = (productId) => {
 
 .recommended-section {
   padding: 10px 0;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2.25rem 0;                                /* 36px */
+  color: #9a9a9a;
+  border: 0.0625rem dashed #e5e5e5;                  /* 1px */
+  border-radius: 0.75rem;                            /* 12px */
 }
 </style>

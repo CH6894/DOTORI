@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrdersController {
 
-    private final OrdersService ordersService;
+        private final OrdersService ordersService;
 
     /** ✅ 통합 주문 생성 - 단일/장바구니 자동 구분 */
     @PostMapping

@@ -1,13 +1,16 @@
-//package com.pingu.DOTORI.repository;
-//
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//
-//import com.pingu.DOTORI.entity.WishList;
-//
-//public interface WishListRepository extends JpaRepository<WishList, Long> {
-//	boolean existsByUserUserIdAndItemItemId(Long userId, Long itemId);
-//	void deleteByUserUserIdAndItemItemId(Long userId, Long itemId);
-//	Page<WishList> findByUserUserId(Long userId, Pageable pageable);
-//}
+package com.pingu.DOTORI.repository;
+
+import com.pingu.DOTORI.entity.WishList;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface WishListRepository extends JpaRepository<WishList, Long> {
+    boolean existsByUser_IdAndItemId(Long userId, Long itemId);
+
+    void deleteByUser_IdAndItemId(Long userId, Long itemId);
+
+    List<WishList> findAllByUser_IdOrderByWishListIdAsc(Long userId);
+}

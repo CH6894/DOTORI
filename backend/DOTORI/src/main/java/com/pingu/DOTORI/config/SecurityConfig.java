@@ -6,15 +6,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository; // ✅ 추가
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.cors.*;
-import org.springframework.security.config.Customizer;
-
 import com.pingu.DOTORI.security.OAuth2SuccessHandler;
 import com.pingu.DOTORI.security.JwtAuthenticationFilter;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-
-import com.pingu.DOTORI.config.AlwaysReauthResolver;
 
 @Configuration
 @EnableWebSecurity
@@ -28,13 +26,21 @@ public class SecurityConfig {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
   }
 
+  @Bean
+  AuthenticationEntryPoint restAuthEntryPoint() {
+    return (request, response, authException) -> {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+      response.setContentType("application/json");
+      response.getWriter().write("{\"error\":\"UNAUTHORIZED\"}");
+    };
+  }
+
   @Bean(name = "mainSecurityFilterChain")
   SecurityFilterChain filterChain(HttpSecurity http,
       ClientRegistrationRepository repo) throws Exception {
     http
         .csrf(csrf -> csrf.disable())
-        .cors(cors -> {
-        })
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .addFilterBefore(jwtAuthenticationFilter,
             org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth
@@ -42,9 +48,13 @@ public class SecurityConfig {
             .requestMatchers("/oauth2/**", "/login/**").permitAll()
             .requestMatchers("/static/**").permitAll()
             .requestMatchers("/assets/**").permitAll()
+            .requestMatchers("/uploads/**").permitAll() // 업로드된 이미지 파일 접근 허용
             .requestMatchers("/open/**").permitAll()
+            .requestMatchers("/api/inspections").permitAll() // 검수 신청은 인증 없이 허용
+            .requestMatchers("/api/inspections/*/admin-images").permitAll() // 관리자 이미지 업로드는 인증 없이 허용
             .requestMatchers("/api/**").authenticated()
             .anyRequest().authenticated())
+        .exceptionHandling(e -> e.authenticationEntryPoint(restAuthEntryPoint()))
         .oauth2Login(oauth -> oauth
             .authorizationEndpoint(auth -> auth.authorizationRequestResolver(new AlwaysReauthResolver(repo)))
             .successHandler(oAuth2SuccessHandler) // 로그인 성공 후 JWT 발급

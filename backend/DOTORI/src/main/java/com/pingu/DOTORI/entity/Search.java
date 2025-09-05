@@ -10,21 +10,27 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Search")
-@Table(name = "Search")
+@Table(name = "search")
 public class Search {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "Search_ID")
+	@Column(name = "search_id")
 	private Long id;
 
-	@Column(name = "Key_Word", nullable = false, length = 255)
+	@Column(name = "key_word", nullable = false, length = 255)
 	private String keyWord;
 
-	@Column(name = "Created_at", nullable = false)
+	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
+	@Column(name = "search_count", nullable = false)
+	private Integer searchCount;
+	
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "User_ID", nullable = false, foreignKey = @ForeignKey(name = "FK_Users_TO_Search"))
+	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Users_TO_Search"))
 	private Users user;
 }

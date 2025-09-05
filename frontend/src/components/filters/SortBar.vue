@@ -28,7 +28,7 @@ const set = (v: 'priceAsc' | 'priceDesc' | 'popularity' | 'sales') => emit('upda
   border: 1px solid #eadfc9;
   border-top: none;
   border-radius: 0 0 6px 6px;
-  margin-top: -2px;
+  margin-top: 0px;
 }
 .sortbtn {
   appearance: none;

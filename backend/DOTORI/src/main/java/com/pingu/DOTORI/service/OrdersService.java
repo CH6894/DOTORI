@@ -42,11 +42,10 @@ public class OrdersService {
         Users user = getCurrentUser(req);
         LocalDateTime now = LocalDateTime.now();
 
-
         if (request.getItemDetailsId() == null) {
             throw new IllegalArgumentException("상품 상세 ID가 필요합니다.");
         }
-        
+
         ItemDetails itemDetails = itemDetailsRepository.findById(request.getItemDetailsId())
                 .orElseThrow(() -> new RuntimeException("상품 상세 정보를 찾을 수 없습니다."));
 
@@ -73,7 +72,7 @@ public class OrdersService {
                 .build();
     }
 
-    //장바구니 기반 주문 생성
+    // 장바구니 기반 주문 생성
     @Transactional
     public List<OrdersResponseDTO> createOrderFromCart(OrdersRequestDTO request, HttpServletRequest req) {
         Users user = getCurrentUser(req);
@@ -81,14 +80,12 @@ public class OrdersService {
 
         System.out.println(user.getId());
         System.out.println(request.getCartIds().get(0));
-        
-        
+
         List<OrdersResponseDTO> results = request.getCartIds().stream().map(cartId -> {
             Cart cart = cartRepository.findById(cartId)
                     .orElseThrow(() -> new RuntimeException("Cart not found: " + cartId));
-            
-        System.out.println(cart.getId());
-            
+
+            System.out.println(cart.getId());
 
             Orders order = Orders.builder()
                     .user(user)
@@ -98,8 +95,8 @@ public class OrdersService {
                     .depositerName(request.getDepositerName())
                     .payTime(now)
                     .build();
-            
-            System.out.println(order.getUser().getId()+"------------------------------");
+
+            System.out.println(order.getUser().getId() + "------------------------------");
             System.out.println();
 
             Orders saved = ordersRepository.save(order);
@@ -122,7 +119,7 @@ public class OrdersService {
         return results;
     }
 
-    // 내 주문 내역 조회 
+    // 내 주문 내역 조회
     @Transactional(readOnly = true)
     public List<OrdersResponseDTO> getMyOrders(HttpServletRequest req) {
         Users user = getCurrentUser(req);
@@ -138,8 +135,7 @@ public class OrdersService {
                 .price(o.getItemDetails().getCost().longValue())
                 .payTime(o.getPayTime())
                 .payMethod(o.getPayMethod())
-                .build()
-        ).collect(Collectors.toList());
+                .build()).collect(Collectors.toList());
     }
 
     // 주문 단건 조회

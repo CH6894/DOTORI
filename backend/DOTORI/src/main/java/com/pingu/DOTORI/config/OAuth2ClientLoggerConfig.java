@@ -14,12 +14,10 @@ public class OAuth2ClientLoggerConfig {
     CommandLineRunner showClients(ClientRegistrationRepository repo) {
         return args -> {
             if (repo instanceof InMemoryClientRegistrationRepository m) {
-                m.forEach(r ->
-                    System.out.println("✅ OAuth client registered: " + r.getRegistrationId())
-                );
+                m.forEach(r -> System.out.println("✅ OAuth client registered: " + r.getRegistrationId()));
             } else {
-                System.out.println("⚠️ ClientRegistrationRepository is not InMemory: " 
-                                   + repo.getClass().getName());
+                System.out.println("⚠️ ClientRegistrationRepository is not InMemory: "
+                        + repo.getClass().getName());
             }
         };
     }

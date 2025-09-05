@@ -16,5 +16,3 @@ public class WishListItemDto {
     private String itemImg;
     private int cost;
 }
-
-

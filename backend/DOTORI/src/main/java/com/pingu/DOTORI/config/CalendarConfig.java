@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 public class CalendarConfig {
