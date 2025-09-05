@@ -1,19 +1,53 @@
 <template>
   <div class="page calendar-scope cute">
+    <!-- 카테고리 라벨: 좌측 상단 2줄 구성 -->
+    <div class="category-container">
+      <strong class="category-title">카테고리</strong>
+
+      <div class="category-labels">
+        <!-- 첫 줄 (3개) -->
+        <div class="category-row">
+          <div
+            class="cat-label"
+            v-for="cat in categoryList.slice(0, 3)"
+            :key="cat.name"
+          >
+            <span class="color-dot" :style="{ backgroundColor: cat.color }"></span>
+            {{ cat.name }}
+          </div>
+        </div>
+
+        <!-- 둘째 줄 (4개) -->
+        <div class="category-row">
+          <div
+            class="cat-label"
+            v-for="cat in categoryList.slice(3)"
+            :key="cat.name"
+          >
+            <span class="color-dot" :style="{ backgroundColor: cat.color }"></span>
+            {{ cat.name }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <h2 class="calendar-title">
       {{ pageDate.getFullYear() }}년 {{ pageDate.getMonth() + 1 }}월
       <span class="title-badge"></span>
     </h2>
 
+
     <div class="calendar-wrap" :class="{ 'is-month': isMonthView }">
       <div ref="calendarEl" id="calendar"></div>
     </div>
 
+
     <!-- 상세일정(종일/시간 분리, 읽기 전용) -->
-    <section class="agenda" v-show="showAgenda">
+    <section class="agenda" v-show="showAgenda" ref="agendaSection" id="agenda-top">
       <h3 class="agenda__title">
-        상세일정
-        <button v-if="selectedDate" class="btn btn--tiny" @click="clearSelected">닫기</button>
+      상세일정
+      <button v-if="selectedDate" class="btn btn--tiny" @click="clearSelected">닫기</button>
       </h3>
       <div class="agenda__body" v-html="agendaHtml"></div>
     </section>
@@ -21,9 +55,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import axios from 'axios'
-
 import { Calendar } from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -31,13 +64,20 @@ import interactionPlugin from '@fullcalendar/interaction'
 import listPlugin from '@fullcalendar/list'
 import bootstrap5Plugin from '@fullcalendar/bootstrap5'
 
-
-/* API */
 const PUB_URL = '/api/public/calendars'
+
+const categoryList = [
+  { name:'Anime',  color:'#FF4C4C' },
+  { name:'Webtoon',color:'#4CAF50' },
+  { name:'Game',   color:'#FFD93B' },
+  { name:'Sports', color:'#4285F4' },
+  { name:'Creator',color:'#FF6FB5' },
+  { name:'Kpop',   color:'#9B59B6' },
+  { name:'기타',    color:'#FF9800' },
+]
 
 /* ===== 유틸 ===== */
 const pad=(n)=>String(n).padStart(2,'0')
-const fmtYmd=(d)=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
 const startOfDay=(d)=>new Date(d.getFullYear(),d.getMonth(),d.getDate())
 const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n)
 const isoLocal=(d)=>{const x=new Date(d);return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}:${pad(x.getSeconds())}`}
@@ -52,9 +92,22 @@ const pageDate=ref(new Date())
 const isMonthView = ref(false)
 
 /* 상세일정 상태 */
-const showAgenda=ref(false); const selectedDate=ref(null); const agendaHtml=ref('')
+const showAgenda=ref(false)
+const selectedDate=ref(null)
+const agendaHtml=ref('')
+const agendaSection=ref(null)
 
-/* 아젠다 렌더(✅ 종일에도 날짜 표시) */
+/* 스무스 스크롤 */
+function scrollToAgenda(offsetY = 72){
+  nextTick(()=>{
+    const el = agendaSection.value || document.getElementById('agenda-top')
+    if(!el) return
+    const y = el.getBoundingClientRect().top + window.pageYOffset - offsetY
+    window.scrollTo({ top: y, behavior: 'smooth' })
+  })
+}
+
+/* 아젠다 렌더 */
 function renderAgenda(){
   if(!calendar || !selectedDate.value){ agendaHtml.value=''; return }
   const d=selectedDate.value
@@ -69,7 +122,6 @@ function renderAgenda(){
   const allDayItems = items.filter(ev=>ev.allDay)
   const timedItems  = items.filter(ev=>!ev.allDay)
 
-  // 선택 날짜 문자열
   const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0')
   const dateStr=`${y}.${m}.${day}`
 
@@ -83,7 +135,6 @@ function renderAgenda(){
             </li>`
   }).join('')
 
-  // ✅ 종일: 날짜 + 제목 2열
   const liAllDay = allDayItems.map(ev=>{
     const color = ev.extendedProps?.color || ev.backgroundColor || '#ff8ab3'
     const title = escapeHtml(ev.title || '(제목 없음)')
@@ -108,7 +159,7 @@ function renderAgenda(){
 
 function clearSelected(){ selectedDate.value=null; showAgenda.value=false; agendaHtml.value='' }
 
-/* 캘린더 초기화(조회 전용) */
+/* ===== 캘린더 초기화 ===== */
 onMounted(()=>{
   calendar=new Calendar(calendarEl.value,{
     themeSystem:'bootstrap5',
@@ -119,56 +170,42 @@ onMounted(()=>{
     plugins:[dayGridPlugin,timeGridPlugin,interactionPlugin,listPlugin,bootstrap5Plugin],
 
     stickyHeaderDates:true,
-
     initialView:'dayGridMonth',
-    headerToolbar:{
-      left:'prev today next',
-      center:'',
-      right:'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-    },
+    fixedWeekCount: false,
+    headerToolbar:{ left:'prev today next', center:'', right:'dayGridMonth,listMonth' },
 
-    height:'100%',
+    height:'auto',
     expandRows:true,
 
-    slotMinTime:'06:00:00',
+    slotMinTime:'00:00:00',
     slotMaxTime:'24:00:00',
     slotDuration:'00:30:00',
-    nowIndicator:true,
-    scrollTime:'09:00:00',
+    nowIndicator:false,         // 현재시간 라인 비활성화
+    scrollTime:'06:00:00',
     scrollTimeReset:false,
 
     eventOverlap:false,
     eventMaxStack:3,
+
     dayMaxEvents:true,
     displayEventTime:true,
 
     dayCellContent:(arg)=>({ html: arg.dayNumberText.replace('일','') }),
-
-    /* 조회용 세팅 */
-    selectable:false,
-    editable:false,
-    eventClick: (arg) => {
-      // Day/Week/Month 어디서든 이벤트 클릭 시 '편집' 모달 열기
-      // (CalendarManager에서 쓰던 openModal 을 그대로 사용)
-      try {
-      openModal('edit', arg.event);
-      } catch (e) {
-        // 혹시 현재 파일에 openModal 이 없다면 CalendarManager 라우팅으로 대체
-        // router.push({ name: 'CalendarManager', query: { editId: arg.event.id } })
-      }
-
-      // 클릭한 일정 날짜로 아젠다도 동기화(하단 상세 보기 켜기)
-      const d = new Date(arg.event.start);
-      selectedDate.value = d;
-      showAgenda.value = true;
-      renderAgenda();
-
-      // a[href]로 등록된 이벤트라도 페이지 이동 막기
-      if (arg.jsEvent) arg.jsEvent.preventDefault();
+    views:{
+      dayGridMonth:{ buttonText:'Month', dayMaxEvents:true, eventDisplay:'block' }
     },
 
+    selectable:true, selectMirror:true, unselectAuto:true, selectLongPressDelay:180,
 
-    /* 이벤트 소스(Manager 동일 매핑) */
+    eventClick: (arg) => {
+      const d = new Date(arg.event.start)
+      selectedDate.value = d
+      showAgenda.value = true
+      renderAgenda()
+      if (arg.jsEvent) arg.jsEvent.preventDefault()
+      scrollToAgenda()
+    },
+
     events: async (info, success, failure)=>{
       try{
         const s = new Date(info.start)
@@ -195,29 +232,29 @@ onMounted(()=>{
           }
         })
         success(events)
-      }catch(e){
-        console.error('일정 로드 실패', e)
-        failure(e)
-      }
+      }catch(e){ failure(e) }
     },
 
-    /* 날짜 클릭 시 아젠다 표시만 */
     dateClick:(info)=>{
       const d=new Date(info.date); selectedDate.value=d
       if(hasEventsOn(d)){ showAgenda.value=true; renderAgenda() } else { showAgenda.value=false; agendaHtml.value='' }
+      scrollToAgenda()
     },
 
     datesSet: ()=>{
       pageDate.value=calendar.getDate()
       const t = calendar.view.type
       isMonthView.value = (t === 'dayGridMonth')
+      calendar.setOption('height','auto')
+      calendar.setOption('expandRows',true)
     }
   })
-  calendar.render(); pageDate.value=calendar.getDate(); setTimeout(()=>calendar.updateSize(),0)
+  calendar.render()
+  pageDate.value=calendar.getDate()
+  setTimeout(()=>calendar.updateSize(),0)
 })
 onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 
-/* 보조: 해당 날짜에 이벤트 존재 여부 */
 function hasEventsOn(date){
   if(!calendar) return false
   const s0=new Date(date.getFullYear(),date.getMonth(),date.getDate(),0,0,0,0)
@@ -230,42 +267,32 @@ function hasEventsOn(date){
 <style scoped>
 /* ===== 래퍼 ===== */
 .calendar-wrap{
-  position:relative; z-index:1; overflow:visible;
+  position:relative; z-index:1;
   width: var(--cal-fixed-width, 1280px);
   max-width:100%;
-  height: var(--cal-fixed-height, 720px);
-  margin:0 auto 60px;
+  height:auto;
+  margin:0 auto 48px;
 }
 .calendar-wrap.is-month{ height:auto; overflow:visible; }
 .calendar-wrap.is-month :deep(.fc .fc-scroller){ overflow:visible !important; }
 
-/* 툴바 */
+/* 툴바(버튼) */
 :deep(.fc .fc-toolbar){ position:relative; z-index:5; gap:.5rem; }
+:deep(.fc .fc-toolbar .fc-button){
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:.4rem .65rem; line-height:1.2; font-size:.875rem; font-weight:700;
+  border-radius:12px;
+}
+:deep(.fc .fc-button-group){ display:inline-flex; gap:.25rem; }
 
 /* ===== 귀여운 테마 ===== */
-.cute :deep(.fc){
-  --cute-pink:#ffeed8; --cute-accent:#ffd08a; --cute-mint:#c7f5e9; --cute-ink:#574d68;
-}
+.cute :deep(.fc){ --cute-pink:#ffeed8; --cute-accent:#ffd08a; --cute-mint:#c7f5e9; --cute-ink:#574d68; }
 .calendar-title{ text-align:center; font-weight:800; color:#574d68; margin:16px 0 8px; }
-.title-badge{
-  display:inline-block; margin-left:.5rem; padding:.2rem .5rem; border-radius:999px;
-  background:var(--cute-pink); border:1px dashed var(--cute-accent); font-size:.9rem; color:#574d68;
-}
+.title-badge{ display:inline-block; margin-left:.5rem; padding:.2rem .5rem; border-radius:999px; background:var(--cute-pink); border:1px dashed var(--cute-accent); font-size:.9rem; color:#574d68; }
 
-/* 버튼 */
-:deep(.fc .fc-button){
-  background:#ffffff; color:#574d68; border:1px solid #ffedd3; border-radius:12px; padding:.4rem .65rem; font-weight:700;
-}
+/* 버튼 테마 */
+:deep(.fc .fc-button){ background:#ffffff; color:#574d68; border:1px solid #ffedd3; }
 :deep(.fc .fc-button:hover){ background:#fffaf5; border-color:#ffe9b3; }
-
-/* Day/Week 라인 선명도 & 세로선 복구 */
-:deep(.fc-theme-standard .fc-scrollgrid){ border:1px solid #f1dfe8; }
-:deep(.fc-theme-standard td),
-:deep(.fc-theme-standard th){ border:1px solid #f1dfe8; }
-:deep(.fc-timegrid .fc-timegrid-col){ border-left:1px solid #f1dfe8 !important; }
-:deep(.fc-timegrid .fc-timegrid-axis){ border-right:1px solid #f1dfe8 !important; }
-:deep(.fc-timegrid .fc-timegrid-slot){ border-bottom:1px solid #f1dfe8 !important; }
-:deep(.fc-timegrid .fc-timegrid-slots table){ border-collapse:separate !important; border-spacing:0 !important; }
 
 /* 이벤트 카드 */
 :deep(.fc .fc-timegrid-event),
@@ -274,78 +301,146 @@ function hasEventsOn(date){
   box-shadow:0 2px 8px rgba(255,138,179,.15);
   padding:2px 6px; font-weight:700;
 }
-:deep(.fc .fc-event){ cursor: pointer; }
+:deep(.fc .fc-event){ cursor:pointer; }
 
 /* ===== 아젠다 ===== */
 .agenda{ width: var(--cal-fixed-width, 1280px); max-width:100%; margin:16px auto 0; }
 .agenda__title{ display:flex; align-items:center; gap:8px; color:#574d68; font-weight:800; }
 .agenda__body{ background:#fff; border:1px solid #ffe4ee; border-radius:14px; padding:12px; }
-
 .agenda__section-title{ margin:8px 0 6px; font-size:14px; font-weight:900; color:#7b718f; }
 .agenda__list{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
-
-/* 시간 섹션: 시간+제목 2열 */
-.agenda__list--timed .agenda__item{
-  display:grid; grid-template-columns:140px 1fr; align-items:center;
-  gap:10px; padding:8px 10px; border:1px dashed #ffd3e1; border-radius:12px;
-}
-
-/* ✅ 종일 섹션: 날짜+제목 2열 */
+.agenda__list--timed .agenda__item,
 .agenda__list--allday .agenda__item{
   display:grid; grid-template-columns:140px 1fr; align-items:center;
   gap:10px; padding:8px 10px; border:1px dashed #ffd3e1; border-radius:12px;
 }
+.agenda__item::before{ content:''; width:8px; height:8px; border-radius:3px; background:var(--dot-color,#ff8ab3); display:inline-block; margin-right:8px; }
+.agenda__date,.agenda__time{ font-weight:800; color:#7b718f; }
+.agenda__title{ color:#2f2a3b; }
 
-/* 컬러 점 */
-.agenda__item::before{
-  content:''; width:8px; height:8px; border-radius:3px;
-  background:var(--dot-color,#ff8ab3);
-  display:inline-block; margin-right:8px;
+/* =========================
+  timeGrid(week/day) : 도트 가로선 제거 + 빈칸 제거
+  ========================= */
+
+/* 내부 스크롤 제거 */
+:deep(.fc-timeGridWeek-view .fc-scroller),
+:deep(.fc-timeGridDay-view  .fc-scroller){
+  height:auto !important;
+  overflow:visible !important;
 }
 
-.agenda__date{ font-weight:800; color:#7b718f; }
-.agenda__time{ font-weight:800; color:#7b718f; }
-.agenda__title{ display:inline-block; color:#2f2a3b; }
-/* === [timeGrid 세로선 끊김 고정 패치] ========================= */
-
-/* 1) 캘린더 영역과 내부 스크롤 표면을 전부 흰 배경으로 고정(배경 비침 차단) */
-.calendar-wrap{
-  background:#fff;         /* ✅ 뒤 배경(물결 등) 비치지 않게 */
-  overflow:hidden;         /* 내부 스크롤러 경계 밖으로 튀어나오는 것 차단 */
-}
-:deep(.fc),
-:deep(.fc .fc-scrollgrid),
-:deep(.fc .fc-scroller),
-:deep(.fc .fc-scroller-harness),
-:deep(.fc .fc-scroller-liquid-absolute),
-:deep(.fc .fc-timegrid),
-:deep(.fc .fc-timegrid-body),
-:deep(.fc .fc-timegrid-slots){
-  background:#fff !important;
+/* 본문 높이 자동화 */
+:deep(.fc-timeGridWeek-view .fc-timegrid-body),
+:deep(.fc-timeGridDay-view  .fc-timegrid-body),
+:deep(.fc-timeGridWeek-view .fc-timegrid-body > table),
+:deep(.fc-timeGridDay-view  .fc-timegrid-body > table){
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
 }
 
-/* 2) 세로/가로 경계선을 명시적으로 그려, 중간 끊김 방지 */
-:deep(.fc-theme-standard .fc-scrollgrid){ border:1px solid #e9e0da; }
+/* 도트 가로선 완전 제거 */
+:deep(.fc-timegrid-slot),
+:deep(.fc-timegrid-slot-lane),
+:deep(.fc-timegrid-divider){
+  border:0 !important;
+  border-bottom:0 !important;
+  background:none !important;
+  box-shadow:none !important;
+}
 :deep(.fc-theme-standard td),
-:deep(.fc-theme-standard th){ border:1px solid #e9e0da; }
-
-:deep(.fc-timegrid .fc-timegrid-col){ border-left:1px solid #e9e0da !important; }
-:deep(.fc-timegrid .fc-timegrid-axis){ border-right:1px solid #e9e0da !important; }
-:deep(.fc-timegrid .fc-timegrid-slot){ border-bottom:1px solid #e9e0da !important; }
-
-/* 3) 테이블 경계의 서브픽셀 갭 제거(브라우저별 1px 틈 방지) */
-:deep(.fc-timegrid .fc-timegrid-slots table){
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
+:deep(.fc-theme-standard th){
+  border-style: solid !important;
+  border-bottom-color: transparent !important;
+  background-image:none !important;
 }
 
-/* 4) 드물게 오버레이가 라인을 덮는 경우 대비(하이라이트/배경 이벤트 투명도 낮춤) */
-:deep(.fc .fc-bg-event){ opacity: .9; }       /* 필요 시 조정 */
-:deep(.fc .fc-highlight){ opacity: .3; }      /* 드래그/선택 하이라이트 */
+/* 시간축 제거 */
+:deep(.fc-timegrid .fc-timegrid-axis),
+:deep(.fc-timegrid .fc-timegrid-axis-frame),
+:deep(.fc-timegrid .fc-timegrid-axis-cushion){
+  display:none !important;
+}
 
-/* 5) 아주 고집센 환경에서의 마지막 수단: outline(보더 덮임 방지) */
-/* 필요 시 주석 해제해서 사용
-:deep(.fc-timegrid .fc-timegrid-col){ outline:1px solid #e9e0da; outline-offset:-1px; }
-*/
+/* 7등분 */
+:deep(.fc-timegrid .fc-col-header),
+:deep(.fc-timegrid .fc-timegrid-body .fc-scrollgrid-sync-table){
+  table-layout:fixed !important; width:100% !important;
+}
+:deep(.fc-timegrid .fc-col-header colgroup col),
+:deep(.fc-timegrid .fc-timegrid-body colgroup col){
+  width:calc(100%/7) !important;
+}
+/* ===== 상세일정 항목: 날짜/시간 ↔ 제목 두 칸 반듯하게 ===== */
+.agenda__list--allday .agenda__item,
+.agenda__list--timed .agenda__item {
+  display: grid;
+  grid-template-columns: 140px 1fr; /* 왼쪽 고정, 오른쪽 유동 */
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px dashed #ffd3e1;
+  border-radius: 12px;
+}
 
+/* 왼쪽 칸: 날짜나 시간 */
+.agenda__date,
+.agenda__time {
+  text-align: right;   /* 숫자가 깔끔히 붙도록 오른쪽 정렬 */
+  font-weight: 700;
+  color: #7b718f;
+  white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+/* 오른쪽 칸: 제목 */
+.agenda__title {
+  font-size: 14px;
+  color: #2f2a3b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 길면 … 처리 */
+}
+/* ===== 카테고리 라벨 ===== */
+.category-container {
+  width: var(--cal-fixed-width, 1280px); /* 캘린더 너비와 정확히 맞춤 */
+  max-width: 100%;
+  margin: 32px auto 1px; /* 위쪽 여백 + 가운데 정렬 */
+}
+
+.category-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #2f2a3b;
+  margin-bottom: 4px;
+}
+
+.category-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.category-row {
+  display: flex;
+  gap: 10px;
+}
+
+.cat-label {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #574d68;
+  background: #fffaf5;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px dashed #ffd3a5;
+}
+
+.color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
 </style>

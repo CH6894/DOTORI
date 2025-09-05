@@ -10,44 +10,49 @@
       </p>
     </div>
 
-    <!-- 주문 상품 표 -->
-    <section class="card wide">
+    <!-- 주문 상품 -->
+    <section class="card wide" v-if="items.length">
       <h2 class="section-title">주문 상품</h2>
       <div class="thead row">
         <div>상품 이미지</div>
         <div>상품 정보</div>
         <div>수량</div>
-        <div>할인 금액</div>
         <div>결제 금액</div>
       </div>
       <div class="tbody">
-        <div class="row" v-for="it in items" :key="it.id">
+        <div class="row" v-for="it in items" :key="it.orderId">
           <div class="thumb">
-            <img :src="it.thumb" alt="" />
+            <img :src="it.mainImageUrl || '/default-product.jpg'" alt="상품 이미지" />
           </div>
           <div class="info">
-            <div class="name">{{ it.name }}</div>
-            <div class="meta">{{ it.desc }}</div>
+            <div class="name">{{ it.itemName }}</div>
           </div>
-          <div>{{ it.qty }}</div>
-          <div>{{ fmt(it.discount) }}원</div>
-          <div class="right"><b>{{ fmt(it.price * it.qty - it.discount) }}원</b></div>
+          <div>{{ it.quantity }}</div>
+          <div class="right"><b>{{ fmt(it.price * (it.quantity || 1)) }}원</b></div>
         </div>
       </div>
     </section>
 
+    <!-- 주문 없음 안내 -->
+    <p v-else class="muted">주문 내역을 찾을 수 없습니다.</p>
+
     <!-- 배송/결제 정보 -->
-    <section class="card wide">
+    <section class="card wide" v-if="items.length">
       <div class="info-grid">
         <div class="panel">
           <h3 class="section-title">배송지 정보</h3>
           <div class="dl">
             <div class="dt">이름</div>
-            <div class="dd">{{ ship.receiver }}</div>
+            <div class="dd">{{ ship.receiver || '정보 없음' }}</div>
             <div class="dt">휴대폰 번호</div>
-            <div class="dd">{{ ship.phone }}</div>
+            <div class="dd">{{ ship.phone || '정보 없음' }}</div>
             <div class="dt">주소</div>
-            <div class="dd">[{{ ship.postcode }}] {{ ship.addr1 }}<br />{{ ship.addr2 }}</div>
+            <div class="dd">
+              <span v-if="ship.postcode">[{{ ship.postcode }}]</span>
+              {{ ship.addr1 || ship.mainAddress || '주소 정보 없음' }}
+              <br v-if="ship.addr2" />
+              {{ ship.addr2 }}
+            </div>
           </div>
         </div>
 
@@ -56,8 +61,6 @@
           <div class="dl">
             <div class="dt">상품 금액</div>
             <div class="dd">{{ fmt(subtotal) }}원</div>
-            <div class="dt">할인 금액</div>
-            <div class="dd">{{ fmt(discount) }}원</div>
             <div class="dt">배송비</div>
             <div class="dd">{{ shippingFee === 0 ? '무료' : fmt(shippingFee) + '원' }}</div>
             <div class="dt total">총 결제 금액</div>
@@ -68,39 +71,173 @@
     </section>
 
     <!-- 하단 액션 -->
-    <div class="actions">
-      <router-link class="btn outline" :to="{ name: 'login' }">주문 상세보기</router-link>
-      <router-link class="btn primary" :to="{ name: 'checkout' }">쇼핑 계속하기</router-link>
+    <div class="actions" v-if="items.length">
+      <router-link class="btn outline" :to="{ name: 'OrderHistory' }">주문 내역 보기</router-link>
+      <router-link class="btn primary" :to="{ name: 'Home' }">쇼핑 계속하기</router-link>
     </div>
   </div>
 </template>
 
-<script setup>
-import { computed, reactive, ref } from 'vue'
-/* 아이콘 이미지는 프로젝트에 있는 걸로 교체해도 됨 */
-import icon from '@/assets/cart.svg' // 없으면 다른 이미지 경로로 바꿔도 OK
+<script setup lang="ts">
+import { computed, reactive, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import api from '@/api/axios'
+import icon from '@/assets/cart.svg'
 
-// ====== 목업 데이터 (페이지 먼저 확인용) ======
+const route = useRoute()
 const iconSrc = icon
-const orderNo = '1234567890'
-const items = reactive([
-  { id: 'sku-1', name: '상품 A', price: 90000, qty: 1, discount: 0, thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz2BqmHnvVTX6iSjug5pt1h4ehgaX_GHat-Q&s' },
-  { id: 'sku-2', name: '상품 B', price: 45000, qty: 3, discount: 0, thumb: 'https://images.unsplash.com/photo-1549068106-b024baf5062d?w=400&q=80&auto=format&fit=crop' }
-])
-const ship = {
-  receiver: '구창회',
-  phone: '010-0000-0000',
-  postcode: '06236',
-  addr1: '서울 강남구 테헤란로 000',
-  addr2: 'OOO빌딩 10층'
-}
+
+// ✅ Checkout에서 payTime query로 전달됨
+const payTime = route.query.payTime as string
+
+const orderNo = ref<string>('') 
+const items = ref<any[]>([])
+const ship = reactive({
+  receiver: '',
+  phone: '',
+  postcode: '',
+  addr1: '',
+  addr2: '',
+  mainAddress: '',
+})
 const shippingFee = ref(0)
 
-const discount = computed(() => items.reduce((s, it) => s + it.discount, 0))
-const subtotal = computed(() => items.reduce((s, it) => s + it.price * it.qty, 0))
-const total = computed(() => subtotal.value - discount.value + shippingFee.value)
+// ✅ subtotal 수정 (quantity 반영)
+const subtotal = computed(() =>
+  items.value.reduce((s, it) => s + (it.price * (it.quantity || 1)), 0)
+)
+const total = computed(() => subtotal.value + shippingFee.value)
+const fmt = (n: number) => n.toLocaleString('ko-KR')
 
-const fmt = (n) => n.toLocaleString('ko-KR')
+// 주문 조회 - payTime 기준으로 해당 시간의 주문 그룹 조회
+const fetchOrderDetail = async () => {
+  try {
+    console.log('payTime:', payTime)
+
+    // ✅ 우선 전체 주문 내역을 가져와서 확인
+    const allOrdersRes = await api.get('/orders/me')
+    console.log('전체 주문 데이터:', allOrdersRes.data)
+
+    // ✅ 새로운 API 엔드포인트 사용 - payTime 기준 주문 그룹 조회
+    try {
+      const res = await api.get(`/orders/paytime?payTime=${encodeURIComponent(payTime)}`)
+      console.log('payTime 기준 주문 데이터:', res.data)
+
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        // ✅ 주문번호는 해당 시간대 주문 중 가장 작은 ID로 설정
+        const minOrderId = Math.min(...res.data.map((o: any) => o.orderId))
+        orderNo.value = minOrderId.toString()
+        
+        // ✅ 중고상품이므로 모든 quantity는 1
+        items.value = res.data.map((order: any) => ({
+          orderId: order.orderId,
+          itemName: order.itemName || '상품명 없음',
+          mainImageUrl: order.mainImageUrl,
+          price: order.price || 0,
+          quantity: 1 // 중고상품은 항상 1개
+        }))
+
+        // 배송지 정보 불러오기
+        await fetchShippingAddress()
+        return
+      }
+    } catch (apiError) {
+      console.error('payTime API 호출 실패:', apiError)
+    }
+
+    // ✅ API 실패 시 폴백: 전체 주문에서 시간 기준으로 필터링
+    if (Array.isArray(allOrdersRes.data)) {
+      console.log('폴백 모드: 전체 주문에서 필터링 시작')
+      
+      // payTime 기준으로 필터링 (여러 방식 시도)
+      const targetTime = payTime.slice(0, 16) // "2025-09-05T02:37" 형식
+      console.log('필터링 대상 시간:', targetTime)
+      
+      const filteredOrders = allOrdersRes.data.filter((order: any) => {
+        if (!order.payTime) return false
+        
+        // 여러 형식으로 시간 비교 시도
+        const orderTimeStr = order.payTime.toString()
+        const orderTime16 = orderTimeStr.slice(0, 16)
+        const orderTime19 = orderTimeStr.slice(0, 19)
+        
+        console.log(`주문 ${order.orderId} 시간 비교:`, {
+          original: orderTimeStr,
+          slice16: orderTime16,
+          slice19: orderTime19,
+          target: targetTime,
+          match16: orderTime16 === targetTime,
+          match19: orderTime19 === payTime
+        })
+        
+        return orderTime16 === targetTime || orderTime19 === payTime
+      })
+
+      console.log('필터링된 주문:', filteredOrders)
+
+      if (filteredOrders.length > 0) {
+        const minOrderId = Math.min(...filteredOrders.map((o: any) => o.orderId || o.id))
+        orderNo.value = minOrderId.toString()
+        
+        items.value = filteredOrders.map((order: any) => ({
+          orderId: order.orderId || order.id,
+          itemName: order.itemName || '상품명 없음',
+          mainImageUrl: order.mainImageUrl,
+          price: order.price || 0,
+          quantity: 1
+        }))
+
+        await fetchShippingAddress()
+        return
+      }
+    }
+
+    // 모든 방법이 실패한 경우
+    console.warn('해당 payTime에 맞는 주문이 없습니다:', payTime)
+    alert('해당 주문 내역을 찾을 수 없습니다.')
+    
+  } catch (err) {
+    console.error('주문 상세 조회 실패:', err)
+    alert('주문 정보를 불러오는 중 오류가 발생했습니다.')
+  }
+}
+
+// 배송지 정보 조회 함수 분리
+const fetchShippingAddress = async () => {
+  try {
+    const addrRes = await api.get('/address')
+    console.log('주소 응답:', addrRes.data)
+
+    let addressData = null
+    if (Array.isArray(addrRes.data) && addrRes.data.length > 0) {
+      // 기본 배송지 또는 첫 번째 배송지 사용
+      addressData = addrRes.data.find((addr: any) => addr.is_default) || addrRes.data[0]
+    } else if (addrRes.data && !Array.isArray(addrRes.data)) {
+      addressData = addrRes.data
+    }
+
+    if (addressData) {
+      ship.receiver = addressData.receiver || ''
+      ship.phone = addressData.phone || ''
+      ship.postcode = addressData.postcode || ''
+      ship.addr1 = addressData.addr1 || addressData.mainAddress || ''
+      ship.addr2 = addressData.addr2 || ''
+      ship.mainAddress = addressData.mainAddress || ''
+    }
+  } catch (e) {
+    console.warn('주소 불러오기 실패:', e)
+    // 배송지 정보는 선택사항이므로 에러를 alert로 표시하지 않음
+  }
+}
+
+onMounted(() => {
+  if (payTime) {
+    fetchOrderDetail()
+  } else {
+    console.error('주문 payTime이 없습니다.')
+    alert('주문번호 정보가 없습니다.')
+  }
+})
 </script>
 
 <style scoped>
@@ -108,14 +245,13 @@ const fmt = (n) => n.toLocaleString('ko-KR')
 .order-complete {
   max-width: 720px;
   margin: 24px auto 120px;
-  /* 하단 여백: 고정 결제바와 동일 높이 */
   padding: 0 16px;
 }
 
 /* 상단 히어로 */
 .hero {
   text-align: center;
-  margin: 8px 0 8px;
+  margin: 8px 0 24px;
 }
 
 .hero__icon {
@@ -141,7 +277,7 @@ const fmt = (n) => n.toLocaleString('ko-KR')
   font-weight: 700;
 }
 
-/* 카드 공통 (Checkout과 동일한 중앙정렬/폭) */
+/* 카드 공통 */
 .card {
   background: #fff;
   border: 1px solid #eee;
@@ -159,7 +295,6 @@ const fmt = (n) => n.toLocaleString('ko-KR')
   transform: translateX(-50%);
 }
 
-
 .section-title {
   font-size: 16px;
   margin: 0 0 12px;
@@ -169,7 +304,7 @@ const fmt = (n) => n.toLocaleString('ko-KR')
 .thead,
 .row {
   display: grid;
-  grid-template-columns: 100px 1fr 80px 120px 140px;
+  grid-template-columns: 100px 1fr 80px 120px;
   align-items: center;
   gap: 12px;
 }
@@ -199,12 +334,6 @@ const fmt = (n) => n.toLocaleString('ko-KR')
   line-height: 1.4;
 }
 
-.info .meta {
-  color: #8a8a8a;
-  font-size: 13px;
-  margin-top: 2px;
-}
-
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -213,14 +342,6 @@ const fmt = (n) => n.toLocaleString('ko-KR')
 
 .right {
   text-align: right;
-}
-
-/* 2단 그리드 */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
 }
 
 .dl {
@@ -248,10 +369,10 @@ const fmt = (n) => n.toLocaleString('ko-KR')
 
 .actions {
   display: flex;
-  justify-content:flex-end;
+  justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
-  width:122%;
+  width: 122%;
 }
 
 .btn {
@@ -259,33 +380,35 @@ const fmt = (n) => n.toLocaleString('ko-KR')
   padding: 10px 14px;
   cursor: pointer;
   border: 1px solid #ddd;
+  text-decoration: none;
 }
 
 .btn.primary {
   background: #ff7a2e;
   color: #fff;
   border-color: #ff7a2e;
-  text-decoration: none;
 }
 
 .btn.outline {
   background: #fff;
   color: #000;
-  text-decoration: none;
+}
+
+.muted {
+  text-align: center;
+  color: #666;
+  margin: 40px 0;
 }
 
 /* 반응형 */
 @media (max-width: 720px) {
-
   .thead,
   .row {
-    grid-template-columns: 80px 1fr 60px 100px 1fr;
+    grid-template-columns: 80px 1fr 60px 100px;
   }
 
-  .grid {
+  .info-grid {
     grid-template-columns: 1fr;
   }
-
-  .info-grid{ grid-template-columns: 1fr; }
 }
 </style>

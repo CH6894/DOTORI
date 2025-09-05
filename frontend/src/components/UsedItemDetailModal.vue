@@ -83,20 +83,15 @@
               <div v-if="adminImages.length > 0" class="admin-images-section">
                 <h4 class="section-title">관리자 검수 이미지</h4>
                 <div class="admin-images-grid">
-                  <img 
-                    v-for="(image, index) in adminImages" 
-                    :key="`admin-${index}`"
-                    :src="image" 
-                    :alt="`관리자 검수 이미지 ${index + 1}`"
-                    class="admin-image"
-                    @click="setCurrentImage(index)"
-                  />
+                  <img v-for="(image, index) in adminImages" :key="`admin-${index}`" :src="image"
+                    :alt="`관리자 검수 이미지 ${index + 1}`" class="admin-image" @click="setCurrentImage(index)" />
                 </div>
               </div>
 
               <!-- 액션 -->
               <div class="action-buttons">
-                <button :class="['wish-heart', { active: isWishlisted }]" @click="toggleWishlist" aria-label="위시 토글" title="위시 토글">
+                <button :class="['wish-heart', { active: isWishlisted }]" @click="toggleWishlist" aria-label="위시 토글"
+                  title="위시 토글">
                   <span>♡</span>
                 </button>
 
@@ -245,7 +240,7 @@ const toggleWishlist = async () => {
       console.error('상품 ID가 없습니다')
       return
     }
-    
+
     await wish.toggle(itemId)
   } catch (error) {
     console.error('위시리스트 토글 실패:', error)
@@ -268,7 +263,10 @@ const getConditionText = (condition) => {
   return map[condition] || '미정'
 }
 
-const getConditionDetails = (details) => details || '상태 양호'
+const getConditionDetails = (details) => {
+  console.log('getConditionDetails 호출됨, details:', details)
+  return details || '상태 양호'
+}
 
 const getItemExplanation = (explanation) => explanation || '판매자 코멘트가 없습니다.'
 
@@ -277,21 +275,21 @@ const formatPrice = (price) =>
 
 const formatDate = (dateString) => {
   if (!dateString) return '-'
-  
+
   try {
     const date = new Date(dateString)
-    
+
     // 유효한 날짜인지 확인
     if (isNaN(date.getTime())) {
       console.warn('Invalid date:', dateString)
       return '-'
     }
-    
+
     // 한국 시간대로 변환하여 YYYY-MM-DD 형식으로 표시
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
-    
+
     return `${year}-${month}-${day}`
   } catch (error) {
     console.error('Date formatting error:', error)
@@ -302,16 +300,15 @@ const formatDate = (dateString) => {
 // ---------- 이미지 로딩 ----------
 const loadAllImages = async () => {
   if (!props.item?.id) return
-  
+
   try {
     isLoadingImages.value = true
     console.log('이미지 로딩 시작:', props.item.id)
-    
     // 새로운 API를 사용하여 이미지 정보를 로드 (관리자 이미지 우선, 판매자 이미지 후순위)
     try {
       const imageInfosData = await fetchAllImageInfosByItemDetailsId(props.item.id)
       console.log('이미지 정보들:', imageInfosData)
-      
+
       if (imageInfosData && imageInfosData.length > 0) {
         imageInfos.value = imageInfosData
         console.log('imageInfos 설정 완료:', imageInfosData.length, '개')
@@ -321,16 +318,16 @@ const loadAllImages = async () => {
     } catch (error) {
       console.error('imageInfos 로드 실패:', error)
     }
-    
+
     // 기존 방식도 유지 (fallback용)
     const [adminImgs, sellerImgs] = await Promise.all([
       fetchAdminImagesByItemDetailsId(props.item.id),
       fetchSellerImagesByItemDetailsId(props.item.id)
     ])
-    
+
     console.log('관리자 이미지들:', adminImgs)
     console.log('판매자 이미지들:', sellerImgs)
-    
+
     adminImages.value = adminImgs
     sellerImages.value = sellerImgs
     currentImageIndex.value = 0 // 첫 번째 이미지로 리셋
@@ -442,11 +439,13 @@ watch(() => props.item?.id, (newId) => {
 }
 
 .condition-badge.admin {
-  background: #2563eb; /* 파란색 - 관리자 */
+  background: #2563eb;
+  /* 파란색 - 관리자 */
 }
 
 .condition-badge.seller {
-  background: #059669; /* 초록색 - 판매자 */
+  background: #059669;
+  /* 초록색 - 판매자 */
 }
 
 .nav-btn {
@@ -737,6 +736,4 @@ watch(() => props.item?.id, (newId) => {
   color: #dc2626;
   border-color: #fecaca;
 }
-
-
 </style>

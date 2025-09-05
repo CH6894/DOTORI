@@ -3,8 +3,8 @@ package com.pingu.DOTORI.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Getter @Setter
 public class AddCartRequest {
-	private Long itemDetailsId; // 프론트에서 보낼 상품 상세 ID
+    private Long itemDetailsId; // item_details PK
+    private int quantity;       // 장바구니 수량
 }

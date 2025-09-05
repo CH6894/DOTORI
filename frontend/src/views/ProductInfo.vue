@@ -12,12 +12,6 @@
         <button @click="goBack" class="back-btn">이전 페이지로</button>
       </div>
       
-      <!-- 에러 상태 -->
-      <div v-else-if="error" class="error-container">
-        <h2>{{ error }}</h2>
-        <button @click="goBack" class="back-btn">이전 페이지로</button>
-      </div>
-      
       <!-- 상품 정보가 로드된 후 -->
       <div v-else-if="product.id">
         <!-- 상품 기본 정보 섹션 -->
@@ -36,7 +30,7 @@
           :productId="product.id"
         />
         
-        <!-- 중고상품 섹션 (카드 형태로 표시) -->
+        <!-- 중고상품 섹션 -->
         <UsedProductsSection 
           :usedItems="usedItems"
           :productInfo="product"
@@ -71,38 +65,34 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import ProductDetailInfo from '@/components/ProductInfo.vue'
 import PriceChart from '@/components/PriceChart.vue'
 import UsedProductsSection from '@/components/UsedProductsSection.vue'
 import UsedItemDetailModal from '@/components/UsedItemDetailModal.vue'
 import RecommendedProducts from '@/components/RecommendedProducts.vue'
 import RelatedProducts from '@/components/RelatedProducts.vue'
-import { fetchItemById } from '@/api/items'
-import { fetchApprovedUnpackedItemDetails, fetchApprovedOpenedItemDetails } from '@/api/items'
+import { fetchItemById, fetchApprovedUnpackedItemDetails, fetchApprovedOpenedItemDetails } from '@/api/items'
 import type { ItemDTO } from '@/types/item'
+import api from '@/api/axios'
 
 const route = useRoute()
+const router = useRouter()
 const productId = String(route.params.id)
 
-// 반응형 데이터
 const loading = ref(true)
 const error = ref<string | null>(null)
 const product = ref<any>({})
 const priceData = ref<any[]>([])
 const usedItems = ref<any[]>([])
-const unpackedItems = ref<any[]>([]) // 미개봉 상품용
+const unpackedItems = ref<any[]>([])
 const recommendedProducts = ref<any[]>([])
 const relatedProducts = ref<any[]>([])
 const showUsedItemDetail = ref(false)
 const selectedUsedItem = ref<any>(null)
 
-// 상품 타입 계산 (URL 파라미터나 상품 데이터 기반)
-const productType = computed(() => {
-  return product.value.type || 'new' // 기본은 'new' (미개봉)
-})
+const productType = computed(() => product.value.type || 'new')
 
-// ItemDTO를 화면용 product 객체로 변환
 function adaptProduct(dto: ItemDTO) {
   const base = import.meta.env.VITE_ASSET_BASE
   const codeImg = dto.itemCode ? `${base}${dto.itemCode}.jpg` : undefined
@@ -122,7 +112,6 @@ function adaptProduct(dto: ItemDTO) {
     type: 'new', // 기본은 미개봉 상품
     images,
     description: dto.information || `${dto.name || dto.title} 상품입니다.`,
-    // 추가 필드들
     manufacturer: dto.manufacturer,
     material: dto.material,
     releaseMonth: dto.releaseMonth,
@@ -133,7 +122,6 @@ function adaptProduct(dto: ItemDTO) {
   }
 }
 
-// API 호출 함수들
 const fetchProductDetail = async () => {
   try {
     const data: ItemDTO = await fetchItemById(productId)
@@ -156,24 +144,13 @@ const fetchProductDetail = async () => {
       console.warn('ItemDetails 정보 로드 실패:', e)
     }
   } catch (e: any) {
-    console.error('상품 정보 로드 실패:', e)
     error.value = e?.message ?? '상품 정보를 불러오지 못했습니다.'
   }
 }
 
 const fetchPriceData = async () => {
   if (productType.value !== 'new') return
-  
-  try {
-    // TODO: 실제 가격 차트 API 연동
-    // const response = await fetch(`/api/products/${productId}/price-chart`)
-    // priceData.value = await response.json()
-    
-    // 임시 빈 데이터
-    priceData.value = []
-  } catch (error) {
-    console.error('가격 차트 데이터 로드 실패:', error)
-  }
+  priceData.value = []
 }
 
 const fetchUsedItems = async () => {
@@ -182,6 +159,7 @@ const fetchUsedItems = async () => {
     // 승인된 개봉 상품의 ItemDetails 조회 (unpacked = 1)
     const approvedOpenedDetails = await fetchApprovedOpenedItemDetails(productId)
     console.log('승인된 개봉 상품 데이터:', approvedOpenedDetails)
+    console.log('첫 번째 상품의 productCondition:', approvedOpenedDetails[0]?.productCondition)
     
     // 백엔드에서 받은 데이터를 프론트엔드 형식으로 변환
     if (approvedOpenedDetails && approvedOpenedDetails.length > 0) {
@@ -221,113 +199,112 @@ const fetchUnpackedItems = async () => {
     console.log('fetchUnpackedItems 시작 - productId:', productId)
     // 승인된 미개봉 상품의 ItemDetails 조회 (unpacked = 0)
     const approvedUnpackedDetails = await fetchApprovedUnpackedItemDetails(productId)
-    console.log('승인된 미개봉 상품 데이터:', approvedUnpackedDetails)
-    
-    // 백엔드에서 받은 데이터를 프론트엔드 형식으로 변환
-    if (approvedUnpackedDetails && approvedUnpackedDetails.length > 0) {
-      unpackedItems.value = approvedUnpackedDetails.map((detail: any) => ({
-        itemId: detail.itemId,
-        cost: detail.cost || 0,
-        status: detail.status,
-        unpacked: detail.unpacked,
-        productCondition: detail.productCondition,
-        itemName: detail.itemName,
-        itemImgUrl: detail.itemImgUrl
-      }))
-    } else {
-      // 데이터가 없으면 빈 배열
-      unpackedItems.value = []
-    }
-  } catch (error) {
-    console.error('미개봉 상품 목록 로드 실패:', error)
+    unpackedItems.value = approvedUnpackedDetails?.map((detail: any) => ({
+      itemId: detail.itemId,
+      cost: detail.cost || 0,
+      status: detail.status,
+      unpacked: detail.unpacked,
+      productCondition: detail.productCondition,
+      itemName: detail.itemName,
+      itemImgUrl: detail.itemImgUrl
+    })) || []
+  } catch {
     unpackedItems.value = []
   }
 }
 
-// Admin의 quality 값으로 등급 결정
 const getConditionFromQuality = (quality: number) => {
   switch (quality) {
-    case 1: return 'excellent' // S등급
-    case 2: return 'good'      // A등급
-    case 3: return 'fair'      // B등급
-    case 4: return 'poor'      // C등급
+    case 1: return 'excellent'
+    case 2: return 'good'
+    case 3: return 'fair'
+    case 4: return 'poor'
     default: return 'fair'
   }
 }
 
+// ✅ 바로구매: 미개봉 상품만, 수량 1 고정
+const handlePurchase = () => {
+  const available = unpackedItems.value.find(
+    (d) => d.status === true && d.unpacked === false
+  )
 
-// 이벤트 핸들러들
-const handlePurchase = async (productData: any) => {
-  try {
-    // 미개봉 상품 즉시 구매 API 호출
-    console.log('구매 처리:', productData)
-    // const response = await fetch('/api/orders/immediate-purchase', {...})
-  } catch (error) {
-    console.error('구매 처리 실패:', error)
-    alert('구매 처리 중 오류가 발생했습니다.')
+  if (!available) {
+    alert("구매 가능한 미개봉 상품이 없습니다.")
+    return
   }
+
+  router.push({
+    name: "checkout",
+    query: {
+      mode: "buynow",
+      itemDetailsId: available.itemId,
+      quantity: 1
+    }
+  })
 }
 
-const handleAddToCart = async (productData: any) => {
-  try {
-    // 장바구니 추가 API 호출
-    console.log('장바구니 추가:', productData)
-    // const response = await fetch('/api/cart/add', {...})
-    alert('장바구니에 추가되었습니다.')
-  } catch (error) {
-    console.error('장바구니 추가 실패:', error)
-    alert('장바구니 추가 중 오류가 발생했습니다.')
+// ✅ 장바구니 담기
+const handleAddToCart = async () => {
+  const available = unpackedItems.value.find(
+    (d) => d.status === true && d.unpacked === false
+  )
+
+  if (!available) {
+    alert("장바구니에 담을 수 있는 상품이 없습니다.")
+    return
   }
+
+  await api.post("/cart", {
+    itemDetailsId: available.itemId,
+    quantity: 1
+  })
+  alert("장바구니에 추가되었습니다!")
 }
 
-// 중고상품 관련 핸들러들
+// ✅ 중고상품 구매
 const handleUsedItemDetailDirect = (item: any) => {
   selectedUsedItem.value = item
   showUsedItemDetail.value = true
 }
 
-const handleUsedItemPurchase = async (usedItem: any) => {
-  try {
-    // 중고상품 구매 API 호출
-    console.log('중고상품 구매:', usedItem)
-    // const response = await fetch('/api/orders/immediate-purchase', {...})
-  } catch (error) {
-    console.error('중고상품 구매 처리 실패:', error)
-    alert('구매 처리 중 오류가 발생했습니다.')
+const handleUsedItemPurchase = (usedItem: any) => {
+  if (!usedItem || !usedItem.id) {
+    alert("선택한 중고상품이 없습니다.")
+    return
   }
+
+  router.push({
+    name: "checkout",
+    query: {
+      mode: "used",
+      itemDetailsId: usedItem.id,
+      quantity: 1
+    }
+  })
 }
 
 const handleUsedItemAddToCart = async (usedItem: any) => {
-  try {
-    // 중고상품 장바구니 추가 API 호출
-    console.log('중고상품 장바구니 추가:', usedItem)
-    // const response = await fetch('/api/cart/add', {...})
-    alert('장바구니에 추가되었습니다.')
-  } catch (error) {
-    console.error('장바구니 추가 실패:', error)
-    alert('장바구니 추가 중 오류가 발생했습니다.')
-  }
+  await api.post("/cart", {
+    itemDetailsId: usedItem.id,
+    quantity: 1
+  })
+  alert("중고상품이 장바구니에 추가되었습니다!")
 }
 
-const goBack = () => {
-  // 이전 페이지로 이동
-  window.history.back()
-}
+const goBack = () => window.history.back()
 
-// 페이지 초기화
 const initializePage = async () => {
   console.log('=== 페이지 초기화 시작 ===')
   console.log('productId:', productId)
   loading.value = true
-  error.value = null // 에러 상태 초기화
-  
+  error.value = null
   try {
-    // 병렬로 데이터 로드
     await Promise.all([
       fetchProductDetail(),
       fetchPriceData(),
       fetchUsedItems(),
-      fetchUnpackedItems(), // 미개봉 상품 데이터도 로드
+      fetchUnpackedItems(),
     ])
     
     console.log('=== 페이지 초기화 완료 ===')
@@ -341,10 +318,7 @@ const initializePage = async () => {
   }
 }
 
-// 컴포넌트 마운트 시 데이터 로드
-onMounted(() => {
-  initializePage()
-})
+onMounted(() => initializePage())
 </script>
 
 <style scoped>

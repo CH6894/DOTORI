@@ -1,16 +1,22 @@
 package com.pingu.DOTORI.controller;
 
-import com.pingu.DOTORI.dto.OrderRequest;
-import com.pingu.DOTORI.dto.OrderResponse;
-import com.pingu.DOTORI.entity.Orders;
-import com.pingu.DOTORI.service.OrdersService;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.pingu.DOTORI.dto.OrdersRequestDTO;
+import com.pingu.DOTORI.dto.OrdersResponseDTO;
+import com.pingu.DOTORI.service.OrdersService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -19,67 +25,65 @@ public class OrdersController {
 
         private final OrdersService ordersService;
 
-        // 주문 생성 (장바구니 → 주문)
-        @PostMapping
-        public ResponseEntity<List<OrderResponse>> createOrders(
-                        @RequestBody OrderRequest request,
-                        HttpSession session) {
+    /** 통합 주문 생성 - 단일/장바구니 자동 구분 */
+    @PostMapping
+    public ResponseEntity<?> createOrder(@RequestBody OrdersRequestDTO request,
+                                        HttpServletRequest httpReq) {
+        try {
+            System.out.println("받은 주문 요청: " + request.toString());
 
-                Long userId = (Long) session.getAttribute("userId");
-                if (userId == null) {
-                        return ResponseEntity.status(401).build();
-                }
-
-                List<Orders> orders = ordersService.createOrdersFromCart(userId, request);
-
-                // Orders → OrderResponse 변환
-                List<OrderResponse> response = orders.stream()
-                                .map(order -> OrderResponse.builder()
-                                                .orderId(order.getId())
-                                                .itemName(order.getItemDetails().getItem() != null
-                                                                ? order.getItemDetails().getItem().getName()
-                                                                : null)
-                                                .price(order.getItemDetails().getCost() != null
-                                                                ? order.getItemDetails().getCost().intValue()
-                                                                : 0)
-                                                .quantity(1) // ✅ Cart → Orders 변환 시 수량 관리 (기본 1)
-                                                .depositerName(order.getDepositerName())
-                                                .payMethod(order.getPayMethod())
-                                                .payMessage(order.getPayMessage())
-                                                .payTime(order.getPayTime())
-                                                .build())
-                                .collect(Collectors.toList());
-
+            // 장바구니 주문인지 단일 주문인지 구분
+            if (request.getCartIds() != null && !request.getCartIds().isEmpty()) {
+                // 장바구니 기반 주문
+                List<OrdersResponseDTO> response = ordersService.createOrderFromCart(request, httpReq);
                 return ResponseEntity.ok(response);
-        }
-
-        // 나의 주문 내역 조회
-        @GetMapping("/me")
-        public ResponseEntity<List<OrderResponse>> getMyOrders(HttpSession session) {
-                Long userId = (Long) session.getAttribute("userId");
-                if (userId == null) {
-                        return ResponseEntity.status(401).build();
-                }
-
-                List<Orders> orders = ordersService.getOrdersByUser(userId);
-
-                List<OrderResponse> response = orders.stream()
-                                .map(order -> OrderResponse.builder()
-                                                .orderId(order.getId())
-                                                .itemName(order.getItemDetails().getItem() != null
-                                                                ? order.getItemDetails().getItem().getName()
-                                                                : null)
-                                                .price(order.getItemDetails().getCost() != null
-                                                                ? order.getItemDetails().getCost().intValue()
-                                                                : 0)
-                                                .quantity(1)
-                                                .depositerName(order.getDepositerName())
-                                                .payMethod(order.getPayMethod())
-                                                .payMessage(order.getPayMessage())
-                                                .payTime(order.getPayTime())
-                                                .build())
-                                .collect(Collectors.toList());
-
+            } else {
+                // 단일 상품 주문
+                OrdersResponseDTO response = ordersService.createSingleOrder(request, httpReq);
                 return ResponseEntity.ok(response);
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("잘못된 요청: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("주문 처리 오류: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("서버 오류: " + e.getMessage());
         }
+    }
+
+    /** 장바구니 기반 주문 생성 (별도 엔드포인트) */
+    @PostMapping("/cart")
+    public ResponseEntity<List<OrdersResponseDTO>> createOrderFromCart(@RequestBody OrdersRequestDTO request,
+                                                                      HttpServletRequest httpReq) {
+        System.out.println("cart METHOD -------------------------------------------------------------------------");
+        List<OrdersResponseDTO> saved = ordersService.createOrderFromCart(request, httpReq);
+        return ResponseEntity.ok(saved);
+    }
+
+    /** 내 주문 내역 조회 */
+    @GetMapping("/me")
+    public List<OrdersResponseDTO> getMyOrders(HttpServletRequest httpReq) {
+        return ordersService.getMyOrders(httpReq);
+    }
+
+    /** 주문 단건 조회 */
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrdersResponseDTO> getOrderById(@PathVariable Long orderId,
+                                                         HttpServletRequest httpReq) {
+        return ResponseEntity.ok(ordersService.getOrderById(orderId, httpReq));
+    }
+
+    /** 특정 시간의 주문 그룹 조회 (주문완료 페이지용) */
+    @GetMapping("/paytime")
+    public ResponseEntity<List<OrdersResponseDTO>> getOrdersByPayTime(
+            @RequestParam String payTime,
+            HttpServletRequest httpReq) {
+        try {
+            List<OrdersResponseDTO> orders = ordersService.getOrdersByPayTime(payTime, httpReq);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            System.err.println("payTime 기준 주문 조회 오류: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

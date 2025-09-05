@@ -280,13 +280,21 @@ public class InspectionService {
 
         
         // 관리자 메모를 Admin 테이블의 adminNote에 저장
-
-
-
         if (reason != null && !reason.trim().isEmpty()) {
             admin.setAdminNote(reason.trim());
         } else {
             admin.setAdminNote(null);
+        }
+
+        // ItemDetails의 status를 1(true)로 설정하여 중고상품란에 표시되도록 함
+        ItemDetails itemDetails = admin.getItemDetails();
+        if (itemDetails != null) {
+            itemDetails.setStatus(true); // 1 = 승인된 상품으로 표시
+            // 관리자 메모를 productCondition에 저장
+            if (reason != null && !reason.trim().isEmpty()) {
+                itemDetails.setProductCondition(reason.trim());
+            }
+            itemDetailsRepository.save(itemDetails); // ItemDetails도 저장
         }
 
         adminRepository.save(admin);

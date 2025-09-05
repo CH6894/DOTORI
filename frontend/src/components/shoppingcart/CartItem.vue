@@ -11,42 +11,49 @@
 
     <!-- 2) 상품 정보 -->
     <td class="product">
-      <img class="thumb" :src="item.thumb" :alt="item.title" />
+      <img 
+        class="thumb" 
+        :src="item.mainImageUrl || item.thumb || item.imageUrl || '/default-product.jpg'" 
+        :alt="item.itemName || item.title || '상품'" 
+        @error="handleImageError"
+      />
       <div class="meta">
-        <p class="title">{{ item.title }}</p>
+        <!-- 상품명과 배지 -->
+        <div class="title-container">
+          <!-- 배지 시스템: unpacked 상태에 따라 구분 -->
+          <span v-if="item.unpacked === true" class="used-badge">중고</span>
+          <span v-else-if="item.unpacked === false" class="new-badge">미개봉</span>
+          <span class="product-name">{{ item.itemName || item.title || '상품명 없음' }}</span>
+        </div>
         <p class="unit-price">{{ currency(item.price) }}</p>
       </div>
     </td>
 
-    <!-- 3) 수량 (± / 입력만, 수량변경 버튼 완전 제거) -->
+    <!-- 3) 수량 (항상 1 고정) -->
     <td class="qty">
-      <div class="qty-controls">
-        <button class="qty-btn" @click="step(-1)" :disabled="tempQty <= 1">−</button>
-        <input
-          class="qty-input"
-          type="text"
-          v-model.trim="tempQtyStr"
-          @input="sanitize"
-          @keydown.enter.prevent="apply"
-          @blur="apply"
-          placeholder="1"
-        />
-        <button class="qty-btn" @click="step(1)">＋</button>
-      </div>
+      <span class="fixed-qty">1</span>
     </td>
 
-    <!-- 4) 상품 금액(= 단가 × 실제 수량) -->
-    <td class="amount">{{ currency(item.price * item.qty) }}</td>
+    <!-- 4) 상품 금액 -->
+    <td class="amount">{{ currency(item.price) }}</td>
 
     <!-- 5) 할인/적립 -->
     <td class="discount">—</td>
 
     <!-- 6) 배송비 -->
-    <td class="shipping">{{ item.shipping ? currency(item.shipping) : '무료' }}</td>
+    <td class="shipping">
+      {{ item.shipping ? currency(item.shipping) : '무료' }}
+    </td>
 
     <!-- 7) 관리 -->
     <td class="actions">
-      <button type="button" class="btn danger" @click.stop="$emit('remove', item.id)">삭제</button>
+      <button 
+        type="button" 
+        class="btn danger" 
+        @click.stop="handleRemove"
+      >
+        삭제
+      </button>
     </td>
   </tr>
 </template>
@@ -58,136 +65,111 @@ export default {
     item: { type: Object, required: true },
     modelValue: { type: Boolean, default: true },
   },
-  emits: ['update:modelValue', 'remove', 'apply-qty'],
-  data() {
-    return {
-      tempQty: this.item.qty,
-      tempQtyStr: String(this.item.qty),
-    };
-  },
-  watch: {
-    'item.qty'(n) {
-      this.tempQty = n;
-      this.tempQtyStr = String(n);
-    },
-  },
+  emits: ['update:modelValue', 'remove'],
+  
   methods: {
     currency(n) {
       return new Intl.NumberFormat('ko-KR', {
         style: 'currency',
         currency: 'KRW',
         maximumFractionDigits: 0,
-      }).format(n);
+      }).format(n || 0);
     },
-    sanitize() {
-      // 입력 중에는 0도 허용하고, 최종 적용 시에만 1 이상으로 제한
-      const cleaned = String(this.tempQtyStr).replace(/[^\d]/g, '');
-      const n = parseInt(cleaned, 10);
-      
-      if (cleaned === '' || isNaN(n)) {
-        this.tempQty = 1;
-        this.tempQtyStr = '';
-      } else {
-        this.tempQty = n;
-        this.tempQtyStr = cleaned;
-      }
+    handleRemove() {
+      const itemId = this.item.cartId || this.item.id;
+      this.$emit('remove', itemId);
     },
-    step(delta) {
-      const next = Math.max(1, (parseInt(this.tempQty, 10) || 1) + delta);
-      this.tempQty = next;
-      this.tempQtyStr = String(next);
-      this.apply(); // 즉시 적용
-    },
-    apply() {
-      // 최종 적용 시에만 1 이상으로 제한
-      const finalQty = Math.max(1, parseInt(this.tempQty, 10) || 1);
-      if (finalQty !== this.item.qty) {
-        this.tempQty = finalQty;
-        this.tempQtyStr = String(finalQty);
-        this.$emit('apply-qty', { id: this.item.id, qty: finalQty });
-      }
+    handleImageError(event) {
+      event.target.src = '/default-product.jpg';
     },
   },
 };
 </script>
 
 <style scoped>
-.cart-row { border-bottom: 1px solid #eee; }
+.cart-row { 
+  border-bottom: 1px solid #eee; 
+  transition: background-color 0.2s ease;
+}
+.cart-row:hover { background-color: #f9f9f9; }
+
 .checkbox { text-align: center; }
 
 /* 상품 정보 */
-.product { display:flex; align-items:center; gap:14px; min-width:0; }
-.thumb   { width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #eee; }
-.meta .title { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.unit-price  { color:#777; font-size:13px; margin-top:4px; }
-
-/* 수량 - 컴팩트하게 정리 */
-.qty { text-align: center; }
-.qty-controls { 
-  display: inline-flex; 
+.product { 
+  display: flex; 
   align-items: center; 
-  gap: 2px; 
-  border: 1px solid #ddd; 
-  border-radius: 8px; 
-  overflow: hidden;
+  gap: 14px; 
+  min-width: 0; 
 }
+.thumb { 
+  width: 100px; height: 100px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  border: 1px solid #eee; 
+  flex-shrink: 0;
+}
+.meta { flex: 1; min-width: 0; }
 
-.qty-btn {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: none;
-  background: #f8f9fa;
-  cursor: pointer;
-  font-weight: 600;
+.title-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
-.qty-btn:hover:not(:disabled) { background: #e9ecef; }
-.qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.qty-input {
-  width: 50px; 
-  height: 32px;
-  text-align: center; 
-  border: none; 
-  outline: none;
+.product-name {
   font-weight: 600;
-  background: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
-/* 스핀 제거 */
-.qty-input::-webkit-outer-spin-button,
-.qty-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
-.qty-input[type="number"] { -moz-appearance:textfield; }
+.unit-price { color: #777; font-size: 13px; margin: 0; }
 
-/* 숫자/금액/배송 정렬 */
-.amount, .discount, .shipping { text-align:center; font-weight: 600; }
-
-/* 관리(삭제) */
-.actions { text-align:center; }
-
-/* 버튼들 */
-.btn { 
-  padding: 6px 12px; 
-  border: 1px solid #ddd; 
-  background: #fff; 
-  border-radius: 6px; 
-  cursor: pointer; 
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.btn.danger { 
-  border-color: #ff6b6b; 
-  color: #ff6b6b; 
-  background: #fff;
-}
-
-.btn.danger:hover {
-  background: #ff6b6b;
+/* 배지 스타일 */
+.used-badge {
+  display: inline-block;
+  background: #ff7a2e;
   color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
+
+.new-badge {
+  display: inline-block;
+  background: #22c55e;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* 수량 (고정 1) */
+.qty { text-align: center; }
+.fixed-qty {
+  font-weight: 600;
+  color: #333;
+}
+
+/* 금액/배송 정렬 */
+.amount, .discount, .shipping { 
+  text-align: center; 
+  font-weight: 600; 
+}
+.amount { font-size: 15px; }
+
+/* 삭제 버튼 */
+.actions { text-align: center; }
+.btn { padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+.btn.danger { border-color: #ff6b6b; color: #ff6b6b; }
+.btn.danger:hover { background: #ff6b6b; color: #fff; }
 </style>

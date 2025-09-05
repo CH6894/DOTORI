@@ -510,7 +510,7 @@ async function submitDecision() {
 
     const { items } = await fetchInspectionsFromAdmin({
       page: 0,
-      size: 50,
+      size: 5000,
     })
     list.value = items
 
@@ -630,7 +630,7 @@ onMounted(async () => {
     from: undefined,
     to: undefined,
     page: 0,
-    size: 50,
+    size: 5000,
   })
   list.value = items
 })

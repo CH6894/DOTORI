@@ -1,3 +1,7 @@
 /.metadata/
 .env
 items_from_text_v3.csv
+
+__pycache__/
+*.pyc
+*.pyo
