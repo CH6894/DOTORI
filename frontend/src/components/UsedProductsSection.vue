@@ -19,7 +19,7 @@
           >
             <div class="product-image-container">
               <img 
-                :src="item.images?.[0] || '/img/placeholder.jpg'" 
+                :src="getItemFirstImage(item)" 
                 :alt="`중고상품 - #${item.id}`"
                 class="product-image"
               />
@@ -42,6 +42,8 @@
 
 <script setup>
 /* eslint-disable no-undef */
+import { ref, computed, onMounted, watch } from 'vue'
+import { fetchAllImagesByItemDetailsId } from '@/api/items'
 
 const props = defineProps({
   usedItems: {
@@ -55,6 +57,60 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['openUsedItemDetail'])
+
+// ---------- 이미지 상태 ----------
+const itemImages = ref({})
+const isLoadingImages = ref(false)
+
+// ---------- 이미지 로딩 ----------
+const loadImagesForItem = async (itemId) => {
+  if (itemImages.value[itemId]) return // 이미 로드된 경우
+  
+  try {
+    console.log('상품 이미지 로딩 시작:', itemId)
+    const images = await fetchAllImagesByItemDetailsId(itemId)
+    console.log('로드된 이미지들:', images)
+    
+    itemImages.value[itemId] = images
+  } catch (error) {
+    console.error('이미지 로딩 실패:', error)
+    itemImages.value[itemId] = []
+  }
+}
+
+// 모든 상품의 이미지 로드
+const loadAllItemImages = async () => {
+  if (!props.usedItems?.length) return
+  
+  isLoadingImages.value = true
+  try {
+    const promises = props.usedItems.map(item => loadImagesForItem(item.id))
+    await Promise.all(promises)
+  } finally {
+    isLoadingImages.value = false
+  }
+}
+
+// 상품의 첫 번째 이미지 가져오기
+const getItemFirstImage = (item) => {
+  const images = itemImages.value[item.id]
+  if (images && images.length > 0) {
+    return images[0]
+  }
+  return item.images?.[0] || '/img/placeholder.jpg'
+}
+
+// ---------- 생명주기 ----------
+onMounted(() => {
+  loadAllItemImages()
+})
+
+// usedItems가 변경될 때마다 이미지 다시 로드
+watch(() => props.usedItems, (newItems) => {
+  if (newItems?.length) {
+    loadAllItemImages()
+  }
+}, { deep: true })
 
 // 유틸리티 함수들
 const getGradeText = (quality) => {

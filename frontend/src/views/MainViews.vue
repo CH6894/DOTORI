@@ -11,6 +11,7 @@ import CategoryGrid from '../components/CategoryGrid.vue'
 import ProductGrid from '../components/ProductGrid.vue'
 import TopButton from '../components/TopButton.vue'
 import ChatbotFab from '../components/ChatbotFab.vue'
+import BestSellerSection from '@/components/BestSellerSection.vue'
 
 // 베스트셀러 데이터
 const bestSellerItems = ref<CatalogItem[]>([])
@@ -72,10 +73,7 @@ onMounted(loadBestSellerItems)
 
       <!-- 베스트셀러 -->
       <section class="section">
-        <h2 class="section__title center">Best Seller</h2>
-        <p class="filters">
-        </p>
-        <ProductGrid :items="bestSellerItems" />
+        <BestSellerSection />
       </section>
     </div>
   </main>
@@ -102,7 +100,7 @@ body {
   isolation: isolate;
 }
 
-/* 2) 공통: 문서의 최상단/최하단에 “배경처럼” 깔릴 레이어 */
+/* 2) 공통: 문서의 최상단/최하단에 "배경처럼" 깔릴 레이어 */
 body.home::before,
 body.home::after {
   content: "";

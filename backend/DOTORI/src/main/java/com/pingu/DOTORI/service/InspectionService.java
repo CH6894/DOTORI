@@ -278,9 +278,8 @@ public class InspectionService {
         admin.setQuality(grade);
         admin.setRejectionReason(null); // 승인 시 반려사유는 null로 설정
 
-        // 추가메모를 item_details 테이블의 product_condition에 저장
+        // 관리자 메모를 ItemDetails 테이블의 productCondition에 저장
         if (reason != null && !reason.trim().isEmpty()) {
-            // Admin의 itemDetails를 통해 직접 접근
             ItemDetails itemDetails = admin.getItemDetails();
             if (itemDetails != null) {
                 itemDetails.setProductCondition(reason.trim());
@@ -299,6 +298,16 @@ public class InspectionService {
         admin.setAdmissionState(2); // 2 = 반려
         admin.setQuality(null); // 반려 시 등급은 null로 설정
         admin.setRejectionReason(parseRejectionReason(reason)); // 반려사유를 숫자로 변환하여 저장
+
+        // 반려 시에도 관리자 메모를 ItemDetails 테이블의 productCondition에 저장
+        if (reason != null && !reason.trim().isEmpty()) {
+            ItemDetails itemDetails = admin.getItemDetails();
+            if (itemDetails != null) {
+                itemDetails.setProductCondition(reason.trim());
+                itemDetailsRepository.save(itemDetails);
+            }
+        }
+
         adminRepository.save(admin);
     }
 
@@ -366,6 +375,129 @@ public class InspectionService {
 
         // 기본값
         return 1;
+    }
+
+    /**
+     * 관리자 이미지 업로드 (img_type = 2)
+     */
+    @Transactional
+    public void uploadAdminImages(String inspectionId, List<MultipartFile> images) {
+        System.out.println("=== 관리자 이미지 업로드 시작 ===");
+        System.out.println("inspectionId: " + inspectionId);
+        System.out.println("이미지 개수: " + (images != null ? images.size() : 0));
+
+        if (images == null || images.isEmpty()) {
+            System.out.println("업로드할 이미지가 없습니다.");
+            return;
+        }
+
+        // inspectionId로 Admin 엔티티 찾기
+        Long adminId = Long.parseLong(inspectionId);
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("검수 정보를 찾을 수 없습니다: " + inspectionId));
+
+        // ItemDetails 가져오기
+        ItemDetails itemDetails = admin.getItemDetails();
+        if (itemDetails == null) {
+            throw new RuntimeException("상품 상세 정보를 찾을 수 없습니다.");
+        }
+
+        System.out.println("ItemDetails ID: " + itemDetails.getItemId());
+
+        // 각 이미지 처리
+        for (MultipartFile image : images) {
+            if (image.isEmpty())
+                continue;
+
+            System.out.println("이미지 처리 중: " + image.getOriginalFilename());
+
+            String imageUrl;
+
+            // NCP Storage Service가 있으면 사용, 없으면 로컬 저장
+            if (ncpStorageService != null) {
+                imageUrl = ncpStorageService.uploadFile(image, "admin");
+                System.out.println("NCP 업로드 완료: " + imageUrl);
+            } else {
+                // 로컬 저장 (기존 방식)
+                String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
+                try {
+                    Path savePath = Path.of("C:/uploads/admin/" + filename);
+                    Files.createDirectories(savePath.getParent());
+                    image.transferTo(savePath);
+                    imageUrl = filename; // 로컬 파일명만 저장
+                    System.out.println("로컬 저장 완료: " + filename);
+                } catch (IOException e) {
+                    throw new RuntimeException("이미지 저장 실패", e);
+                }
+            }
+
+            // EXIF 메타데이터에서 촬영시각 추출
+            LocalDateTime filmingTime = ImageMetadataUtil.extractFilmingTime(image);
+            if (filmingTime == null) {
+                filmingTime = LocalDateTime.now(); // 현재 시간 사용
+            }
+
+            // ItemImg 엔티티 생성 (img_type = 2)
+            ItemImg itemImg = ItemImg.builder()
+                    .itemDetails(itemDetails)
+                    .imgUrl(imageUrl)
+                    .imgType((byte) 2) // 관리자 이미지 타입
+                    .filmingTime(filmingTime)
+                    .build();
+
+            // DB에 저장
+            itemImgRepository.save(itemImg);
+            System.out.println("DB 저장 완료 - img_type: 2, img_url: " + imageUrl);
+        }
+
+        System.out.println("=== 관리자 이미지 업로드 완료 ===");
+    }
+
+    // 검수 결정 정보 조회
+    public Admin getInspectionDecision(String inspectionId) {
+        System.out.println("=== 검수 결정 정보 조회 시작 ===");
+        System.out.println("inspectionId: " + inspectionId);
+
+        Long adminId = Long.parseLong(inspectionId);
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("검수 정보를 찾을 수 없습니다: " + inspectionId));
+
+        System.out.println("검수 결정 정보:");
+        System.out.println("- Quality: " + admin.getQuality());
+        System.out.println("- ProductCondition: " + admin.getItemDetails().getProductCondition());
+        System.out.println("- AdmissionState: " + admin.getAdmissionState());
+        System.out.println("- RejectionReason: " + admin.getRejectionReason());
+        System.out.println("=== 검수 결정 정보 조회 완료 ===");
+
+        return admin;
+    }
+
+    // 관리자 이미지 조회 (Admin ID를 통해)
+    public List<String> getAdminImagesByInspectionId(String inspectionId) {
+        System.out.println("=== 관리자 이미지 조회 시작 ===");
+        System.out.println("inspectionId: " + inspectionId);
+
+        Long adminId = Long.parseLong(inspectionId);
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("검수 정보를 찾을 수 없습니다: " + inspectionId));
+
+        Long itemDetailsId = admin.getItemDetails().getItemId();
+        System.out.println("itemDetailsId: " + itemDetailsId);
+
+        // 관리자 이미지 조회 (img_type = 2)
+        List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+                (byte) 2);
+
+        List<String> imageUrls = new ArrayList<>();
+        for (ItemImg img : adminImages) {
+            imageUrls.add(img.getImgUrl());
+            System.out.println("관리자 이미지 URL: " + img.getImgUrl());
+        }
+
+        System.out.println("총 관리자 이미지 개수: " + imageUrls.size());
+        System.out.println("=== 관리자 이미지 조회 완료 ===");
+
+        return imageUrls;
     }
 
 }

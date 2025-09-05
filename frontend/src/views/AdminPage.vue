@@ -122,11 +122,11 @@
                 </div>
               </div>
 
-              <!-- 이미지 미리보기 그리드 -->
-              <h3 class="section-title">이미지 ({{ Math.min(current.photos?.length || 0, 5) }})</h3>
+              <!-- 이미지 미리보기 그리드 (판매자 이미지만) -->
+              <h3 class="section-title">이미지 ({{ Math.min(sellerPhotos?.length || 0, 5) }})</h3>
               <div class="thumb-row">
                 <figure
-                  v-for="p in (current.photos?.slice(0, 5) || [])"
+                  v-for="p in (sellerPhotos?.slice(0, 5) || [])"
                   :key="p.id"
                   class="thumb"
                   @click="openViewer(p)"
@@ -146,7 +146,21 @@
               </div>
               <div v-else class="memo-empty">메모 없음</div>
 
-
+              <!-- 관리자 이미지 섹션 -->
+              <h3 class="section-title">관리자 검수 이미지</h3>
+              <div v-if="adminImages.length" class="admin-images-section">
+                <div class="admin-images-grid">
+                  <div v-for="(img, idx) in adminImages" :key="idx" class="admin-image-card">
+                    <img :src="img.preview" :alt="`관리자 이미지 ${idx + 1}`" class="admin-image" />
+                    <div class="admin-image-actions">
+                      <button class="btn btn--ghost danger" @click="removeAdminImage(idx)">삭제</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="admin-images-empty">
+                <p>관리자 이미지가 없습니다.</p>
+              </div>
 
               <!-- 의사결정 영역 -->
               <h3 class="section-title">검수 결정</h3>
@@ -171,6 +185,23 @@
                       <option value="C">C</option>
                     </select>
                     <textarea v-model="approveNote" class="note" placeholder="추가 메모(선택)"></textarea>
+                    
+                    <!-- 관리자 이미지 업로드 섹션 -->
+                    <div class="admin-image-upload">
+                      <label class="label">관리자 이미지 업로드 </label>
+                      <div class="dropzone" :class="{ 'dropzone--drag': isDragOver }" 
+                           @dragover.prevent="onDragOver" @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
+                        <input ref="adminFileInput" class="dropzone__input" type="file" multiple accept="image/*" 
+                               @change="onAdminFilePick" style="display: none;" />
+                        <div class="dropzone__content" @click.stop="openAdminPicker" 
+                             @dragover.prevent="onDragOver" @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
+                          <div class="dropzone__icon" aria-hidden="true">📸</div>
+                          <p class="dropzone__title">이미지를 끌어오거나 클릭해서 선택</p>
+                          <p class="dropzone__hint">최대 5장 · 파일당 최대 10MB</p>
+                          <p class="dropzone__sub">상품 상태 확인용 <strong>추가 이미지</strong>를 업로드하세요.</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="decision__right">
@@ -180,6 +211,7 @@
                   </div>
                 </div>
               </div>
+              
             </section>
 
             <!-- 하단 액션바 -->
@@ -203,15 +235,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue"
+import { computed, onMounted, ref, watch } from "vue"
 import {
   fetchInspectionsFromAdmin,
   approveInspection,
   rejectInspection,
+  uploadAdminImages,
+  getInspectionDecision,
+  getAdminImages,
   type Inspection,
   type Photo,
   type Status,
 } from "@/api/inspection"
+import { fetchAdminImagesByItemDetailsId } from "@/api/items"
 import axios from "axios"
 
 const API_BASE = "http://localhost:8081/api/inspections"
@@ -245,7 +281,23 @@ const grade = ref<Inspection["grade"] | "">("")
 const viewerOpen = ref(false)
 const viewerSrc = ref("")
 
+// 관리자 이미지 업로드 관련
+const adminFileInput = ref<HTMLInputElement | null>(null)
+const adminImages = ref<Array<{ file: File; preview: string }>>([])
+const isDragOver = ref(false)
+
 // ---------------------
+// 판매자 이미지만 필터링
+const sellerPhotos = computed(() => {
+  if (!current.value?.photos) return []
+  
+  // 관리자 이미지 URL 패턴을 제외 (관리자 이미지는 /uploads/admin/ 경로를 사용)
+  return current.value.photos.filter(photo => 
+    !photo.url.includes('/uploads/admin/') && 
+    !photo.url.includes('admin')
+  )
+})
+
 // 필터 + 페이지네이션
 // ---------------------
 const filtered = computed(() => {
@@ -317,16 +369,107 @@ function resetFilters() {
   dateTo.value = ""
   page.value = 1
 }
-function openReview(ins: Inspection) {
+async function openReview(ins: Inspection) {
   current.value = { ...ins }
   panelOpen.value = true
+  
+  // 먼저 기본값으로 초기화 (각 상품별로 독립적인 데이터 관리)
   decision.value = null
   rejectReasons.value = []
   approveNote.value = ""
+  grade.value = ""
+  
+  // 백엔드에서 검수 결정 정보 조회
+  try {
+    const decisionInfo = await getInspectionDecision(ins.id)
+    console.log('백엔드에서 가져온 검수 결정 정보:', decisionInfo)
+    
+    if (decisionInfo) {
+      // 등급 설정
+      if (decisionInfo.quality) {
+        grade.value = getGradeText(decisionInfo.quality)
+      }
+      
+      // 관리자 메모 설정
+      if (decisionInfo.itemDetails && decisionInfo.itemDetails.productCondition) {
+        approveNote.value = decisionInfo.itemDetails.productCondition
+      }
+      
+      // 승인/반려 상태 설정 (admissionState: 0=대기, 1=승인, 2=반려)
+      if (decisionInfo.admissionState === 1) {
+        decision.value = "APPROVED"
+      } else if (decisionInfo.admissionState === 2) {
+        decision.value = "REJECTED"
+        // 반려 사유는 rejectionReason에서 가져올 수 있음
+      }
+    }
+  } catch (error) {
+    console.error('검수 결정 정보 조회 실패:', error)
+    // 실패 시 기본값 설정
+    decision.value = null
+    rejectReasons.value = []
+    approveNote.value = ""
+    grade.value = ""
+  }
+  
+  // 관리자 이미지 로드
+  await loadAdminImages(ins.id)
+}
+
+// 등급 숫자를 문자로 변환하는 헬퍼 함수
+function getGradeText(quality: number): string {
+  switch (quality) {
+    case 1: return "S"
+    case 2: return "A"
+    case 3: return "B"
+    case 4: return "C"
+    default: return ""
+  }
+}
+
+// 관리자 이미지 로드 함수
+async function loadAdminImages(inspectionId: string) {
+  try {
+    console.log('관리자 이미지 로드 시작:', inspectionId)
+    console.log('현재 검수 정보:', current.value)
+    
+    // 새로운 API를 사용하여 관리자 이미지 조회
+    const images = await getAdminImages(inspectionId)
+    console.log('로드된 관리자 이미지들:', images)
+    
+    // 기존 관리자 이미지 정리
+    adminImages.value.forEach(img => {
+      if (img.file && img.file.name !== 'admin-image') {
+        URL.revokeObjectURL(img.preview)
+      }
+    })
+    adminImages.value = []
+    
+    // 새로운 관리자 이미지 추가
+    images.forEach((imageUrl: string) => {
+      adminImages.value.push({
+        file: new File([], 'admin-image'), // 더미 파일 객체
+        preview: imageUrl
+      })
+    })
+    
+    console.log('관리자 이미지 로드 완료, 총 개수:', adminImages.value.length)
+  } catch (error) {
+    console.error('관리자 이미지 로드 실패:', error)
+  }
 }
 function closePanel() {
   panelOpen.value = false
   current.value = null
+  
+  // 검수 데이터 초기화 (다음 상품을 위해)
+  decision.value = null
+  rejectReasons.value = []
+  approveNote.value = ""
+  grade.value = ""
+  
+  // 관리자 이미지는 초기화하지 않음 (업로드 후에도 유지)
+  isDragOver.value = false
 }
 function openViewer(p: Photo) {
   viewerSrc.value = p.url
@@ -342,11 +485,23 @@ async function submitDecision() {
   if (!current.value || !decision.value) return
 
   try {
+
     if (decision.value === "APPROVED") {
       // 승인 시: 등급과 추가메모 설정
       const gradeNumber = grade.value ? getGradeNumber(grade.value) : undefined
       const note = approveNote.value.trim() || undefined
       await approveInspection(current.value.id, gradeNumber, note)
+      
+      // 관리자 이미지가 있으면 업로드
+      if (adminImages.value.length > 0) {
+        const imageFiles = adminImages.value
+          .filter(img => img.file && img.file.name !== 'admin-image')
+          .map(img => img.file!)
+        if (imageFiles.length > 0) {
+          await uploadAdminImages(current.value.id, imageFiles)
+          console.log("관리자 이미지 업로드 완료:", imageFiles.length, "장")
+        }
+      }
     } else if (decision.value === "REJECTED") {
       // 반려 시: 등급은 null, 반려사유만 설정
       const reason = rejectReasons.value.join(", ") + (approveNote.value ? ` - ${approveNote.value}` : "")
@@ -359,10 +514,97 @@ async function submitDecision() {
     })
     list.value = items
 
+    // 성공적으로 저장됨
+    
+    // 관리자 이미지 새로고침
+    await loadAdminImages(current.value.id)
+    
     closePanel()
   } catch (error) {
     console.error("결정 저장 실패:", error)
     alert("저장 실패! 콘솔 확인하세요.")
+  }
+}
+
+// 관리자 이미지 업로드 관련 함수들
+function openAdminPicker() {
+  console.log('파일 선택기 열기 시도')
+  console.log('adminFileInput.value:', adminFileInput.value)
+  adminFileInput.value?.click()
+}
+
+function onAdminFilePick(event: Event) {
+  console.log('파일 선택 이벤트 발생')
+  const target = event.target as HTMLInputElement
+  const files = target.files
+  console.log('선택된 파일들:', files)
+  if (files && files.length > 0) {
+    console.log('파일 개수:', files.length)
+    handleAdminFiles(Array.from(files))
+  } else {
+    console.log('선택된 파일이 없습니다.')
+  }
+}
+
+function onDragOver(event: DragEvent) {
+  event.preventDefault()
+  isDragOver.value = true
+}
+
+function onDragLeave(event: DragEvent) {
+  event.preventDefault()
+  isDragOver.value = false
+}
+
+function onDrop(event: DragEvent) {
+  event.preventDefault()
+  isDragOver.value = false
+  
+  const files = event.dataTransfer?.files
+  if (files) {
+    handleAdminFiles(Array.from(files))
+  }
+}
+
+function handleAdminFiles(files: File[]) {
+  console.log('handleAdminFiles 호출됨, 파일 개수:', files.length)
+  const maxFiles = 5
+  const maxSize = 10 * 1024 * 1024 // 10MB
+  
+  // 파일 개수 제한
+  if (adminImages.value.length + files.length > maxFiles) {
+    alert(`최대 ${maxFiles}장까지만 업로드할 수 있습니다.`)
+    return
+  }
+  
+  files.forEach((file, index) => {
+    console.log(`파일 ${index + 1} 처리 중:`, file.name, file.type, file.size)
+    
+    // 파일 크기 체크
+    if (file.size > maxSize) {
+      alert(`${file.name}은(는) 10MB를 초과합니다.`)
+      return
+    }
+    
+    // 이미지 파일 체크
+    if (!file.type.startsWith('image/')) {
+      alert(`${file.name}은(는) 이미지 파일이 아닙니다.`)
+      return
+    }
+    
+    // 미리보기 URL 생성
+    const preview = URL.createObjectURL(file)
+    console.log('미리보기 URL 생성:', preview)
+    adminImages.value.push({ file, preview })
+    console.log('현재 adminImages 개수:', adminImages.value.length)
+  })
+}
+
+function removeAdminImage(index: number) {
+  const removed = adminImages.value.splice(index, 1)[0]
+  if (removed && removed.file) {
+    // 실제 파일이 있는 경우에만 URL 해제
+    URL.revokeObjectURL(removed.preview)
   }
 }
 
@@ -376,6 +618,8 @@ function getGradeNumber(grade: string): number {
     default: return 1
   }
 }
+
+// 검수 결정은 백엔드에서 관리하므로 localStorage 사용하지 않음
 
 // ---------------------
 // ✅ DB에서 불러오기
@@ -948,6 +1192,57 @@ onMounted(async () => {
   padding: 8px 0;
 }
 
+/* 관리자 이미지 섹션 */
+.admin-images-section {
+  margin: 16px 0;
+}
+
+.admin-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.admin-image-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+}
+
+.admin-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-image-actions {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+.admin-image-actions .btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  min-height: auto;
+}
+
+.admin-images-empty {
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 16px;
+  text-align: center;
+  border: 1px dashed #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
 
 
 /* === 이미지 뷰어 모달 === */
@@ -1041,6 +1336,120 @@ onMounted(async () => {
 .image-viewer__thumb.active {
   opacity: 1;
   border: 2px solid #fff;
+}
+
+/* 관리자 이미지 업로드 스타일 (UploadVerifyModal.vue와 동일) */
+.admin-image-upload {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dropzone {
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  background: #f9fafb;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.dropzone:hover {
+  border-color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.dropzone--drag {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.dropzone__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dropzone__content {
+  pointer-events: auto;
+}
+
+.dropzone__icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.dropzone__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 8px 0;
+}
+
+.dropzone__hint {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+}
+
+.dropzone__sub {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.admin-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.admin-preview-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+}
+
+.admin-preview-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-preview-actions {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+.admin-preview-actions .btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  min-height: auto;
+}
+
+.test-upload-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.test-upload-btn:hover {
+  background: #2563eb;
 }
 
 @media (max-width: 640px) {

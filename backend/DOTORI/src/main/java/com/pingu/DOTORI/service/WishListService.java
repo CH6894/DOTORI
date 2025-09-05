@@ -54,6 +54,7 @@ public class WishListService {
             ItemDetails itemDetails = itemDetailsRepository.findById(wishList.getItemId()).orElse(null);
             if (itemDetails != null) {
                 result.put("title", itemDetails.getItem().getTitle());
+                result.put("name", itemDetails.getItem().getName()); // 상품 이름 추가
                 result.put("price", itemDetails.getCost());
                 result.put("unpacked", itemDetails.getUnpacked());
                 result.put("status", itemDetails.getStatus());
@@ -67,6 +68,7 @@ public class WishListService {
                 }
             } else {
                 result.put("title", "상품 정보 없음");
+                result.put("name", "상품 정보 없음");
                 result.put("price", 0);
                 result.put("unpacked", false);
                 result.put("status", false);

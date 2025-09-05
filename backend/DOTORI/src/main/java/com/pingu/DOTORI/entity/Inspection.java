@@ -9,17 +9,17 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Inspection")
-@Table(name = "Inspection")
+@Table(name = "inspection")
 public class Inspection {
 
 	@Id
-	@Column(name = "Inspection_Standard_ID", nullable = false, length = 100)
+	@Column(name = "inspection_standard_id", nullable = false, length = 100)
 	private String inspectionStandardId;
 
 	@Lob
-	@Column(name = "Inspection_Content", nullable = false)
+	@Column(name = "inspection_content", nullable = false)
 	private String inspectionContent;
 
-	@Column(name = "Category", nullable = false)
+	@Column(name = "category", nullable = false)
 	private Long category;
 }

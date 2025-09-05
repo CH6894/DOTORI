@@ -13,6 +13,7 @@ const ProductInfo = () => import("@/views/ProductInfo.vue");
 const LoginView = () => import("@/views/LoginView.vue");
 const CheckoutPage = () => import("@/views/CheckoutPage.vue");
 const OrderComplete = () => import("@/views/OrderComplete.vue");
+const NotFound = () => import("@/views/NotFound.vue");
 
 /* ===== admin/verify & oauth ===== */
 const VerifyUploadPage = () => import("@/views/VerifyUploadPage.vue");
@@ -231,11 +232,11 @@ const routes: RouteRecordRaw[] = [
     meta: { header: "main", footer: true },
   },
 
-  // 404 -> 임시로 검색 페이지로 라우팅
+  // 404 Not Found 페이지
   {
     path: "/:pathMatch(.*)*",
     name: "not-found",
-    component: SearchResult,
+    component: NotFound,
     meta: { header: "main", footer: true },
   },
   {
@@ -285,6 +286,17 @@ router.beforeEach((to, _from, next) => {
     next({ name: "login", query: { redirect: to.fullPath } });
   } else {
     next();
+  }
+});
+
+/* ===== body class management ===== */
+router.afterEach((to) => {
+  // 기존 body 클래스 제거
+  document.body.className = '';
+  
+  // 메인 페이지일 때 home 클래스 추가
+  if (to.name === 'main') {
+    document.body.classList.add('home');
   }
 });
 

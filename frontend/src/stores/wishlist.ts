@@ -9,6 +9,7 @@ export type MaybeId = WishId | null | undefined
 export type WishItem = {
   wishListId: number
   itemId: number
+  name: string
   itemCode: string
   title: string
   price: number
