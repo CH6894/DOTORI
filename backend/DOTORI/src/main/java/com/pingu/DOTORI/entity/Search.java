@@ -24,6 +24,12 @@ public class Search {
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
+	@Column(name = "search_count", nullable = false)
+	private Integer searchCount;
+	
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Users_TO_Search"))
 	private Users user;
