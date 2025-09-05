@@ -112,19 +112,21 @@ body.home::after {
   z-index: -1;
   background-size: auto 100%;
   background-repeat: repeat-x;
+  background-attachment: scroll;
+  will-change: transform;
 }
 
 /* 3) 상단 배경: 문서 맨 위에만 */
 body.home::before {
   top: 0;
-  background-image: url("./img/Up_BG.svg");
+  background-image: url("/img/Up_BG.svg");
   background-position: center top;
 }
 
 /* 4) 하단 배경: 문서 맨 아래에만 */
 body.home::after {
   bottom: 0;
-  background-image: url("./img/Down_BG.svg");
+  background-image: url("/img/Down_BG.svg");
   background-position: center bottom;
 }
 

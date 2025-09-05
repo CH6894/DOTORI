@@ -1,6 +1,12 @@
 <!-- CalendarPage.vue (CalendarPage 스타일 통일 최종본) -->
 <template>
   <div class="page calendar-scope cute">
+    <div class="admin-nav">
+      <router-link to="/admin" class="btn btn--admin">
+        검수관리
+      </router-link>
+    </div>
+    
     <h2 class="calendar-title">
       {{ pageDate.getFullYear() }}년 {{ pageDate.getMonth() + 1 }}월
       <span class="title-badge"></span>
@@ -609,6 +615,35 @@ onBeforeUnmount(()=>{ if(calendar) calendar.destroy() })
 
 /* ===== 귀여운 테마 ===== */
 .cute :deep(.fc){ --cute-pink:#ffeed8; --cute-accent:#ffd08a; --cute-ink:#574d68; }
+/* Admin 네비게이션 */
+.admin-nav {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.btn--admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: #f8f9fa;
+  color: #574d68;
+  text-decoration: none;
+  margin-left: 5rem;
+  margin-top: 2rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn--admin:hover {
+  background: #e9ecef;
+  border-color: #dee2e6;
+  color: #495057;
+  text-decoration: none;
+}
+
 .calendar-title{ text-align:center; font-weight:800; color:#574d68; margin:16px 0 8px; }
 .title-badge{ display:inline-block; margin-left:.5rem; padding:.2rem .5rem; border-radius:999px; background:var(--cute-pink); border:1px dashed var(--cute-accent); font-size:.9rem; color:#574d68; }
 

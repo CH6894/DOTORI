@@ -1,7 +1,10 @@
 <template>
   <main class="mypage">
     <section class="container">
-      <h1 class="section__title section__title--center">주문 배송 현황</h1>
+      <div class="section-header">
+        <button @click="goToMyPage" class="btn-back">←돌아가기</button>
+        <h1 class="section__title section__title--center">주문 배송 현황</h1>
+      </div>
 
       <!-- 주문 탭 -->
       <div class="panel panel--center">
@@ -212,6 +215,10 @@ export default {
   },
   
   methods: {
+    goToMyPage() {
+      this.$router.push({ name: 'mypage' })
+    },
+    
     async selectOrder(orderId) {
       this.selectedOrderId = orderId;
       
@@ -238,7 +245,51 @@ export default {
 </script>
 
 <style scoped>
-.container { width:min(1160px,92%); margin:0 auto; padding-bottom:40px; }
+/* ===== 섹션 헤더 ===== */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0 1rem 0;
+  position: relative;
+  width: 100%;
+}
+
+.section-header .section__title {
+  text-align: center;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d251c;
+  flex: 1;
+}
+
+.section-header .btn-back {
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
+.btn-back {
+  padding: 0.5rem 0.75rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-back:hover {
+  background: #e9ecef;
+  color: #495057;
+  border-color: #adb5bd;
+}
+
+.container { width: min(1160px, 92%); margin: 0 auto; padding-bottom: 120px; }
 .section__title { margin:22px 4px 12px; font-size:22px; font-weight:800; color:#2d251c; }
 .section__title--center { text-align:center; }
 
@@ -249,7 +300,7 @@ export default {
   padding:24px; 
   margin-bottom:20px;
 }
-.panel--center { max-width:980px; margin:0 auto 20px; }
+.panel--center { margin:0 auto 20px; }
 .panel-title { 
   margin:0 0 20px; 
   font-size:16px; 

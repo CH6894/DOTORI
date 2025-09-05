@@ -2,7 +2,8 @@
 <template>
   <main class="wish-page">
     <section class="container">
-      <header class="wish-header">
+      <div class="section-header">
+        <button @click="goToMyPage" class="btn-back">←돌아가기</button>
         <h1 class="section__title">위시리스트</h1>
         <div class="wish-header__meta">
           <span class="count">총 {{ wishlist.length }}개</span>
@@ -14,7 +15,7 @@
             전체 비우기
           </button>
         </div>
-      </header>
+      </div>
 
       <div class="panel">
         <template v-if="wishlist.length">
@@ -110,6 +111,10 @@ export default {
   },
 
   methods: {
+    goToMyPage() {
+      this.$router.push({ name: 'mypage' })
+    },
+    
     /* ===== 라우팅 ===== */
     goProduct(w) {
       // 위시리스트 아이템의 itemCode를 사용하여 상품 상세 페이지로 이동
@@ -182,31 +187,65 @@ export default {
 
 
 <style scoped>
+/* ===== 섹션 헤더 ===== */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2rem 0 1rem 0;
+  position: relative;
+  width: 100%;
+}
+
+.section-header .section__title {
+  text-align: center;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d251c;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.section-header .btn-back {
+  flex-shrink: 0;
+}
+
+.section-header .wish-header__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-back {
+  padding: 0.5rem 0.75rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-back:hover {
+  background: #e9ecef;
+  color: #495057;
+  border-color: #adb5bd;
+}
+
 /* 컨테이너 */
 .container {
-  width: clamp(20rem, 96vw, 82.5rem);
+  width: min(1160px, 92%);
   margin: 0 auto;
+  padding-bottom: 120px;
 }
 
 /* 헤더 */
-.wish-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: .75rem;
-  margin: 1.25rem 0 .75rem;
-}
-.section__title {
-  font-size: 1.25rem;
-  font-weight: 800;
-  margin: 0;
-  color: #2d251c;
-}
-.wish-header__meta {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-}
 .count {
   font-size: .875rem;
   color: #7b6d5d;
@@ -237,9 +276,22 @@ export default {
   border: .0625rem solid #d9d9d9;
 }
 .btn--thin {
-  padding: .375rem .625rem;
-  border-radius: .4375rem;
-  border: .0625rem solid #d9d9d9;
+  padding: 0.5rem 0.75rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn--thin:hover {
+  background: #e9ecef;
+  color: #495057;
+  border-color: #adb5bd;
 }
 
 /* 카드 그리드 */

@@ -203,11 +203,26 @@ onBeforeUnmount(stopAuto)
 .hero-dots .dot{
   width: 0.625rem;  /* 10px */
   height: 0.625rem; /* 10px */
+  min-width: 0.625rem;
+  min-height: 0.625rem;
   border-radius: 50%;
-  border: 0;
+  border: none;
   background: #d1d1d1;           
   cursor: pointer;
   transition: transform .2s ease, background-color .2s ease;
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+/* 가상 요소 제거 */
+.hero-dots .dot::before,
+.hero-dots .dot::after {
+  display: none !important;
+  content: none !important;
 }
 
 .hero-dots .dot:hover{ transform: scale(1.1) }
