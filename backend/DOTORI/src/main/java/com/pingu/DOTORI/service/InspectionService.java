@@ -277,8 +277,12 @@ public class InspectionService {
         admin.setAdmissionState(1); // 1 = 승인
         admin.setQuality(grade);
         admin.setRejectionReason(null); // 승인 시 반려사유는 null로 설정
+
         
         // 관리자 메모를 Admin 테이블의 adminNote에 저장
+
+
+
         if (reason != null && !reason.trim().isEmpty()) {
             admin.setAdminNote(reason.trim());
         } else {
@@ -296,14 +300,16 @@ public class InspectionService {
         admin.setAdmissionState(2); // 2 = 반려
         admin.setQuality(null); // 반려 시 등급은 null로 설정
         admin.setRejectionReason(parseRejectionReason(reason)); // 반려사유를 숫자로 변환하여 저장
+
         
         // 반려 시에도 관리자 메모를 저장
+
         if (reason != null && !reason.trim().isEmpty()) {
             admin.setAdminNote(reason.trim());
         } else {
             admin.setAdminNote(null);
         }
-        
+
         adminRepository.save(admin);
     }
 
@@ -402,12 +408,13 @@ public class InspectionService {
 
         // 각 이미지 처리
         for (MultipartFile image : images) {
-            if (image.isEmpty()) continue;
+            if (image.isEmpty())
+                continue;
 
             System.out.println("이미지 처리 중: " + image.getOriginalFilename());
 
             String imageUrl;
-            
+
             // NCP Storage Service가 있으면 사용, 없으면 로컬 저장
             if (ncpStorageService != null) {
                 imageUrl = ncpStorageService.uploadFile(image, "admin");
@@ -452,18 +459,18 @@ public class InspectionService {
     public Admin getInspectionDecision(String inspectionId) {
         System.out.println("=== 검수 결정 정보 조회 시작 ===");
         System.out.println("inspectionId: " + inspectionId);
-        
+
         Long adminId = Long.parseLong(inspectionId);
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new RuntimeException("검수 정보를 찾을 수 없습니다: " + inspectionId));
-        
+
         System.out.println("검수 결정 정보:");
         System.out.println("- Quality: " + admin.getQuality());
         System.out.println("- AdminNote: " + admin.getAdminNote());
         System.out.println("- AdmissionState: " + admin.getAdmissionState());
         System.out.println("- RejectionReason: " + admin.getRejectionReason());
         System.out.println("=== 검수 결정 정보 조회 완료 ===");
-        
+
         return admin;
     }
 
@@ -471,26 +478,27 @@ public class InspectionService {
     public List<String> getAdminImagesByInspectionId(String inspectionId) {
         System.out.println("=== 관리자 이미지 조회 시작 ===");
         System.out.println("inspectionId: " + inspectionId);
-        
+
         Long adminId = Long.parseLong(inspectionId);
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new RuntimeException("검수 정보를 찾을 수 없습니다: " + inspectionId));
-        
+
         Long itemDetailsId = admin.getItemDetails().getItemId();
         System.out.println("itemDetailsId: " + itemDetailsId);
-        
+
         // 관리자 이미지 조회 (img_type = 2)
-        List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId, (byte) 2);
-        
+        List<ItemImg> adminImages = itemImgRepository.findByItemDetails_ItemIdAndImgTypeOrderByIdAsc(itemDetailsId,
+                (byte) 2);
+
         List<String> imageUrls = new ArrayList<>();
         for (ItemImg img : adminImages) {
             imageUrls.add(img.getImgUrl());
             System.out.println("관리자 이미지 URL: " + img.getImgUrl());
         }
-        
+
         System.out.println("총 관리자 이미지 개수: " + imageUrls.size());
         System.out.println("=== 관리자 이미지 조회 완료 ===");
-        
+
         return imageUrls;
     }
 
