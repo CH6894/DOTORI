@@ -15,7 +15,7 @@ const GENRES = props.genres?.length
     ? props.genres
     : ['Anime', 'KPOP', 'Sports', 'Webtoon', 'Game', 'Creator']
 
-const PAGE_SIZE = props.pageSize ?? 12
+const PAGE_SIZE = props.pageSize ?? 6
 
 // 탭/인디케이터 상태
 const currentTab = ref(GENRES[0])
@@ -140,7 +140,7 @@ watch(currentTab, async () => {
             <div v-if="loading" class="skeleton-grid">
                 <div v-for="n in PAGE_SIZE" :key="n" class="skeleton-card" />
             </div>
-            <ProductGrid v-else :items="items" />
+            <ProductGrid v-else :items="items" :maxItems="PAGE_SIZE" />
         </div>
     </section>
 </template>

@@ -1,5 +1,6 @@
 <!-- src/components/ProductGrid.vue -->
 <script setup lang="ts">
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
 type Item = {
@@ -12,12 +13,18 @@ type Item = {
   thumbJpg?: string
 }
 
-const props = defineProps<{ items: Item[] }>()
+const props = defineProps<{ items: Item[], maxItems?: number }>()
 
 const formatPrice = (n: number) => {
   try { return n?.toLocaleString?.() ?? String(n) }
   catch { return String(n) }
 }
+
+// 최대 아이템 수로 제한
+const displayItems = computed(() => {
+  const maxItems = props.maxItems ?? props.items.length
+  return props.items.slice(0, maxItems)
+})
 
 // 이미지 로딩 에러 핸들링
 const handleImageError = (event: Event) => {
@@ -38,11 +45,11 @@ const handleImageLoad = (event: Event) => {
   <section class="best">
     <!-- 상품 그리드 -->
     <div class="product-grid">
-      <RouterLink v-for="p in props.items" :key="p.id" class="product-card"
+      <RouterLink v-for="p in displayItems" :key="p.id" class="product-card"
         :to="{ name: 'product', params: { id: String(p.id) } }" aria-label="상품 상세로 이동">
         <div class="product-card__thumb">
           <img 
-            :src="p.thumbJpg || '/img/placeholder.jpg'" 
+            :src="p.thumbJpg" 
             :alt="p.name" 
             loading="lazy" 
             @error="handleImageError"
@@ -55,7 +62,7 @@ const handleImageLoad = (event: Event) => {
         </div>
       </RouterLink>
 
-      <div v-if="props.items.length === 0" class="empty">해당 태그의 상품이 없어요.</div>
+      <div v-if="displayItems.length === 0" class="empty">해당 태그의 상품이 없어요.</div>
     </div>
 
   </section>
