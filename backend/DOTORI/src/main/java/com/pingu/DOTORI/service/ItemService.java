@@ -25,9 +25,10 @@ import com.pingu.DOTORI.repository.ItemImgRepository;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-   private final ItemRepository itemRepository;
-   private final ItemDetailsRepository itemDetailsRepository;
-   private final ItemImgRepository itemImgRepository;
+
+	private final ItemRepository itemRepository;
+	private final ItemDetailsRepository itemDetailsRepository;
+	private final ItemImgRepository itemImgRepository;
 
    public Page<ItemDTO> findAll(Pageable pageable) {
       return itemRepository.findAll(pageable).map(this::toDto);
@@ -95,7 +96,7 @@ public class ItemService {
       return filteredDetails;
    }
 
-   // 승인된 미개봉 상품의 ItemDetails만 조회 (Admin 테이블의 admission_state = 1 확인)
+   // 승인된 미개봉 상품의 ItemDetails만 조회 (ItemDetails.status = true 확인)
    public List<ItemDetails> findApprovedUnpackedItemDetailsByItemCode(String itemCode) {
       System.out.println("ItemService - 미개봉 상품 조회 시작: itemCode=" + itemCode);
 
@@ -103,7 +104,7 @@ public class ItemService {
       List<ItemDetails> result = itemDetailsRepository.findApprovedUnpackedItemDetailsWithAdminByItemCode(itemCode);
       System.out.println("Repository 쿼리 결과: " + result.size() + "개");
 
-      // 쿼리에서 이미 admissionState = 1로 필터링했으므로 모든 결과가 승인된 상품
+      // 쿼리에서 이미 status = true로 필터링했으므로 모든 결과가 승인된 상품
       for (ItemDetails detail : result) {
          System.out.println("승인된 미개봉 ItemDetails - ID: " + detail.getItemId() +
                ", Cost: " + detail.getCost() +
@@ -141,7 +142,7 @@ public class ItemService {
       return dtoList;
    }
 
-   // 승인된 개봉 상품의 ItemDetails와 Admin 정보를 함께 조회 (Admin.admission_state = 1 확인)
+   // 승인된 개봉 상품의 ItemDetails와 Admin 정보를 함께 조회 (ItemDetails.status = true 확인)
    public List<ItemDetailsDTO> findApprovedOpenedItemDetailsByItemCode(String itemCode) {
       List<ItemDetails> result = itemDetailsRepository.findApprovedOpenedItemDetailsWithAdminByItemCode(itemCode);
       System.out.println("ItemService - 승인된 개봉 상품 조회 결과: " + result.size() + "개");
@@ -326,19 +327,20 @@ public class ItemService {
          itemExplanation = detail.getAdmins().get(0).getItemExplanation();
       }
 
-      return ItemDetailsDTO.builder()
-            .itemId(detail.getItemId())
-            .cost(detail.getCost())
-            .status(detail.getStatus())
-            .unpacked(detail.getUnpacked())
-            .productCondition(detail.getProductCondition())
-            .quality(quality) // Admin 테이블의 quality 컬럼 사용
-            .registrationDate(registrationDate) // Admin 테이블의 registration_date 컬럼 사용
-            .itemExplanation(itemExplanation) // Admin 테이블의 item_explanation 컬럼 사용
-            .itemCode(detail.getItem() != null ? detail.getItem().getItemCode() : null)
-            .itemName(detail.getItem() != null ? detail.getItem().getName() : null)
-            .itemImgUrl(detail.getItem() != null ? detail.getItem().getImgUrl() : null)
-            .build();
-   }
+		return ItemDetailsDTO.builder()
+				.itemId(detail.getItemId())
+				.cost(detail.getCost())
+				.status(detail.getStatus())
+				.unpacked(detail.getUnpacked())
+				.productCondition(detail.getProductCondition())
+				.quality(quality) // Admin 테이블의 quality 컬럼 사용
+				.registrationDate(registrationDate) // Admin 테이블의 registration_date 컬럼 사용
+				.itemExplanation(itemExplanation) // Admin 테이블의 item_explanation 컬럼 사용
+				.itemCode(detail.getItem() != null ? detail.getItem().getItemCode() : null)
+				.itemName(detail.getItem() != null ? detail.getItem().getName() : null)
+				.itemImgUrl(detail.getItem() != null ? detail.getItem().getImgUrl() : null)
+				.build();
+	}
+
 
 }

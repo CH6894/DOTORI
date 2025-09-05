@@ -30,21 +30,21 @@ public interface ItemDetailsRepository extends JpaRepository<ItemDetails, Long> 
   // 승인된 개봉 상품의 ItemDetails만 조회
   List<ItemDetails> findByItem_ItemCodeAndStatusAndUnpackedTrue(String itemCode, Boolean status);
   
-  	// 승인된 개봉 상품의 ItemDetails와 Admin 정보를 함께 조회 (Admin.admission_state = 1 확인)
+  	// 승인된 개봉 상품의 ItemDetails와 Admin 정보를 함께 조회 (ItemDetails.status = true 확인)
 	@Query("SELECT DISTINCT id FROM ItemDetails id " +
 		   "LEFT JOIN FETCH id.admins a " +
 		   "LEFT JOIN FETCH id.item " +
 		   "WHERE id.item.itemCode = :itemCode AND id.unpacked = true " +
-		   "AND a.admissionState = 1 " +
+		   "AND id.status = true " +
 		   "ORDER BY id.id")
 	List<ItemDetails> findApprovedOpenedItemDetailsWithAdminByItemCode(@Param("itemCode") String itemCode);
 	
-	// 승인된 미개봉 상품의 ItemDetails와 Admin 정보를 함께 조회 (Admin.admission_state = 1 확인)
+	// 승인된 미개봉 상품의 ItemDetails와 Admin 정보를 함께 조회 (ItemDetails.status = true 확인)
 	@Query("SELECT DISTINCT id FROM ItemDetails id " +
 		   "LEFT JOIN FETCH id.admins a " +
 		   "LEFT JOIN FETCH id.item " +
 		   "WHERE id.item.itemCode = :itemCode AND id.unpacked = false " +
-		   "AND a.admissionState = 1 " +
+		   "AND id.status = true " +
 		   "ORDER BY id.id")
 	List<ItemDetails> findApprovedUnpackedItemDetailsWithAdminByItemCode(@Param("itemCode") String itemCode);
 }

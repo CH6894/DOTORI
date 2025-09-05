@@ -263,7 +263,10 @@ const getConditionText = (condition) => {
   return map[condition] || '미정'
 }
 
-const getConditionDetails = (details) => details || '상태 양호'
+const getConditionDetails = (details) => {
+  console.log('getConditionDetails 호출됨, details:', details)
+  return details || '상태 양호'
+}
 
 const getItemExplanation = (explanation) => explanation || '판매자 코멘트가 없습니다.'
 
@@ -301,7 +304,6 @@ const loadAllImages = async () => {
   try {
     isLoadingImages.value = true
     console.log('이미지 로딩 시작:', props.item.id)
-
     // 새로운 API를 사용하여 이미지 정보를 로드 (관리자 이미지 우선, 판매자 이미지 후순위)
     try {
       const imageInfosData = await fetchAllImageInfosByItemDetailsId(props.item.id)

@@ -159,6 +159,7 @@ const fetchUsedItems = async () => {
     // 승인된 개봉 상품의 ItemDetails 조회 (unpacked = 1)
     const approvedOpenedDetails = await fetchApprovedOpenedItemDetails(productId)
     console.log('승인된 개봉 상품 데이터:', approvedOpenedDetails)
+    console.log('첫 번째 상품의 productCondition:', approvedOpenedDetails[0]?.productCondition)
     
     // 백엔드에서 받은 데이터를 프론트엔드 형식으로 변환
     if (approvedOpenedDetails && approvedOpenedDetails.length > 0) {

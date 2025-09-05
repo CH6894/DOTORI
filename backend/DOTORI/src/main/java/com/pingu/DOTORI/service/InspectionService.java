@@ -278,13 +278,23 @@ public class InspectionService {
         admin.setQuality(grade);
         admin.setRejectionReason(null); // 승인 시 반려사유는 null로 설정
 
-        // 관리자 메모를 ItemDetails 테이블의 productCondition에 저장
+        
+        // 관리자 메모를 Admin 테이블의 adminNote에 저장
         if (reason != null && !reason.trim().isEmpty()) {
-            ItemDetails itemDetails = admin.getItemDetails();
-            if (itemDetails != null) {
+            admin.setAdminNote(reason.trim());
+        } else {
+            admin.setAdminNote(null);
+        }
+
+        // ItemDetails의 status를 1(true)로 설정하여 중고상품란에 표시되도록 함
+        ItemDetails itemDetails = admin.getItemDetails();
+        if (itemDetails != null) {
+            itemDetails.setStatus(true); // 1 = 승인된 상품으로 표시
+            // 관리자 메모를 productCondition에 저장
+            if (reason != null && !reason.trim().isEmpty()) {
                 itemDetails.setProductCondition(reason.trim());
-                itemDetailsRepository.save(itemDetails);
             }
+            itemDetailsRepository.save(itemDetails); // ItemDetails도 저장
         }
 
         adminRepository.save(admin);
@@ -299,13 +309,13 @@ public class InspectionService {
         admin.setQuality(null); // 반려 시 등급은 null로 설정
         admin.setRejectionReason(parseRejectionReason(reason)); // 반려사유를 숫자로 변환하여 저장
 
-        // 반려 시에도 관리자 메모를 ItemDetails 테이블의 productCondition에 저장
+        
+        // 반려 시에도 관리자 메모를 저장
+
         if (reason != null && !reason.trim().isEmpty()) {
-            ItemDetails itemDetails = admin.getItemDetails();
-            if (itemDetails != null) {
-                itemDetails.setProductCondition(reason.trim());
-                itemDetailsRepository.save(itemDetails);
-            }
+            admin.setAdminNote(reason.trim());
+        } else {
+            admin.setAdminNote(null);
         }
 
         adminRepository.save(admin);
@@ -464,7 +474,7 @@ public class InspectionService {
 
         System.out.println("검수 결정 정보:");
         System.out.println("- Quality: " + admin.getQuality());
-        System.out.println("- ProductCondition: " + admin.getItemDetails().getProductCondition());
+        System.out.println("- AdminNote: " + admin.getAdminNote());
         System.out.println("- AdmissionState: " + admin.getAdmissionState());
         System.out.println("- RejectionReason: " + admin.getRejectionReason());
         System.out.println("=== 검수 결정 정보 조회 완료 ===");
