@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pingu.DOTORI.dto.UserProfileDto;
 import com.pingu.DOTORI.entity.Users;
 import com.pingu.DOTORI.security.JwtProvider;
 import com.pingu.DOTORI.service.MyPageService;
@@ -34,7 +35,14 @@ public class MeController {
 
                 Users user = myPageService.getProfileByEmail(email);
                 if (user != null) {
-                    return ResponseEntity.ok(user);
+                    // DTO로 변환하여 순환 참조 방지
+                    UserProfileDto userProfile = UserProfileDto.builder()
+                            .id(user.getId())
+                            .nickName(user.getNickName())
+                            .email(user.getEmail())
+                            .userImg(user.getUserImg())
+                            .build();
+                    return ResponseEntity.ok(userProfile);
                 }
             } catch (Exception e) {
                 System.out.println("JWT 파싱 실패: " + e.getMessage());
@@ -56,7 +64,14 @@ public class MeController {
                 if (nickName != null && !nickName.trim().isEmpty()) {
                     Users updatedUser = myPageService.updateProfileByEmail(email, nickName);
                     if (updatedUser != null) {
-                        return ResponseEntity.ok(updatedUser);
+                        // DTO로 변환하여 순환 참조 방지
+                        UserProfileDto userProfile = UserProfileDto.builder()
+                                .id(updatedUser.getId())
+                                .nickName(updatedUser.getNickName())
+                                .email(updatedUser.getEmail())
+                                .userImg(updatedUser.getUserImg())
+                                .build();
+                        return ResponseEntity.ok(userProfile);
                     }
                 }
             }

@@ -13,17 +13,14 @@
               <span class="addr-label">받는 분</span>
               <span class="addr-value">{{ address.receiver }}</span>
             </div>
-
             <div class="addr-line">
               <span class="addr-label">연락처</span>
               <span class="addr-value">{{ address.phone }}</span>
             </div>
-
             <div class="addr-line">
               <span class="addr-label">주소</span>
               <span class="addr-value">
-                [{{ address.postcode }}] {{ address.addr1 }}<br />
-                {{ address.addr2 }}
+                [{{ address.postcode }}] {{ address.addr1 }}<br />{{ address.addr2 }}
               </span>
             </div>
           </div>
@@ -31,13 +28,14 @@
         <button class="btn-outline" @click="addrModalOpen = true">주소변경</button>
       </div>
 
+      <!-- 주소 변경 모달 -->
       <AddressEdit
         v-model="addrModalOpen"
         :value="address"
         @save="updateAddress"
-        @search-postcode="openPostcode"
       />
 
+      <!-- 배송 요청사항 -->
       <button class="btn-primary note" @click="isNoteOpen = !isNoteOpen" :class="{ open: isNoteOpen }">
         {{ displayNote }}
         <svg class="chev" viewBox="0 0 24 24" aria-hidden="true">
@@ -46,7 +44,7 @@
       </button>
 
       <transition name="collapse">
-        <div v-show="isNoteOpen" class="note-panel" role="region" aria-label="배송 요청사항 입력">
+        <div v-show="isNoteOpen" class="note-panel">
           <textarea
             v-model="tempNote"
             class="note-textarea"
@@ -68,235 +66,225 @@
     <section class="card order">
       <h2 class="section-title">주문서</h2>
 
-      <div v-for="it in items" :key="it.id" class="order-items">
-        <div class="thumb"><img :src="it.thumb" alt="" /></div>
-        <div class="info">
-          <div class="name">{{ it.name }}</div>
-          <div class="meta">
-            {{ it.desc }}<br />
-            {{ it.option }} <span v-if="it.option && it.qty">/</span> {{ it.qty }}개
-          </div>
+      <div v-for="it in items" :key="it.itemDetailsId || it.cartId" class="order-items">
+        <div class="thumb">
+          <img :src="it.itemImgUrl || it.mainImageUrl || '/default-product.jpg'" alt="" />
         </div>
-        <div class="price">{{ formatCurrency(it.price * it.qty) }} 원</div>
+        <div class="info">
+          <div class="name">{{ it.itemName }}</div>
+          <div class="meta">수량: {{ it.quantity }}개</div>
+        </div>
+        <div class="price">{{ formatCurrency(it.price * it.quantity) }} 원</div>
       </div>
 
       <p v-if="items.length === 0" class="muted" style="margin-top:12px;">주문할 상품이 없습니다.</p>
 
-      <hr v-if="items.length" />
-
-      <!-- 결제 금액 -->
       <div class="amount" v-if="items.length">
         <div class="row"><span>상품 금액</span><b>{{ formatCurrency(subtotal) }}원</b></div>
-        <div class="row"><span>할인 금액</span><b>{{ formatCurrency(discount) }}원</b></div>
-        <div class="row">
-          <span>배송비</span>
-          <b>{{ shippingFee === 0 ? '무료' : formatCurrency(shippingFee) + '원' }}</b>
-        </div>
+        <div class="row"><span>배송비</span><b>{{ shippingFee === 0 ? '무료' : formatCurrency(shippingFee) + '원' }}</b></div>
         <div class="row total"><span>총 주문 금액</span><b>{{ formatCurrency(total) }}원</b></div>
       </div>
 
       <!-- 결제 수단 -->
       <div class="pay-methods" v-if="items.length">
         <h3>결제 수단</h3>
-
-        <label class="radio"><input type="radio" value="bank" v-model="payMethod" /><span>무통장 결제</span></label>
+        <label class="radio">
+          <input type="radio" value="bank" v-model="payMethod" />
+          <span>무통장 결제</span>
+        </label>
 
         <transition name="collapse">
-          <div v-if="payMethod === 'bank'" class="bank-box" role="region" aria-label="무통장 결제 정보">
+          <div v-if="payMethod === 'bank'" class="bank-box">
             <div class="field">
               <label>입금은행 <span class="req">*</span></label>
-              <div class="inline">
-                <select v-model="selectedBank" class="select">
-                  <option v-for="b in banks" :key="b.code" :value="b">{{ b.label }}</option>
-                </select>
+              <select v-model="selectedBank" class="select">
+                <option v-for="b in banks" :key="b.code" :value="b">{{ b.label }}</option>
+              </select>
+              <div class="hint">
+                계좌번호: <b>{{ selectedBank.account }}</b> / 예금주: {{ selectedBank.holder }}
               </div>
-              <div class="hint">계좌번호: <b>{{ selectedBank.account }}</b><span v-if="selectedBank.holder"> / 예금주: {{ selectedBank.holder }}</span></div>
             </div>
-
             <div class="field">
               <label>입금자명 <span class="req">*</span></label>
-              <input v-model="depositorName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" @input="onInputDepositor" />
+              <input v-model="depositerName" type="text" class="input" placeholder="주문자와 동일 시 생략 가능" />
             </div>
-
             <div class="notice">
               주문은 <b>{{ depositDeadlineHours }}시간</b> 이내 입금 완료 시 확정됩니다.
-              기한 내 미입금 시 <b>자동 주문취소</b>됩니다.
             </div>
           </div>
         </transition>
-
-        <label class="radio"><input type="radio" value="easy" v-model="payMethod" /><span>간편 결제</span></label>
-        <label class="radio"><input type="radio" value="card" v-model="payMethod" /><span>카드 결제</span></label>
-        <label class="radio"><input type="radio" value="mobile" v-model="payMethod" /><span>휴대폰</span></label>
+        <label class="radio"><input type="radio" value="card" v-model="payMethod" /> 간편 결제</label>
+        <label class="radio"><input type="radio" value="card" v-model="payMethod" /> 카드 결제</label>
+        <label class="radio"><input type="radio" value="mobile" v-model="payMethod" /> 휴대폰 결제</label>
       </div>
     </section>
   </div>
 
-<!-- 하단 고정 결제 바 -->
-<div class="paybar">
-  <div class="agree">
-    약관 및 주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.
+  <!-- 하단 결제바 -->
+  <div class="paybar">
+    <div class="agree">약관 및 주문 내용을 확인하였으며, 동의합니다.</div>
+    <button v-if="canPay" class="btn-pay" @click="submitOrder">
+      <b>{{ formatCurrency(total) }}</b>원 결제하기
+    </button>
+    <button v-else class="btn-pay" disabled>
+      <b>{{ formatCurrency(total) }}</b>원 결제하기
+    </button>
   </div>
-
-  <!-- ✅ 무통장 + 유효할 때만 '이동 가능한' 링크 -->
-  <router-link
-    v-if="payMethod === 'bank' && isBankFormValid"
-    :to="{ name: 'ordercomplete' }"
-    class="btn-pay"
-  >
-    <b>{{ formatCurrency(total) }}</b>원 결제하기
-  </router-link>
-
-  <!-- ❌ 그 외에는 항상 비활성 버튼만 -->
-  <button v-else class="btn-pay" disabled @click.prevent>
-    <b>{{ formatCurrency(total) }}</b>원 결제하기
-  </button>
-</div>
-
 </template>
 
-<script setup lang="ts">
-import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
+<script setup>
+import api from '@/api/axios'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AddressEdit from '@/components/AddressEdit.vue'
 
-/* ───────── 결제바 높이만큼 body 하단 패딩 부여(이 페이지에서만 적용) ───────── */
-const paybarEl = ref<HTMLElement | null>(null)
-let roPaybar: ResizeObserver | null = null
-function applyBodyPadding(h: number) {
-  document.body.style.setProperty('--paybar-h', `${h}px`)
-  document.body.classList.add('has-checkout-paybar') // 페이지 떠나면 제거
-}
-onMounted(() => {
-  const el = paybarEl.value
-  const update = () => {
-    const h = el ? Math.round(el.getBoundingClientRect().height) : 80
-    applyBodyPadding(h)
-  }
-  roPaybar = new ResizeObserver(update)
-  if (el) roPaybar.observe(el)
-  update()
-})
-onBeforeUnmount(() => {
-  roPaybar?.disconnect(); roPaybar = null
-  document.body.style.removeProperty('--paybar-h')
-  document.body.classList.remove('has-checkout-paybar')
-})
-
-/* ───────── 기본 상수/상태 ───────── */
-const LS_KEY = 'dotori_cart_v1'
-
-const addrModalOpen = ref(false)
-const address = reactive({
-  receiver: '구창회',
-  phone: '010-0000-0000',
-  postcode: '06236',
-  addr1: '서울 강남구 테헤란로 000',
-  addr2: 'OOO빌딩 10층',
-})
-const updateAddress = (next: any) => { Object.assign(address, next) }
-const openPostcode = () => { alert('우편번호 검색 띄우기') }
-
-/* 요청사항 */
-const isNoteOpen = ref(false)
-const note = ref('')
-const tempNote = ref('')
-const displayNote = computed(() => {
-  const txt = note.value.trim()
-  if (!txt) return '요청 사항 없음'
-  return txt.length > 24 ? txt.slice(0, 24) + '…' : txt
-})
-const onSaveNote = () => { note.value = (tempNote.value || '').trim(); isNoteOpen.value = false }
-const onCancelNote = () => { tempNote.value = note.value; isNoteOpen.value = false }
-const onClearNote = () => { tempNote.value = ''; note.value = ''; isNoteOpen.value = false }
-
-/* 장바구니 → 체크아웃 데이터 */
 const route = useRoute()
-type RawItem = {
-  id: number | string
-  title?: string
-  name?: string
-  desc?: string
-  option?: string
-  qty: number
-  price: number
-  shipping?: number
-  thumb?: string
-  image?: string
+const router = useRouter()
+
+/* 주소 */
+const addrModalOpen = ref(false)
+const address = reactive({ receiver: '', phone: '', postcode: '', addr1: '', addr2: '', mainAddress: '' })
+const updateAddress = async (updatedAddr) => { Object.assign(address, updatedAddr) }
+const loadAddress = async () => {
+  try {
+    const res = await api.get('/address')
+    if (res.data) Object.assign(address, res.data)
+  } catch (e) {
+    console.error('주소 로드 실패:', e)
+  }
 }
-const allItems = ref<RawItem[]>([])
-const items = ref<RawItem[]>([])
 
-onMounted(() => {
-  const raw = localStorage.getItem(LS_KEY)
-  const parsed: RawItem[] = raw ? JSON.parse(raw) : []
+/* 배송 요청사항 */
+const isNoteOpen = ref(false)
+const deliveryNote = ref('')
+const tempNote = ref('')
+const displayNote = computed(() => deliveryNote.value ? `요청사항: ${deliveryNote.value}` : '배송 요청사항 입력')
+const onSaveNote = () => { deliveryNote.value = tempNote.value; isNoteOpen.value = false }
+const onCancelNote = () => { tempNote.value = deliveryNote.value; isNoteOpen.value = false }
+const onClearNote = () => { tempNote.value = ''; deliveryNote.value = '' }
 
-  const mode = String(route.query.mode ?? 'all')
-  const idsParam = String(route.query.ids ?? '')
-  const idSet = new Set(idsParam.split(',').map(s => parseInt(s.trim(), 10)).filter(n => Number.isFinite(n)))
+/* 주문 아이템 */
+const items = ref([])
 
-  allItems.value = parsed.map(it => ({
-    ...it,
-    name: it.name ?? it.title ?? '(무제)',
-    thumb: it.thumb ?? it.image ?? 'https://via.placeholder.com/72x72?text=item',
-    qty: Math.max(1, Number(it.qty) || 1),
-    price: Math.max(0, Number(it.price) || 0),
-    shipping: Math.max(0, Number(it.shipping) || 0),
-  }))
+const loadItems = async () => {
+  try {
+    if (route.query.mode === 'buynow' || route.query.mode === 'used') {
+      const itemDetailsId = route.query.itemDetailsId
 
-  items.value = mode === 'selected'
-    ? allItems.value.filter(it => idSet.has(Number(it.id)))
-    : allItems.value
-})
+      console.log('=== 디버깅 정보 ===')
+      console.log('route.query:', route.query)
+      console.log('itemDetailsId:', itemDetailsId)
+      console.log('itemDetailsId 타입:', typeof itemDetailsId)
 
-/* 금액 계산 */
-const discount = computed(() => items.value.reduce((s, it) => s + (Number((it as any).discount) || 0), 0))
-const subtotal  = computed(() => items.value.reduce((sum, it) => sum + it.price * it.qty, 0))
-const shippingFee = computed(() => items.value.reduce((sum, it) => sum + (it.shipping || 0), 0))
-const total = computed(() => subtotal.value - discount.value + shippingFee.value)
-const formatCurrency = (n: number) => n.toLocaleString('ko-KR', { maximumFractionDigits: 0 })
+      if (!itemDetailsId) {
+        alert('잘못된 접근입니다. 상품 정보가 없습니다.')
+        return
+      }
+      
+      const res = await api.get(`/itemdetails/${itemDetailsId}`)
+      console.log('API 응답 전체:', res.data)
+      console.log('API 응답의 itemId:', res.data.itemId)
+      
+      // ✅ URL 파라미터에서 가져온 itemDetailsId를 직접 사용
+      items.value = [{
+        itemDetailsId: parseInt(itemDetailsId), // URL 파라미터 값 직접 사용
+        itemName: res.data.itemName,
+        itemImgUrl: res.data.itemImgUrl,
+        quantity: 1,
+        price: res.data.cost
+      }]
+      
+      console.log('설정된 items.value:', items.value)
+    } else {
+      const res = await api.get('/cart/me')
+      items.value = res.data
+    }
+  } catch (e) {
+    console.error('아이템 로드 실패:', e)
+    items.value = []
+  }
+}
 
-/* 결제 수단/검증 */
+/* 금액 */
+const subtotal = computed(() => items.value.reduce((s, it) => s + (it.price * it.quantity), 0))
+const shippingFee = 0
+const total = computed(() => subtotal.value + shippingFee)
+const formatCurrency = (n) => n.toLocaleString('ko-KR')
+
+/* 결제 */
 const banks = [
   { code: 'KB', label: '국민은행', account: '123456-01-456789', holder: '도토리' },
   { code: 'SHIN', label: '신한은행', account: '110-123-456789', holder: '도토리' },
-  { code: 'WOORI', label: '우리은행', account: '1002-123-456789', holder: '도토리' },
+  { code: 'WOORI', label: '우리은행', account: '1002-123-456789', holder: '도토리' }
 ]
-const payMethod = ref<'bank' | 'easy' | 'card' | 'mobile'>('easy')
+const payMethod = ref('bank')
 const selectedBank = ref(banks[0])
-const depositorName = ref('')
-const depositDeadlineHours = ref(3)
+const depositerName = ref('')
+const depositDeadlineHours = 24
+const canPay = computed(() => items.value.length > 0 && !!depositerName.value.trim())
 
-const onInputDepositor = (e: Event) => {
-  depositorName.value = (e.target as HTMLInputElement).value
-}
+/* 주문 저장 */
+const submitOrder = async () => {
+  console.log('=== 주문 제출 디버깅 ===')
+  console.log('items.value:', items.value)
+  console.log('items.value[0]:', items.value[0])
 
-const isBankFormValid = computed(() => {
-  if (payMethod.value !== 'bank') return false
-  const hasBank = !!selectedBank.value?.account
-  const hasName = !!depositorName.value?.trim()
-  return hasBank && hasName
-})
+  if (!canPay.value) return alert('입금자명을 입력하세요.')
 
-const isPayEnabled = computed(() => {
-  if (!items.value.length) return false
-  return payMethod.value === 'bank' ? isBankFormValid.value : true
-})
-
-const onPay = () => {
-  if (!isPayEnabled.value) {
-    if (payMethod.value === 'bank') alert('무통장 결제 정보를 완료해 주세요.')
-    else alert('결제할 상품이 없습니다.')
-    return
+  const payload = {
+    depositerName: depositerName.value,
+    payMethod: payMethod.value,
+    payMessage: deliveryNote.value
   }
-  alert(`${payMethod.value} 방식으로 ${total.value.toLocaleString()}원 결제합니다.`)
+
+  const mode = route.query.mode
+  if ((mode === 'buynow' || mode === 'used') && items.value[0]) {
+    const itemDetailsId = items.value[0].itemDetailsId
+    
+    console.log('추출한 itemDetailsId:', itemDetailsId)
+    console.log('itemDetailsId 타입:', typeof itemDetailsId)
+    
+    // ✅ 추가 검증
+    if (!itemDetailsId) {
+      alert('상품 정보가 올바르지 않습니다.')
+      return
+    }
+
+    payload.itemDetailsId = itemDetailsId
+    payload.quantity = 1
+  } else {
+    payload.cartIds = items.value.map(it => it.cartId)
+  }
+
+  console.log('최종 전송 payload:', payload)
+
+  try {
+    const res = await api.post('/orders/cart', payload)
+    alert('주문이 완료되었습니다!')
+    
+    // ✅ payTime으로 변경 (OrderComplete에서 사용)
+    const payTime = new Date().toISOString().slice(0, 19)
+    router.push({ 
+      name: 'ordercomplete', 
+      query: { payTime: payTime }
+    })
+  } catch (err) {
+    console.error('주문 실패:', err)
+    if (err.response?.data) {
+      alert('주문 실패: ' + err.response.data)
+    } else {
+      alert('주문 처리 중 오류가 발생했습니다.')
+    }
+  }
 }
+
+onMounted(() => { loadAddress(); loadItems() })
 </script>
 
 <style scoped>
 .checkout {
   max-width: 720px;
-  margin: 24px auto; /* 결제바 때문에 여백은 body 패딩으로 처리 */
+  margin: 24px auto;
   padding: 0 16px;
 }
 
@@ -305,8 +293,6 @@ const onPay = () => {
 .card {
   background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.04);
   padding: 16px; margin-bottom: 16px; border: 1px solid #eee;
-
-  /* 가운데 넓게 쓰려면 유지 */
   width: 140%;
   position: relative; left: 50%; transform: translateX(-50%);
 }
@@ -367,18 +353,16 @@ const onPay = () => {
 .field { display: grid; gap: 6px; }
 .field>label { font-size: 13px; color: #555; }
 .req { color: #ff4d4f; }
-.inline { display: flex; gap: 20px; align-items: center; }
 .select, .input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; background: #fff; }
 .select {
   appearance: none; -webkit-appearance: none; -moz-appearance: none;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='black'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 12px center;
   background-size: 30px; padding-right: 32px;
 }
-.btn-ghost.sm { padding: 8px 10px; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; }
 .hint { font-size: 13px; color: #666; }
 .notice { background: #fff7f1; border: 1px solid #ffd7bf; color: #000; padding: 10px 12px; border-radius: 8px; line-height: 1.5; font-size: 14px; }
 
-/* ===== 결제바 (항상 화면 하단) ===== */
+/* 결제바 */
 .paybar {
   position: fixed; left: 0; right: 0; bottom: 0;
   background: #ff7a2e; border-top: 1px solid #ffd7bf;
@@ -387,23 +371,18 @@ const onPay = () => {
   z-index: 50;
 }
 
-/* 텍스트/버튼 */
 .agree { color: #fff; margin-left: 250px; white-space: nowrap; }
 .btn-pay {
   white-space: nowrap; background: #fff; color: #000; border: none; border-radius: 10px; 
   padding: 12px 25px; font-weight: 700; cursor: pointer; margin-right: 250px; text-decoration: none;
-    /* 추가 */
-  display: inline-flex;      /* 내부 텍스트 크기 변화에도 고정 */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 45px;              /* 원하는 높이 고정 */
-  min-width: 220px;          /* 원하는 최소 너비 고정 */
+  height: 45px;
+  min-width: 220px;
   line-height: 1; 
   font-size: 15px;
   font-variant-numeric: tabular-nums; 
-}
-.btn-pay .amount{
-  font-variant-numeric: tabular-nums;
 }
 .btn-pay:hover { filter: brightness(0.98); }
 .btn-pay:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; filter:none;}
@@ -414,10 +393,7 @@ const onPay = () => {
   .thumb img { width: 56px; height: 56px; }
 }
 
-/* ───── 전역 바디 패딩을 '이 페이지에서만' 적용 ─────
-   - 결제바 높이만큼 body 하단에 여백을 확보해서
-     맨 아래에서 '푸터 전체' + '아래 결제바'가 동시에 보이도록 함 */
 :global(body.has-checkout-paybar) {
-  padding-bottom: var(--paybar-h, 80px);
-}
+  padding-bottom: var(--paybar-h, 80px);}
+  
 </style>

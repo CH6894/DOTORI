@@ -128,7 +128,8 @@
         <h2 class="section__title link" @click="go('WishPage')">위시리스트</h2>
         <div class="panel">
           <div class="wish-grid">
-            <div v-for="w in wishlist" :key="w.wishListId" class="wish-card" @click="goProduct(w)" role="button" tabindex="0">
+            <div v-for="w in wishlist" :key="w.wishListId" class="wish-card" @click="goProduct(w)" role="button"
+              tabindex="0">
               <div class="wish-image-container">
                 <img :src="w.image || '/img/placeholder.jpg'" :alt="w.title" class="wish-image" />
               </div>
@@ -273,16 +274,16 @@ export default {
     /* 인증 상태 확인 */
     if (!this.authStore.isAuthed) {
       console.log('로그인되지 않은 사용자, 로그인 페이지로 리다이렉트')
-      this.$router.push({ 
-        name: 'login', 
-        query: { redirect: this.$route.fullPath } 
+      this.$router.push({
+        name: 'login',
+        query: { redirect: this.$route.fullPath }
       })
       return
     }
-    
+
     /* 사용자 정보 로드 */
     await this.loadUserProfile()
-    
+    await this.wish.load()
 
   },
 
@@ -347,10 +348,10 @@ export default {
       try {
         console.log('사용자 정보 로드 시작...')
         console.log('현재 토큰:', localStorage.getItem('accessToken'))
-        
+
         const response = await api.get('/me')
         console.log('API 응답:', response.data)
-        
+
         if (response.data && response.data.id) {
           this.user = {
             id: response.data.id,
@@ -388,8 +389,8 @@ export default {
       if (real) {
         this.$router.push({ name: real }).catch(() => {
           if (name === 'TradePage') return this.$router.push('/mypage/trade')
-          if (name === 'WishPage')  return this.$router.push('/mypage/wish')
-          if (name === 'ShipPage')  return this.$router.push('/mypage/ship')
+          if (name === 'WishPage') return this.$router.push('/mypage/wish')
+          if (name === 'ShipPage') return this.$router.push('/mypage/ship')
         })
         return
       }
@@ -397,14 +398,14 @@ export default {
     },
     goProduct(w) {
       // 위시리스트 아이템의 itemCode를 사용하여 상품 상세 페이지로 이동
-      this.$router.push({ 
-        name: 'product', 
-        params: { id: String(w.itemCode) } 
+      this.$router.push({
+        name: 'product',
+        params: { id: String(w.itemCode) }
       }).catch(err => {
         console.error('라우터 이동 실패:', err)
         // 대안: 쿼리 파라미터 사용
-        this.$router.push({ 
-          path: `/product/${w.itemCode}` 
+        this.$router.push({
+          path: `/product/${w.itemCode}`
         }).catch(() => {
           console.error('대안 라우터도 실패')
         })

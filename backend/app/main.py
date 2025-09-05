@@ -304,3 +304,13 @@ app.include_router(router)
 @app.get("/")
 def root():
     return {"message": "다람이 챗봇 서버 실행 중"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        log_level="info"
+    )

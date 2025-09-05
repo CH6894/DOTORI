@@ -289,15 +289,18 @@ router.beforeEach((to, _from, next) => {
   }
 });
 
-/* ===== body class management ===== */
-router.afterEach((to) => {
-  // 기존 body 클래스 제거
-  document.body.className = '';
+
+// export default router;
+// 원래가 윗줄까지 아래는 화영이꺼. 연결 문제생기면 여기서 확인.
+// /* ===== body class management ===== */
+// router.afterEach((to) => {
+//   // 기존 body 클래스 제거
+//   document.body.className = '';
   
-  // 메인 페이지일 때 home 클래스 추가
-  if (to.name === 'main') {
-    document.body.classList.add('home');
-  }
-});
+//   // 메인 페이지일 때 home 클래스 추가
+//   if (to.name === 'main') {
+//     document.body.classList.add('home');
+//   }
+// });
 
 export default router;
