@@ -162,15 +162,10 @@ const TOAST_MS = 1500
 const images = computed(() => Array.isArray(props.product?.images) ? props.product.images.filter(Boolean) : [])
 const currentMainImage = computed(() => images.value[currentImageIndex.value] ?? '/img/placeholder.jpg')
 
-/* 토스트 상태 */
-const showCartToast = ref<boolean>(false)
-const TOAST_DURATION = 1200 // ms
-
-/* ===== 안전 이미지 배열 ===== */
-const images = computed<string[]>(() => {
-  const arr = props.product?.images
-  return Array.isArray(arr) ? (arr.filter(Boolean) as string[]) : []
-})
+// 모달 상태
+const showSellModal = ref(false)
+const showUsedModal = ref(false)
+const usedMode = ref<'buy' | 'cart'>('buy')
 
 /* ===== 발매가 계산 ===== */
 const computedOriginalPrice = computed(() => {
@@ -224,15 +219,6 @@ const sellItem = computed(() => ({
 const priceRows = ref([{ option: '미개봉', price: Number(props.product?.currentPrice ?? 0), date: '2025-09-01' }])
 
 // 이미지 전환
-const previousImage = () => { if (currentImageIndex.value > 0) currentImageIndex.value-- }
-const nextImage = () => { if (currentImageIndex.value < images.value.length - 1) currentImageIndex.value++ }
-const setCurrentImage = (i:number) => { currentImageIndex.value = i }
-
-// 판매 모달
-const handleSell = () => { showSellModal.value = true }
-const closeSellModal = () => { showSellModal.value = false }
-const onSellSubmit = () => { showSellModal.value = false }
-
 const previousImage = (): void => {
   if (currentImageIndex.value > 0) currentImageIndex.value--
 }
@@ -295,6 +281,10 @@ const openUsedModal = (mode: 'buy' | 'cart'): void => {
 const closeUsedModal = (): void => {
   showUsedModal.value = false
 }
+const onUsedConfirm = (payload: UsedConfirmPayload): void => {
+  console.log('Used item confirm payload:', payload)
+  showUsedModal.value = false
+}
 
 /* ===== 장바구니/구매 유틸 ===== */
 const LS_CART = 'dotori_cart_v1'
@@ -343,14 +333,7 @@ const buildCartItem = (payload: UsedConfirmPayload = {}): CartItem => {
 
 /* ===== 구매 플로우 ===== */
 // 구매 버튼 → 모달 없이 즉시 결제 페이지
-/* ===== 구매 플로우 ===== */
-// 구매 버튼 → 모달 없이 즉시 결제 페이지
 const buyNowDirect = (): void => {
-  // ✅ approvedUnpackedDetails에서 첫 번째 미개봉 상품 가져오기
-  const firstDetail = props.approvedUnpackedDetails?.[0]
-
-// ✅ 미개봉 구매
-const buyNowDirect = () => {
   const firstDetail = props.approvedUnpackedDetails?.find(d => d.status && d.unpacked === false)
   if (!firstDetail) {
     alert("구매 가능한 미개봉 상품이 없습니다.")
