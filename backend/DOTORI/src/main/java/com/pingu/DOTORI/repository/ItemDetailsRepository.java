@@ -1,6 +1,7 @@
 package com.pingu.DOTORI.repository;
 
 import com.pingu.DOTORI.entity.ItemDetails;
+import com.pingu.DOTORI.entity.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -47,4 +48,7 @@ public interface ItemDetailsRepository extends JpaRepository<ItemDetails, Long> 
 		   "AND id.status = true " +
 		   "ORDER BY id.id")
 	List<ItemDetails> findApprovedUnpackedItemDetailsWithAdminByItemCode(@Param("itemCode") String itemCode);
+	
+	// 사용자별 판매 상품 조회 (입고일 기준 내림차순)
+	List<ItemDetails> findByUserOrderByStorageDateDesc(Users user);
 }

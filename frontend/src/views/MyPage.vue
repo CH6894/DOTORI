@@ -81,7 +81,10 @@
         <!-- 거래 내역(최근 5개) -->
         <h2 class="section__title link" @click="go('TradePage')">거래 내역</h2>
         <div class="card">
-          <template v-if="recent5 && recent5.length">
+          <template v-if="tradesLoading">
+            <p class="muted center">거래내역을 불러오는 중...</p>
+          </template>
+          <template v-else-if="recent5 && recent5.length">
             <table class="tbl tbl--fixed">
               <colgroup>
                 <col style="width: 14ch" />
@@ -177,6 +180,7 @@ import { useOrderStore } from '@/stores/orders'
 import api from '@/api/axios.js'
 import { useAuthStore } from '@/stores/auth'
 import { useWishlistStore } from '@/stores/wishlist'
+import { fetchTradeHistory } from '@/api/tradeHistory'
 
 import defaultPhoto from '@/assets/profile_phto.svg'
 import iconOrder from '@/assets/주문.png'
@@ -234,14 +238,9 @@ export default {
       ],
       orderProgressIndex: 2,
 
-      /* 샘플 거래내역 */
-      trades: [
-        { no: 'O202508201', kind: 'buy', item: '루피 피규어', price: 53000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-20T10:12:00' },
-        { no: 'O202508199', kind: 'buy', item: '미쿠 스페셜', price: 67000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-19T09:01:00' },
-        { no: 'S202508121', kind: 'sell', item: '아카자 인형', price: 48000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-08-18T14:30:00' },
-        { no: 'S202508118', kind: 'sell', item: '렌고쿠 키링', price: 10000, state: { type: 'selling', text: '판매중' }, date: '2025-08-17T18:25:00' },
-        { no: 'O202508115', kind: 'buy', item: '원피스 세트', price: 82000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-15T11:05:00' },
-      ],
+      /* 거래내역 데이터 */
+      trades: [],
+      tradesLoading: false,
 
       /* 토스트 */
       toast: { open: false, message: '', _t: null },
@@ -254,7 +253,8 @@ export default {
       return n.startsWith('mypage-') && n !== 'mypage'
     },
     sortedTrades() {
-      return [...(this.trades || [])].sort(
+      if (!this.trades || this.trades.length === 0) return []
+      return [...this.trades].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       )
     },
@@ -290,6 +290,7 @@ export default {
     /* 사용자 정보 로드 */
     await this.loadUserProfile()
     await this.wish.load()
+    await this.loadTradeHistory()
 
   },
 
@@ -346,6 +347,19 @@ export default {
       } catch (error) {
         console.error('프로필 업데이트 실패:', error)
         this.showToast('저장 중 오류가 발생했습니다')
+      }
+    },
+
+    /* ===== 거래내역 로드 ===== */
+    async loadTradeHistory() {
+      this.tradesLoading = true
+      try {
+        this.trades = await fetchTradeHistory()
+      } catch (error) {
+        console.error('거래내역 로드 실패:', error)
+        this.trades = []
+      } finally {
+        this.tradesLoading = false
       }
     },
 

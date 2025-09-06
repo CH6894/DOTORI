@@ -2,6 +2,7 @@ package com.pingu.DOTORI.service;
 
 import com.pingu.DOTORI.dto.OrdersRequestDTO;
 import com.pingu.DOTORI.dto.OrdersResponseDTO;
+import com.pingu.DOTORI.dto.TradeHistoryDTO;
 import com.pingu.DOTORI.entity.*;
 import com.pingu.DOTORI.repository.*;
 import com.pingu.DOTORI.security.JwtProvider;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -298,5 +300,59 @@ public class OrdersService {
                     })
                     .collect(Collectors.toList());
         }
+    }
+
+    // 거래내역 조회 (구매 + 판매 통합)
+    @Transactional(readOnly = true)
+    public List<TradeHistoryDTO> getTradeHistory(HttpServletRequest req) {
+        Users user = getCurrentUser(req);
+        
+        // 구매 내역 조회
+        List<Orders> buyOrders = ordersRepository.findByUserOrderByPayTimeDesc(user);
+        List<TradeHistoryDTO> buyTrades = buyOrders.stream()
+                .map(order -> TradeHistoryDTO.builder()
+                        .no("O" + order.getId())
+                        .kind("buy")
+                        .item(order.getItemDetails().getItem().getName())
+                        .price(order.getItemDetails().getCost().longValue())
+                        .state(TradeHistoryDTO.TradeState.builder()
+                                .type("buy-done")
+                                .text("구매 완료")
+                                .build())
+                        .date(order.getPayTime())
+                        .image(order.getItemDetails().getItem().getImgUrl())
+                        .build())
+                .collect(Collectors.toList());
+        
+        // 판매 내역 조회 (사용자가 판매한 상품들)
+        List<ItemDetails> sellItems = itemDetailsRepository.findByUserOrderByStorageDateDesc(user);
+        List<TradeHistoryDTO> sellTrades = sellItems.stream()
+                .map(itemDetails -> {
+                    String stateType = itemDetails.getStatus() ? "selling" : "sell-done";
+                    String stateText = itemDetails.getStatus() ? "판매중" : "판매 완료";
+                    
+                    return TradeHistoryDTO.builder()
+                            .no("S" + itemDetails.getItemId())
+                            .kind("sell")
+                            .item(itemDetails.getItem().getName())
+                            .price(itemDetails.getCost().longValue())
+                            .state(TradeHistoryDTO.TradeState.builder()
+                                    .type(stateType)
+                                    .text(stateText)
+                                    .build())
+                            .date(itemDetails.getStorageDate())
+                            .image(itemDetails.getItem().getImgUrl())
+                            .build();
+                })
+                .collect(Collectors.toList());
+        
+        // 구매와 판매 내역을 합치고 날짜순으로 정렬
+        List<TradeHistoryDTO> allTrades = new ArrayList<>();
+        allTrades.addAll(buyTrades);
+        allTrades.addAll(sellTrades);
+        
+        return allTrades.stream()
+                .sorted((a, b) -> b.getDate().compareTo(a.getDate()))
+                .collect(Collectors.toList());
     }
 }

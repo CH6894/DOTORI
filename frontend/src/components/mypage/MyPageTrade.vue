@@ -55,8 +55,19 @@
                         </div>
                     </div>
                     
+                    <!-- 로딩 상태 -->
+                    <div v-if="loading" class="loading-state">
+                        <p>거래내역을 불러오는 중...</p>
+                    </div>
+
+                    <!-- 에러 상태 -->
+                    <div v-else-if="error" class="error-state">
+                        <p>{{ error }}</p>
+                        <button @click="loadTradeHistory" class="btn btn--sm">다시 시도</button>
+                    </div>
+
                     <!-- 검색 결과 표시 영역 -->
-                    <div class="table-wrap" v-if="filteredTrades.length > 0">
+                    <div class="table-wrap" v-else-if="filteredTrades.length > 0">
                         <table class="tbl tbl--fixed">
                             <colgroup>
                                 <col class="col-no" />
@@ -97,8 +108,8 @@
                     </div>
                     
                     <!-- 검색 결과 없음 메시지 -->
-                    <div v-if="filteredTrades.length === 0" class="no-results">
-                        <p>검색 결과가 없습니다.</p>
+                    <div v-else-if="filteredTrades.length === 0" class="no-results">
+                        <p>거래내역이 없습니다.</p>
                     </div>
 
                     <!-- 페이지네이션 -->
@@ -165,6 +176,8 @@
 </template>
 
 <script>
+import { fetchTradeHistory } from '@/api/tradeHistory'
+
 export default {
     name: 'MyPageTrade',
     data() {
@@ -179,70 +192,15 @@ export default {
             page: 1,
             pageSize: 20,
 
-            // 데모 데이터 (생략 가능 / 기존 네 데이터 그대로 사용)
-            trades: [
-                { no: 'O2025082901', kind: 'buy', item: '루피 피규어', price: 53000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-29T10:12:00' },
-                { no: 'O2025082801', kind: 'buy', item: '미쿠 스페셜', price: 67000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-28T09:01:00' },
-                { no: 'S2025082701', kind: 'sell', item: '아카자 인형', price: 48000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-08-27T14:30:00' },
-                { no: 'S2025082601', kind: 'sell', item: '렌고쿠 키링', price: 10000, state: { type: 'selling', text: '판매중' }, date: '2025-08-26T18:25:00' },
-                { no: 'O2025082501', kind: 'buy', item: '원피스 세트', price: 82000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-25T11:05:00' },
-
-                { no: 'O2025082401', kind: 'buy', item: '포켓몬 카드', price: 32000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-24T10:12:00' },
-                { no: 'O2025082301', kind: 'buy', item: '건담 모형', price: 89000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-23T09:01:00' },
-                { no: 'S2025082201', kind: 'sell', item: '하츠네 미쿠 피규어', price: 53000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-08-22T14:30:00' },
-                { no: 'S2025082101', kind: 'sell', item: '히나타 소요 피규어', price: 67000, state: { type: 'selling', text: '판매중' }, date: '2025-08-21T18:25:00' },
-                { no: 'O2025082001', kind: 'buy', item: '나루토 피규어', price: 45000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-20T11:05:00' },
-
-                { no: 'O2025081901', kind: 'buy', item: '조로 피규어', price: 54000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-19T10:12:00' },
-                { no: 'O2025081801', kind: 'buy', item: '사보 피규어', price: 52000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-18T09:01:00' },
-                { no: 'S2025081701', kind: 'sell', item: '토가 키링', price: 12000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-08-17T14:30:00' },
-                { no: 'S2025081601', kind: 'sell', item: '에렌 피규어', price: 60000, state: { type: 'selling', text: '판매중' }, date: '2025-08-16T18:25:00' },
-                { no: 'O2025081501', kind: 'buy', item: '리바이 피규어', price: 62000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-15T11:05:00' },
-
-                { no: 'O2025081401', kind: 'buy', item: '루피 피규어', price: 53000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-14T10:12:00' },
-                { no: 'O2025081301', kind: 'buy', item: '미쿠 스페셜', price: 67000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-13T09:01:00' },
-                { no: 'S2025081201', kind: 'sell', item: '아카자 인형', price: 48000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-08-12T14:30:00' },
-                { no: 'S2025081101', kind: 'sell', item: '렌고쿠 키링', price: 10000, state: { type: 'selling', text: '판매중' }, date: '2025-08-11T18:25:00' },
-                { no: 'O2025081001', kind: 'buy', item: '원피스 세트', price: 82000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-10T11:05:00' },
-
-                { no: 'O2025080901', kind: 'buy', item: '포켓몬 카드', price: 32000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-09T10:12:00' },
-                { no: 'O2025080801', kind: 'buy', item: '건담 모형', price: 89000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-08T09:01:00' },
-                { no: 'S2025080701', kind: 'sell', item: '하츠네 미쿠 피규어', price: 53000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-08-07T14:30:00' },
-                { no: 'S2025080601', kind: 'sell', item: '히나타 소요 피규어', price: 67000, state: { type: 'selling', text: '판매중' }, date: '2025-08-06T18:25:00' },
-                { no: 'O2025080501', kind: 'buy', item: '나루토 피규어', price: 45000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-05T11:05:00' },
-
-                { no: 'O2025080401', kind: 'buy', item: '조로 피규어', price: 54000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-04T10:12:00' },
-                { no: 'O2025080301', kind: 'buy', item: '사보 피규어', price: 52000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-08-03T09:01:00' },
-                { no: 'S2025080201', kind: 'sell', item: '토가 키링', price: 12000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-08-02T14:30:00' },
-                { no: 'S2025080101', kind: 'sell', item: '에렌 피규어', price: 60000, state: { type: 'selling', text: '판매중' }, date: '2025-08-01T18:25:00' },
-                { no: 'O2025073101', kind: 'buy', item: '리바이 피규어', price: 62000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-31T11:05:00' },
-
-                { no: 'O2025073001', kind: 'buy', item: '루피 피규어', price: 53000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-30T10:12:00' },
-                { no: 'O2025072901', kind: 'buy', item: '미쿠 스페셜', price: 67000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-29T09:01:00' },
-                { no: 'S2025072801', kind: 'sell', item: '아카자 인형', price: 48000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-07-28T14:30:00' },
-                { no: 'S2025072701', kind: 'sell', item: '렌고쿠 키링', price: 10000, state: { type: 'selling', text: '판매중' }, date: '2025-07-27T18:25:00' },
-                { no: 'O2025072601', kind: 'buy', item: '원피스 세트', price: 82000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-26T11:05:00' },
-
-                { no: 'O2025072501', kind: 'buy', item: '포켓몬 카드', price: 32000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-25T10:12:00' },
-                { no: 'O2025072401', kind: 'buy', item: '건담 모형', price: 89000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-24T09:01:00' },
-                { no: 'S2025072301', kind: 'sell', item: '하츠네 미쿠 피규어', price: 53000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-07-23T14:30:00' },
-                { no: 'S2025072201', kind: 'sell', item: '히나타 소요 피규어', price: 67000, state: { type: 'selling', text: '판매중' }, date: '2025-07-22T18:25:00' },
-                { no: 'O2025072101', kind: 'buy', item: '나루토 피규어', price: 45000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-21T11:05:00' },
-
-                { no: 'O2025072001', kind: 'buy', item: '조로 피규어', price: 54000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-20T10:12:00' },
-                { no: 'O2025071901', kind: 'buy', item: '사보 피규어', price: 52000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-19T09:01:00' },
-                { no: 'S2025071801', kind: 'sell', item: '토가 키링', price: 12000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-07-18T14:30:00' },
-                { no: 'S2025071701', kind: 'sell', item: '에렌 피규어', price: 60000, state: { type: 'selling', text: '판매중' }, date: '2025-07-17T18:25:00' },
-                { no: 'O2025071601', kind: 'buy', item: '리바이 피규어', price: 62000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-16T11:05:00' },
-
-                { no: 'O2025071501', kind: 'buy', item: '루피 피규어', price: 53000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-15T10:12:00' },
-                { no: 'O2025071401', kind: 'buy', item: '미쿠 스페셜', price: 67000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-14T09:01:00' },
-                { no: 'S2025071301', kind: 'sell', item: '아카자 인형', price: 48000, state: { type: 'sell-done', text: '판매 완료' }, date: '2025-07-13T14:30:00' },
-                { no: 'S2025071201', kind: 'sell', item: '렌고쿠 키링', price: 10000, state: { type: 'selling', text: '판매중' }, date: '2025-07-12T18:25:00' },
-                { no: 'O2025071101', kind: 'buy', item: '원피스 세트', price: 82000, state: { type: 'buy-done', text: '구매 완료' }, date: '2025-07-11T11:05:00' },
-            ]
-            ,
+            // 거래내역 데이터
+            trades: [],
+            loading: false,
+            error: null,
         }
+    },
+
+    async mounted() {
+        await this.loadTradeHistory()
     },
 
     computed: {
@@ -306,6 +264,21 @@ export default {
     },
 
     methods: {
+        // 거래내역 로드
+        async loadTradeHistory() {
+            this.loading = true
+            this.error = null
+            try {
+                this.trades = await fetchTradeHistory()
+            } catch (error) {
+                console.error('거래내역 로드 실패:', error)
+                this.error = '거래내역을 불러오는데 실패했습니다.'
+                this.trades = []
+            } finally {
+                this.loading = false
+            }
+        },
+
         setKind(kind) { this.selectedKind = kind },
 
         viewDetail(trade) {
@@ -518,6 +491,24 @@ export default {
     padding: 3rem 1rem;
     color: #666;
     font-size: 1rem;
+}
+
+.loading-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+    font-size: 1rem;
+}
+
+.error-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #e74c3c;
+    font-size: 1rem;
+}
+
+.error-state button {
+    margin-top: 1rem;
 }
 
 /* ===== 표: 줄 깨짐 방지 ===== */
