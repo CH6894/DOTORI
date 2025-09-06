@@ -3,6 +3,7 @@
 import openApi from './axiosPublic'
 import type { Page, PageParams } from '@/types/common'
 import type { ItemDTO } from '@/types/item'
+import type { PriceDTO } from '@/types/price'
 
 // 전체 아이템 목록 조회
 export const fetchItems = (params?: PageParams) =>
@@ -58,3 +59,10 @@ export interface ImageInfo {
 // 모든 이미지 정보 조회 (관리자 이미지 우선, 판매자 이미지 후순위)
 export const fetchAllImageInfosByItemDetailsId = (itemDetailsId: number) =>
     openApi.get<ImageInfo[]>(`/open/items/item-details/${itemDetailsId}/image-infos`).then(r => r.data)
+
+export const fetchPriceHistory = (itemDetailsId: number, from?: string, to?: string) =>
+    openApi.get<PriceDTO[]>(`/open/items/${itemDetailsId}/price`, {params: {from, to}}).then(r => r.data)
+
+export const fetchPriceHistoryByPeriod = (itemCode: string, period: string) =>
+    openApi.get<PriceDTO[]>(`/open/items/${itemCode}/price-history/${period}`)
+    .then(r => r.data)

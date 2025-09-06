@@ -15,16 +15,36 @@ import com.pingu.DOTORI.entity.Orders;
 public interface PriceRepository extends JpaRepository<Orders, Long>{
 	@Query("""
 			select new com.pingu.DOTORI.dto.PriceDTO(
-				id.id,
+				d.itemId,
 				o.payTime,
-				id.cost
+				d.cost
 			)
 			from Orders o
-			join o.itemDetails id
-			where id.id = :itemId
+			join o.itemDetails d
+			where d.id = :itemId
 			  and (:from is null or o.payTime >= :from)
-			  and (:to is null or o.payTime < : to)
+			  and (:to is null or o.payTime < :to)
 			order by o.payTime asc
+			""")
+	List<PriceDTO> findPriceHistoryByItemId(
+			@Param("itemId") Long itemId,
+			@Param("from") LocalDateTime from,
+			@Param("to") LocalDateTime to
+			);
+	
+	@Query("""
+			select new com.pingu.DOTORI.dto.PriceDTO(
+			d.itemId,
+			o.payTime,
+			d.cost
+			)
+			from Orders o
+			join o.itemDetails d
+			join d.item i
+			where i.itemCode = :itemCode
+			  and (:from is null or o.payTime >= :from)
+			  and (:to is null or o.payTime < :to)
+			  order by o.payTime asc
 			""")
 	List<PriceDTO> findPriceHistoryByItemCode(
 			@Param("itemCode") String itemCode,

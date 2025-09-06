@@ -25,9 +25,9 @@
         
         <!-- 가격 차트 섹션 (미개봉 상품만) -->
         <PriceChart 
-          v-if="productType === 'new'" 
+          v-if="productType === 'new' && product.itemCode" 
           :priceData="priceData" 
-          :productId="product.id"
+          :itemCode="product.itemCode"
         />
         
         <!-- 중고상품 섹션 -->
@@ -149,7 +149,10 @@ const fetchProductDetail = async () => {
 }
 
 const fetchPriceData = async () => {
-  if (productType.value !== 'new') return
+  if (productType.value !== 'new' || !product.value.itemId) return
+  
+  // PriceChart 컴포넌트에서 자체적으로 데이터를 로드하므로
+  // 여기서는 빈 배열로 초기화만
   priceData.value = []
 }
 

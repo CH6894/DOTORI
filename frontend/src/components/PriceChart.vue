@@ -6,7 +6,25 @@
         <p class="chart-subtitle">실시간 가격 변동을 확인하세요</p>
       </div>
       
-      <div class="chart-area">
+      <!-- 기간 선택 버튼 -->
+      <div class="period-selector">
+        <button 
+          v-for="period in periods" 
+          :key="period.value"
+          @click="selectPeriod(period.value)"
+          :class="['period-btn', { active: selectedPeriod === period.value }]"
+        >
+          {{ period.label }}
+        </button>
+      </div>
+      
+      <!-- 데이터가 없을 때 -->
+      <div v-if="priceData.length === 0" class="no-data">
+        <p>아직 거래 이력이 없습니다.</p>
+      </div>
+      
+      <!-- 차트 영역 -->
+      <div v-else class="chart-area">
         <div class="chart-wrapper">
           <canvas ref="chartCanvas" width="800" height="300"></canvas>
         </div>
@@ -16,37 +34,72 @@
 </template>
 
 <script setup>
-/* eslint-disable no-undef */
 import { ref, onMounted, watch, computed } from 'vue'
+import { fetchPriceHistoryByPeriod } from '@/api/items'
 
 const props = defineProps({
-  priceData: {
-    type: Array,
-    default: () => []
+  itemCode: {
+    type: String,
+    required: true
   }
 })
 
 const chartCanvas = ref(null)
+const priceData = ref([])
+const selectedPeriod = ref('1M') // 기본값 1개월
+const loading = ref(false)
 
-// Y축 범위 계산
-const yAxisRange = computed(() => {
-  if (props.priceData.length === 0) return { min: 0, max: 100 }
+// 기간 옵션
+const periods = [
+  { value: '1M', label: '1개월' },
+  { value: '3M', label: '3개월' },
+  { value: '6M', label: '6개월' },
+  { value: '1Y', label: '1년' }
+]
+
+// 기간 선택
+const selectPeriod = async (period) => {
+  if (selectedPeriod.value === period) return
   
-  const prices = props.priceData.map(item => item.price)
-  const minPrice = Math.min(...prices)
-  const maxPrice = Math.max(...prices)
-  const range = maxPrice - minPrice
-  const padding = range > 0 ? range * 0.15 : maxPrice * 0.1 // 15% 여백
+  console.log('=== 시세 데이터 로드 시작 ===')
+  console.log('itemCode:', props.itemCode)
+  console.log('period:', period)
   
-  return {
-    min: Math.max(0, minPrice - padding),
-    max: maxPrice + padding
+  selectedPeriod.value = period
+  loading.value = true
+  
+  try {
+    const priceHistory = await fetchPriceHistoryByPeriod(props.itemCode, period)
+    console.log('받은 시세 데이터:', priceHistory)
+    
+    // Chart.js에 맞는 형식으로 변환
+    priceData.value = priceHistory.map(item => ({
+      date: new Date(item.payTime).toLocaleDateString('ko-KR'),
+      price: item.price
+    }))
+    
+    console.log('변환된 차트 데이터:', priceData.value)
+    
+    // 차트 다시 그리기
+    initChart()
+  } catch (error) {
+    console.error('시세 데이터 로드 실패:', error)
+    priceData.value = []
+  } finally {
+    loading.value = false
   }
+}
+
+// 초기 데이터 로드
+onMounted(() => {
+  selectPeriod(selectedPeriod.value)
 })
 
+// 차트 초기화 함수
 const initChart = () => {
-  if (!chartCanvas.value || props.priceData.length === 0) return
+  if (!chartCanvas.value || priceData.value.length === 0) return
   
+  // 기존 차트 인스턴스 제거
   if (window.chartInstance) {
     window.chartInstance.destroy()
   }
@@ -57,10 +110,10 @@ const initChart = () => {
     window.chartInstance = new Chart.default(ctx, {
       type: 'line',
       data: {
-        labels: props.priceData.map(item => item.date),
+        labels: priceData.value.map(item => item.date),
         datasets: [{
           label: '가격',
-          data: props.priceData.map(item => item.price),
+          data: priceData.value.map(item => item.price),
           borderColor: '#FC703C',
           borderWidth: 3,
           pointRadius: 4,
@@ -110,8 +163,8 @@ const initChart = () => {
             display: false
           },
           y: {
-            min: yAxisRange.value.min,
-            max: yAxisRange.value.max,
+            min: Math.max(0, Math.min(...priceData.value.map(item => item.price)) * 0.9),
+            max: Math.max(...priceData.value.map(item => item.price)) * 1.1,
             grid: {
               color: 'rgba(252, 112, 60, 0.08)',
               lineWidth: 1
@@ -138,14 +191,11 @@ const initChart = () => {
   })
 }
 
-onMounted(() => {
-  initChart()
+watch(() => props.itemCode, () => {
+  selectPeriod(selectedPeriod.value)
 })
-
-watch(() => props.priceData, () => {
-  initChart()
-}, { deep: true })
 </script>
+
 
 <style scoped>
 .price-chart-section {
@@ -225,5 +275,48 @@ watch(() => props.priceData, () => {
   .section-header {
     margin-bottom: 32px;
   }
+}
+
+.period-selector {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.period-btn {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.period-btn:hover {
+  border-color: #FC703C;
+  color: #FC703C;
+}
+
+.period-btn.active {
+  background: #FC703C;
+  border-color: #FC703C;
+  color: white;
+}
+
+.no-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 16px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #FC703C;
 }
 </style>
