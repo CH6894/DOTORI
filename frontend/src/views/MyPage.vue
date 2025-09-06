@@ -17,9 +17,9 @@
     </section>
 
     <!-- ✅ 자식 라우트가 들어올 자리 (예: /mypage/trade 등) -->
-    <section class="container" v-if="isChildRoute">
+    <div v-if="isChildRoute">
       <router-view />
-    </section>
+    </div>
 
     <!-- 본문 (자식 라우트가 아닐 때만 보임) -->
     <section class="container" v-else>
@@ -864,18 +864,18 @@ export default {
 
 /* ===== Wish (반응형 카드 그리드) ===== */
 .wish-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
   gap: 1rem;
   /* 16px */
+  justify-content: start;
 }
 
 .wish-card {
   background: #fff;
   border-radius: 0.5rem;
   border: 1px solid #f0f0f0;
-  flex: 1 1 clamp(8rem, 20%, 11.25rem);
-  /* 128px ~ 180px */
+  width: 100%;
   max-width: 11.25rem;
   /* 180px */
   overflow: hidden;
@@ -1011,22 +1011,15 @@ export default {
 
 /* ===== 반응형 ===== */
 @media (max-width: 64rem) {
-
   /* <= 1024px */
   .wish-grid {
     gap: 0.75rem;
     /* 12px */
-  }
-
-  .wish-card {
-    flex: 1 1 calc(33.333% - 0.75rem);
-    /* 3열 */
-    max-width: none;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
   }
 }
 
 @media (max-width: 40rem) {
-
   /* <= 640px */
   .tabs {
     width: 100%;
@@ -1037,9 +1030,9 @@ export default {
     align-items: flex-start;
   }
 
-  .wish-card {
-    flex: 1 1 calc(50% - 0.5rem);
-    /* 2열 */
+  .wish-grid {
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: 0.5rem;
   }
 }
 </style>

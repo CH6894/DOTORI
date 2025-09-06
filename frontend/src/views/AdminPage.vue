@@ -86,9 +86,33 @@
 
       <!-- 페이지네이션 -->
       <div class="pagination" v-if="totalPages > 1">
-        <button class="btn btn--ghost" :disabled="page === 1" @click="page--">이전</button>
-        <span class="page-indicator">{{ page }} / {{ totalPages }}</span>
-        <button class="btn btn--ghost" :disabled="page === totalPages" @click="page++">다음</button>
+        <button class="btn btn--ghost" :disabled="page === 1" @click="page = 1" title="맨 앞으로">
+          &laquo;&laquo;
+        </button>
+        <button class="btn btn--ghost" :disabled="page === 1" @click="page--" title="이전 페이지">
+          &laquo;
+        </button>
+        
+        <div class="page-jump">
+          <input 
+            type="number" 
+            v-model.number="jumpPage" 
+            :min="1" 
+            :max="totalPages"
+            @keyup.enter="goToPage"
+            class="page-input"
+            placeholder="페이지"
+          />
+          <span class="page-info">/ {{ totalPages }}</span>
+          <button class="btn btn--sm" @click="goToPage" title="이동">이동</button>
+        </div>
+        
+        <button class="btn btn--ghost" :disabled="page === totalPages" @click="page++" title="다음 페이지">
+          &raquo;
+        </button>
+        <button class="btn btn--ghost" :disabled="page === totalPages" @click="page = totalPages" title="맨 뒤로">
+          &raquo;&raquo;
+        </button>
       </div>
     </section>
 
@@ -262,6 +286,7 @@ const dateTo = ref("")
 
 const page = ref(1)
 const pageSize = ref(12)
+const jumpPage = ref(1)
 
 const panelOpen = ref(false)
 const current = ref<InspectionEx | null>(null)
@@ -368,6 +393,14 @@ function resetFilters() {
   dateFrom.value = ""
   dateTo.value = ""
   page.value = 1
+}
+function goToPage() {
+  if (jumpPage.value >= 1 && jumpPage.value <= totalPages.value) {
+    page.value = jumpPage.value
+  } else {
+    // 유효하지 않은 페이지 번호인 경우 현재 페이지로 리셋
+    jumpPage.value = page.value
+  }
 }
 async function openReview(ins: Inspection) {
   current.value = { ...ins }
@@ -620,6 +653,13 @@ function getGradeNumber(grade: string): number {
 }
 
 // 검수 결정은 백엔드에서 관리하므로 localStorage 사용하지 않음
+
+// ---------------------
+// 페이지 동기화
+// ---------------------
+watch(page, (newPage) => {
+  jumpPage.value = newPage
+})
 
 // ---------------------
 // ✅ DB에서 불러오기
@@ -911,15 +951,83 @@ onMounted(async () => {
 
 .pagination {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 16px;
+  flex-wrap: wrap;
 }
 
-.page-indicator {
-  font-size: 13px;
+.pagination .btn {
+  min-width: 40px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination .btn:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.pagination .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f9fafb;
+  color: #9ca3af;
+}
+
+.page-jump {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-input {
+  width: 60px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  background: #fff;
+  /* 인풋창의 화살표 제거 */
+  -moz-appearance: textfield;
+}
+
+.page-input::-webkit-outer-spin-button,
+.page-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.page-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.page-info {
+  font-size: 14px;
   color: #6b7280;
+  font-weight: 500;
+}
+
+.pagination .btn--sm {
+  min-width: 50px;
+  height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 /* Drawer */

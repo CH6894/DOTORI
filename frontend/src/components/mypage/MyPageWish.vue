@@ -1,10 +1,10 @@
 <!-- frontend/src/views/MyPageWish.vue -->
 <template>
-  <main class="wish-page">
+  <main class="mypage">
     <section class="container">
       <div class="section-header">
         <button @click="goToMyPage" class="btn-back">←돌아가기</button>
-        <h1 class="section__title">위시리스트</h1>
+        <h1 class="section__title section__title--center">위시리스트</h1>
         <div class="wish-header__meta">
           <span class="count">총 {{ wishlist.length }}개</span>
           <button
@@ -238,9 +238,19 @@ export default {
   border-color: #adb5bd;
 }
 
+.mypage {
+  color: #2d251c;
+  letter-spacing: -0.00625rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 /* 컨테이너 */
 .container {
-  width: min(1160px, 92%);
+  width: clamp(20rem, 96vw, 82.5rem);
+  /* 320px ~ 1320px */
   margin: 0 auto;
   padding-bottom: 120px;
 }
@@ -296,19 +306,22 @@ export default {
 
 /* 카드 그리드 */
 .wish-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
   gap: 1rem; /* 16px */
+  justify-content: start;
 }
 .wish-card {
   background: #fff;
   border-radius: .5rem;
   border: 1px solid #f0f0f0;
-  flex: 1 1 clamp(8rem, 20%, 11.25rem); /* 128px ~ 180px */
+  width: 100%;
   max-width: 11.25rem;                  /* 180px */
   overflow: hidden;
   cursor: pointer;
   transition: all .3s ease;
+  display: flex;
+  flex-direction: column;
 }
 .wish-card:hover {
   transform: translateY(-.375rem);
@@ -408,10 +421,15 @@ export default {
 
 /* 반응형 */
 @media (max-width: 64rem) { /* <= 1024px */
-  .wish-grid { gap: .75rem; }
-  .wish-card { flex: 1 1 calc(33.333% - .75rem); max-width: none; }
+  .wish-grid { 
+    gap: .75rem;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
 }
 @media (max-width: 40rem) { /* <= 640px */
-  .wish-card { flex: 1 1 calc(50% - .5rem); }
+  .wish-grid {
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: .5rem;
+  }
 }
 </style>

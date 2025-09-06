@@ -397,8 +397,18 @@ export default {
     --badge-col: clamp(2.1rem, 2vw, 2.4rem);
 }
 
+.mypage {
+    color: #2d251c;
+    letter-spacing: -0.00625rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
 .container {
-    width: min(1160px, 92%);
+    width: clamp(20rem, 96vw, 82.5rem);
+    /* 320px ~ 1320px */
     margin: 0 auto;
     padding-bottom: 120px;
 }
