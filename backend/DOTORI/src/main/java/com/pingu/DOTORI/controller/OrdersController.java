@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pingu.DOTORI.dto.OrdersRequestDTO;
 import com.pingu.DOTORI.dto.OrdersResponseDTO;
+import com.pingu.DOTORI.dto.TradeHistoryDTO;
 import com.pingu.DOTORI.service.OrdersService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -83,6 +84,19 @@ public class OrdersController {
             return ResponseEntity.ok(orders);
         } catch (Exception e) {
             System.err.println("payTime 기준 주문 조회 오류: " + e.getMessage());
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    /** 거래내역 조회 (구매 + 판매 통합) */
+    @GetMapping("/trade-history")
+    public ResponseEntity<List<TradeHistoryDTO>> getTradeHistory(HttpServletRequest httpReq) {
+        try {
+            List<TradeHistoryDTO> tradeHistory = ordersService.getTradeHistory(httpReq);
+            return ResponseEntity.ok(tradeHistory);
+        } catch (Exception e) {
+            System.err.println("거래내역 조회 오류: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(500).body(null);
         }
     }
