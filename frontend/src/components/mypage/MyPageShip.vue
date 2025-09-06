@@ -289,7 +289,21 @@ export default {
   border-color: #adb5bd;
 }
 
-.container { width: min(1160px, 92%); margin: 0 auto; padding-bottom: 120px; }
+.mypage {
+  color: #2d251c;
+  letter-spacing: -0.00625rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.container { 
+  width: clamp(20rem, 96vw, 82.5rem);
+  /* 320px ~ 1320px */
+  margin: 0 auto; 
+  padding-bottom: 120px; 
+}
 .section__title { margin:22px 4px 12px; font-size:22px; font-weight:800; color:#2d251c; }
 .section__title--center { text-align:center; }
 
