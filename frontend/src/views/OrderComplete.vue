@@ -72,8 +72,8 @@
 
     <!-- 하단 액션 -->
     <div class="actions" v-if="items.length">
-      <router-link class="btn outline" :to="{ name: 'OrderHistory' }">주문 내역 보기</router-link>
-      <router-link class="btn primary" :to="{ name: 'Home' }">쇼핑 계속하기</router-link>
+      <router-link class="btn outline" :to="{ name: 'mypage-trade' }">주문 내역 보기</router-link>
+      <router-link class="btn primary" :to="{ name: 'main' }">쇼핑 계속하기</router-link>
     </div>
   </div>
 </template>

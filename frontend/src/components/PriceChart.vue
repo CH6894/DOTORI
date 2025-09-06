@@ -1,4 +1,4 @@
-<template>
+  <template>
   <section class="price-chart-section">
     <div class="chart-container">
       <div class="section-header">
@@ -7,7 +7,7 @@
       </div>
       
       <!-- 기간 선택 버튼 -->
-      <div class="period-selector">
+      <!-- <div class="period-selector">
         <button 
           v-for="period in periods" 
           :key="period.value"
@@ -16,15 +16,20 @@
         >
           {{ period.label }}
         </button>
+      </div> -->
+      
+      <!-- 로딩 중 -->
+      <div v-if="loading" class="loading">
+        <p>시세 데이터를 불러오는 중...</p>
       </div>
       
       <!-- 데이터가 없을 때 -->
-      <div v-if="priceData.length === 0" class="no-data">
+      <div v-else-if="priceData.length === 0" class="no-data">
         <p>아직 거래 이력이 없습니다.</p>
       </div>
       
       <!-- 차트 영역 -->
-      <div v-else class="chart-area">
+      <div class="chart-area" :style="{ display: priceData.length > 0 ? 'block' : 'none' }">
         <div class="chart-wrapper">
           <canvas ref="chartCanvas" width="800" height="300"></canvas>
         </div>
@@ -34,8 +39,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
-import { fetchPriceHistoryByPeriod } from '@/api/items'
+import { ref, onMounted, watch, computed, nextTick } from 'vue'
+import { fetchPriceHistoryPreset } from '@/api/price'
 
 const props = defineProps({
   itemCode: {
@@ -49,71 +54,108 @@ const priceData = ref([])
 const selectedPeriod = ref('1M') // 기본값 1개월
 const loading = ref(false)
 
-// 기간 옵션
-const periods = [
-  { value: '1M', label: '1개월' },
-  { value: '3M', label: '3개월' },
-  { value: '6M', label: '6개월' },
-  { value: '1Y', label: '1년' }
-]
-
-// 기간 선택
-const selectPeriod = async (period) => {
-  if (selectedPeriod.value === period) return
-  
-  console.log('=== 시세 데이터 로드 시작 ===')
-  console.log('itemCode:', props.itemCode)
-  console.log('period:', period)
-  
-  selectedPeriod.value = period
+const loadPresetPrice = async () => {
+  if (!props.itemCode) return
   loading.value = true
-  
   try {
-    const priceHistory = await fetchPriceHistoryByPeriod(props.itemCode, period)
-    console.log('받은 시세 데이터:', priceHistory)
+    console.log('API 호출 시작, itemCode:', props.itemCode)
+    const priceHistory = await fetchPriceHistoryPreset(props.itemCode)
+    console.log('가격 이력 데이터:', priceHistory)
+    console.log('데이터 타입:', typeof priceHistory)
+    console.log('데이터 길이:', priceHistory?.length)
     
-    // Chart.js에 맞는 형식으로 변환
-    priceData.value = priceHistory.map(item => ({
-      date: new Date(item.payTime).toLocaleDateString('ko-KR'),
-      price: item.price
-    }))
-    
-    console.log('변환된 차트 데이터:', priceData.value)
-    
-    // 차트 다시 그리기
-    initChart()
-  } catch (error) {
-    console.error('시세 데이터 로드 실패:', error)
+    // API 응답 데이터를 차트 데이터 형태로 변환
+    if (Array.isArray(priceHistory) && priceHistory.length > 0) {
+      priceData.value = priceHistory.map(dto => {
+        console.log('변환 중인 데이터:', dto)
+        return {
+          date: new Date(dto.payTime).toLocaleDateString('ko-KR'),
+          price: dto.price
+        }
+      })
+      
+      console.log('변환된 차트 데이터:', priceData.value)
+      console.log('priceData.value.length:', priceData.value.length)
+      
+      // 데이터가 있으면 차트 초기화 (다음 틱에서 실행)
+      if (priceData.value.length > 0) {
+        console.log('차트 초기화 시작')
+        // DOM 렌더링 완료 후 차트 초기화
+        await nextTick()
+        initChart()
+      } else {
+        console.log('변환된 데이터가 비어있음')
+      }
+    } else {
+      console.log('API 응답이 배열이 아니거나 비어있음')
+      priceData.value = []
+    }
+  } catch (e) {
+    console.error('가격 이력 로드 실패:', e)
     priceData.value = []
   } finally {
     loading.value = false
   }
 }
 
+
 // 초기 데이터 로드
-onMounted(() => {
-  selectPeriod(selectedPeriod.value)
-})
+onMounted(() => { loadPresetPrice() })
 
 // 차트 초기화 함수
-const initChart = () => {
-  if (!chartCanvas.value || priceData.value.length === 0) return
+const initChart = async () => {
+  console.log('initChart 호출됨')
+  console.log('chartCanvas.value:', chartCanvas.value)
+  console.log('priceData.value.length:', priceData.value.length)
+  
+  if (!chartCanvas.value) {
+    console.log('차트 초기화 실패: 캔버스 없음, 재시도 중...')
+    // 캔버스가 없으면 잠시 후 재시도
+    setTimeout(() => {
+      if (chartCanvas.value) {
+        console.log('재시도: 캔버스 발견됨')
+        initChart()
+      } else {
+        console.log('재시도 실패: 여전히 캔버스 없음')
+      }
+    }, 100)
+    return
+  }
+  
+  if (priceData.value.length === 0) {
+    console.log('차트 초기화 실패: 데이터 없음')
+    return
+  }
   
   // 기존 차트 인스턴스 제거
   if (window.chartInstance) {
+    console.log('기존 차트 인스턴스 제거')
     window.chartInstance.destroy()
   }
   
   const ctx = chartCanvas.value.getContext('2d')
+  console.log('캔버스 컨텍스트:', ctx)
+  
+  // 데이터를 날짜순으로 정렬
+  const sortedData = [...priceData.value].sort((a, b) => {
+    return new Date(a.date) - new Date(b.date)
+  })
+  
+  console.log('정렬된 차트 데이터:', sortedData)
+  console.log('Chart.js 로딩 시작...')
   
   import('chart.js/auto').then((Chart) => {
-    window.chartInstance = new Chart.default(ctx, {
+    console.log('Chart.js 로딩 완료:', Chart)
+    console.log('Chart.default:', Chart.default)
+    
+    try {
+      window.chartInstance = new Chart.default(ctx, {
       type: 'line',
       data: {
-        labels: priceData.value.map(item => item.date),
+        labels: sortedData.map(item => item.date),
         datasets: [{
           label: '가격',
-          data: priceData.value.map(item => item.price),
+          data: sortedData.map(item => item.price),
           borderColor: '#FC703C',
           borderWidth: 3,
           pointRadius: 4,
@@ -163,8 +205,8 @@ const initChart = () => {
             display: false
           },
           y: {
-            min: Math.max(0, Math.min(...priceData.value.map(item => item.price)) * 0.9),
-            max: Math.max(...priceData.value.map(item => item.price)) * 1.1,
+            min: Math.max(0, Math.min(...sortedData.map(item => item.price)) * 0.9),
+            max: Math.max(...sortedData.map(item => item.price)) * 1.1,
             grid: {
               color: 'rgba(252, 112, 60, 0.08)',
               lineWidth: 1
@@ -188,12 +230,17 @@ const initChart = () => {
         }
       }
     })
+    console.log('차트 생성 완료:', window.chartInstance)
+    } catch (error) {
+      console.error('차트 생성 실패:', error)
+    }
+  }).catch(error => {
+    console.error('Chart.js 로딩 실패:', error)
   })
 }
 
 watch(() => props.itemCode, () => {
-  selectPeriod(selectedPeriod.value)
-})
+  loadPresetPrice()})
 </script>
 
 

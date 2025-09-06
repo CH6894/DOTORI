@@ -83,7 +83,7 @@ public class InspectionService {
                 .item(item)
                 .user(user)
                 .cost(dto.getPrice())
-                .status(true) // 활성 상태
+                .status(false) // 판매 등록 시에는 비활성 상태 (관리자 승인 후 true로 변경)
                 .unpacked(dto.getUnpacked() == 1) // 0=미개봉, 1=개봉
                 .storageDate(LocalDateTime.now())
                 .build();
@@ -278,7 +278,6 @@ public class InspectionService {
         admin.setQuality(grade);
         admin.setRejectionReason(null); // 승인 시 반려사유는 null로 설정
 
-        
         // 관리자 메모를 Admin 테이블의 adminNote에 저장
         if (reason != null && !reason.trim().isEmpty()) {
             admin.setAdminNote(reason.trim());
@@ -309,7 +308,6 @@ public class InspectionService {
         admin.setQuality(null); // 반려 시 등급은 null로 설정
         admin.setRejectionReason(parseRejectionReason(reason)); // 반려사유를 숫자로 변환하여 저장
 
-        
         // 반려 시에도 관리자 메모를 저장
 
         if (reason != null && !reason.trim().isEmpty()) {

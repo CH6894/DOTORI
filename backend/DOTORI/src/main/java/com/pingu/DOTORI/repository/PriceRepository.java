@@ -12,7 +12,7 @@ import com.pingu.DOTORI.dto.PriceDTO;
 import com.pingu.DOTORI.entity.Orders;
 
 @Repository
-public interface PriceRepository extends JpaRepository<Orders, Long>{
+public interface PriceRepository extends JpaRepository<Orders, Long> {
 	@Query("""
 			select new com.pingu.DOTORI.dto.PriceDTO(
 				d.itemId,
@@ -29,9 +29,8 @@ public interface PriceRepository extends JpaRepository<Orders, Long>{
 	List<PriceDTO> findPriceHistoryByItemId(
 			@Param("itemId") Long itemId,
 			@Param("from") LocalDateTime from,
-			@Param("to") LocalDateTime to
-			);
-	
+			@Param("to") LocalDateTime to);
+
 	@Query("""
 			select new com.pingu.DOTORI.dto.PriceDTO(
 			d.itemId,
@@ -49,6 +48,5 @@ public interface PriceRepository extends JpaRepository<Orders, Long>{
 	List<PriceDTO> findPriceHistoryByItemCode(
 			@Param("itemCode") String itemCode,
 			@Param("from") LocalDateTime from,
-			@Param("to") LocalDateTime to
-			);
+			@Param("to") LocalDateTime to);
 }

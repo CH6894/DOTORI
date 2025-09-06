@@ -45,7 +45,6 @@
               <th style="width: 170px">판매 등록가</th>
               <th style="width: 170px">개봉 여부</th>
               <th style="width: 170px">등록일</th>
-              <th style="width: 170px">촬영시각</th>
               <th style="width: 140px">이미지</th>
               <th style="width: 140px">상태</th>
               <th style="width: 140px">등급</th>
@@ -62,10 +61,6 @@
               <td>{{ ins.sellPrice.toLocaleString() }}원</td>
               <td>{{ ins.isOpened }}</td>
               <td>{{ fmt(ins.submittedAt) }}</td>
-              <td>
-                <span class="chip chip--internal" v-if="ins.capturedAtInternal">{{ fmt(ins.capturedAtInternal) }}</span>
-                <span class="chip chip--muted" v-else>없음</span>
-              </td>
               <td>{{ ins.photos?.length || 0 }}</td>
               <td>
                 <span :class="['badge', `badge--${ins.status.toLowerCase()}`]">{{ toKrStatus(ins.status) }}</span>

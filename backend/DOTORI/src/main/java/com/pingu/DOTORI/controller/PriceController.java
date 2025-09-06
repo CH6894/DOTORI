@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class PriceController {
 	private final PriceService priceService;
 
-//	아이템 아이디로만 찾아서 크게 필요 없을 것 같음.
+	// 아이템 아이디로만 찾아서 크게 필요 없을 것 같음.
 	@GetMapping("/{itemId}/price")
 	public List<PriceDTO> getPrice(
 			@PathVariable Long itemId,
@@ -32,7 +32,7 @@ public class PriceController {
 	}
 
 	/* 기간별 시세 이력 조회 */
-	@GetMapping("/{id}/price-history/{period}")
+	@GetMapping("/{id}/price-history/period")
 	public ResponseEntity<List<PriceDTO>> getPriceHistoryByPeriod(
 			@PathVariable Long itemId,
 			@PathVariable String period) {
@@ -40,15 +40,14 @@ public class PriceController {
 		List<PriceDTO> priceHistory = priceService.getPriceHistoryByPeriod(itemId, period);
 		return ResponseEntity.ok(priceHistory);
 	}
-//	여기까지.
-	
-//	아이템 코드로 조회하기.
-    @GetMapping("/code/{itemCode}/price-history/{period}")
-    public List<PriceDTO> getPriceHistoryByCodePreset(
-        @PathVariable String itemCode,
-        @RequestParam(defaultValue = "1M") String period
-    ) {
-        return priceService.getPriceByCode(itemCode, period);
-    }
+	// 여기까지.
+
+	// 아이템 코드로 조회하기.
+	@GetMapping("/code/{itemCode}/price-history/{period}")
+	public List<PriceDTO> getPriceHistoryByCodePreset(
+			@PathVariable String itemCode,
+			@RequestParam(defaultValue = "1M") String period) {
+		return priceService.getPriceByCode(itemCode, period);
+	}
 
 }

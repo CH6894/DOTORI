@@ -25,8 +25,7 @@
         
         <!-- 가격 차트 섹션 (미개봉 상품만) -->
         <PriceChart 
-          v-if="productType === 'new' && product.itemCode" 
-          :priceData="priceData" 
+          v-if="productType === 'new' && product.itemCode"
           :itemCode="product.itemCode"
         />
         
