@@ -269,7 +269,7 @@ import {
 import { fetchAdminImagesByItemDetailsId } from "@/api/items"
 import axios from "axios"
 
-const API_BASE = "http://49.50.135.201:8081/api/inspections"
+const API_BASE = "http://49.50.135.201/api/inspections"
 
 type InspectionEx = Inspection & { memo?: string }
 

@@ -2,7 +2,7 @@ import axios from "axios"
 
 // --- axios 기본 설정 ---
 const api = axios.create({
-  baseURL: "http://49.50.135.201:8081/api/inspections",
+  baseURL: "http://49.50.135.201/api/inspections",
   withCredentials: true,
 })
 
@@ -71,7 +71,7 @@ function rowToInspection(r: AdminListRow): Inspection {
   console.log("imageCount:", r.imageCount);
   
   const photos = r.imageUrls?.map((url, idx) => {
-    const finalUrl = url.startsWith('http') ? url : `http://49.50.135.201:8081/uploads/items/${url}`;
+    const finalUrl = url.startsWith('http') ? url : `http://49.50.135.201/uploads/items/${url}`;
     console.log(`이미지 ${idx}: ${url} -> ${finalUrl}`);
     return { 
       id: idx, 
@@ -190,7 +190,7 @@ export async function uploadAdminImages(inspectionId: string, images: File[]) {
     })
     
     // 인증 없이 요청하기 위해 별도의 axios 인스턴스 사용
-      const { data } = await axios.post(`http://49.50.135.201:8081/api/inspections/${inspectionId}/admin-images`, formData, {      headers: {
+      const { data } = await axios.post(`http://49.50.135.201/api/inspections/${inspectionId}/admin-images`, formData, {      headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
       },

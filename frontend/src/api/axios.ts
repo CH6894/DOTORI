@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 백엔드 서버 주소
 const api = axios.create({
-  baseURL: 'http://49.50.135.201:8081/api',
+  baseURL: 'http://49.50.135.201/api',
   withCredentials: false
 })
 

@@ -17,7 +17,7 @@
 import { ref, onMounted } from "vue"
 
 const isAuthed = ref(false)
-const API_BASE = 'http://49.50.135.201:8081'
+const API_BASE = 'http://49.50.135.201'
 
 // 현재 로그인 상태 반영
 function syncAuth() {

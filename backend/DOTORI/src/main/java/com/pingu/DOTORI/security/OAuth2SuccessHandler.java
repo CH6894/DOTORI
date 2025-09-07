@@ -31,7 +31,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     // Vue 쪽 redirect 주소 (application.yml 에서 app.oauth2.success-redirect 로도 오버라이드
     // 가능)
-    @Value("${app.oauth2.success-redirect:http://localhost:5173/oauth2/callback}")
+    @Value("${app.oauth2.success-redirect:http://49.50.135.201/oauth2/callback}")
     private String frontendCallback;
 
     public OAuth2SuccessHandler(JwtProvider jwtProvider, UsersRepository userRepository,

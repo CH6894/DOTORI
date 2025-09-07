@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://49.50.135.201:8081/api", // Spring Boot API 서버
+  baseURL: "http://49.50.135.201/api", // Spring Boot API 서버
   withCredentials: true, // 세션 쿠키(JSESSIONID) 같이 보낼 경우 필요
 });
 
