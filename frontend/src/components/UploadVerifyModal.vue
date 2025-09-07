@@ -24,8 +24,7 @@
             <input ref="fileInput" class="dropzone__input" type="file" multiple accept="image/*" :disabled="uploading"
               @change="onFilePick" />
 
-            <div class="dropzone__content" @click="openPicker" @dragover.prevent="onDragOver"
-              @dragleave.prevent="onDragLeave" @drop.prevent="onDrop">
+            <div class="dropzone__content" @click="openPicker">
               <div class="dropzone__icon" aria-hidden="true">📸</div>
               <p class="dropzone__title">이미지를 끌어오거나 클릭해서 선택</p>
               <p class="dropzone__hint">최소 {{ MIN_FILES }}장, 최대 {{ MAX_FILES }}장 · 파일당 최대 {{ MAX_MB }}MB</p>
@@ -83,6 +82,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { v4 as uuidv4 } from 'uuid'
 
 /**********************
  * PROPS & EMITS
@@ -161,7 +161,7 @@ function addFiles(fileList: FileList) {
     }
     if (items.value.length >= MAX_FILES) break
 
-    const id = Date.now().toString(36) + Math.random().toString(36).substring(2, 9)
+    const id = uuidv4()
     const preview = URL.createObjectURL(f)
     items.value.push({ id, file: f, preview, caption: '' })
   }
