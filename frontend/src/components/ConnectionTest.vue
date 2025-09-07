@@ -29,10 +29,10 @@
 
     <div class="test-section">
       <h3>API 설정 정보</h3>
-             <div class="api-info">
-         <p><strong>백엔드 URL:</strong> http://localhost:8000</p>
-         <p><strong>챗봇 엔드포인트:</strong> /api/chat</p>
-         <p><strong>전체 URL:</strong> http://localhost:8000/api/chat</p>
+        <div class="api-info">
+          <p><strong>백엔드 URL:</strong> http://49.50.135.201:8000</p>
+          <p><strong>챗봇 엔드포인트:</strong> /api/chat</p>
+          <p><strong>전체 URL:</strong> http://49.50.135.201:8000/api/chat</p>              
        </div>
     </div>
   </div>

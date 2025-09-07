@@ -69,7 +69,7 @@ function handleSocialLogin(provider){
 const loginNaver = () => {
   // 리다이렉트 URL이 있으면 쿼리 파라미터로 추가
   const redirectUrl = route.query.redirect || '/'
-  const loginUrl = `http://localhost:8081/oauth2/authorization/naver?redirect_uri=${encodeURIComponent(redirectUrl)}`
+  const loginUrl = `http://49.50.135.201:8081/oauth2/authorization/naver?redirect_uri=${encodeURIComponent(redirectUrl)}`
   window.location.href = loginUrl
 }
 </script>
