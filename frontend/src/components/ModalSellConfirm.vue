@@ -277,6 +277,7 @@
 import { computed, nextTick, ref, reactive } from 'vue'
 import { createInspection } from '@/api/inspection' // 경로는 프로젝트에 맞게
 import type { ItemDTO } from '@/types/item'
+import { v4 as uuidv4 } from 'uuid'
 
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
 type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'seller' | 'buyer' | number }
@@ -419,7 +420,7 @@ function addFiles(fileList: FileList) {
     if (!/^image\/(jpeg|png|webp|jpg)/i.test(f.type)) { errors.value.push(`${f.name} · 지원하지 않는 형식`); continue }
     if (f.size > MAX_MB * 1024 * 1024) { errors.value.push(`${f.name} · ${MAX_MB}MB 초과`); continue }
     if (items.value.length >= MAX_FILES) break
-    const id = crypto.randomUUID()
+    const id = uuidv4()
     const preview = URL.createObjectURL(f)
     items.value.push({ id, file: f, preview, caption: '' })
   }
