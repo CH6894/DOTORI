@@ -260,9 +260,7 @@ const handleAddToCart = async () => {
   await api.post("/cart", {
     itemDetailsId: available.itemId,
     quantity: 1
-  })
-  alert("장바구니에 추가되었습니다!")
-}
+  })}
 
 // ✅ 중고상품 구매
 const handleUsedItemDetailDirect = (item: any) => {
@@ -290,9 +288,7 @@ const handleUsedItemAddToCart = async (usedItem: any) => {
   await api.post("/cart", {
     itemDetailsId: usedItem.id,
     quantity: 1
-  })
-  alert("중고상품이 장바구니에 추가되었습니다!")
-}
+  })}
 
 const goBack = () => window.history.back()
 
