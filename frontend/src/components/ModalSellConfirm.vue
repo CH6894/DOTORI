@@ -68,10 +68,15 @@
             <div class="card">
               <div class="card-title">시세</div>
               <div class="chart">
-                <svg :viewBox="`0 0 ${chartW} ${chartH}`" width="100%" height="140" role="img" aria-label="최근 시세 추이">
+                <!-- <svg :viewBox="`0 0 ${chartW} ${chartH}`" width="100%" height="140" role="img" aria-label="최근 시세 추이">
                   <polyline :points="sparkPoints" fill="none" stroke="currentColor" stroke-width="2"
                     vector-effect="non-scaling-stroke" />
-                </svg>
+                </svg> -->
+                        <PriceChart 
+          v-if="productType === 'new' && product.itemCode"
+          :itemCode="product.itemCode"
+        />
+
               </div>
             </div>
 
@@ -279,11 +284,19 @@ import { createInspection } from '@/api/inspection' // 경로는 프로젝트에
 import type { ItemDTO } from '@/types/item'
 import { v4 as uuidv4 } from 'uuid'
 
+
+import PriceChart from '@/components/PriceChart.vue'
+
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
 type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'seller' | 'buyer' | number }
 
 const MAX_PRICE = 1_000_000_000 - 1
 const STAGES = ['신청 확인 중', '입고 확인', '검수 중', '등록 대기중', '등록'] as const
+
+
+const product = ref<any>({})
+const productType = computed(() => product.value.type || 'new')
+
 
 /* 업로드 제약 */
 const MIN_FILES = 2
