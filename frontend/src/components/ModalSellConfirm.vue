@@ -67,17 +67,16 @@
             <!-- 1-1: 그래프 영역(메모 위) -->
             <div class="card">
               <div class="card-title">시세</div>
-              <div class="chart">
+              <!-- <div class="chart">
                 <!-- <svg :viewBox="`0 0 ${chartW} ${chartH}`" width="100%" height="140" role="img" aria-label="최근 시세 추이">
                   <polyline :points="sparkPoints" fill="none" stroke="currentColor" stroke-width="2"
                     vector-effect="non-scaling-stroke" />
-                </svg> -->
-                        <PriceChart 
+                </svg>
+              </div> -->
+               <PriceChart 
           v-if="productType === 'new' && product.itemCode"
           :itemCode="product.itemCode"
         />
-
-              </div>
             </div>
 
             <!-- 메모 -->
