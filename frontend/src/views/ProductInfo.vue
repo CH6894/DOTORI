@@ -24,11 +24,6 @@
         />
         
         <!-- 가격 차트 섹션 (미개봉 상품만) -->
-         <div class="chart-container">
-      <div class="section-header">
-        <h3 class="chart-title">시세 동향</h3>
-        <p class="chart-subtitle">실시간 가격 변동을 확인하세요</p>
-      </div>
         <PriceChart 
           v-if="productType === 'new' && product.itemCode"
           :itemCode="product.itemCode"

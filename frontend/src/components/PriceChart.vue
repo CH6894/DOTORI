@@ -1,10 +1,10 @@
   <template>
   <section class="price-chart-section">
-    <!-- <div class="chart-container">
+    <div class="chart-container">
       <div class="section-header">
         <h3 class="chart-title">시세 동향</h3>
         <p class="chart-subtitle">실시간 가격 변동을 확인하세요</p>
-      </div> -->
+      </div>
       
       <!-- 기간 선택 버튼 -->
       <!-- <div class="period-selector">
