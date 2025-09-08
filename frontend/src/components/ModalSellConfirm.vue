@@ -73,12 +73,12 @@
                     vector-effect="non-scaling-stroke" />
                 </svg>
               </div> -->
-               <PriceChart 
+               
+            </div>
+<PriceChart 
                  v-if="productType === 'new' && product.itemCode"
                  :itemCode="product.itemCode"
                />
-            </div>
-
             <!-- 메모 -->
             <div class="memo-box">
               <div class="memo-title">판매자 코멘트</div>
