@@ -35,7 +35,20 @@
               </div>
             </div>
 
-            <h3 class="item-title">{{ item.name }}</h3>
+            <!-- <h3 class="item-title">{{ item.name }}</h3>
+
+            <div class="badge-row">
+              <button v-for="chip in chips" :key="chip" type="button" class="chip"
+                :class="{ active: selectedChip === chip }" @click="toggleChip(chip)">
+                {{ chip }}
+              </button>
+            </div> -->
+          </div>
+
+          <!-- 우 -->
+          <aside class="right">
+            <div class="summary">
+                          <h3 class="item-title">{{ item.name }}</h3>
 
             <div class="badge-row">
               <button v-for="chip in chips" :key="chip" type="button" class="chip"
@@ -43,11 +56,7 @@
                 {{ chip }}
               </button>
             </div>
-          </div>
 
-          <!-- 우 -->
-          <aside class="right">
-            <div class="summary">
               <div class="muted">판매 등록가</div>
               <input type="text" inputmode="numeric" pattern="[0-9]*" :value="priceText" @input="handlePriceInput"
                 @keydown="onPriceKeydown" placeholder="가격 입력" class="price-input" aria-label="판매 등록가" />
