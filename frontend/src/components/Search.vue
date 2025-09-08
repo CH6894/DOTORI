@@ -58,11 +58,11 @@ function clearRecent() {
 
 /* ===== 인기 검색어 (임시 데이터) ===== */
 const popular = ref([
-  { term: '블랙핑크', rank: 1, delta: 2 },
-  { term: '포켓몬카드', rank: 2, delta: -1 },
+  { term: '에스파', rank: 1, delta: 2 },
+  { term: '홀로라이브', rank: 2, delta: -1 },
   { term: '원피스', rank: 3, delta: 0 },
   { term: '귀멸의칼날', rank: 4, delta: 3 },
-  { term: '기아타이거즈', rank: 5, delta: 1 },
+  { term: '화산귀환', rank: 5, delta: 1 },
 ])
 
 function delta(item: any) {
