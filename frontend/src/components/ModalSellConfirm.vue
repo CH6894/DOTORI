@@ -74,9 +74,9 @@
                 </svg>
               </div> -->
                <PriceChart 
-          v-if="productType === 'new' && product.itemCode"
-          :itemCode="product.itemCode"
-        />
+                 v-if="productType === 'new' && product.itemCode"
+                 :itemCode="product.itemCode"
+               />
             </div>
 
             <!-- 메모 -->
@@ -283,17 +283,23 @@ import { createInspection } from '@/api/inspection' // 경로는 프로젝트에
 import type { ItemDTO } from '@/types/item'
 import { v4 as uuidv4 } from 'uuid'
 
-
-import PriceChart from '@/components/PriceChart.vue'
-
 type Condition = 'excellent' | 'good' | 'fair' | 'poor'
 type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'seller' | 'buyer' | number }
 
 const MAX_PRICE = 1_000_000_000 - 1
 const STAGES = ['신청 확인 중', '입고 확인', '검수 중', '등록 대기중', '등록'] as const
 
-
-const product = ref<any>({})
+import PriceChart from '@/components/PriceChart.vue'
+const product = computed(() => {
+  if (!props.item) return { type: 'new', itemCode: '' }
+  
+  // ProductInfo.vue의 adaptProduct와 동일하게 처리
+  return {
+    ...props.item,
+    type: 'new', // 기본은 미개봉 상품
+    itemCode: props.item.itemCode || props.item.id || ''
+  }
+})
 const productType = computed(() => product.value.type || 'new')
 
 
