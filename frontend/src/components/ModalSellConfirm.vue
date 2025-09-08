@@ -67,12 +67,16 @@
             <!-- 1-1: 그래프 영역(메모 위) -->
             <div class="card">
               <div class="card-title">시세</div>
-              <div class="chart">
-                <svg :viewBox="`0 0 ${chartW} ${chartH}`" width="100%" height="140" role="img" aria-label="최근 시세 추이">
+              <!-- <div class="chart">
+                <!-- <svg :viewBox="`0 0 ${chartW} ${chartH}`" width="100%" height="140" role="img" aria-label="최근 시세 추이">
                   <polyline :points="sparkPoints" fill="none" stroke="currentColor" stroke-width="2"
                     vector-effect="non-scaling-stroke" />
                 </svg>
-              </div>
+              </div> -->
+               <PriceChart 
+                 v-if="productType === 'new' && product.itemCode"
+                 :itemCode="product.itemCode"
+               />
             </div>
 
             <!-- 메모 -->
@@ -284,6 +288,20 @@ type FeeConfig = { inspect: 'free' | number; fee: 'free' | number; shipping: 'se
 
 const MAX_PRICE = 1_000_000_000 - 1
 const STAGES = ['신청 확인 중', '입고 확인', '검수 중', '등록 대기중', '등록'] as const
+
+import PriceChart from '@/components/PriceChart.vue'
+const product = computed(() => {
+  if (!props.item) return { type: 'new', itemCode: '' }
+  
+  // ProductInfo.vue의 adaptProduct와 동일하게 처리
+  return {
+    ...props.item,
+    type: 'new', // 기본은 미개봉 상품
+    itemCode: props.item.itemCode || props.item.id || ''
+  }
+})
+const productType = computed(() => product.value.type || 'new')
+
 
 /* 업로드 제약 */
 const MIN_FILES = 2
