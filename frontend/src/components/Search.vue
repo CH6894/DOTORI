@@ -171,7 +171,7 @@ onBeforeUnmount(() => {
           </div>
           <ul class="recent-list">
             <li v-if="recent.length === 0" class="recent-empty">최근 검색어가 없습니다.</li>
-            <li v-for="r in recent.slice(0, 10)" :key="r.term" class="recent-item">
+            <li v-for="r in recent.slice(0, 5)" :key="r.term" class="recent-item">
               <button type="button" class="recent-link" @click="selectTerm(r.term)">
                 {{ r.term }}
               </button>
