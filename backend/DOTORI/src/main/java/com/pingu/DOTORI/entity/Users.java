@@ -26,25 +26,25 @@ public class Users {
     @Column(name = "nick_name", length = 100, unique = true)
     private String nickName; // 단일 유니크
 
-    @Column(name = "email", length = 255, unique = true, nullable = false)
+    @Column(name = "email", length = 255, unique = true)
     private String email; // 단일 유니크
 
-    @Column(name = "phone", length = 100, unique = true, nullable = false)
+    @Column(name = "phone", length = 100, unique = true)
     private String phone; // 단일 유니크
 
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender")
     private Byte gender;
 
-    @Column(name = "birth_year", nullable = false)
+    @Column(name = "birth_year")
     private LocalDate birthYear;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "sign_in_date", nullable = false)
+    @Column(name = "sign_in_date")
     private LocalDateTime signInDate;
 
-    @Column(name = "user_type", nullable = false)
+    @Column(name = "user_type")
     private Integer userType;
 
     @Column(name = "user_img")
