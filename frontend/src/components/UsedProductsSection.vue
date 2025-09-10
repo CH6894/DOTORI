@@ -159,7 +159,7 @@ const openUsedItemDetail = (item) => {
 <style scoped>
 .used-products-section {
   padding: 10px 0;
-  background: white;
+  /* background: white; */
 }
 
 .section-container {
