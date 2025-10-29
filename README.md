@@ -35,3 +35,6 @@ DOTORI는 팬덤 굿즈 시장의 불투명성과 거래 불안을 해소하기 
 - **AI 연동**: OpenAI GPT-4 API
 - **DB/Storage**: MySQL, 네이버 클라우드
 - **협업/개발 환경**: GitHub, Node.js
+
+  ## 시연 영상
+  [![프로젝트 소개 영상]([https://i.ytimg.com/vi/YourVideoID/hqdefault.jpg)](https://www.youtube.com/watch?v=YourVideoID](https://www.youtube.com/watch?v=PEstoia4OpM))
