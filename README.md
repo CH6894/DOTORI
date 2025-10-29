@@ -1,4 +1,4 @@
-# DOTORI : 검수·시세 데이터 기반 신뢰형 굿즈 커머스 플랫폼
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/e9bded1a-a5c0-4f8d-8438-867a8155e513" /># DOTORI : 검수·시세 데이터 기반 신뢰형 굿즈 커머스 플랫폼
 
 > **Team 핑구** | 굿즈 시장의 불투명성과 거래 불안을 해소하는 중고 굿즈 거래 플랫폼
 
@@ -36,5 +36,5 @@ DOTORI는 팬덤 굿즈 시장의 불투명성과 거래 불안을 해소하기 
 - **DB/Storage**: MySQL, 네이버 클라우드
 - **협업/개발 환경**: GitHub, Node.js
 
-  ## 시연 영상
-  [![프로젝트 소개 영상]([https://i.ytimg.com/vi/YourVideoID/hqdefault.jpg)](https://www.youtube.com/watch?v=YourVideoID](https://www.youtube.com/watch?v=PEstoia4OpM))
+## 🎬 시연 영상
+  [![프로젝트 소개 영상](https://www.youtube.com/watch?v=PEstoia4OpM)
